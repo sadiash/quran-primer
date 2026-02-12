@@ -18,14 +18,15 @@ interface QuranApiTranslationsResponse {
   }>;
 }
 
-interface QuranApiVerseTranslationsResponse {
-  translations: Array<{
-    id: number;
-    resource_id: number;
-    resource_name: string;
-    language_id: number;
-    text: string;
+interface QuranApiVersesResponse {
+  verses: Array<{
     verse_key: string;
+    translations?: Array<{
+      id: number;
+      resource_id: number;
+      resource_name?: string;
+      text: string;
+    }>;
   }>;
 }
 
@@ -66,18 +67,20 @@ export class QuranTranslationAdapter implements TranslationPort {
     if (cached) return cached;
 
     const data =
-      await this.http.get<QuranApiVerseTranslationsResponse>(
+      await this.http.get<QuranApiVersesResponse>(
         `/verses/by_chapter/${surahId}?translations=${translationId}&language=en&per_page=300&fields=verse_key`,
       );
 
-    const translations: Translation[] = data.translations.map((t) => ({
-      id: t.id,
-      resourceId: t.resource_id,
-      resourceName: t.resource_name,
-      languageCode: "en",
-      verseKey: t.verse_key,
-      text: t.text,
-    }));
+    const translations: Translation[] = data.verses.flatMap((verse) =>
+      (verse.translations ?? []).map((t) => ({
+        id: t.id,
+        resourceId: t.resource_id,
+        resourceName: t.resource_name ?? "",
+        languageCode: "en",
+        verseKey: verse.verse_key,
+        text: t.text,
+      })),
+    );
 
     this.cache.set(cacheKey, translations);
     return translations;

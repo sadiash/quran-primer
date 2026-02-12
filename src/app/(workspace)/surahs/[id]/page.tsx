@@ -33,7 +33,7 @@ export default async function SurahPage({ params }: SurahPageProps) {
     notFound();
   }
 
-  const result = await getQuranService().getSurahWithTranslation(surahId, 131);
+  const result = await getQuranService().getSurahWithTranslation(surahId, 20);
   if (!result) {
     notFound();
   }

@@ -11,7 +11,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   arabicFontSize: "lg",
   translationFontSize: "md",
   showTranslation: true,
-  defaultTranslationId: 131,
+  defaultTranslationId: 20,
   defaultReciterId: 7,
   updatedAt: new Date(0),
 };
