@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Amiri, Scheherazade_New } from "next/font/google";
-import { ThemeProvider, QueryProvider } from "@/presentation/providers";
+import {
+  ThemeProvider,
+  QueryProvider,
+  AudioProvider,
+} from "@/presentation/providers";
 import { ToastProvider } from "@/presentation/components/ui";
 import "./globals.css";
 
@@ -39,7 +43,9 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <QueryProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <AudioProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </AudioProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

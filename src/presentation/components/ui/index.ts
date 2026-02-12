@@ -15,3 +15,4 @@ export {
   type DialogProps,
 } from "./dialog";
 export { ToastProvider, useToast, type Toast, type ToastVariant } from "./toast";
+export { CommandPalette, type CommandPaletteProps } from "./command-palette";

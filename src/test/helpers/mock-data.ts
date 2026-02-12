@@ -77,6 +77,96 @@ export function createMockBookmark(
   };
 }
 
+export function createMockAudioRecitation(
+  overrides: Partial<{ verseKey: string; url: string }> = {}
+) {
+  return {
+    verseKey: "1:1",
+    url: "https://audio.example.com/1_1.mp3",
+    ...overrides,
+  };
+}
+
+export function createMockReciter(
+  overrides: Partial<{
+    id: number;
+    name: string;
+    style: string | null;
+    translatedName: string;
+  }> = {}
+) {
+  return {
+    id: 7,
+    name: "Mishari Rashid al-Afasy",
+    style: null,
+    translatedName: "Mishari Rashid al-Afasy",
+    ...overrides,
+  };
+}
+
+export function createMockTafsir(
+  overrides: Partial<{
+    id: number;
+    resourceId: number;
+    resourceName: string;
+    languageCode: string;
+    verseKey: string;
+    text: string;
+  }> = {}
+) {
+  return {
+    id: 1,
+    resourceId: 169,
+    resourceName: "Ibn Kathir",
+    languageCode: "en",
+    verseKey: "1:1",
+    text: "<p>In the name of Allah, the Most Gracious, the Most Merciful.</p>",
+    ...overrides,
+  };
+}
+
+export function createMockTafsirResource(
+  overrides: Partial<{
+    id: number;
+    name: string;
+    authorName: string;
+    languageCode: string;
+    slug: string;
+  }> = {}
+) {
+  return {
+    id: 169,
+    name: "Ibn Kathir",
+    authorName: "Ibn Kathir",
+    languageCode: "en",
+    slug: "ibn-kathir-en",
+    ...overrides,
+  };
+}
+
+export function createMockHadith(
+  overrides: Partial<{
+    id: number;
+    collection: string;
+    bookNumber: string;
+    hadithNumber: string;
+    text: string;
+    grade: string | null;
+    narratedBy: string | null;
+  }> = {}
+) {
+  return {
+    id: 1,
+    collection: "Sahih Bukhari",
+    bookNumber: "1",
+    hadithNumber: "1",
+    text: "<p>Actions are judged by intentions.</p>",
+    grade: "Sahih",
+    narratedBy: "Umar ibn al-Khattab",
+    ...overrides,
+  };
+}
+
 export function createMockNote(
   overrides: Partial<{
     id: string;
