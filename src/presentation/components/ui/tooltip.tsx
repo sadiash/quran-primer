@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, type ReactNode, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
+export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
   content: ReactNode;
   side?: "top" | "bottom" | "left" | "right";
   delayMs?: number;

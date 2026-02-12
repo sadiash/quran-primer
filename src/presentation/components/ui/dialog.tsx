@@ -64,25 +64,25 @@ export function Dialog({ open, onClose, children, className, ...props }: DialogP
   );
 }
 
-export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+export type DialogHeaderProps = HTMLAttributes<HTMLDivElement>;
 
 export function DialogHeader({ className, ...props }: DialogHeaderProps) {
   return <div className={cn("mb-4 space-y-1.5", className)} {...props} />;
 }
 
-export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
+export type DialogTitleProps = HTMLAttributes<HTMLHeadingElement>;
 
 export function DialogTitle({ className, ...props }: DialogTitleProps) {
   return <h2 className={cn("text-lg font-semibold text-foreground", className)} {...props} />;
 }
 
-export interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+export type DialogDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
 
 export function DialogDescription({ className, ...props }: DialogDescriptionProps) {
   return <p className={cn("text-sm text-muted-foreground", className)} {...props} />;
 }
 
-export interface DialogFooterProps extends HTMLAttributes<HTMLDivElement> {}
+export type DialogFooterProps = HTMLAttributes<HTMLDivElement>;
 
 export function DialogFooter({ className, ...props }: DialogFooterProps) {
   return (
