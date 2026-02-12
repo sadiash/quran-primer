@@ -4,6 +4,15 @@ import { ReadingSurface } from "./reading-surface";
 import { createMockVerse } from "@/test/helpers/mock-data";
 import type { Translation } from "@/core/types";
 
+vi.mock("@/presentation/hooks/use-bookmarks", () => ({
+  useBookmarks: () => ({
+    bookmarks: [],
+    isBookmarked: () => false,
+    toggleBookmark: vi.fn().mockResolvedValue(true),
+    removeBookmark: vi.fn(),
+  }),
+}));
+
 const verses = [
   createMockVerse({ verseKey: "1:1", verseNumber: 1, textUthmani: "بِسْمِ ٱللَّهِ" }),
   createMockVerse({ verseKey: "1:2", verseNumber: 2, textUthmani: "ٱلْحَمْدُ لِلَّهِ" }),
@@ -20,6 +29,22 @@ beforeEach(() => {
     this.unobserve = vi.fn();
     this.disconnect = vi.fn();
   } as unknown as typeof IntersectionObserver) as unknown as typeof IntersectionObserver;
+
+  vi.spyOn(window, "Audio").mockImplementation(
+    vi.fn(function (this: HTMLAudioElement) {
+      this.src = "";
+      this.currentTime = 0;
+      this.duration = 0;
+      this.play = vi.fn().mockResolvedValue(undefined);
+      this.pause = vi.fn();
+      this.addEventListener = vi.fn();
+      this.removeEventListener = vi.fn();
+    }) as unknown as () => HTMLAudioElement,
+  );
+
+  return () => {
+    vi.restoreAllMocks();
+  };
 });
 
 describe("ReadingSurface", () => {

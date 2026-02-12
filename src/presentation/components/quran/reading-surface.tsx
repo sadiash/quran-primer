@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { Verse, Translation } from "@/core/types";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
+import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { Bismillah } from "./bismillah";
 import { VerseLine } from "./verse-line";
 
@@ -18,6 +19,7 @@ export function ReadingSurface({
   translations,
 }: ReadingSurfaceProps) {
   const { observerRef } = useVerseVisibility();
+  const { bookmarks } = useBookmarks(surahId);
 
   const translationMap = useMemo(() => {
     const map = new Map<string, Translation>();
@@ -26,6 +28,14 @@ export function ReadingSurface({
     }
     return map;
   }, [translations]);
+
+  const bookmarkedKeys = useMemo(() => {
+    const set = new Set<string>();
+    for (const b of bookmarks) {
+      set.add(b.verseKey);
+    }
+    return set;
+  }, [bookmarks]);
 
   const showBismillah = surahId !== 1 && surahId !== 9;
 
@@ -38,8 +48,10 @@ export function ReadingSurface({
           <VerseLine
             key={verse.verseKey}
             verse={verse}
+            surahId={surahId}
             translation={translationMap.get(verse.verseKey)}
             observerRef={observerRef}
+            isBookmarked={bookmarkedKeys.has(verse.verseKey)}
           />
         ))}
       </div>

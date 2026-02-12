@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Search, Settings, PanelLeft, PanelLeftClose } from "lucide-react";
+import { Home, BookOpen, Bookmark, Search, Settings, PanelLeft, PanelLeftClose } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/presentation/components/ui";
 import { IconButton } from "@/presentation/components/ui";
@@ -10,6 +10,7 @@ import { IconButton } from "@/presentation/components/ui";
 const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/surahs", label: "Surahs", icon: BookOpen },
+  { href: "/bookmarks", label: "Bookmarks", icon: Bookmark },
   { href: "/search", label: "Search", icon: Search },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;

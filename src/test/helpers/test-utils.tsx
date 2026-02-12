@@ -1,6 +1,8 @@
 import { render, type RenderOptions } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactElement } from "react";
+import { AudioProvider } from "@/presentation/providers/audio-provider";
+import { ToastProvider } from "@/presentation/components/ui/toast";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -16,7 +18,11 @@ function createTestQueryClient() {
 function AllProviders({ children }: { children: React.ReactNode }) {
   const queryClient = createTestQueryClient();
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <AudioProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </AudioProvider>
+    </QueryClientProvider>
   );
 }
 
