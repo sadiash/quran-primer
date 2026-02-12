@@ -2,13 +2,18 @@
 
 import Link from "next/link";
 import { Badge } from "@/presentation/components/ui";
-import type { Surah } from "@/core/types";
+import type { Surah, ReadingProgress } from "@/core/types";
 
 interface SurahCardProps {
   surah: Surah;
+  progress?: ReadingProgress;
 }
 
-export function SurahCard({ surah }: SurahCardProps) {
+export function SurahCard({ surah, progress }: SurahCardProps) {
+  const progressPercent = progress
+    ? Math.round((progress.completedVerses / progress.totalVerses) * 100)
+    : 0;
+
   return (
     <Link
       href={`/surahs/${surah.id}`}
@@ -40,6 +45,22 @@ export function SurahCard({ surah }: SurahCardProps) {
           {surah.versesCount} verses
         </span>
       </div>
+
+      {progress && (
+        <div
+          className="mt-2 h-1 rounded-full bg-secondary"
+          role="progressbar"
+          aria-valuenow={progressPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Reading progress: ${progressPercent}%`}
+        >
+          <div
+            className="h-full rounded-full bg-primary transition-smooth"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      )}
     </Link>
   );
 }

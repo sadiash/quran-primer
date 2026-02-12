@@ -25,7 +25,7 @@ describe("useBookmarks", () => {
 
     await waitFor(() => {
       expect(result.current.bookmarks).toHaveLength(1);
-      expect(result.current.bookmarks[0].verseKey).toBe("1:1");
+      expect(result.current.bookmarks[0]!.verseKey).toBe("1:1");
     });
   });
 
@@ -75,7 +75,7 @@ describe("useBookmarks", () => {
 
     await waitFor(() => {
       expect(filtered.current.bookmarks).toHaveLength(1);
-      expect(filtered.current.bookmarks[0].verseKey).toBe("1:1");
+      expect(filtered.current.bookmarks[0]!.verseKey).toBe("1:1");
     });
   });
 
@@ -91,7 +91,7 @@ describe("useBookmarks", () => {
     });
 
     await act(async () => {
-      await result.current.removeBookmark(result.current.bookmarks[0].id);
+      await result.current.removeBookmark(result.current.bookmarks[0]!.id);
     });
 
     await waitFor(() => {

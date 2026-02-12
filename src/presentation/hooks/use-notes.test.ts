@@ -29,8 +29,8 @@ describe("useNotes", () => {
 
     await waitFor(() => {
       expect(result.current.notes).toHaveLength(1);
-      expect(result.current.notes[0].content).toBe("Test note");
-      expect(result.current.notes[0].tags).toEqual(["reflection"]);
+      expect(result.current.notes[0]!.content).toBe("Test note");
+      expect(result.current.notes[0]!.tags).toEqual(["reflection"]);
     });
   });
 
@@ -50,7 +50,7 @@ describe("useNotes", () => {
       expect(result.current.notes).toHaveLength(1);
     });
 
-    const noteId = result.current.notes[0].id;
+    const noteId = result.current.notes[0]!.id;
 
     await act(async () => {
       await result.current.saveNote({
@@ -64,7 +64,7 @@ describe("useNotes", () => {
 
     await waitFor(() => {
       expect(result.current.notes).toHaveLength(1);
-      expect(result.current.notes[0].content).toBe("Updated");
+      expect(result.current.notes[0]!.content).toBe("Updated");
     });
   });
 
@@ -85,7 +85,7 @@ describe("useNotes", () => {
     });
 
     await act(async () => {
-      await result.current.removeNote(result.current.notes[0].id);
+      await result.current.removeNote(result.current.notes[0]!.id);
     });
 
     await waitFor(() => {
@@ -117,7 +117,7 @@ describe("useNotes", () => {
 
     await waitFor(() => {
       expect(filtered.current.notes).toHaveLength(1);
-      expect(filtered.current.notes[0].content).toBe("Note A");
+      expect(filtered.current.notes[0]!.content).toBe("Note A");
     });
   });
 
@@ -143,7 +143,7 @@ describe("useNotes", () => {
 
     await waitFor(() => {
       expect(filtered.current.notes).toHaveLength(1);
-      expect(filtered.current.notes[0].content).toBe("Note B");
+      expect(filtered.current.notes[0]!.content).toBe("Note B");
     });
   });
 });
