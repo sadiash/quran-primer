@@ -13,6 +13,14 @@ vi.mock("@/presentation/hooks/use-bookmarks", () => ({
   }),
 }));
 
+vi.mock("@/presentation/hooks/use-notes", () => ({
+  useNotes: () => ({
+    notes: [],
+    saveNote: vi.fn(),
+    removeNote: vi.fn(),
+  }),
+}));
+
 const verses = [
   createMockVerse({ verseKey: "1:1", verseNumber: 1, textUthmani: "بِسْمِ ٱللَّهِ" }),
   createMockVerse({ verseKey: "1:2", verseNumber: 2, textUthmani: "ٱلْحَمْدُ لِلَّهِ" }),

@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
-import type { Verse, Translation } from "@/core/types";
+import { useMemo, useState, useCallback } from "react";
+import type { Verse, Translation, Note } from "@/core/types";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
+import { useNotes } from "@/presentation/hooks/use-notes";
+import { NoteEditorDialog } from "@/presentation/components/study/note-editor-dialog";
 import { Bismillah } from "./bismillah";
 import { VerseLine } from "./verse-line";
 
@@ -20,6 +22,12 @@ export function ReadingSurface({
 }: ReadingSurfaceProps) {
   const { observerRef } = useVerseVisibility();
   const { bookmarks } = useBookmarks(surahId);
+  const { notes } = useNotes({ surahId });
+
+  const [noteDialog, setNoteDialog] = useState<{
+    verseKey: string;
+    existingNote?: Note;
+  } | null>(null);
 
   const translationMap = useMemo(() => {
     const map = new Map<string, Translation>();
@@ -37,6 +45,22 @@ export function ReadingSurface({
     return set;
   }, [bookmarks]);
 
+  const notesByVerse = useMemo(() => {
+    const map = new Map<string, Note>();
+    for (const n of notes) {
+      map.set(n.verseKey, n);
+    }
+    return map;
+  }, [notes]);
+
+  const handleNoteClick = useCallback(
+    (verseKey: string) => {
+      const existing = notesByVerse.get(verseKey);
+      setNoteDialog({ verseKey, existingNote: existing });
+    },
+    [notesByVerse],
+  );
+
   const showBismillah = surahId !== 1 && surahId !== 9;
 
   return (
@@ -52,9 +76,21 @@ export function ReadingSurface({
             translation={translationMap.get(verse.verseKey)}
             observerRef={observerRef}
             isBookmarked={bookmarkedKeys.has(verse.verseKey)}
+            hasNote={notesByVerse.has(verse.verseKey)}
+            onNoteClick={() => handleNoteClick(verse.verseKey)}
           />
         ))}
       </div>
+
+      {noteDialog && (
+        <NoteEditorDialog
+          open={!!noteDialog}
+          onClose={() => setNoteDialog(null)}
+          verseKey={noteDialog.verseKey}
+          surahId={surahId}
+          existingNote={noteDialog.existingNote}
+        />
+      )}
     </div>
   );
 }
