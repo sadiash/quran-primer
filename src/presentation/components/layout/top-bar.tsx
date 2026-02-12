@@ -6,9 +6,10 @@ import { IconButton } from "@/presentation/components/ui";
 
 interface TopBarProps {
   onMenuToggle: () => void;
+  onCommandPalette?: () => void;
 }
 
-export function TopBar({ onMenuToggle }: TopBarProps) {
+export function TopBar({ onMenuToggle, onCommandPalette }: TopBarProps) {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -26,7 +27,7 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
       </div>
 
       <div className="flex items-center gap-1">
-        <IconButton label="Command palette" variant="ghost" size="sm">
+        <IconButton label="Command palette" variant="ghost" size="sm" onClick={onCommandPalette}>
           <Command />
         </IconButton>
         <IconButton

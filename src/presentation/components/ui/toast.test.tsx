@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, act, fireEvent } from "@/test/helpers/test-utils";
+import { render as rawRender } from "@testing-library/react";
 import { ToastProvider, useToast } from "./toast";
 
 function TestTrigger({
@@ -100,6 +101,6 @@ describe("Toast", () => {
   });
 
   it("throws when used outside provider", () => {
-    expect(() => render(<TestTrigger />)).toThrow("useToast must be used within ToastProvider");
+    expect(() => rawRender(<TestTrigger />)).toThrow("useToast must be used within ToastProvider");
   });
 });

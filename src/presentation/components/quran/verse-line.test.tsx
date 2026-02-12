@@ -22,7 +22,7 @@ beforeEach(() => {
 
   // Mock Audio element for AudioProvider
   vi.spyOn(window, "Audio").mockImplementation(
-    vi.fn(function (this: HTMLAudioElement) {
+    vi.fn(function (this: Record<string, unknown>) {
       this.src = "";
       this.currentTime = 0;
       this.duration = 0;

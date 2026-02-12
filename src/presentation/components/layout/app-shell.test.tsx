@@ -1,13 +1,36 @@
+import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@/test/helpers/test-utils";
 import { AppShell } from "./app-shell";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
 }));
 
 vi.mock("next-themes", () => ({
   useTheme: () => ({ theme: "light", setTheme: vi.fn() }),
+}));
+
+vi.mock("@/presentation/components/ui/toast", () => ({
+  useToast: () => ({ toast: vi.fn() }),
+  ToastProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+vi.mock("@/presentation/providers/audio-provider", () => ({
+  AudioProvider: ({ children }: { children: React.ReactNode }) => children,
+  useAudioPlayer: () => ({
+    isActive: false,
+    isPlaying: false,
+    currentVerseKey: null,
+    play: vi.fn(),
+    pause: vi.fn(),
+    stop: vi.fn(),
+  }),
+}));
+
+vi.mock("./audio-dock", () => ({
+  AudioDock: () => null,
 }));
 
 describe("AppShell", () => {
