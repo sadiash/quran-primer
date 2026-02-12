@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#555"/></marker>
+  </defs>
+
+  <rect width="1100" height="850" fill="#fafafa" rx="12"/>
+
+  <text x="550" y="40" text-anchor="middle" font-size="28" font-weight="700" fill="#1e1e1e">Verse Interactions &amp; Toggle Philosophy</text>
+  <text x="550" y="65" text-anchor="middle" font-size="15" fill="#757575">Everything is a toggle. The user assembles their own workspace.</text>
+
+  <!-- ===== VERSE GESTURES ===== -->
+  <text x="30" y="100" font-size="20" font-weight="700" fill="#1e1e1e">Verse Gestures</text>
+
+  <!-- The verse -->
+  <rect x="30" y="115" width="530" height="50" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="2.5" filter="url(#shadow)"/>
+  <rect x="26" y="115" width="4" height="50" fill="#4a9eed" rx="2"/>
+  <text x="50" y="145" font-size="15" fill="#1e1e1e">2:65  And you had already known about those who transgressed among you...</text>
+
+  <!-- Gesture arrows + boxes -->
+  <line x1="560" y1="120" x2="600" y2="108" stroke="#4a9eed" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="610" y="90" width="200" height="48" rx="8" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="710" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb">TAP</text>
+  <text x="710" y="127" text-anchor="middle" font-size="12" fill="#1e1e1e">Open context preview</text>
+
+  <line x1="560" y1="135" x2="600" y2="155" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="610" y="145" width="200" height="48" rx="8" fill="#d0bfff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="710" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">LONG-PRESS</text>
+  <text x="710" y="182" text-anchor="middle" font-size="12" fill="#1e1e1e">Quick action bar</text>
+
+  <line x1="560" y1="148" x2="600" y2="210" stroke="#22c55e" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="610" y="200" width="200" height="48" rx="8" fill="#b2f2bb" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="710" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">SWIPE RIGHT (mobile)</text>
+  <text x="710" y="237" text-anchor="middle" font-size="12" fill="#1e1e1e">Instant bookmark</text>
+
+  <line x1="560" y1="155" x2="600" y2="265" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="610" y="255" width="200" height="48" rx="8" fill="#ffd8a8" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="710" y="275" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">HOVER (desktop)</text>
+  <text x="710" y="292" text-anchor="middle" font-size="12" fill="#1e1e1e">Subtle highlight + icons</text>
+
+  <line x1="560" y1="160" x2="600" y2="320" stroke="#ef4444" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="610" y="310" width="200" height="48" rx="8" fill="#ffc9c9" stroke="#ef4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="710" y="330" text-anchor="middle" font-size="13" font-weight="700" fill="#ef4444">DOUBLE-CLICK</text>
+  <text x="710" y="347" text-anchor="middle" font-size="12" fill="#1e1e1e">Word-by-word morphology</text>
+
+  <!-- Visual Indicators -->
+  <text x="30" y="200" font-size="16" font-weight="700" fill="#1e1e1e">Visual Indicators (subtle)</text>
+  <rect x="30" y="215" width="8" height="28" fill="#4a9eed" rx="2"/>
+  <text x="50" y="234" font-size="12" fill="#757575">Bookmarked (thin colored line)</text>
+  <rect x="30" y="252" width="8" height="8" fill="#f59e0b" rx="2"/>
+  <text x="50" y="262" font-size="12" fill="#757575">Has notes (subtle marker)</text>
+  <rect x="30" y="278" width="200" height="18" fill="#b2f2bb" fill-opacity="0.3" rx="4"/>
+  <text x="240" y="292" font-size="12" fill="#757575">Audio playing (gentle background)</text>
+  <text x="30" y="326" font-size="11" font-style="italic" fill="#757575">Indicators must not disrupt reading density. Nearly invisible until sought.</text>
+
+  <!-- ===== TOGGLE SYSTEM ===== -->
+  <text x="30" y="400" font-size="20" font-weight="700" fill="#1e1e1e">The Toggle System</text>
+
+  <!-- Reading Surface Toggles -->
+  <rect x="30" y="420" width="500" height="260" rx="12" fill="#d3f9d8" fill-opacity="0.3" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="50" y="445" font-size="16" font-weight="700" fill="#15803d">Reading Surface Toggles</text>
+
+  <rect x="50" y="460" width="140" height="30" rx="6" fill="#b2f2bb" stroke="#22c55e" stroke-width="1"/>
+  <text x="120" y="480" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Arabic text</text>
+  <text x="210" y="480" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <rect x="50" y="498" width="140" height="30" rx="6" fill="#b2f2bb" stroke="#22c55e" stroke-width="1"/>
+  <text x="120" y="518" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Translation 1</text>
+  <text x="210" y="518" font-size="12" fill="#22c55e">ON (Sahih Intl)</text>
+
+  <rect x="50" y="536" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="120" y="556" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Translation 2</text>
+  <text x="210" y="556" font-size="12" font-weight="700" fill="#ef4444">OFF</text>
+
+  <rect x="50" y="574" width="140" height="30" rx="6" fill="#b2f2bb" stroke="#22c55e" stroke-width="1"/>
+  <text x="120" y="594" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Verse numbers</text>
+  <text x="210" y="594" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <rect x="50" y="612" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="120" y="632" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Word-by-word</text>
+  <text x="210" y="632" font-size="12" font-weight="700" fill="#ef4444">OFF</text>
+
+  <rect x="290" y="460" width="140" height="30" rx="6" fill="#b2f2bb" stroke="#22c55e" stroke-width="1"/>
+  <text x="360" y="480" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Surah headers</text>
+  <text x="450" y="480" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <rect x="290" y="498" width="140" height="30" rx="6" fill="#b2f2bb" stroke="#22c55e" stroke-width="1"/>
+  <text x="360" y="518" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Bismillah</text>
+  <text x="450" y="518" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <!-- Workspace Toggles -->
+  <rect x="560" y="420" width="510" height="260" rx="12" fill="#dbe4ff" fill-opacity="0.3" stroke="#4a9eed" stroke-width="1.5"/>
+  <text x="580" y="445" font-size="16" font-weight="700" fill="#2563eb">Workspace Toggles</text>
+
+  <rect x="580" y="460" width="140" height="30" rx="6" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1"/>
+  <text x="650" y="480" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Activity bar</text>
+  <text x="740" y="480" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <rect x="580" y="498" width="140" height="30" rx="6" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1"/>
+  <text x="650" y="518" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Top bar</text>
+  <text x="740" y="518" font-size="12" font-weight="700" fill="#22c55e">ON</text>
+
+  <rect x="580" y="536" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="650" y="556" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Audio dock</text>
+  <text x="740" y="556" font-size="12" fill="#757575">OFF (auto on play)</text>
+
+  <rect x="580" y="574" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="650" y="594" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Breadcrumb</text>
+  <text x="740" y="594" font-size="12" fill="#757575">OFF (auto on study)</text>
+
+  <rect x="580" y="612" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="650" y="632" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Side panel</text>
+  <text x="740" y="632" font-size="12" font-weight="700" fill="#ef4444">OFF</text>
+
+  <rect x="830" y="460" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="900" y="480" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Bottom panel</text>
+  <text x="985" y="480" font-size="12" font-weight="700" fill="#ef4444">OFF</text>
+
+  <rect x="830" y="498" width="140" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="900" y="518" text-anchor="middle" font-size="12" font-weight="600" fill="#1e1e1e">Minimap</text>
+  <text x="985" y="518" font-size="12" font-weight="700" fill="#ef4444">OFF</text>
+
+  <text x="830" y="570" font-size="14" font-weight="600" fill="#1e1e1e">Access via:</text>
+  <text x="830" y="590" font-size="12" fill="#757575">Cmd+K (command palette)</text>
+  <text x="830" y="608" font-size="12" fill="#757575">Activity bar icons</text>
+  <text x="830" y="626" font-size="12" fill="#757575">Right-click context menu</text>
+  <text x="830" y="644" font-size="12" fill="#757575">Keyboard shortcuts</text>
+
+  <!-- Presets -->
+  <text x="30" y="720" font-size="20" font-weight="700" fill="#1e1e1e">Saveable Workspace Presets</text>
+
+  <rect x="30" y="740" width="320" height="55" rx="10" fill="#d3f9d8" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="190" y="762" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">"Daily Reading"</text>
+  <text x="190" y="782" text-anchor="middle" font-size="12" fill="#15803d">Arabic + 1 translation, Zen mode, compact density</text>
+
+  <rect x="380" y="740" width="320" height="55" rx="10" fill="#dbe4ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="540" y="762" text-anchor="middle" font-size="14" font-weight="700" fill="#2563eb">"Deep Study"</text>
+  <text x="540" y="782" text-anchor="middle" font-size="12" fill="#2563eb">Arabic + 2 translations, tafsir + notes panels open</text>
+
+  <rect x="730" y="740" width="340" height="55" rx="10" fill="#e5dbff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="900" y="762" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">"Translation Comparison"</text>
+  <text x="900" y="782" text-anchor="middle" font-size="12" fill="#6d28d9">No Arabic, 3 translations, columnar layout, dense mode</text>
+
+  <text x="550" y="830" text-anchor="middle" font-size="13" fill="#555">Toggle state is persistent. Your configuration is saved and restored every session.</text>
+</svg>

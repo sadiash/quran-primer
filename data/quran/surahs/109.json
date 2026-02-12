@@ -1,0 +1,53 @@
+{
+  "id": 109,
+  "nameArabic": "الكافرون",
+  "nameSimple": "Al-Kafirun",
+  "nameComplex": "Al-Kāfirūn",
+  "nameTranslation": "The Disbelievers",
+  "revelationType": "makkah",
+  "versesCount": 6,
+  "verses": [
+    {
+      "id": 6208,
+      "verseKey": "109:1",
+      "verseNumber": 1,
+      "textUthmani": " قُلْ يَـٰٓأَيُّهَا ٱلْكَـٰفِرُونَ",
+      "textSimple": "قُلْ يَا أَيُّهَا الْكَافِرُونَ"
+    },
+    {
+      "id": 6209,
+      "verseKey": "109:2",
+      "verseNumber": 2,
+      "textUthmani": "لَآ أَعْبُدُ مَا تَعْبُدُونَ",
+      "textSimple": "لَا أَعْبُدُ مَا تَعْبُدُونَ"
+    },
+    {
+      "id": 6210,
+      "verseKey": "109:3",
+      "verseNumber": 3,
+      "textUthmani": "وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ",
+      "textSimple": "وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ"
+    },
+    {
+      "id": 6211,
+      "verseKey": "109:4",
+      "verseNumber": 4,
+      "textUthmani": "وَلَآ أَنَا۠ عَابِدٌ مَّا عَبَدتُّمْ",
+      "textSimple": "وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ"
+    },
+    {
+      "id": 6212,
+      "verseKey": "109:5",
+      "verseNumber": 5,
+      "textUthmani": "وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ",
+      "textSimple": "وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ"
+    },
+    {
+      "id": 6213,
+      "verseKey": "109:6",
+      "verseNumber": 6,
+      "textUthmani": "لَكُمْ دِينُكُمْ وَلِىَ دِينِ",
+      "textSimple": "لَكُمْ دِينُكُمْ وَلِيَ دِينِ"
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "id": 88,
+  "nameArabic": "الغاشية",
+  "nameSimple": "Al-Ghashiyah",
+  "nameComplex": "Al-Ghāshiyah",
+  "nameTranslation": "The Overwhelming",
+  "revelationType": "makkah",
+  "versesCount": 26,
+  "verses": [
+    {
+      "id": 5968,
+      "verseKey": "88:1",
+      "verseNumber": 1,
+      "textUthmani": " هَلْ أَتَىٰكَ حَدِيثُ ٱلْغَـٰشِيَةِ",
+      "textSimple": "هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ"
+    },
+    {
+      "id": 5969,
+      "verseKey": "88:2",
+      "verseNumber": 2,
+      "textUthmani": "وُجُوهٌ يَوْمَئِذٍ خَـٰشِعَةٌ",
+      "textSimple": "وُجُوهٌ يَوْمَئِذٍ خَاشِعَةٌ"
+    },
+    {
+      "id": 5970,
+      "verseKey": "88:3",
+      "verseNumber": 3,
+      "textUthmani": "عَامِلَةٌ نَّاصِبَةٌ",
+      "textSimple": "عَامِلَةٌ نَّاصِبَةٌ"
+    },
+    {
+      "id": 5971,
+      "verseKey": "88:4",
+      "verseNumber": 4,
+      "textUthmani": "تَصْلَىٰ نَارًا حَامِيَةً",
+      "textSimple": "تَصْلَىٰ نَارًا حَامِيَةً"
+    },
+    {
+      "id": 5972,
+      "verseKey": "88:5",
+      "verseNumber": 5,
+      "textUthmani": "تُسْقَىٰ مِنْ عَيْنٍ ءَانِيَةٍ",
+      "textSimple": "تُسْقَىٰ مِنْ عَيْنٍ آنِيَةٍ"
+    },
+    {
+      "id": 5973,
+      "verseKey": "88:6",
+      "verseNumber": 6,
+      "textUthmani": "لَّيْسَ لَهُمْ طَعَامٌ إِلَّا مِن ضَرِيعٍ",
+      "textSimple": "لَّيْسَ لَهُمْ طَعَامٌ إِلَّا مِن ضَرِيعٍ"
+    },
+    {
+      "id": 5974,
+      "verseKey": "88:7",
+      "verseNumber": 7,
+      "textUthmani": "لَّا يُسْمِنُ وَلَا يُغْنِى مِن جُوعٍ",
+      "textSimple": "لَّا يُسْمِنُ وَلَا يُغْنِي مِن جُوعٍ"
+    },
+    {
+      "id": 5975,
+      "verseKey": "88:8",
+      "verseNumber": 8,
+      "textUthmani": "وُجُوهٌ يَوْمَئِذٍ نَّاعِمَةٌ",
+      "textSimple": "وُجُوهٌ يَوْمَئِذٍ نَّاعِمَةٌ"
+    },
+    {
+      "id": 5976,
+      "verseKey": "88:9",
+      "verseNumber": 9,
+      "textUthmani": "لِّسَعْيِهَا رَاضِيَةٌ",
+      "textSimple": "لِّسَعْيِهَا رَاضِيَةٌ"
+    },
+    {
+      "id": 5977,
+      "verseKey": "88:10",
+      "verseNumber": 10,
+      "textUthmani": "فِى جَنَّةٍ عَالِيَةٍ",
+      "textSimple": "فِي جَنَّةٍ عَالِيَةٍ"
+    },
+    {
+      "id": 5978,
+      "verseKey": "88:11",
+      "verseNumber": 11,
+      "textUthmani": "لَّا تَسْمَعُ فِيهَا لَـٰغِيَةً",
+      "textSimple": "لَّا تَسْمَعُ فِيهَا لَاغِيَةً"
+    },
+    {
+      "id": 5979,
+      "verseKey": "88:12",
+      "verseNumber": 12,
+      "textUthmani": "فِيهَا عَيْنٌ جَارِيَةٌ",
+      "textSimple": "فِيهَا عَيْنٌ جَارِيَةٌ"
+    },
+    {
+      "id": 5980,
+      "verseKey": "88:13",
+      "verseNumber": 13,
+      "textUthmani": "فِيهَا سُرُرٌ مَّرْفُوعَةٌ",
+      "textSimple": "فِيهَا سُرُرٌ مَّرْفُوعَةٌ"
+    },
+    {
+      "id": 5981,
+      "verseKey": "88:14",
+      "verseNumber": 14,
+      "textUthmani": "وَأَكْوَابٌ مَّوْضُوعَةٌ",
+      "textSimple": "وَأَكْوَابٌ مَّوْضُوعَةٌ"
+    },
+    {
+      "id": 5982,
+      "verseKey": "88:15",
+      "verseNumber": 15,
+      "textUthmani": "وَنَمَارِقُ مَصْفُوفَةٌ",
+      "textSimple": "وَنَمَارِقُ مَصْفُوفَةٌ"
+    },
+    {
+      "id": 5983,
+      "verseKey": "88:16",
+      "verseNumber": 16,
+      "textUthmani": "وَزَرَابِىُّ مَبْثُوثَةٌ",
+      "textSimple": "وَزَرَابِيُّ مَبْثُوثَةٌ"
+    },
+    {
+      "id": 5984,
+      "verseKey": "88:17",
+      "verseNumber": 17,
+      "textUthmani": "أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ",
+      "textSimple": "أَفَلَا يَنظُرُونَ إِلَى الْإِبِلِ كَيْفَ خُلِقَتْ"
+    },
+    {
+      "id": 5985,
+      "verseKey": "88:18",
+      "verseNumber": 18,
+      "textUthmani": "وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ",
+      "textSimple": "وَإِلَى السَّمَاءِ كَيْفَ رُفِعَتْ"
+    },
+    {
+      "id": 5986,
+      "verseKey": "88:19",
+      "verseNumber": 19,
+      "textUthmani": "وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ",
+      "textSimple": "وَإِلَى الْجِبَالِ كَيْفَ نُصِبَتْ"
+    },
+    {
+      "id": 5987,
+      "verseKey": "88:20",
+      "verseNumber": 20,
+      "textUthmani": "وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ",
+      "textSimple": "وَإِلَى الْأَرْضِ كَيْفَ سُطِحَتْ"
+    },
+    {
+      "id": 5988,
+      "verseKey": "88:21",
+      "verseNumber": 21,
+      "textUthmani": "فَذَكِّرْ إِنَّمَآ أَنتَ مُذَكِّرٌ",
+      "textSimple": "فَذَكِّرْ إِنَّمَا أَنتَ مُذَكِّرٌ"
+    },
+    {
+      "id": 5989,
+      "verseKey": "88:22",
+      "verseNumber": 22,
+      "textUthmani": "لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ",
+      "textSimple": "لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ"
+    },
+    {
+      "id": 5990,
+      "verseKey": "88:23",
+      "verseNumber": 23,
+      "textUthmani": "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ",
+      "textSimple": "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ"
+    },
+    {
+      "id": 5991,
+      "verseKey": "88:24",
+      "verseNumber": 24,
+      "textUthmani": "فَيُعَذِّبُهُ ٱللَّهُ ٱلْعَذَابَ ٱلْأَكْبَرَ",
+      "textSimple": "فَيُعَذِّبُهُ اللَّهُ الْعَذَابَ الْأَكْبَرَ"
+    },
+    {
+      "id": 5992,
+      "verseKey": "88:25",
+      "verseNumber": 25,
+      "textUthmani": "إِنَّ إِلَيْنَآ إِيَابَهُمْ",
+      "textSimple": "إِنَّ إِلَيْنَا إِيَابَهُمْ"
+    },
+    {
+      "id": 5993,
+      "verseKey": "88:26",
+      "verseNumber": 26,
+      "textUthmani": "ثُمَّ إِنَّ عَلَيْنَا حِسَابَهُم",
+      "textSimple": "ثُمَّ إِنَّ عَلَيْنَا حِسَابَهُم"
+    }
+  ]
+}

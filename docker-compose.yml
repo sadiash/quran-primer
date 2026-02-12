@@ -1,0 +1,15 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: quran-pg
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: quran_study
+      POSTGRES_USER: quran
+      POSTGRES_PASSWORD: quran_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

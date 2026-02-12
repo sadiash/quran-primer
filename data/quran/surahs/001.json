@@ -1,0 +1,60 @@
+{
+  "id": 1,
+  "nameArabic": "الفاتحة",
+  "nameSimple": "Al-Fatihah",
+  "nameComplex": "Al-Fātiĥah",
+  "nameTranslation": "The Opener",
+  "revelationType": "makkah",
+  "versesCount": 7,
+  "verses": [
+    {
+      "id": 1,
+      "verseKey": "1:1",
+      "verseNumber": 1,
+      "textUthmani": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+      "textSimple": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+    },
+    {
+      "id": 2,
+      "verseKey": "1:2",
+      "verseNumber": 2,
+      "textUthmani": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+      "textSimple": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ"
+    },
+    {
+      "id": 3,
+      "verseKey": "1:3",
+      "verseNumber": 3,
+      "textUthmani": "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+      "textSimple": "الرَّحْمَٰنِ الرَّحِيمِ"
+    },
+    {
+      "id": 4,
+      "verseKey": "1:4",
+      "verseNumber": 4,
+      "textUthmani": "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
+      "textSimple": "مَالِكِ يَوْمِ الدِّينِ"
+    },
+    {
+      "id": 5,
+      "verseKey": "1:5",
+      "verseNumber": 5,
+      "textUthmani": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+      "textSimple": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ"
+    },
+    {
+      "id": 6,
+      "verseKey": "1:6",
+      "verseNumber": 6,
+      "textUthmani": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+      "textSimple": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ"
+    },
+    {
+      "id": 7,
+      "verseKey": "1:7",
+      "verseNumber": 7,
+      "textUthmani": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+      "textSimple": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ"
+    }
+  ]
+}

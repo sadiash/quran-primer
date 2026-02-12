@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 860" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="860" fill="#fafafa" rx="12"/>
+
+  <!-- Title -->
+  <text x="550" y="40" text-anchor="middle" font-size="28" font-weight="700" fill="#1e1e1e">The Primer — Four Core Flows</text>
+  <text x="550" y="65" text-anchor="middle" font-size="15" fill="#757575">The entire experience distills into four interconnected flows</text>
+
+  <!-- Flow 1: Immersive Reading -->
+  <rect x="20" y="90" width="520" height="290" rx="16" fill="#dbe4ff" fill-opacity="0.35" stroke="#4a9eed" stroke-width="1.5"/>
+  <text x="40" y="120" font-size="20" font-weight="700" fill="#2563eb">1. Immersive Reading</text>
+  <rect x="40" y="138" width="220" height="55" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="150" y="162" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Distraction-free</text>
+  <text x="150" y="179" text-anchor="middle" font-size="13" fill="#1e1e1e">Reading Surface</text>
+  <rect x="290" y="138" width="220" height="55" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="162" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Arabic + Translations</text>
+  <text x="400" y="179" text-anchor="middle" font-size="13" fill="#1e1e1e">(All Toggleable)</text>
+  <!-- Arrow between -->
+  <line x1="260" y1="165" x2="288" y2="165" stroke="#4a9eed" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="40" y="205" width="220" height="55" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="150" y="229" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">State Preservation</text>
+  <text x="150" y="246" text-anchor="middle" font-size="13" fill="#1e1e1e">(Exact Scroll Position)</text>
+  <rect x="290" y="205" width="220" height="55" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="229" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Density Presets</text>
+  <text x="400" y="246" text-anchor="middle" font-size="13" fill="#1e1e1e">Comfortable / Compact / Dense</text>
+  <rect x="165" y="275" width="220" height="50" rx="10" fill="#dbe4ff" stroke="#4a9eed" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="275" y="300" text-anchor="middle" font-size="14" font-weight="600" fill="#2563eb">Zen Mode (Edge-to-Edge)</text>
+  <text x="275" y="315" text-anchor="middle" font-size="12" fill="#2563eb">Pure text, no chrome</text>
+  <text x="275" y="362" text-anchor="middle" font-size="13" font-style="italic" fill="#757575">"Like a quiet library — peaceful, beautiful"</text>
+
+  <!-- Flow 2: Deep Study -->
+  <rect x="560" y="90" width="520" height="290" rx="16" fill="#e5dbff" fill-opacity="0.35" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="580" y="120" font-size="20" font-weight="700" fill="#6d28d9">2. Deep Study (Layered)</text>
+  <rect x="580" y="138" width="220" height="55" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="690" y="162" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Panel System</text>
+  <text x="690" y="179" text-anchor="middle" font-size="13" fill="#1e1e1e">(Side / Bottom)</text>
+  <rect x="830" y="138" width="220" height="55" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="940" y="162" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Breadcrumb Trail</text>
+  <text x="940" y="179" text-anchor="middle" font-size="13" fill="#1e1e1e">(Never Get Lost)</text>
+  <rect x="580" y="205" width="220" height="55" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="690" y="229" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Tafsir / Hadith</text>
+  <text x="690" y="246" text-anchor="middle" font-size="13" fill="#1e1e1e">Cross-Scripture</text>
+  <rect x="830" y="205" width="220" height="55" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="940" y="229" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Context Preview</text>
+  <text x="940" y="246" text-anchor="middle" font-size="13" fill="#1e1e1e">(Metadata First, Fast)</text>
+  <rect x="705" y="275" width="220" height="50" rx="10" fill="#e5dbff" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="815" y="300" text-anchor="middle" font-size="14" font-weight="600" fill="#6d28d9">Infinite Depth</text>
+  <text x="815" y="315" text-anchor="middle" font-size="12" fill="#6d28d9">One Tap Back to Surface</text>
+  <text x="815" y="362" text-anchor="middle" font-size="13" font-style="italic" fill="#757575">"One screen, infinite depth — never leave the page"</text>
+
+  <!-- Flow 3: Personal Knowledge -->
+  <rect x="20" y="400" width="520" height="290" rx="16" fill="#d3f9d8" fill-opacity="0.35" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="40" y="430" font-size="20" font-weight="700" fill="#15803d">3. Personal Knowledge</text>
+  <rect x="40" y="448" width="220" height="55" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="150" y="472" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Rich Bookmarks</text>
+  <text x="150" y="489" text-anchor="middle" font-size="13" fill="#1e1e1e">(Verse to Theme)</text>
+  <rect x="290" y="448" width="220" height="55" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="472" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Rich Notes</text>
+  <text x="400" y="489" text-anchor="middle" font-size="13" fill="#1e1e1e">(Text + Voice + Clips)</text>
+  <rect x="40" y="515" width="220" height="55" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="150" y="539" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Auto-Linked to</text>
+  <text x="150" y="556" text-anchor="middle" font-size="13" fill="#1e1e1e">Source Text</text>
+  <rect x="290" y="515" width="220" height="55" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="539" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Theme Cross-Ref</text>
+  <text x="400" y="556" text-anchor="middle" font-size="13" fill="#1e1e1e">(Ambient Awareness)</text>
+  <rect x="165" y="585" width="220" height="50" rx="10" fill="#d3f9d8" stroke="#22c55e" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="275" y="610" text-anchor="middle" font-size="14" font-weight="600" fill="#15803d">Knowledge Grows</text>
+  <text x="275" y="625" text-anchor="middle" font-size="12" fill="#15803d">Over Months and Years</text>
+  <text x="275" y="672" text-anchor="middle" font-size="13" font-style="italic" fill="#757575">"A journal that remembers everything and never judges"</text>
+
+  <!-- Flow 4: Visual Knowledge Mapping -->
+  <rect x="560" y="400" width="520" height="290" rx="16" fill="#fff3bf" fill-opacity="0.35" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="580" y="430" font-size="20" font-weight="700" fill="#b45309">4. Visual Knowledge Mapping</text>
+  <rect x="580" y="448" width="220" height="55" rx="10" fill="#ffd8a8" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="690" y="472" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Interactive</text>
+  <text x="690" y="489" text-anchor="middle" font-size="13" fill="#1e1e1e">Mind Maps</text>
+  <rect x="830" y="448" width="220" height="55" rx="10" fill="#ffd8a8" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="940" y="472" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Generated from</text>
+  <text x="940" y="489" text-anchor="middle" font-size="13" fill="#1e1e1e">Notes + Bookmarks</text>
+  <rect x="580" y="515" width="220" height="55" rx="10" fill="#ffd8a8" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="690" y="539" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Zoomable</text>
+  <text x="690" y="556" text-anchor="middle" font-size="13" fill="#1e1e1e">Navigable Graph</text>
+  <rect x="830" y="515" width="220" height="55" rx="10" fill="#ffd8a8" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="940" y="539" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Discover Hidden</text>
+  <text x="940" y="556" text-anchor="middle" font-size="13" fill="#1e1e1e">Connections</text>
+  <rect x="705" y="585" width="220" height="50" rx="10" fill="#fff3bf" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="815" y="610" text-anchor="middle" font-size="14" font-weight="600" fill="#b45309">Every Node Is a Portal</text>
+  <text x="815" y="625" text-anchor="middle" font-size="12" fill="#b45309">Tap to dive in</text>
+  <text x="815" y="672" text-anchor="middle" font-size="13" font-style="italic" fill="#757575">"Making the invisible structure of learning visible"</text>
+
+  <!-- Connection arrows between quadrants -->
+  <defs>
+    <marker id="arrowDark" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#555"/></marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4a9eed"/></marker>
+  </defs>
+  <line x1="540" y1="235" x2="558" y2="235" stroke="#555" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowDark)"/>
+  <text x="549" y="225" text-anchor="middle" font-size="11" fill="#555">tap verse</text>
+
+  <line x1="558" y1="400" x2="280" y2="398" stroke="#555" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowDark)"/>
+  <text x="420" y="393" text-anchor="middle" font-size="11" fill="#555">capture</text>
+
+  <line x1="540" y1="545" x2="558" y2="545" stroke="#555" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowDark)"/>
+  <text x="549" y="535" text-anchor="middle" font-size="11" fill="#555">visualize</text>
+
+  <line x1="558" y1="398" x2="280" y2="380" stroke="#555" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowDark)"/>
+  <text x="420" y="382" text-anchor="middle" font-size="11" fill="#555">navigate</text>
+
+  <!-- Bottom summary -->
+  <rect x="20" y="710" width="1060" height="130" rx="12" fill="white" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="550" y="740" text-anchor="middle" font-size="18" font-weight="700" fill="#1e1e1e">Core Mental Model: VS Code for the Quran</text>
+  <text x="550" y="765" text-anchor="middle" font-size="14" fill="#555">A power tool that defaults to simplicity. New user sees clean text.</text>
+  <text x="550" y="785" text-anchor="middle" font-size="14" fill="#555">Power user sees a dense, information-rich workspace with six panels open.</text>
+  <text x="550" y="810" text-anchor="middle" font-size="14" font-weight="600" fill="#555">Both are using the same app — the difference is which toggles are on.</text>
+  <text x="550" y="835" text-anchor="middle" font-size="12" fill="#999">The Primer — Quran Study Companion</text>
+</svg>

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 900" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="900" fill="#fafafa" rx="12"/>
+
+  <text x="550" y="40" text-anchor="middle" font-size="28" font-weight="700" fill="#1e1e1e">9 User Journeys</text>
+  <text x="550" y="65" text-anchor="middle" font-size="15" fill="#757575">How real users interact with The Primer</text>
+
+  <!-- Center hub -->
+  <ellipse cx="550" cy="410" rx="110" ry="70" fill="#fff3bf" stroke="#f59e0b" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="550" y="400" text-anchor="middle" font-size="18" font-weight="700" fill="#b45309">The Primer</text>
+  <text x="550" y="420" text-anchor="middle" font-size="14" fill="#b45309">Workspace</text>
+
+  <!-- J1: Daily Reading -->
+  <rect x="20" y="90" width="280" height="105" rx="12" fill="#d3f9d8" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="40" y="115" font-size="16" font-weight="700" fill="#15803d">J1: Daily Reading</text>
+  <text x="40" y="137" font-size="12" fill="#1e1e1e">15 min after Fajr prayer.</text>
+  <text x="40" y="154" font-size="12" fill="#1e1e1e">App opens exactly where you left off.</text>
+  <text x="40" y="171" font-size="12" fill="#1e1e1e">Zero friction. One-tap bookmark.</text>
+  <line x1="300" y1="150" x2="445" y2="370" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J2: Deep Study -->
+  <rect x="320" y="90" width="280" height="105" rx="12" fill="#dbe4ff" stroke="#4a9eed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="340" y="115" font-size="16" font-weight="700" fill="#2563eb">J2: Deep Study Session</text>
+  <text x="340" y="137" font-size="12" fill="#1e1e1e">Saturday afternoon. Verse 2:65.</text>
+  <text x="340" y="154" font-size="12" fill="#1e1e1e">Tafsir > Hadith > Cross-ref.</text>
+  <text x="340" y="171" font-size="12" fill="#1e1e1e">Breadcrumb never breaks.</text>
+  <line x1="460" y1="195" x2="510" y2="350" stroke="#4a9eed" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J3: Finding Past Study -->
+  <rect x="620" y="90" width="280" height="105" rx="12" fill="#d0bfff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="640" y="115" font-size="16" font-weight="700" fill="#6d28d9">J3: Finding Past Study</text>
+  <text x="640" y="137" font-size="12" fill="#1e1e1e">Cmd+K > "patience"</text>
+  <text x="640" y="154" font-size="12" fill="#1e1e1e">Instant results: notes, verses,</text>
+  <text x="640" y="171" font-size="12" fill="#1e1e1e">bookmarks, themes — all grouped.</text>
+  <line x1="620" y1="170" x2="550" y2="350" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J4: Voice Note -->
+  <rect x="800" y="230" width="280" height="105" rx="12" fill="#ffc9c9" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="820" y="255" font-size="16" font-weight="700" fill="#ef4444">J4: Voice Note (Mobile)</text>
+  <text x="820" y="277" font-size="12" fill="#1e1e1e">Late night, phone in bed.</text>
+  <text x="820" y="294" font-size="12" fill="#1e1e1e">Long-press > microphone > 30 sec.</text>
+  <text x="820" y="311" font-size="12" fill="#1e1e1e">Auto-transcribed. Audio saved first.</text>
+  <line x1="800" y1="310" x2="660" y2="400" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J5: Mind Map -->
+  <rect x="800" y="380" width="280" height="105" rx="12" fill="#ffd8a8" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="820" y="405" font-size="16" font-weight="700" fill="#b45309">J5: Mind Map</text>
+  <text x="820" y="427" font-size="12" fill="#1e1e1e">2 months of study. 40+ notes.</text>
+  <text x="820" y="444" font-size="12" fill="#1e1e1e">Generate visual map of "Prophets"</text>
+  <text x="820" y="461" font-size="12" fill="#1e1e1e">connections. Every node = portal.</text>
+  <line x1="800" y1="430" x2="660" y2="420" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J6: Multi-Translation -->
+  <rect x="800" y="530" width="280" height="105" rx="12" fill="#c3fae8" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="820" y="555" font-size="16" font-weight="700" fill="#15803d">J6: Multi-Translation</text>
+  <text x="820" y="577" font-size="12" fill="#1e1e1e">No Arabic. 3 translations.</text>
+  <text x="820" y="594" font-size="12" fill="#1e1e1e">Columnar comparison layout.</text>
+  <text x="820" y="611" font-size="12" font-weight="600" fill="#1e1e1e">Arabic is a toggle, not a fixture.</text>
+  <line x1="800" y1="580" x2="660" y2="440" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J7: LLM Conversation -->
+  <rect x="320" y="610" width="280" height="105" rx="12" fill="#eebefa" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="340" y="635" font-size="16" font-weight="700" fill="#6d28d9">J7: LLM Conversation</text>
+  <text x="340" y="657" font-size="12" fill="#1e1e1e">AI panel docked to bottom.</text>
+  <text x="340" y="674" font-size="12" fill="#1e1e1e">"What does 'daraba' mean?"</text>
+  <text x="340" y="691" font-size="12" fill="#1e1e1e">Validated citations. Save to notes.</text>
+  <line x1="510" y1="610" x2="540" y2="475" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J8: Returning -->
+  <rect x="20" y="530" width="280" height="105" rx="12" fill="#a5d8ff" stroke="#4a9eed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="40" y="555" font-size="16" font-weight="700" fill="#2563eb">J8: Returning After Gap</text>
+  <text x="40" y="577" font-size="12" fill="#1e1e1e">4-month gap. Al-Kahf v60.</text>
+  <text x="40" y="594" font-size="12" fill="#1e1e1e">Exactly as they left it.</text>
+  <text x="40" y="611" font-size="12" font-weight="600" fill="#1e1e1e">No guilt. No streaks. Just text.</text>
+  <line x1="300" y1="570" x2="445" y2="430" stroke="#4a9eed" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- J9: First-Time -->
+  <rect x="20" y="310" width="280" height="105" rx="12" fill="#fff3bf" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="40" y="335" font-size="16" font-weight="700" fill="#b45309">J9: First-Time Experience</text>
+  <text x="40" y="357" font-size="12" fill="#1e1e1e">3-step onboarding maximum:</text>
+  <text x="40" y="374" font-size="12" fill="#1e1e1e">Arabic? > Translations? > Start where?</text>
+  <text x="40" y="391" font-size="12" fill="#1e1e1e">Then: clean reading surface. No tour.</text>
+  <line x1="300" y1="370" x2="445" y2="400" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- Emotional Design section -->
+  <rect x="20" y="750" width="1060" height="130" rx="12" fill="white" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="550" y="780" text-anchor="middle" font-size="18" font-weight="700" fill="#1e1e1e">Emotional Design</text>
+
+  <rect x="40" y="795" width="490" height="30" rx="6" fill="#d3f9d8" stroke="#22c55e" stroke-width="1"/>
+  <text x="285" y="815" text-anchor="middle" font-size="12" fill="#15803d">Should feel like: A quiet library with a patient scholar beside you</text>
+
+  <rect x="40" y="835" width="490" height="30" rx="6" fill="#ffc9c9" stroke="#ef4444" stroke-width="1"/>
+  <text x="285" y="855" text-anchor="middle" font-size="12" fill="#ef4444">Should NOT feel like: Social media, gamified app, or news feed</text>
+
+  <text x="760" y="815" text-anchor="middle" font-size="13" fill="#555">No streaks. No guilt.</text>
+  <text x="760" y="840" text-anchor="middle" font-size="13" fill="#555">No "come back" notifications.</text>
+  <text x="760" y="865" text-anchor="middle" font-size="13" font-weight="700" fill="#555">Ever.</text>
+</svg>

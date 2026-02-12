@@ -1,0 +1,88 @@
+{
+  "id": 93,
+  "nameArabic": "الضحى",
+  "nameSimple": "Ad-Duhaa",
+  "nameComplex": "Ađ-Đuĥaá",
+  "nameTranslation": "The Morning Hours",
+  "revelationType": "makkah",
+  "versesCount": 11,
+  "verses": [
+    {
+      "id": 6080,
+      "verseKey": "93:1",
+      "verseNumber": 1,
+      "textUthmani": " وَٱلضُّحَىٰ",
+      "textSimple": "وَالضُّحَىٰ"
+    },
+    {
+      "id": 6081,
+      "verseKey": "93:2",
+      "verseNumber": 2,
+      "textUthmani": "وَٱلَّيْلِ إِذَا سَجَىٰ",
+      "textSimple": "وَاللَّيْلِ إِذَا سَجَىٰ"
+    },
+    {
+      "id": 6082,
+      "verseKey": "93:3",
+      "verseNumber": 3,
+      "textUthmani": "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+      "textSimple": "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ"
+    },
+    {
+      "id": 6083,
+      "verseKey": "93:4",
+      "verseNumber": 4,
+      "textUthmani": "وَلَلْـَٔاخِرَةُ خَيْرٌ لَّكَ مِنَ ٱلْأُولَىٰ",
+      "textSimple": "وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ"
+    },
+    {
+      "id": 6084,
+      "verseKey": "93:5",
+      "verseNumber": 5,
+      "textUthmani": "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ",
+      "textSimple": "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ"
+    },
+    {
+      "id": 6085,
+      "verseKey": "93:6",
+      "verseNumber": 6,
+      "textUthmani": "أَلَمْ يَجِدْكَ يَتِيمًا فَـَٔاوَىٰ",
+      "textSimple": "أَلَمْ يَجِدْكَ يَتِيمًا فَآوَىٰ"
+    },
+    {
+      "id": 6086,
+      "verseKey": "93:7",
+      "verseNumber": 7,
+      "textUthmani": "وَوَجَدَكَ ضَآلًّا فَهَدَىٰ",
+      "textSimple": "وَوَجَدَكَ ضَالًّا فَهَدَىٰ"
+    },
+    {
+      "id": 6087,
+      "verseKey": "93:8",
+      "verseNumber": 8,
+      "textUthmani": "وَوَجَدَكَ عَآئِلًا فَأَغْنَىٰ",
+      "textSimple": "وَوَجَدَكَ عَائِلًا فَأَغْنَىٰ"
+    },
+    {
+      "id": 6088,
+      "verseKey": "93:9",
+      "verseNumber": 9,
+      "textUthmani": "فَأَمَّا ٱلْيَتِيمَ فَلَا تَقْهَرْ",
+      "textSimple": "فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ"
+    },
+    {
+      "id": 6089,
+      "verseKey": "93:10",
+      "verseNumber": 10,
+      "textUthmani": "وَأَمَّا ٱلسَّآئِلَ فَلَا تَنْهَرْ",
+      "textSimple": "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ"
+    },
+    {
+      "id": 6090,
+      "verseKey": "93:11",
+      "verseNumber": 11,
+      "textUthmani": "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ",
+      "textSimple": "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ"
+    }
+  ]
+}

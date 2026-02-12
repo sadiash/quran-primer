@@ -1,0 +1,32 @@
+{
+  "id": 110,
+  "nameArabic": "النصر",
+  "nameSimple": "An-Nasr",
+  "nameComplex": "An-Naşr",
+  "nameTranslation": "The Divine Support",
+  "revelationType": "madinah",
+  "versesCount": 3,
+  "verses": [
+    {
+      "id": 6214,
+      "verseKey": "110:1",
+      "verseNumber": 1,
+      "textUthmani": " إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ",
+      "textSimple": "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ"
+    },
+    {
+      "id": 6215,
+      "verseKey": "110:2",
+      "verseNumber": 2,
+      "textUthmani": "وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًا",
+      "textSimple": "وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا"
+    },
+    {
+      "id": 6216,
+      "verseKey": "110:3",
+      "verseNumber": 3,
+      "textUthmani": "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۢا",
+      "textSimple": "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا"
+    }
+  ]
+}

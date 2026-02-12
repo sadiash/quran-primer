@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#555"/></marker>
+    <marker id="arrDash" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#999"/></marker>
+  </defs>
+
+  <rect width="1100" height="850" fill="#fafafa" rx="12"/>
+
+  <text x="550" y="40" text-anchor="middle" font-size="28" font-weight="700" fill="#1e1e1e">Knowledge Graph — Data Model</text>
+  <text x="550" y="65" text-anchor="middle" font-size="15" fill="#757575">Every piece of content is a node. Connections between nodes are the real value.</text>
+
+  <!-- VERSE (center) -->
+  <ellipse cx="500" cy="260" rx="110" ry="70" fill="#ffd8a8" stroke="#f59e0b" stroke-width="3" filter="url(#shadow)"/>
+  <text x="500" y="252" text-anchor="middle" font-size="22" font-weight="700" fill="#b45309">VERSE</text>
+  <text x="500" y="275" text-anchor="middle" font-size="14" fill="#b45309">(The Atom)</text>
+
+  <!-- Translations -->
+  <rect x="30" y="100" width="180" height="60" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="120" y="135" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Translations</text>
+  <line x1="210" y1="140" x2="393" y2="240" stroke="#4a9eed" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="290" y="180" text-anchor="middle" font-size="11" fill="#4a9eed" transform="rotate(27, 290, 180)">has many</text>
+
+  <!-- Tafsir -->
+  <rect x="30" y="230" width="180" height="60" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="120" y="265" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Tafsir</text>
+  <line x1="210" y1="260" x2="390" y2="260" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="300" y="252" text-anchor="middle" font-size="11" fill="#8b5cf6">multiple scholars</text>
+
+  <!-- Hadith -->
+  <rect x="30" y="360" width="180" height="60" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="120" y="395" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Hadith</text>
+  <line x1="210" y1="380" x2="393" y2="290" stroke="#22c55e" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="290" y="345" text-anchor="middle" font-size="11" fill="#22c55e" transform="rotate(-25, 290, 345)">relates to</text>
+
+  <!-- Cross-Scripture -->
+  <rect x="770" y="100" width="200" height="60" rx="10" fill="#ffc9c9" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="870" y="135" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Cross-Scripture</text>
+  <line x1="607" y1="220" x2="770" y2="140" stroke="#ef4444" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="700" y="170" text-anchor="middle" font-size="11" fill="#ef4444">Torah, Bible, historical</text>
+
+  <!-- Themes -->
+  <rect x="770" y="230" width="200" height="60" rx="10" fill="#eebefa" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="870" y="265" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Themes</text>
+  <line x1="610" y1="260" x2="770" y2="260" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="690" y="252" text-anchor="middle" font-size="11" fill="#8b5cf6">belongs to</text>
+
+  <!-- Historical Context -->
+  <rect x="770" y="360" width="200" height="60" rx="10" fill="#c3fae8" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="870" y="390" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Historical Context</text>
+  <text x="870" y="408" text-anchor="middle" font-size="11" fill="#15803d">Asbab al-Nuzul</text>
+  <line x1="607" y1="290" x2="770" y2="375" stroke="#22c55e" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Media -->
+  <rect x="415" y="100" width="170" height="55" rx="10" fill="#fff3bf" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="500" y="133" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Media</text>
+  <line x1="500" y1="155" x2="500" y2="190" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="518" y="175" font-size="11" fill="#f59e0b">linked</text>
+
+  <!-- ===== USER LAYER ===== -->
+  <text x="550" y="480" text-anchor="middle" font-size="22" font-weight="700" fill="#1e1e1e">USER LAYER</text>
+
+  <rect x="50" y="500" width="1000" height="220" rx="16" fill="#dbe4ff" fill-opacity="0.25" stroke="#4a9eed" stroke-width="1.5"/>
+
+  <!-- Dashed arrow from verse to user layer -->
+  <line x1="500" y1="330" x2="500" y2="498" stroke="#4a9eed" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrDash)"/>
+
+  <!-- Bookmarks -->
+  <rect x="80" y="525" width="180" height="60" rx="10" fill="#a5d8ff" stroke="#4a9eed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="170" y="558" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Bookmarks</text>
+  <text x="170" y="610" text-anchor="middle" font-size="11" fill="#757575">verse / range / surah</text>
+  <text x="170" y="625" text-anchor="middle" font-size="11" fill="#757575">/ thematic thread</text>
+
+  <!-- Notes -->
+  <rect x="300" y="525" width="180" height="60" rx="10" fill="#b2f2bb" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="390" y="558" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Notes</text>
+  <text x="390" y="610" text-anchor="middle" font-size="11" fill="#757575">typed / voice / clips</text>
+  <text x="390" y="625" text-anchor="middle" font-size="11" fill="#757575">linked to verses + each other</text>
+
+  <!-- Reading Journey -->
+  <rect x="520" y="525" width="180" height="60" rx="10" fill="#d0bfff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="610" y="552" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Reading</text>
+  <text x="610" y="570" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Journey</text>
+  <text x="610" y="610" text-anchor="middle" font-size="11" fill="#757575">position / history</text>
+  <text x="610" y="625" text-anchor="middle" font-size="11" fill="#757575">patterns / streaks-free</text>
+
+  <!-- Mind Maps -->
+  <rect x="740" y="525" width="180" height="60" rx="10" fill="#ffd8a8" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="830" y="558" text-anchor="middle" font-size="16" font-weight="600" fill="#1e1e1e">Mind Maps</text>
+  <text x="830" y="610" text-anchor="middle" font-size="11" fill="#757575">visual knowledge graphs</text>
+  <text x="830" y="625" text-anchor="middle" font-size="11" fill="#757575">from notes + bookmarks</text>
+
+  <!-- LLM Conversations -->
+  <rect x="410" y="650" width="200" height="55" rx="10" fill="#fff3bf" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="510" y="680" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">LLM Conversations</text>
+  <text x="510" y="695" text-anchor="middle" font-size="11" fill="#757575">contextual Q&amp;A tied to verses</text>
+
+  <!-- Connection arrows between user items -->
+  <line x1="260" y1="555" x2="298" y2="555" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrDash)"/>
+  <line x1="480" y1="548" x2="518" y2="548" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="480" y1="570" x2="740" y2="555" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrDash)"/>
+  <text x="610" y="542" text-anchor="middle" font-size="10" fill="#999">feeds into</text>
+
+  <!-- USER -->
+  <ellipse cx="170" cy="685" rx="90" ry="50" fill="#ffc9c9" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="170" y="690" text-anchor="middle" font-size="18" font-weight="700" fill="#ef4444">USER</text>
+
+  <!-- Preferences -->
+  <rect x="70" y="760" width="200" height="50" rx="10" fill="#ffc9c9" stroke="#ef4444" stroke-width="1" filter="url(#shadow)"/>
+  <text x="170" y="790" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1e1e">Preferences</text>
+  <text x="170" y="825" text-anchor="middle" font-size="11" fill="#757575">scholar trust graph / display / reciters</text>
+
+  <line x1="240" y1="710" x2="340" y2="660" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrDash)"/>
+  <line x1="170" y1="735" x2="170" y2="758" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrDash)"/>
+</svg>

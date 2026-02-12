@@ -1,0 +1,144 @@
+{
+  "id": 96,
+  "nameArabic": "العلق",
+  "nameSimple": "Al-'Alaq",
+  "nameComplex": "Al-`Alaq",
+  "nameTranslation": "The Clot",
+  "revelationType": "makkah",
+  "versesCount": 19,
+  "verses": [
+    {
+      "id": 6107,
+      "verseKey": "96:1",
+      "verseNumber": 1,
+      "textUthmani": " ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ",
+      "textSimple": "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ"
+    },
+    {
+      "id": 6108,
+      "verseKey": "96:2",
+      "verseNumber": 2,
+      "textUthmani": "خَلَقَ ٱلْإِنسَـٰنَ مِنْ عَلَقٍ",
+      "textSimple": "خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ"
+    },
+    {
+      "id": 6109,
+      "verseKey": "96:3",
+      "verseNumber": 3,
+      "textUthmani": "ٱقْرَأْ وَرَبُّكَ ٱلْأَكْرَمُ",
+      "textSimple": "اقْرَأْ وَرَبُّكَ الْأَكْرَمُ"
+    },
+    {
+      "id": 6110,
+      "verseKey": "96:4",
+      "verseNumber": 4,
+      "textUthmani": "ٱلَّذِى عَلَّمَ بِٱلْقَلَمِ",
+      "textSimple": "الَّذِي عَلَّمَ بِالْقَلَمِ"
+    },
+    {
+      "id": 6111,
+      "verseKey": "96:5",
+      "verseNumber": 5,
+      "textUthmani": "عَلَّمَ ٱلْإِنسَـٰنَ مَا لَمْ يَعْلَمْ",
+      "textSimple": "عَلَّمَ الْإِنسَانَ مَا لَمْ يَعْلَمْ"
+    },
+    {
+      "id": 6112,
+      "verseKey": "96:6",
+      "verseNumber": 6,
+      "textUthmani": "كَلَّآ إِنَّ ٱلْإِنسَـٰنَ لَيَطْغَىٰٓ",
+      "textSimple": "كَلَّا إِنَّ الْإِنسَانَ لَيَطْغَىٰ"
+    },
+    {
+      "id": 6113,
+      "verseKey": "96:7",
+      "verseNumber": 7,
+      "textUthmani": "أَن رَّءَاهُ ٱسْتَغْنَىٰٓ",
+      "textSimple": "أَن رَّآهُ اسْتَغْنَىٰ"
+    },
+    {
+      "id": 6114,
+      "verseKey": "96:8",
+      "verseNumber": 8,
+      "textUthmani": "إِنَّ إِلَىٰ رَبِّكَ ٱلرُّجْعَىٰٓ",
+      "textSimple": "إِنَّ إِلَىٰ رَبِّكَ الرُّجْعَىٰ"
+    },
+    {
+      "id": 6115,
+      "verseKey": "96:9",
+      "verseNumber": 9,
+      "textUthmani": "أَرَءَيْتَ ٱلَّذِى يَنْهَىٰ",
+      "textSimple": "أَرَأَيْتَ الَّذِي يَنْهَىٰ"
+    },
+    {
+      "id": 6116,
+      "verseKey": "96:10",
+      "verseNumber": 10,
+      "textUthmani": "عَبْدًا إِذَا صَلَّىٰٓ",
+      "textSimple": "عَبْدًا إِذَا صَلَّىٰ"
+    },
+    {
+      "id": 6117,
+      "verseKey": "96:11",
+      "verseNumber": 11,
+      "textUthmani": "أَرَءَيْتَ إِن كَانَ عَلَى ٱلْهُدَىٰٓ",
+      "textSimple": "أَرَأَيْتَ إِن كَانَ عَلَى الْهُدَىٰ"
+    },
+    {
+      "id": 6118,
+      "verseKey": "96:12",
+      "verseNumber": 12,
+      "textUthmani": "أَوْ أَمَرَ بِٱلتَّقْوَىٰٓ",
+      "textSimple": "أَوْ أَمَرَ بِالتَّقْوَىٰ"
+    },
+    {
+      "id": 6119,
+      "verseKey": "96:13",
+      "verseNumber": 13,
+      "textUthmani": "أَرَءَيْتَ إِن كَذَّبَ وَتَوَلَّىٰٓ",
+      "textSimple": "أَرَأَيْتَ إِن كَذَّبَ وَتَوَلَّىٰ"
+    },
+    {
+      "id": 6120,
+      "verseKey": "96:14",
+      "verseNumber": 14,
+      "textUthmani": "أَلَمْ يَعْلَم بِأَنَّ ٱللَّهَ يَرَىٰ",
+      "textSimple": "أَلَمْ يَعْلَم بِأَنَّ اللَّهَ يَرَىٰ"
+    },
+    {
+      "id": 6121,
+      "verseKey": "96:15",
+      "verseNumber": 15,
+      "textUthmani": "كَلَّا لَئِن لَّمْ يَنتَهِ لَنَسْفَعًۢا بِٱلنَّاصِيَةِ",
+      "textSimple": "كَلَّا لَئِن لَّمْ يَنتَهِ لَنَسْفَعًا بِالنَّاصِيَةِ"
+    },
+    {
+      "id": 6122,
+      "verseKey": "96:16",
+      "verseNumber": 16,
+      "textUthmani": "نَاصِيَةٍ كَـٰذِبَةٍ خَاطِئَةٍ",
+      "textSimple": "نَاصِيَةٍ كَاذِبَةٍ خَاطِئَةٍ"
+    },
+    {
+      "id": 6123,
+      "verseKey": "96:17",
+      "verseNumber": 17,
+      "textUthmani": "فَلْيَدْعُ نَادِيَهُۥ",
+      "textSimple": "فَلْيَدْعُ نَادِيَهُ"
+    },
+    {
+      "id": 6124,
+      "verseKey": "96:18",
+      "verseNumber": 18,
+      "textUthmani": "سَنَدْعُ ٱلزَّبَانِيَةَ",
+      "textSimple": "سَنَدْعُ الزَّبَانِيَةَ"
+    },
+    {
+      "id": 6125,
+      "verseKey": "96:19",
+      "verseNumber": 19,
+      "textUthmani": "كَلَّا لَا تُطِعْهُ وَٱسْجُدْ وَٱقْتَرِب ۩",
+      "textSimple": "كَلَّا لَا تُطِعْهُ وَاسْجُدْ وَاقْتَرِب"
+    }
+  ]
+}

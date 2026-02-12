@@ -1,0 +1,88 @@
+{
+  "id": 101,
+  "nameArabic": "القارعة",
+  "nameSimple": "Al-Qari'ah",
+  "nameComplex": "Al-Qāri`ah",
+  "nameTranslation": "The Calamity",
+  "revelationType": "makkah",
+  "versesCount": 11,
+  "verses": [
+    {
+      "id": 6158,
+      "verseKey": "101:1",
+      "verseNumber": 1,
+      "textUthmani": " ٱلْقَارِعَةُ",
+      "textSimple": "الْقَارِعَةُ"
+    },
+    {
+      "id": 6159,
+      "verseKey": "101:2",
+      "verseNumber": 2,
+      "textUthmani": "مَا ٱلْقَارِعَةُ",
+      "textSimple": "مَا الْقَارِعَةُ"
+    },
+    {
+      "id": 6160,
+      "verseKey": "101:3",
+      "verseNumber": 3,
+      "textUthmani": "وَمَآ أَدْرَىٰكَ مَا ٱلْقَارِعَةُ",
+      "textSimple": "وَمَا أَدْرَاكَ مَا الْقَارِعَةُ"
+    },
+    {
+      "id": 6161,
+      "verseKey": "101:4",
+      "verseNumber": 4,
+      "textUthmani": "يَوْمَ يَكُونُ ٱلنَّاسُ كَٱلْفَرَاشِ ٱلْمَبْثُوثِ",
+      "textSimple": "يَوْمَ يَكُونُ النَّاسُ كَالْفَرَاشِ الْمَبْثُوثِ"
+    },
+    {
+      "id": 6162,
+      "verseKey": "101:5",
+      "verseNumber": 5,
+      "textUthmani": "وَتَكُونُ ٱلْجِبَالُ كَٱلْعِهْنِ ٱلْمَنفُوشِ",
+      "textSimple": "وَتَكُونُ الْجِبَالُ كَالْعِهْنِ الْمَنفُوشِ"
+    },
+    {
+      "id": 6163,
+      "verseKey": "101:6",
+      "verseNumber": 6,
+      "textUthmani": "فَأَمَّا مَن ثَقُلَتْ مَوَٰزِينُهُۥ",
+      "textSimple": "فَأَمَّا مَن ثَقُلَتْ مَوَازِينُهُ"
+    },
+    {
+      "id": 6164,
+      "verseKey": "101:7",
+      "verseNumber": 7,
+      "textUthmani": "فَهُوَ فِى عِيشَةٍ رَّاضِيَةٍ",
+      "textSimple": "فَهُوَ فِي عِيشَةٍ رَّاضِيَةٍ"
+    },
+    {
+      "id": 6165,
+      "verseKey": "101:8",
+      "verseNumber": 8,
+      "textUthmani": "وَأَمَّا مَنْ خَفَّتْ مَوَٰزِينُهُۥ",
+      "textSimple": "وَأَمَّا مَنْ خَفَّتْ مَوَازِينُهُ"
+    },
+    {
+      "id": 6166,
+      "verseKey": "101:9",
+      "verseNumber": 9,
+      "textUthmani": "فَأُمُّهُۥ هَاوِيَةٌ",
+      "textSimple": "فَأُمُّهُ هَاوِيَةٌ"
+    },
+    {
+      "id": 6167,
+      "verseKey": "101:10",
+      "verseNumber": 10,
+      "textUthmani": "وَمَآ أَدْرَىٰكَ مَا هِيَهْ",
+      "textSimple": "وَمَا أَدْرَاكَ مَا هِيَهْ"
+    },
+    {
+      "id": 6168,
+      "verseKey": "101:11",
+      "verseNumber": 11,
+      "textUthmani": "نَارٌ حَامِيَةٌۢ",
+      "textSimple": "نَارٌ حَامِيَةٌ"
+    }
+  ]
+}
