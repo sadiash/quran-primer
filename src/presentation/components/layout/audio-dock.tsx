@@ -40,7 +40,7 @@ function AudioDockContent() {
         />
       </div>
 
-      <div className="flex items-center gap-4 px-4 py-2">
+      <div className="flex items-center gap-2 px-2 sm:gap-4 sm:px-4 py-2">
         {/* Left: Verse info */}
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">

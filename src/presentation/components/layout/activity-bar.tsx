@@ -37,6 +37,7 @@ export function ActivityBar({ collapsed, onToggle }: ActivityBarProps) {
           variant="ghost"
           size="sm"
           onClick={onToggle}
+          aria-expanded={!collapsed}
         >
           {collapsed ? <PanelLeft /> : <PanelLeftClose />}
         </IconButton>
@@ -50,6 +51,7 @@ export function ActivityBar({ collapsed, onToggle }: ActivityBarProps) {
           const linkContent = (
             <Link
               href={href}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-fast",
                 isActive

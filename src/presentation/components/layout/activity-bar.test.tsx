@@ -32,4 +32,29 @@ describe("ActivityBar", () => {
     render(<ActivityBar collapsed={true} onToggle={vi.fn()} />);
     expect(screen.queryByText("Home")).not.toBeInTheDocument();
   });
+
+  it("sets aria-expanded on collapse toggle", () => {
+    const { rerender } = render(
+      <ActivityBar collapsed={false} onToggle={vi.fn()} />,
+    );
+    expect(screen.getByLabelText("Collapse sidebar")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+
+    rerender(<ActivityBar collapsed={true} onToggle={vi.fn()} />);
+    expect(screen.getByLabelText("Expand sidebar")).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+  });
+
+  it("sets aria-current on active link", () => {
+    render(<ActivityBar collapsed={false} onToggle={vi.fn()} />);
+    const surahsLink = screen.getByText("Surahs").closest("a");
+    expect(surahsLink).toHaveAttribute("aria-current", "page");
+
+    const homeLink = screen.getByText("Home").closest("a");
+    expect(homeLink).not.toHaveAttribute("aria-current");
+  });
 });

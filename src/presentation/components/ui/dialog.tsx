@@ -52,14 +52,14 @@ export function Dialog({ open, onClose, children, className, ...props }: DialogP
       onCancel={handleCancel}
       onClick={handleBackdropClick}
       className={cn(
-        "m-auto max-h-[85vh] w-full max-w-lg rounded-xl border border-border bg-card p-0 text-card-foreground shadow-soft-lg",
+        "m-auto max-h-[85vh] w-full max-w-[calc(100vw-2rem)] sm:max-w-lg rounded-xl border border-border bg-card p-0 text-card-foreground shadow-soft-lg",
         "backdrop:bg-black/50 backdrop:backdrop-blur-sm",
         "open:animate-scale-in",
         className
       )}
       {...props}
     >
-      <div className="p-6">{children}</div>
+      <div className="p-4 sm:p-6">{children}</div>
     </dialog>
   );
 }

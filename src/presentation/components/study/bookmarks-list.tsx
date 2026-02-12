@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useToast } from "@/presentation/components/ui/toast";
-import { IconButton, Skeleton } from "@/presentation/components/ui";
+import { IconButton, Skeleton, EmptyState } from "@/presentation/components/ui";
 import { getSurahName } from "@/lib/surah-names";
 
 export function BookmarksList() {
@@ -23,12 +23,10 @@ export function BookmarksList() {
 
   if (bookmarks.length === 0) {
     return (
-      <div className="py-12 text-center text-muted-foreground">
-        <p>No bookmarks yet.</p>
-        <p className="mt-1 text-sm">
-          Hover over a verse and click the bookmark icon to save it.
-        </p>
-      </div>
+      <EmptyState
+        title="No bookmarks yet."
+        description="Tap the bookmark icon on any verse to save it."
+      />
     );
   }
 

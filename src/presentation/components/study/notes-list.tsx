@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useNotes } from "@/presentation/hooks/use-notes";
-import { Badge, Input, Skeleton } from "@/presentation/components/ui";
+import { Badge, Input, Skeleton, EmptyState } from "@/presentation/components/ui";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getSurahName } from "@/lib/surah-names";
@@ -56,12 +56,10 @@ export function NotesList() {
 
   if (notes.length === 0) {
     return (
-      <div className="py-12 text-center text-muted-foreground">
-        <p>No notes yet.</p>
-        <p className="mt-1 text-sm">
-          Hover over a verse and click the note icon to create one.
-        </p>
-      </div>
+      <EmptyState
+        title="No notes yet."
+        description="Tap the note icon on any verse to create one."
+      />
     );
   }
 

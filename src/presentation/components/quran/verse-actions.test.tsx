@@ -67,4 +67,11 @@ describe("VerseActions", () => {
     await user.click(screen.getByLabelText("Add note"));
     expect(onNoteClick).toHaveBeenCalledOnce();
   });
+
+  it("does not have unconditional opacity-0 class", () => {
+    const { container } = render(<VerseActions verseKey="1:1" surahId={1} />);
+    const actionsDiv = container.firstChild as HTMLElement;
+    const classes = actionsDiv.className.split(/\s+/);
+    expect(classes).not.toContain("opacity-0");
+  });
 });

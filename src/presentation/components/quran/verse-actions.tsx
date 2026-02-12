@@ -58,7 +58,7 @@ export function VerseActions({
   };
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg glass px-1 py-0.5 shadow-soft-sm opacity-0 transition-fast group-hover:opacity-100">
+    <div className="flex items-center gap-0.5 rounded-lg glass px-1 py-0.5 shadow-soft-sm transition-fast md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
       <IconButton
         label={isBookmarked ? "Remove bookmark" : "Bookmark verse"}
         variant="ghost"

@@ -60,4 +60,13 @@ describe("AppShell", () => {
     );
     expect(container.querySelector("#audio-dock-slot")).toBeInTheDocument();
   });
+
+  it("has id main-content on main element", () => {
+    render(
+      <AppShell>
+        <div>Content</div>
+      </AppShell>,
+    );
+    expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
+  });
 });
