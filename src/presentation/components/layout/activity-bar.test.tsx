@@ -12,6 +12,7 @@ describe("ActivityBar", () => {
     render(<ActivityBar collapsed={false} onToggle={vi.fn()} />);
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("Surahs")).toBeInTheDocument();
+    expect(screen.getByText("Bookmarks")).toBeInTheDocument();
     expect(screen.getByText("Search")).toBeInTheDocument();
     expect(screen.getByText("Settings")).toBeInTheDocument();
   });
