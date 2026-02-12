@@ -27,7 +27,7 @@ export function TopBar({ onMenuToggle, onCommandPalette }: TopBarProps) {
       </div>
 
       <div className="flex items-center gap-1">
-        <IconButton label="Command palette" variant="ghost" size="sm" onClick={onCommandPalette}>
+        <IconButton label="Command palette (Ctrl+K)" variant="ghost" size="sm" onClick={onCommandPalette}>
           <Command />
         </IconButton>
         <IconButton

@@ -23,4 +23,13 @@ describe("MobileNav", () => {
       screen.getByRole("navigation", { name: /mobile/i }),
     ).toBeInTheDocument();
   });
+
+  it("sets aria-current on active link", () => {
+    render(<MobileNav />);
+    const homeLink = screen.getByText("Home").closest("a");
+    expect(homeLink).toHaveAttribute("aria-current", "page");
+
+    const surahsLink = screen.getByText("Surahs").closest("a");
+    expect(surahsLink).not.toHaveAttribute("aria-current");
+  });
 });

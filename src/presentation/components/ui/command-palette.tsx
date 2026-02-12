@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { Command as CommandPrimitive } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, BookOpen, Hash, Sun, Moon, Sparkles } from "lucide-react";
 import { useToast } from "@/presentation/components/ui/toast";
 import type { Surah } from "@/core/types";
@@ -30,6 +30,7 @@ export function CommandPalette({
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
+  const prefersReducedMotion = useReducedMotion();
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
 
   const execute = useCallback(
@@ -95,25 +96,25 @@ export function CommandPalette({
           {/* Backdrop */}
           <motion.div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
             onClick={close}
             aria-hidden
           />
 
           {/* Panel */}
           <motion.div
-            className="fixed inset-0 flex items-start justify-center pt-[20vh]"
-            initial={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 flex items-start justify-center pt-[10vh] sm:pt-[20vh] px-4"
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
           >
             <CommandPrimitive
               label="Command palette"
-              className="glass w-full max-w-lg rounded-xl shadow-glow overflow-hidden"
+              className="glass w-full max-w-[calc(100vw-2rem)] sm:max-w-lg rounded-xl shadow-glow overflow-hidden"
               loop
             >
               {/* Input */}

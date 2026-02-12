@@ -12,7 +12,7 @@ describe("TopBar", () => {
     render(<TopBar onMenuToggle={vi.fn()} />);
     expect(screen.getByLabelText("Toggle menu")).toBeInTheDocument();
     expect(screen.getByLabelText("Toggle theme")).toBeInTheDocument();
-    expect(screen.getByLabelText("Command palette")).toBeInTheDocument();
+    expect(screen.getByLabelText("Command palette (Ctrl+K)")).toBeInTheDocument();
   });
 
   it("calls onMenuToggle when hamburger clicked", async () => {

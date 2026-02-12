@@ -46,6 +46,7 @@ export function AppShell({ children }: AppShellProps) {
         />
 
         <main
+          id="main-content"
           className={`flex-1 overflow-y-auto pb-16 md:pb-0 ${
             audioActive ? "pb-28 md:pb-14" : ""
           }`}
