@@ -1,0 +1,158 @@
+{
+  "id": 92,
+  "nameArabic": "الليل",
+  "nameSimple": "Al-Layl",
+  "nameComplex": "Al-Layl",
+  "nameTranslation": "The Night",
+  "revelationType": "makkah",
+  "versesCount": 21,
+  "verses": [
+    {
+      "id": 6059,
+      "verseKey": "92:1",
+      "verseNumber": 1,
+      "textUthmani": " وَٱلَّيْلِ إِذَا يَغْشَىٰ",
+      "textSimple": "وَاللَّيْلِ إِذَا يَغْشَىٰ"
+    },
+    {
+      "id": 6060,
+      "verseKey": "92:2",
+      "verseNumber": 2,
+      "textUthmani": "وَٱلنَّهَارِ إِذَا تَجَلَّىٰ",
+      "textSimple": "وَالنَّهَارِ إِذَا تَجَلَّىٰ"
+    },
+    {
+      "id": 6061,
+      "verseKey": "92:3",
+      "verseNumber": 3,
+      "textUthmani": "وَمَا خَلَقَ ٱلذَّكَرَ وَٱلْأُنثَىٰٓ",
+      "textSimple": "وَمَا خَلَقَ الذَّكَرَ وَالْأُنثَىٰ"
+    },
+    {
+      "id": 6062,
+      "verseKey": "92:4",
+      "verseNumber": 4,
+      "textUthmani": "إِنَّ سَعْيَكُمْ لَشَتَّىٰ",
+      "textSimple": "إِنَّ سَعْيَكُمْ لَشَتَّىٰ"
+    },
+    {
+      "id": 6063,
+      "verseKey": "92:5",
+      "verseNumber": 5,
+      "textUthmani": "فَأَمَّا مَنْ أَعْطَىٰ وَٱتَّقَىٰ",
+      "textSimple": "فَأَمَّا مَنْ أَعْطَىٰ وَاتَّقَىٰ"
+    },
+    {
+      "id": 6064,
+      "verseKey": "92:6",
+      "verseNumber": 6,
+      "textUthmani": "وَصَدَّقَ بِٱلْحُسْنَىٰ",
+      "textSimple": "وَصَدَّقَ بِالْحُسْنَىٰ"
+    },
+    {
+      "id": 6065,
+      "verseKey": "92:7",
+      "verseNumber": 7,
+      "textUthmani": "فَسَنُيَسِّرُهُۥ لِلْيُسْرَىٰ",
+      "textSimple": "فَسَنُيَسِّرُهُ لِلْيُسْرَىٰ"
+    },
+    {
+      "id": 6066,
+      "verseKey": "92:8",
+      "verseNumber": 8,
+      "textUthmani": "وَأَمَّا مَنۢ بَخِلَ وَٱسْتَغْنَىٰ",
+      "textSimple": "وَأَمَّا مَن بَخِلَ وَاسْتَغْنَىٰ"
+    },
+    {
+      "id": 6067,
+      "verseKey": "92:9",
+      "verseNumber": 9,
+      "textUthmani": "وَكَذَّبَ بِٱلْحُسْنَىٰ",
+      "textSimple": "وَكَذَّبَ بِالْحُسْنَىٰ"
+    },
+    {
+      "id": 6068,
+      "verseKey": "92:10",
+      "verseNumber": 10,
+      "textUthmani": "فَسَنُيَسِّرُهُۥ لِلْعُسْرَىٰ",
+      "textSimple": "فَسَنُيَسِّرُهُ لِلْعُسْرَىٰ"
+    },
+    {
+      "id": 6069,
+      "verseKey": "92:11",
+      "verseNumber": 11,
+      "textUthmani": "وَمَا يُغْنِى عَنْهُ مَالُهُۥٓ إِذَا تَرَدَّىٰٓ",
+      "textSimple": "وَمَا يُغْنِي عَنْهُ مَالُهُ إِذَا تَرَدَّىٰ"
+    },
+    {
+      "id": 6070,
+      "verseKey": "92:12",
+      "verseNumber": 12,
+      "textUthmani": "إِنَّ عَلَيْنَا لَلْهُدَىٰ",
+      "textSimple": "إِنَّ عَلَيْنَا لَلْهُدَىٰ"
+    },
+    {
+      "id": 6071,
+      "verseKey": "92:13",
+      "verseNumber": 13,
+      "textUthmani": "وَإِنَّ لَنَا لَلْـَٔاخِرَةَ وَٱلْأُولَىٰ",
+      "textSimple": "وَإِنَّ لَنَا لَلْآخِرَةَ وَالْأُولَىٰ"
+    },
+    {
+      "id": 6072,
+      "verseKey": "92:14",
+      "verseNumber": 14,
+      "textUthmani": "فَأَنذَرْتُكُمْ نَارًا تَلَظَّىٰ",
+      "textSimple": "فَأَنذَرْتُكُمْ نَارًا تَلَظَّىٰ"
+    },
+    {
+      "id": 6073,
+      "verseKey": "92:15",
+      "verseNumber": 15,
+      "textUthmani": "لَا يَصْلَىٰهَآ إِلَّا ٱلْأَشْقَى",
+      "textSimple": "لَا يَصْلَاهَا إِلَّا الْأَشْقَى"
+    },
+    {
+      "id": 6074,
+      "verseKey": "92:16",
+      "verseNumber": 16,
+      "textUthmani": "ٱلَّذِى كَذَّبَ وَتَوَلَّىٰ",
+      "textSimple": "الَّذِي كَذَّبَ وَتَوَلَّىٰ"
+    },
+    {
+      "id": 6075,
+      "verseKey": "92:17",
+      "verseNumber": 17,
+      "textUthmani": "وَسَيُجَنَّبُهَا ٱلْأَتْقَى",
+      "textSimple": "وَسَيُجَنَّبُهَا الْأَتْقَى"
+    },
+    {
+      "id": 6076,
+      "verseKey": "92:18",
+      "verseNumber": 18,
+      "textUthmani": "ٱلَّذِى يُؤْتِى مَالَهُۥ يَتَزَكَّىٰ",
+      "textSimple": "الَّذِي يُؤْتِي مَالَهُ يَتَزَكَّىٰ"
+    },
+    {
+      "id": 6077,
+      "verseKey": "92:19",
+      "verseNumber": 19,
+      "textUthmani": "وَمَا لِأَحَدٍ عِندَهُۥ مِن نِّعْمَةٍ تُجْزَىٰٓ",
+      "textSimple": "وَمَا لِأَحَدٍ عِندَهُ مِن نِّعْمَةٍ تُجْزَىٰ"
+    },
+    {
+      "id": 6078,
+      "verseKey": "92:20",
+      "verseNumber": 20,
+      "textUthmani": "إِلَّا ٱبْتِغَآءَ وَجْهِ رَبِّهِ ٱلْأَعْلَىٰ",
+      "textSimple": "إِلَّا ابْتِغَاءَ وَجْهِ رَبِّهِ الْأَعْلَىٰ"
+    },
+    {
+      "id": 6079,
+      "verseKey": "92:21",
+      "verseNumber": 21,
+      "textUthmani": "وَلَسَوْفَ يَرْضَىٰ",
+      "textSimple": "وَلَسَوْفَ يَرْضَىٰ"
+    }
+  ]
+}

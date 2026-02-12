@@ -1,0 +1,67 @@
+{
+  "id": 99,
+  "nameArabic": "الزلزلة",
+  "nameSimple": "Az-Zalzalah",
+  "nameComplex": "Az-Zalzalah",
+  "nameTranslation": "The Earthquake",
+  "revelationType": "madinah",
+  "versesCount": 8,
+  "verses": [
+    {
+      "id": 6139,
+      "verseKey": "99:1",
+      "verseNumber": 1,
+      "textUthmani": " إِذَا زُلْزِلَتِ ٱلْأَرْضُ زِلْزَالَهَا",
+      "textSimple": "إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا"
+    },
+    {
+      "id": 6140,
+      "verseKey": "99:2",
+      "verseNumber": 2,
+      "textUthmani": "وَأَخْرَجَتِ ٱلْأَرْضُ أَثْقَالَهَا",
+      "textSimple": "وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا"
+    },
+    {
+      "id": 6141,
+      "verseKey": "99:3",
+      "verseNumber": 3,
+      "textUthmani": "وَقَالَ ٱلْإِنسَـٰنُ مَا لَهَا",
+      "textSimple": "وَقَالَ الْإِنسَانُ مَا لَهَا"
+    },
+    {
+      "id": 6142,
+      "verseKey": "99:4",
+      "verseNumber": 4,
+      "textUthmani": "يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا",
+      "textSimple": "يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا"
+    },
+    {
+      "id": 6143,
+      "verseKey": "99:5",
+      "verseNumber": 5,
+      "textUthmani": "بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا",
+      "textSimple": "بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا"
+    },
+    {
+      "id": 6144,
+      "verseKey": "99:6",
+      "verseNumber": 6,
+      "textUthmani": "يَوْمَئِذٍ يَصْدُرُ ٱلنَّاسُ أَشْتَاتًا لِّيُرَوْا۟ أَعْمَـٰلَهُمْ",
+      "textSimple": "يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا لِّيُرَوْا أَعْمَالَهُمْ"
+    },
+    {
+      "id": 6145,
+      "verseKey": "99:7",
+      "verseNumber": 7,
+      "textUthmani": "فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُۥ",
+      "textSimple": "فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ"
+    },
+    {
+      "id": 6146,
+      "verseKey": "99:8",
+      "verseNumber": 8,
+      "textUthmani": "وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُۥ",
+      "textSimple": "وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ"
+    }
+  ]
+}

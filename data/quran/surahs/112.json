@@ -1,0 +1,39 @@
+{
+  "id": 112,
+  "nameArabic": "الإخلاص",
+  "nameSimple": "Al-Ikhlas",
+  "nameComplex": "Al-'Ikhlāş",
+  "nameTranslation": "The Sincerity",
+  "revelationType": "makkah",
+  "versesCount": 4,
+  "verses": [
+    {
+      "id": 6222,
+      "verseKey": "112:1",
+      "verseNumber": 1,
+      "textUthmani": " قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+      "textSimple": "قُلْ هُوَ اللَّهُ أَحَدٌ"
+    },
+    {
+      "id": 6223,
+      "verseKey": "112:2",
+      "verseNumber": 2,
+      "textUthmani": "ٱللَّهُ ٱلصَّمَدُ",
+      "textSimple": "اللَّهُ الصَّمَدُ"
+    },
+    {
+      "id": 6224,
+      "verseKey": "112:3",
+      "verseNumber": 3,
+      "textUthmani": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "textSimple": "لَمْ يَلِدْ وَلَمْ يُولَدْ"
+    },
+    {
+      "id": 6225,
+      "verseKey": "112:4",
+      "verseNumber": 4,
+      "textUthmani": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+      "textSimple": "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ"
+    }
+  ]
+}

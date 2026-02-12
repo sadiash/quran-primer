@@ -1,0 +1,67 @@
+{
+  "id": 94,
+  "nameArabic": "الشرح",
+  "nameSimple": "Ash-Sharh",
+  "nameComplex": "Ash-Sharĥ",
+  "nameTranslation": "The Relief",
+  "revelationType": "makkah",
+  "versesCount": 8,
+  "verses": [
+    {
+      "id": 6091,
+      "verseKey": "94:1",
+      "verseNumber": 1,
+      "textUthmani": " أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ",
+      "textSimple": "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ"
+    },
+    {
+      "id": 6092,
+      "verseKey": "94:2",
+      "verseNumber": 2,
+      "textUthmani": "وَوَضَعْنَا عَنكَ وِزْرَكَ",
+      "textSimple": "وَوَضَعْنَا عَنكَ وِزْرَكَ"
+    },
+    {
+      "id": 6093,
+      "verseKey": "94:3",
+      "verseNumber": 3,
+      "textUthmani": "ٱلَّذِىٓ أَنقَضَ ظَهْرَكَ",
+      "textSimple": "الَّذِي أَنقَضَ ظَهْرَكَ"
+    },
+    {
+      "id": 6094,
+      "verseKey": "94:4",
+      "verseNumber": 4,
+      "textUthmani": "وَرَفَعْنَا لَكَ ذِكْرَكَ",
+      "textSimple": "وَرَفَعْنَا لَكَ ذِكْرَكَ"
+    },
+    {
+      "id": 6095,
+      "verseKey": "94:5",
+      "verseNumber": 5,
+      "textUthmani": "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+      "textSimple": "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"
+    },
+    {
+      "id": 6096,
+      "verseKey": "94:6",
+      "verseNumber": 6,
+      "textUthmani": "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+      "textSimple": "إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+    },
+    {
+      "id": 6097,
+      "verseKey": "94:7",
+      "verseNumber": 7,
+      "textUthmani": "فَإِذَا فَرَغْتَ فَٱنصَبْ",
+      "textSimple": "فَإِذَا فَرَغْتَ فَانصَبْ"
+    },
+    {
+      "id": 6098,
+      "verseKey": "94:8",
+      "verseNumber": 8,
+      "textUthmani": "وَإِلَىٰ رَبِّكَ فَٱرْغَب",
+      "textSimple": "وَإِلَىٰ رَبِّكَ فَارْغَب"
+    }
+  ]
+}

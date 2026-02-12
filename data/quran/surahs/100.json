@@ -1,0 +1,88 @@
+{
+  "id": 100,
+  "nameArabic": "العاديات",
+  "nameSimple": "Al-'Adiyat",
+  "nameComplex": "Al-`Ādiyāt",
+  "nameTranslation": "The Courser",
+  "revelationType": "makkah",
+  "versesCount": 11,
+  "verses": [
+    {
+      "id": 6147,
+      "verseKey": "100:1",
+      "verseNumber": 1,
+      "textUthmani": " وَٱلْعَـٰدِيَـٰتِ ضَبْحًا",
+      "textSimple": "وَالْعَادِيَاتِ ضَبْحًا"
+    },
+    {
+      "id": 6148,
+      "verseKey": "100:2",
+      "verseNumber": 2,
+      "textUthmani": "فَٱلْمُورِيَـٰتِ قَدْحًا",
+      "textSimple": "فَالْمُورِيَاتِ قَدْحًا"
+    },
+    {
+      "id": 6149,
+      "verseKey": "100:3",
+      "verseNumber": 3,
+      "textUthmani": "فَٱلْمُغِيرَٰتِ صُبْحًا",
+      "textSimple": "فَالْمُغِيرَاتِ صُبْحًا"
+    },
+    {
+      "id": 6150,
+      "verseKey": "100:4",
+      "verseNumber": 4,
+      "textUthmani": "فَأَثَرْنَ بِهِۦ نَقْعًا",
+      "textSimple": "فَأَثَرْنَ بِهِ نَقْعًا"
+    },
+    {
+      "id": 6151,
+      "verseKey": "100:5",
+      "verseNumber": 5,
+      "textUthmani": "فَوَسَطْنَ بِهِۦ جَمْعًا",
+      "textSimple": "فَوَسَطْنَ بِهِ جَمْعًا"
+    },
+    {
+      "id": 6152,
+      "verseKey": "100:6",
+      "verseNumber": 6,
+      "textUthmani": "إِنَّ ٱلْإِنسَـٰنَ لِرَبِّهِۦ لَكَنُودٌ",
+      "textSimple": "إِنَّ الْإِنسَانَ لِرَبِّهِ لَكَنُودٌ"
+    },
+    {
+      "id": 6153,
+      "verseKey": "100:7",
+      "verseNumber": 7,
+      "textUthmani": "وَإِنَّهُۥ عَلَىٰ ذَٰلِكَ لَشَهِيدٌ",
+      "textSimple": "وَإِنَّهُ عَلَىٰ ذَٰلِكَ لَشَهِيدٌ"
+    },
+    {
+      "id": 6154,
+      "verseKey": "100:8",
+      "verseNumber": 8,
+      "textUthmani": "وَإِنَّهُۥ لِحُبِّ ٱلْخَيْرِ لَشَدِيدٌ",
+      "textSimple": "وَإِنَّهُ لِحُبِّ الْخَيْرِ لَشَدِيدٌ"
+    },
+    {
+      "id": 6155,
+      "verseKey": "100:9",
+      "verseNumber": 9,
+      "textUthmani": "۞ أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِى ٱلْقُبُورِ",
+      "textSimple": "أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِي الْقُبُورِ"
+    },
+    {
+      "id": 6156,
+      "verseKey": "100:10",
+      "verseNumber": 10,
+      "textUthmani": "وَحُصِّلَ مَا فِى ٱلصُّدُورِ",
+      "textSimple": "وَحُصِّلَ مَا فِي الصُّدُورِ"
+    },
+    {
+      "id": 6157,
+      "verseKey": "100:11",
+      "verseNumber": 11,
+      "textUthmani": "إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍ لَّخَبِيرٌۢ",
+      "textSimple": "إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍ لَّخَبِيرٌ"
+    }
+  ]
+}

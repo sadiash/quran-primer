@@ -1,0 +1,46 @@
+{
+  "id": 113,
+  "nameArabic": "الفلق",
+  "nameSimple": "Al-Falaq",
+  "nameComplex": "Al-Falaq",
+  "nameTranslation": "The Daybreak",
+  "revelationType": "makkah",
+  "versesCount": 5,
+  "verses": [
+    {
+      "id": 6226,
+      "verseKey": "113:1",
+      "verseNumber": 1,
+      "textUthmani": " قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+      "textSimple": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ"
+    },
+    {
+      "id": 6227,
+      "verseKey": "113:2",
+      "verseNumber": 2,
+      "textUthmani": "مِن شَرِّ مَا خَلَقَ",
+      "textSimple": "مِن شَرِّ مَا خَلَقَ"
+    },
+    {
+      "id": 6228,
+      "verseKey": "113:3",
+      "verseNumber": 3,
+      "textUthmani": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+      "textSimple": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ"
+    },
+    {
+      "id": 6229,
+      "verseKey": "113:4",
+      "verseNumber": 4,
+      "textUthmani": "وَمِن شَرِّ ٱلنَّفَّـٰثَـٰتِ فِى ٱلْعُقَدِ",
+      "textSimple": "وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ"
+    },
+    {
+      "id": 6230,
+      "verseKey": "113:5",
+      "verseNumber": 5,
+      "textUthmani": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "textSimple": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ"
+    }
+  ]
+}

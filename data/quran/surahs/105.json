@@ -1,0 +1,46 @@
+{
+  "id": 105,
+  "nameArabic": "الفيل",
+  "nameSimple": "Al-Fil",
+  "nameComplex": "Al-Fīl",
+  "nameTranslation": "The Elephant",
+  "revelationType": "makkah",
+  "versesCount": 5,
+  "verses": [
+    {
+      "id": 6189,
+      "verseKey": "105:1",
+      "verseNumber": 1,
+      "textUthmani": " أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ",
+      "textSimple": "أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ"
+    },
+    {
+      "id": 6190,
+      "verseKey": "105:2",
+      "verseNumber": 2,
+      "textUthmani": "أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ",
+      "textSimple": "أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ"
+    },
+    {
+      "id": 6191,
+      "verseKey": "105:3",
+      "verseNumber": 3,
+      "textUthmani": "وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ",
+      "textSimple": "وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ"
+    },
+    {
+      "id": 6192,
+      "verseKey": "105:4",
+      "verseNumber": 4,
+      "textUthmani": "تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ",
+      "textSimple": "تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ"
+    },
+    {
+      "id": 6193,
+      "verseKey": "105:5",
+      "verseNumber": 5,
+      "textUthmani": "فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ",
+      "textSimple": "فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ"
+    }
+  ]
+}

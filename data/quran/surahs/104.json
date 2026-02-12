@@ -1,0 +1,74 @@
+{
+  "id": 104,
+  "nameArabic": "الهمزة",
+  "nameSimple": "Al-Humazah",
+  "nameComplex": "Al-Humazah",
+  "nameTranslation": "The Traducer",
+  "revelationType": "makkah",
+  "versesCount": 9,
+  "verses": [
+    {
+      "id": 6180,
+      "verseKey": "104:1",
+      "verseNumber": 1,
+      "textUthmani": " وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ",
+      "textSimple": "وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ"
+    },
+    {
+      "id": 6181,
+      "verseKey": "104:2",
+      "verseNumber": 2,
+      "textUthmani": "ٱلَّذِى جَمَعَ مَالًا وَعَدَّدَهُۥ",
+      "textSimple": "الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ"
+    },
+    {
+      "id": 6182,
+      "verseKey": "104:3",
+      "verseNumber": 3,
+      "textUthmani": "يَحْسَبُ أَنَّ مَالَهُۥٓ أَخْلَدَهُۥ",
+      "textSimple": "يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ"
+    },
+    {
+      "id": 6183,
+      "verseKey": "104:4",
+      "verseNumber": 4,
+      "textUthmani": "كَلَّا ۖ لَيُنۢبَذَنَّ فِى ٱلْحُطَمَةِ",
+      "textSimple": "كَلَّا ۖ لَيُنبَذَنَّ فِي الْحُطَمَةِ"
+    },
+    {
+      "id": 6184,
+      "verseKey": "104:5",
+      "verseNumber": 5,
+      "textUthmani": "وَمَآ أَدْرَىٰكَ مَا ٱلْحُطَمَةُ",
+      "textSimple": "وَمَا أَدْرَاكَ مَا الْحُطَمَةُ"
+    },
+    {
+      "id": 6185,
+      "verseKey": "104:6",
+      "verseNumber": 6,
+      "textUthmani": "نَارُ ٱللَّهِ ٱلْمُوقَدَةُ",
+      "textSimple": "نَارُ اللَّهِ الْمُوقَدَةُ"
+    },
+    {
+      "id": 6186,
+      "verseKey": "104:7",
+      "verseNumber": 7,
+      "textUthmani": "ٱلَّتِى تَطَّلِعُ عَلَى ٱلْأَفْـِٔدَةِ",
+      "textSimple": "الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ"
+    },
+    {
+      "id": 6187,
+      "verseKey": "104:8",
+      "verseNumber": 8,
+      "textUthmani": "إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ",
+      "textSimple": "إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ"
+    },
+    {
+      "id": 6188,
+      "verseKey": "104:9",
+      "verseNumber": 9,
+      "textUthmani": "فِى عَمَدٍ مُّمَدَّدَةٍۭ",
+      "textSimple": "فِي عَمَدٍ مُّمَدَّدَةٍ"
+    }
+  ]
+}
