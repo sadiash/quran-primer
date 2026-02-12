@@ -50,7 +50,7 @@ export const preferences = pgTable("preferences", {
   arabicFontSize: text("arabic_font_size").notNull().default("lg"),
   translationFontSize: text("translation_font_size").notNull().default("md"),
   showTranslation: boolean("show_translation").notNull().default(true),
-  defaultTranslationId: integer("default_translation_id").notNull().default(131),
+  defaultTranslationId: integer("default_translation_id").notNull().default(20),
   defaultReciterId: integer("default_reciter_id").notNull().default(7),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
