@@ -19,7 +19,16 @@ const DEFAULT_PREFERENCES: UserPreferences = {
 export function usePreferences() {
   const raw = useLiveQuery(() => db.preferences.get("default"), []);
   const isLoading = raw === undefined;
-  const preferences: UserPreferences = raw ?? DEFAULT_PREFERENCES;
+  const preferences: UserPreferences = raw
+    ? {
+        ...raw,
+        theme: raw.theme as UserPreferences["theme"],
+        arabicFont: raw.arabicFont as UserPreferences["arabicFont"],
+        arabicFontSize: raw.arabicFontSize as UserPreferences["arabicFontSize"],
+        translationFontSize:
+          raw.translationFontSize as UserPreferences["translationFontSize"],
+      }
+    : DEFAULT_PREFERENCES;
 
   async function updatePreferences(
     partial: Partial<Omit<UserPreferences, "id">>,

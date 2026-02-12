@@ -5,6 +5,7 @@ import type { Verse, Translation, Note } from "@/core/types";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useNotes } from "@/presentation/hooks/use-notes";
+import { useReadingTracker } from "@/presentation/hooks/use-reading-tracker";
 import { NoteEditorDialog } from "@/presentation/components/study/note-editor-dialog";
 import { Bismillah } from "./bismillah";
 import { VerseLine } from "./verse-line";
@@ -20,9 +21,15 @@ export function ReadingSurface({
   verses,
   translations,
 }: ReadingSurfaceProps) {
-  const { observerRef } = useVerseVisibility();
+  const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const { bookmarks } = useBookmarks(surahId);
   const { notes } = useNotes({ surahId });
+
+  useReadingTracker({
+    surahId,
+    totalVerses: verses.length,
+    getCurrentVerseKey,
+  });
 
   const [noteDialog, setNoteDialog] = useState<{
     verseKey: string;

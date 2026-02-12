@@ -21,6 +21,10 @@ vi.mock("@/presentation/hooks/use-notes", () => ({
   }),
 }));
 
+vi.mock("@/presentation/hooks/use-reading-tracker", () => ({
+  useReadingTracker: vi.fn(),
+}));
+
 const verses = [
   createMockVerse({ verseKey: "1:1", verseNumber: 1, textUthmani: "بِسْمِ ٱللَّهِ" }),
   createMockVerse({ verseKey: "1:2", verseNumber: 2, textUthmani: "ٱلْحَمْدُ لِلَّهِ" }),
@@ -39,7 +43,7 @@ beforeEach(() => {
   } as unknown as typeof IntersectionObserver) as unknown as typeof IntersectionObserver;
 
   vi.spyOn(window, "Audio").mockImplementation(
-    vi.fn(function (this: HTMLAudioElement) {
+    vi.fn(function (this: Record<string, unknown>) {
       this.src = "";
       this.currentTime = 0;
       this.duration = 0;

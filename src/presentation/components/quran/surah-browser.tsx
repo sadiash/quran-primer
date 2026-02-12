@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Surah, RevelationType } from "@/core/types";
+import type { Surah, RevelationType, ReadingProgress } from "@/core/types";
+import { useProgress } from "@/presentation/hooks/use-progress";
 import { Input } from "@/presentation/components/ui";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,15 @@ const filters: Array<{ label: string; value: RevelationType | "all" }> = [
 export function SurahBrowser({ surahs }: SurahBrowserProps) {
   const [search, setSearch] = useState("");
   const [revelationFilter, setRevelationFilter] = useState<RevelationType | "all">("all");
+  const { allProgress } = useProgress();
+
+  const progressMap = useMemo(() => {
+    const map = new Map<number, ReadingProgress>();
+    for (const p of allProgress) {
+      map.set(p.surahId, p);
+    }
+    return map;
+  }, [allProgress]);
 
   const filtered = useMemo(() => {
     let result = surahs;
@@ -73,7 +83,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
         </div>
       </div>
 
-      <SurahGrid surahs={filtered} />
+      <SurahGrid surahs={filtered} progressMap={progressMap} />
     </div>
   );
 }
