@@ -13,11 +13,14 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   arabicFontSize: "lg",
   translationFontSize: "md",
   showTranslation: true,
-  defaultTranslationId: 20,
-  activeTranslationIds: [20],
+  defaultTranslationId: 1001,
+  activeTranslationIds: [1001],
   translationLayout: "stacked",
   showArabic: true,
   defaultReciterId: 7,
+  activeTafsirIds: [74],
+  activeHadithCollections: ["bukhari", "muslim"],
+  onboardingComplete: false,
   updatedAt: new Date(0),
 };
 

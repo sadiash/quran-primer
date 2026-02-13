@@ -1,5 +1,3 @@
 export { AppShell } from "./app-shell";
-export { TopBar } from "./top-bar";
-export { ActivityBar } from "./activity-bar";
+export { TopNav } from "./top-nav";
 export { MobileNav } from "./mobile-nav";
-export { StudyRegion } from "./study-region";

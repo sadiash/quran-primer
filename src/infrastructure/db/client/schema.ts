@@ -42,6 +42,9 @@ export interface PreferencesRecord {
   translationLayout?: string;
   showArabic?: boolean;
   defaultReciterId: number;
+  activeTafsirIds?: number[];
+  activeHadithCollections?: string[];
+  onboardingComplete?: boolean;
   updatedAt: Date;
 }
 
@@ -94,6 +97,17 @@ export class AppDatabase extends Dexie {
     });
 
     this.version(2).stores({
+      bookmarks: "id, verseKey, surahId, createdAt",
+      notes: "id, verseKey, surahId, *tags, updatedAt",
+      progress: "surahId, updatedAt",
+      preferences: "id",
+      crossReferences: "id, quranVerseKey, source, createdAt",
+      graphNodes: "id, nodeType, verseKey, surahId, createdAt",
+      graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
+    });
+
+    // v3: add activeTafsirIds, activeHadithCollections, onboardingComplete to preferences
+    this.version(3).stores({
       bookmarks: "id, verseKey, surahId, createdAt",
       notes: "id, verseKey, surahId, *tags, updatedAt",
       progress: "surahId, updatedAt",

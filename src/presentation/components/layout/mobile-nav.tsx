@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpenText, Library, Bookmark, Menu } from "lucide-react";
+import { BookOpenText, Library, Bookmark, StickyNote, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", icon: BookOpenText, label: "Home" },
-  { href: "/surahs", icon: Library, label: "Browse" },
-  { href: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
-  { href: "#more", icon: Menu, label: "More" },
+  { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenText, label: "Read" },
+  { href: "/browse", matchPrefix: "/browse", icon: Library, label: "Browse" },
+  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
+  { href: "/notes", matchPrefix: "/notes", icon: StickyNote, label: "Notes" },
+  { href: "/settings", matchPrefix: "/settings", icon: Settings, label: "Settings" },
 ];
 
 interface MobileNavProps {
@@ -28,10 +29,7 @@ export function MobileNav({ className }: MobileNavProps) {
       aria-label="Mobile navigation"
     >
       {NAV_ITEMS.map((item) => {
-        const isActive =
-          item.href === "/"
-            ? pathname === "/"
-            : pathname.startsWith(item.href);
+        const isActive = pathname.startsWith(item.matchPrefix);
         return (
           <Link
             key={item.href}

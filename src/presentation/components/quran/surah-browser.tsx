@@ -108,7 +108,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
           {filtered.map((surah) => (
             <Link
               key={surah.id}
-              href={`/surahs/${surah.id}`}
+              href={`/surah/${surah.id}`}
               className={cn(
                 "group flex items-center gap-4 rounded-xl border border-border bg-card p-4",
                 "transition-all hover:shadow-soft-sm hover:border-primary/30",
@@ -146,7 +146,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
           {filtered.map((surah) => (
             <Link
               key={surah.id}
-              href={`/surahs/${surah.id}`}
+              href={`/surah/${surah.id}`}
               className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-surface-hover"
             >
               <span className="w-8 shrink-0 text-right text-sm font-bold text-primary">

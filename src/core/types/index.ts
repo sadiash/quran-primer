@@ -49,14 +49,5 @@ export type {
   ApiMeta,
 } from "./api";
 
-export type {
-  PanelKind,
-  BreadcrumbItemType as WorkspaceBreadcrumbItemType,
-  BreadcrumbItem as WorkspaceBreadcrumbItem,
-  PanelInstance,
-  PanelGroup,
-  WorkspaceState,
-  PanelTypeInfo,
-  WorkspacePresetId,
-  WorkspacePreset,
-} from "./workspace";
+export type { PanelId, DockPosition, PanelConfig } from "./panel";
+export { PANEL_REGISTRY } from "./panel";

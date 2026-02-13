@@ -61,6 +61,9 @@ describe("Study domain types", () => {
       translationLayout: "stacked",
       showArabic: true,
       defaultReciterId: 7,
+      activeTafsirIds: [74],
+      activeHadithCollections: ["bukhari", "muslim"],
+      onboardingComplete: false,
       updatedAt: new Date(),
     };
     expect(prefs.theme).toBe("system");

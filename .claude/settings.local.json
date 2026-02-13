@@ -44,7 +44,15 @@
       "Bash(npm run lint:*)",
       "Bash(npx eslint:*)",
       "Bash(npx next lint:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git commit:*)",
+      "Bash(npx next dev:*)",
+      "Bash(npm install:*)",
+      "Bash(git show:*)",
+      "Bash(find:*)",
+      "mcp__playwright__browser_console_messages",
+      "Bash(cat:*)",
+      "Bash(npx next build:*)"
     ]
   }
 }

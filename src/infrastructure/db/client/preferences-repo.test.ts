@@ -24,6 +24,9 @@ describe("DexiePreferencesRepository", () => {
       translationLayout: "stacked",
       showArabic: true,
       defaultReciterId: 7,
+      activeTafsirIds: [74],
+      activeHadithCollections: ["bukhari", "muslim"],
+      onboardingComplete: false,
       updatedAt: new Date("2025-01-01"),
       ...overrides,
     };
