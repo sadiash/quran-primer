@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { getQuranService } from "@/lib/services";
 import { ReadingPage } from "@/presentation/components/quran/reading-page";
 
+/** Default translation IDs for SSR (Sahih International, Yusuf Ali, Pickthall) */
+const DEFAULT_TRANSLATION_IDS = [20, 85, 131];
+
 interface SurahPageProps {
   params: Promise<{ id: string }>;
 }
@@ -33,12 +36,18 @@ export default async function SurahPage({ params }: SurahPageProps) {
     notFound();
   }
 
-  const result = await getQuranService().getSurahWithTranslation(surahId, 20);
+  const result = await getQuranService().getSurahWithMultipleTranslations(
+    surahId,
+    DEFAULT_TRANSLATION_IDS,
+  );
   if (!result) {
     notFound();
   }
 
-  const { surah, translations } = result;
+  const { surah, translations: translationsByResource } = result;
+
+  // Flatten all translations into a single array for the client
+  const allTranslations = Object.values(translationsByResource).flat();
 
   return (
     <ReadingPage
@@ -52,7 +61,7 @@ export default async function SurahPage({ params }: SurahPageProps) {
         versesCount: surah.versesCount,
       }}
       verses={surah.verses}
-      translations={translations}
+      translations={allTranslations}
     />
   );
 }

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { useEffect } from "react";
 import { render, screen, waitFor } from "@/test/helpers/test-utils";
 import { TafsirPanel } from "./tafsir-panel";
+import { usePanelManager } from "@/presentation/providers/panel-provider";
 import {
   createMockTafsir,
   createMockTafsirResource,
@@ -24,25 +26,35 @@ beforeEach(() => {
   };
 });
 
+/** Helper that focuses a verse via useEffect before rendering the panel */
+function TafsirPanelWithFocus({ verseKey }: { verseKey: string }) {
+  const { focusVerse } = usePanelManager();
+  useEffect(() => {
+    focusVerse(verseKey);
+  }, [verseKey, focusVerse]);
+  return <TafsirPanel />;
+}
+
 describe("TafsirPanel", () => {
-  it("renders the tafsir heading", () => {
+  it("renders empty state when no verse focused", () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ ok: true, data: [] })),
     );
 
-    render(<TafsirPanel verseKey="1:1" />);
-    expect(screen.getByText("Tafsir")).toBeInTheDocument();
+    render(<TafsirPanel />);
+    expect(screen.getByText("Select a verse to view tafsir")).toBeInTheDocument();
   });
 
-  it("shows loading state", () => {
-    vi.spyOn(globalThis, "fetch").mockImplementation(
-      () => new Promise(() => {}), // never resolves
+  it("renders the tafsir heading with verse key", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, data: [] })),
     );
 
-    render(<TafsirPanel verseKey="1:1" />);
-    // Skeleton elements should be present (as generic elements)
-    const skeletons = document.querySelectorAll('[class*="animate"]');
-    expect(skeletons.length).toBeGreaterThanOrEqual(0);
+    render(<TafsirPanelWithFocus verseKey="1:1" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Tafsir for 1:1")).toBeInTheDocument();
+    });
   });
 
   it("renders tafsir text with HTML sanitized", async () => {
@@ -67,7 +79,7 @@ describe("TafsirPanel", () => {
       );
     });
 
-    render(<TafsirPanel verseKey="1:1" />);
+    render(<TafsirPanelWithFocus verseKey="1:1" />);
 
     await waitFor(() => {
       expect(screen.getByText("This is a tafsir.")).toBeInTheDocument();

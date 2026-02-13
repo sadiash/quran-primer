@@ -238,6 +238,384 @@
   --gradient-card: linear-gradient(160deg, hsl(225 30% 11%) 0%, hsl(225 28% 9%) 100%);
 }
 
+/* ─── Amethyst (Light — purple theme) ─── */
+[data-theme="amethyst"] {
+  --background: 210 40% 98%;
+  --foreground: 240 20% 16%;
+
+  --card: 220 35% 97%;
+  --card-foreground: 240 20% 16%;
+
+  --popover: 220 35% 97%;
+  --popover-foreground: 240 20% 16%;
+
+  --primary: 265 90% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 250 20% 93%;
+  --secondary-foreground: 240 20% 20%;
+
+  --muted: 240 15% 92%;
+  --muted-foreground: 240 8% 46%;
+
+  --accent: 200 85% 60%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 65% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 15% 88%;
+  --input: 240 15% 88%;
+  --ring: 265 90% 55%;
+
+  --surface: 220 35% 99%;
+  --surface-hover: 230 25% 95%;
+  --surface-active: 240 20% 92%;
+
+  --glow-primary: 265 90% 55%;
+  --glow-accent: 200 85% 60%;
+  --glow-strength: 0.12;
+
+  --glass-bg: 220 35% 97% / 0.7;
+  --glass-border: 240 15% 88% / 0.5;
+  --glass-blur: 16px;
+
+  --sidebar-background: 230 30% 95%;
+  --sidebar-foreground: 240 14% 24%;
+  --sidebar-primary: 265 90% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 250 20% 93%;
+  --sidebar-accent-foreground: 240 14% 24%;
+  --sidebar-border: 240 15% 88%;
+  --sidebar-ring: 265 90% 55%;
+
+  --shadow-sm: 0 1px 3px hsl(240 20% 14% / 0.04);
+  --shadow-md: 0 4px 12px hsl(240 20% 14% / 0.06);
+  --shadow-lg: 0 10px 30px hsl(240 20% 14% / 0.08);
+  --shadow-glow: 0 0 20px hsl(265 90% 55% / 0.12);
+  --shadow-card: 0 2px 8px hsl(240 20% 14% / 0.04), 0 0 1px hsl(240 20% 14% / 0.06);
+
+  --gradient-surface: linear-gradient(135deg, hsl(210 40% 98%) 0%, hsl(230 30% 95%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(265 90% 55%) 0%, hsl(280 85% 60%) 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(265 90% 55% / 0.06) 0%, transparent 70%);
+  --gradient-card: linear-gradient(160deg, hsl(220 35% 98%) 0%, hsl(230 30% 96%) 100%);
+}
+
+/* ─── Cosmos (Dark — cosmic luxury) ─── */
+[data-theme="cosmos"] {
+  --background: 220 25% 8%;
+  --foreground: 220 15% 85%;
+
+  --card: 220 22% 11%;
+  --card-foreground: 220 15% 85%;
+
+  --popover: 220 22% 11%;
+  --popover-foreground: 220 15% 85%;
+
+  --primary: 200 95% 65%;
+  --primary-foreground: 220 25% 8%;
+
+  --secondary: 220 20% 15%;
+  --secondary-foreground: 220 15% 80%;
+
+  --muted: 220 18% 17%;
+  --muted-foreground: 220 10% 50%;
+
+  --accent: 270 85% 70%;
+  --accent-foreground: 220 25% 8%;
+
+  --destructive: 0 60% 45%;
+  --destructive-foreground: 220 15% 90%;
+
+  --border: 220 18% 18%;
+  --input: 220 18% 18%;
+  --ring: 200 95% 65%;
+
+  --surface: 220 24% 10%;
+  --surface-hover: 220 22% 14%;
+  --surface-active: 220 20% 17%;
+
+  --glow-primary: 200 95% 65%;
+  --glow-accent: 270 85% 70%;
+  --glow-strength: 0.25;
+
+  --glass-bg: 220 22% 12% / 0.6;
+  --glass-border: 220 18% 22% / 0.4;
+  --glass-blur: 20px;
+
+  --sidebar-background: 220 24% 9%;
+  --sidebar-foreground: 220 12% 75%;
+  --sidebar-primary: 200 95% 65%;
+  --sidebar-primary-foreground: 220 25% 8%;
+  --sidebar-accent: 220 20% 15%;
+  --sidebar-accent-foreground: 220 12% 75%;
+  --sidebar-border: 220 18% 18%;
+  --sidebar-ring: 200 95% 65%;
+
+  --shadow-sm: 0 1px 3px hsl(220 30% 3% / 0.3);
+  --shadow-md: 0 4px 12px hsl(220 30% 3% / 0.4);
+  --shadow-lg: 0 10px 30px hsl(220 30% 3% / 0.5);
+  --shadow-glow: 0 0 30px hsl(200 95% 65% / 0.15);
+  --shadow-card: 0 2px 8px hsl(220 30% 3% / 0.3), 0 0 1px hsl(220 18% 22% / 0.5);
+
+  --gradient-surface: linear-gradient(135deg, hsl(220 25% 8%) 0%, hsl(220 22% 11%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(270 85% 70%) 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.1) 0%, transparent 70%);
+  --gradient-card: linear-gradient(160deg, hsl(220 22% 12%) 0%, hsl(220 24% 10%) 100%);
+}
+
+/* ─── Midnight (Dark — true black OLED) ─── */
+[data-theme="midnight"] {
+  --background: 0 0% 4%;
+  --foreground: 200 10% 85%;
+
+  --card: 0 0% 7%;
+  --card-foreground: 200 10% 85%;
+
+  --popover: 0 0% 7%;
+  --popover-foreground: 200 10% 85%;
+
+  --primary: 200 95% 65%;
+  --primary-foreground: 0 0% 4%;
+
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 200 10% 80%;
+
+  --muted: 0 0% 14%;
+  --muted-foreground: 200 5% 50%;
+
+  --accent: 160 90% 50%;
+  --accent-foreground: 0 0% 4%;
+
+  --destructive: 0 60% 45%;
+  --destructive-foreground: 200 10% 90%;
+
+  --border: 0 0% 16%;
+  --input: 0 0% 16%;
+  --ring: 200 95% 65%;
+
+  --surface: 0 0% 6%;
+  --surface-hover: 0 0% 10%;
+  --surface-active: 0 0% 14%;
+
+  --glow-primary: 200 95% 65%;
+  --glow-accent: 160 90% 50%;
+  --glow-strength: 0.08;
+
+  --glass-bg: 0 0% 8% / 0.7;
+  --glass-border: 0 0% 18% / 0.4;
+  --glass-blur: 16px;
+
+  --sidebar-background: 0 0% 5%;
+  --sidebar-foreground: 200 8% 70%;
+  --sidebar-primary: 200 95% 65%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 0 0% 12%;
+  --sidebar-accent-foreground: 200 8% 70%;
+  --sidebar-border: 0 0% 16%;
+  --sidebar-ring: 200 95% 65%;
+
+  --shadow-sm: 0 1px 3px hsl(0 0% 0% / 0.4);
+  --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.5);
+  --shadow-lg: 0 10px 30px hsl(0 0% 0% / 0.6);
+  --shadow-glow: 0 0 20px hsl(200 95% 65% / 0.06);
+  --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.4), 0 0 1px hsl(0 0% 18% / 0.5);
+
+  --gradient-surface: linear-gradient(135deg, hsl(0 0% 4%) 0%, hsl(0 0% 7%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(160 90% 50%) 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.04) 0%, transparent 70%);
+  --gradient-card: linear-gradient(160deg, hsl(0 0% 8%) 0%, hsl(0 0% 5%) 100%);
+}
+
+/* ─── Sahara (Light — warm earthy) ─── */
+[data-theme="sahara"] {
+  --background: 35 40% 95%;
+  --foreground: 25 25% 14%;
+
+  --card: 35 35% 96%;
+  --card-foreground: 25 25% 14%;
+
+  --popover: 35 35% 96%;
+  --popover-foreground: 25 25% 14%;
+
+  --primary: 25 80% 50%;
+  --primary-foreground: 35 40% 97%;
+
+  --secondary: 35 20% 90%;
+  --secondary-foreground: 25 25% 20%;
+
+  --muted: 30 15% 88%;
+  --muted-foreground: 25 10% 45%;
+
+  --accent: 168 40% 42%;
+  --accent-foreground: 35 40% 97%;
+
+  --destructive: 0 65% 51%;
+  --destructive-foreground: 35 40% 97%;
+
+  --border: 30 20% 85%;
+  --input: 30 20% 85%;
+  --ring: 25 80% 50%;
+
+  --surface: 35 35% 97%;
+  --surface-hover: 33 28% 93%;
+  --surface-active: 30 22% 90%;
+
+  --glow-primary: 25 80% 50%;
+  --glow-accent: 168 40% 42%;
+  --glow-strength: 0;
+
+  --glass-bg: 35 35% 96% / 0.8;
+  --glass-border: 30 20% 85% / 0.5;
+  --glass-blur: 12px;
+
+  --sidebar-background: 33 30% 93%;
+  --sidebar-foreground: 25 18% 24%;
+  --sidebar-primary: 25 80% 50%;
+  --sidebar-primary-foreground: 35 40% 97%;
+  --sidebar-accent: 35 20% 90%;
+  --sidebar-accent-foreground: 25 18% 24%;
+  --sidebar-border: 30 20% 85%;
+  --sidebar-ring: 25 80% 50%;
+
+  --shadow-sm: 0 1px 3px hsl(25 25% 14% / 0.04);
+  --shadow-md: 0 4px 12px hsl(25 25% 14% / 0.06);
+  --shadow-lg: 0 10px 30px hsl(25 25% 14% / 0.08);
+  --shadow-glow: none;
+  --shadow-card: 0 2px 8px hsl(25 25% 14% / 0.04), 0 0 1px hsl(25 25% 14% / 0.06);
+
+  --gradient-surface: linear-gradient(135deg, hsl(35 40% 95%) 0%, hsl(33 30% 93%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(25 80% 50%) 0%, hsl(20 85% 55%) 100%);
+  --gradient-glow: none;
+  --gradient-card: linear-gradient(160deg, hsl(35 35% 97%) 0%, hsl(33 30% 94%) 100%);
+}
+
+/* ─── Garden (Light — pastel green) ─── */
+[data-theme="garden"] {
+  --background: 140 30% 97%;
+  --foreground: 150 20% 14%;
+
+  --card: 145 25% 96%;
+  --card-foreground: 150 20% 14%;
+
+  --popover: 145 25% 96%;
+  --popover-foreground: 150 20% 14%;
+
+  --primary: 145 45% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 145 18% 92%;
+  --secondary-foreground: 150 20% 20%;
+
+  --muted: 140 12% 90%;
+  --muted-foreground: 150 8% 45%;
+
+  --accent: 280 35% 70%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 65% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 145 15% 87%;
+  --input: 145 15% 87%;
+  --ring: 145 45% 55%;
+
+  --surface: 140 28% 98%;
+  --surface-hover: 142 22% 94%;
+  --surface-active: 145 18% 91%;
+
+  --glow-primary: 145 45% 55%;
+  --glow-accent: 280 35% 70%;
+  --glow-strength: 0.06;
+
+  --glass-bg: 145 25% 96% / 0.7;
+  --glass-border: 145 15% 87% / 0.5;
+  --glass-blur: 16px;
+
+  --sidebar-background: 142 25% 94%;
+  --sidebar-foreground: 150 14% 24%;
+  --sidebar-primary: 145 45% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 145 18% 92%;
+  --sidebar-accent-foreground: 150 14% 24%;
+  --sidebar-border: 145 15% 87%;
+  --sidebar-ring: 145 45% 55%;
+
+  --shadow-sm: 0 1px 3px hsl(150 20% 14% / 0.04);
+  --shadow-md: 0 4px 12px hsl(150 20% 14% / 0.06);
+  --shadow-lg: 0 10px 30px hsl(150 20% 14% / 0.08);
+  --shadow-glow: 0 0 20px hsl(145 45% 55% / 0.08);
+  --shadow-card: 0 2px 8px hsl(150 20% 14% / 0.04), 0 0 1px hsl(150 20% 14% / 0.06);
+
+  --gradient-surface: linear-gradient(135deg, hsl(140 30% 97%) 0%, hsl(142 25% 94%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(145 45% 55%) 0%, hsl(155 50% 50%) 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(145 45% 55% / 0.04) 0%, transparent 70%);
+  --gradient-card: linear-gradient(160deg, hsl(145 25% 97%) 0%, hsl(142 22% 95%) 100%);
+}
+
+/* ─── Matrix (Dark — terminal green) ─── */
+[data-theme="matrix"] {
+  --background: 120 15% 6%;
+  --foreground: 120 40% 80%;
+
+  --card: 120 12% 9%;
+  --card-foreground: 120 40% 80%;
+
+  --popover: 120 12% 9%;
+  --popover-foreground: 120 40% 80%;
+
+  --primary: 120 100% 50%;
+  --primary-foreground: 120 15% 6%;
+
+  --secondary: 120 12% 14%;
+  --secondary-foreground: 120 30% 70%;
+
+  --muted: 120 10% 16%;
+  --muted-foreground: 120 15% 45%;
+
+  --accent: 120 80% 35%;
+  --accent-foreground: 120 15% 6%;
+
+  --destructive: 0 60% 45%;
+  --destructive-foreground: 120 40% 90%;
+
+  --border: 120 10% 18%;
+  --input: 120 10% 18%;
+  --ring: 120 100% 50%;
+
+  --surface: 120 13% 8%;
+  --surface-hover: 120 12% 12%;
+  --surface-active: 120 10% 16%;
+
+  --glow-primary: 120 100% 50%;
+  --glow-accent: 120 80% 35%;
+  --glow-strength: 0.3;
+
+  --glass-bg: 120 12% 10% / 0.6;
+  --glass-border: 120 10% 20% / 0.4;
+  --glass-blur: 16px;
+
+  --sidebar-background: 120 14% 7%;
+  --sidebar-foreground: 120 25% 65%;
+  --sidebar-primary: 120 100% 50%;
+  --sidebar-primary-foreground: 120 15% 6%;
+  --sidebar-accent: 120 12% 14%;
+  --sidebar-accent-foreground: 120 25% 65%;
+  --sidebar-border: 120 10% 18%;
+  --sidebar-ring: 120 100% 50%;
+
+  --shadow-sm: 0 1px 3px hsl(120 20% 2% / 0.4);
+  --shadow-md: 0 4px 12px hsl(120 20% 2% / 0.5);
+  --shadow-lg: 0 10px 30px hsl(120 20% 2% / 0.6);
+  --shadow-glow: 0 0 30px hsl(120 100% 50% / 0.15);
+  --shadow-card: 0 2px 8px hsl(120 20% 2% / 0.4), 0 0 1px hsl(120 10% 20% / 0.5);
+
+  --gradient-surface: linear-gradient(135deg, hsl(120 15% 6%) 0%, hsl(120 12% 9%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(120 100% 50%) 0%, hsl(120 80% 35%) 100%);
+  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(120 100% 50% / 0.08) 0%, transparent 70%);
+  --gradient-card: linear-gradient(160deg, hsl(120 12% 10%) 0%, hsl(120 14% 7%) 100%);
+}
+
 /* ─── Base Styles ─── */
 * {
   border-color: hsl(var(--border));
@@ -384,4 +762,76 @@ body {
 
 @utility transition-slow {
   transition: all var(--transition-slow);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Stream 6: Visual Polish — Panel glow, scan lines, animations
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Panel Focus Glow ─── */
+.panel-focused {
+  box-shadow:
+    inset 0 0 30px hsl(var(--glow-primary) / calc(var(--glow-strength) * 0.3)),
+    0 0 20px hsl(var(--glow-primary) / calc(var(--glow-strength) * 0.5));
+}
+
+/* ─── Sci-fi Scan Lines on Panel Headers (dark themes only) ─── */
+.dark .panel-header::before,
+[data-theme="cosmos"] .panel-header::before,
+[data-theme="midnight"] .panel-header::before,
+[data-theme="matrix"] .panel-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    hsl(var(--glow-accent) / 0.02) 2px,
+    hsl(var(--glow-accent) / 0.02) 4px
+  );
+}
+
+/* ─── Active Tab Text Glow (dark themes only) ─── */
+.dark .panel-tab-active,
+[data-theme="cosmos"] .panel-tab-active,
+[data-theme="midnight"] .panel-tab-active,
+[data-theme="matrix"] .panel-tab-active {
+  text-shadow: 0 0 8px hsl(var(--glow-primary) / 0.3);
+}
+
+/* ─── Verse Selection Indicator ─── */
+.verse-focused-indicator {
+  position: relative;
+}
+
+.verse-focused-indicator::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--accent) / 0) 0%,
+    hsl(var(--accent)) 30%,
+    hsl(var(--accent)) 70%,
+    hsl(var(--accent) / 0) 100%
+  );
+}
+
+/* ─── Resize Handle Polish ─── */
+[data-resize-handle-id] {
+  transition: background var(--transition-fast), width var(--transition-fast);
+}
+
+[data-resize-handle-id]:hover {
+  background: hsl(var(--primary) / 0.15);
+}
+
+[data-resize-handle-active] {
+  background: hsl(var(--primary) / 0.25) !important;
 }

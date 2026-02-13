@@ -3,7 +3,6 @@ export type {
   Verse,
   Surah,
   SurahWithVerses,
-  Word,
   Translation,
   TranslationResource,
   Tafsir,
@@ -22,13 +21,42 @@ export type {
   ArabicFont,
   ArabicFontSize,
   TranslationFontSize,
+  TranslationLayout,
+  ThemeName,
   UserPreferences,
 } from "./study";
+export { toUserPreferences } from "./study";
+
+export type {
+  NodeType,
+  EdgeType,
+  GraphNode,
+  GraphEdge,
+  KnowledgeGraph,
+} from "./graph";
+
+export type {
+  ScriptureSource,
+  ScriptureVerse,
+  CrossScriptureCluster,
+  CrossReference,
+} from "./cross-reference";
 
 export type {
   ApiSuccess,
   ApiError,
   ApiResponse,
   ApiMeta,
-  PaginationParams,
 } from "./api";
+
+export type {
+  PanelKind,
+  BreadcrumbItemType as WorkspaceBreadcrumbItemType,
+  BreadcrumbItem as WorkspaceBreadcrumbItem,
+  PanelInstance,
+  PanelGroup,
+  WorkspaceState,
+  PanelTypeInfo,
+  WorkspacePresetId,
+  WorkspacePreset,
+} from "./workspace";

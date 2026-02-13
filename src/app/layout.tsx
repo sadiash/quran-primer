@@ -5,7 +5,7 @@ import {
   QueryProvider,
   AudioProvider,
 } from "@/presentation/providers";
-import { ToastProvider } from "@/presentation/components/ui";
+import { ToastProvider, ThemeNameSync } from "@/presentation/components/ui";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,6 +50,7 @@ export default function RootLayout({
         <ThemeProvider>
           <QueryProvider>
             <AudioProvider>
+              <ThemeNameSync />
               <ToastProvider>{children}</ToastProvider>
             </AudioProvider>
           </QueryProvider>

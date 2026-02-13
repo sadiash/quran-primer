@@ -86,4 +86,65 @@ describe("GET /api/v1/surahs/[id]", () => {
     expect(response.status).toBe(200);
     expect(json.ok).toBe(true);
   });
+
+  it("returns surah with multiple translations when translations param provided", async () => {
+    const result = {
+      surah: createMockSurahWithVerses({ id: 1 }),
+      translations: { 20: [], 85: [] },
+    };
+    mockService.getSurahWithMultipleTranslations.mockResolvedValue(result);
+
+    const response = await GET(
+      createRequest("http://localhost/api/v1/surahs/1?translations=20,85") as never,
+      { params: Promise.resolve({ id: "1" }) },
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.ok).toBe(true);
+    expect(mockService.getSurahWithMultipleTranslations).toHaveBeenCalledWith(1, [20, 85]);
+  });
+
+  it("returns 400 for invalid translations param", async () => {
+    const response = await GET(
+      createRequest("http://localhost/api/v1/surahs/1?translations=abc,xyz") as never,
+      { params: Promise.resolve({ id: "1" }) },
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(json.ok).toBe(false);
+  });
+
+  it("returns 404 when surah not found with multiple translations", async () => {
+    mockService.getSurahWithMultipleTranslations.mockResolvedValue(null);
+
+    const response = await GET(
+      createRequest("http://localhost/api/v1/surahs/1?translations=20,85") as never,
+      { params: Promise.resolve({ id: "1" }) },
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(json.ok).toBe(false);
+  });
+
+  it("translations param takes precedence over translation param", async () => {
+    const result = {
+      surah: createMockSurahWithVerses({ id: 1 }),
+      translations: { 20: [] },
+    };
+    mockService.getSurahWithMultipleTranslations.mockResolvedValue(result);
+
+    const response = await GET(
+      createRequest("http://localhost/api/v1/surahs/1?translations=20&translation=131") as never,
+      { params: Promise.resolve({ id: "1" }) },
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.ok).toBe(true);
+    expect(mockService.getSurahWithMultipleTranslations).toHaveBeenCalledWith(1, [20]);
+    expect(mockService.getSurahWithTranslation).not.toHaveBeenCalled();
+  });
 });

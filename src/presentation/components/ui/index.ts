@@ -17,3 +17,6 @@ export {
 export { ToastProvider, useToast, type Toast, type ToastVariant } from "./toast";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { CommandPalette, type CommandPaletteProps } from "./command-palette";
+export { Breadcrumb, type BreadcrumbProps } from "./breadcrumb";
+export { ThemeNameSync } from "./theme-name-sync";
+export { ThemeSwitcher, type ThemeSwitcherProps } from "./theme-switcher";

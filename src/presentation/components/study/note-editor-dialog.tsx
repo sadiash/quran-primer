@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type KeyboardEvent } from "react";
+import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import {
   Dialog,
   DialogHeader,
@@ -8,7 +8,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/presentation/components/ui/dialog";
-import { Textarea, Badge, Button, Input } from "@/presentation/components/ui";
+import { Badge, Button, Input } from "@/presentation/components/ui";
+import { RichNoteEditor } from "./rich-note-editor";
 import { useNotes } from "@/presentation/hooks/use-notes";
 import { useToast } from "@/presentation/components/ui/toast";
 import { getSurahName } from "@/lib/surah-names";
@@ -31,12 +32,29 @@ export function NoteEditorDialog({
 }: NoteEditorDialogProps) {
   const { saveNote, removeNote } = useNotes();
   const { toast } = useToast();
-  const [content, setContent] = useState(existingNote?.content ?? "");
+
+  // Track both plain text and JSON content via refs to avoid re-renders
+  const contentRef = useRef(existingNote?.content ?? "");
+  const contentJsonRef = useRef(existingNote?.contentJson ?? "");
+
   const [tags, setTags] = useState<string[]>(existingNote?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
+  const [hasContent, setHasContent] = useState(
+    Boolean(existingNote?.content?.trim()),
+  );
 
   const [, verseNum] = verseKey.split(":");
   const surahName = getSurahName(surahId);
+
+  // Determine initial content for the editor:
+  // Prefer contentJson (rich text); fall back to plain text content
+  const initialContent = existingNote?.contentJson ?? existingNote?.content;
+
+  const handleEditorChange = useCallback((json: string, text: string) => {
+    contentJsonRef.current = json;
+    contentRef.current = text;
+    setHasContent(Boolean(text.trim()));
+  }, []);
 
   const handleAddTag = useCallback(() => {
     const tag = tagInput.trim().toLowerCase();
@@ -58,11 +76,12 @@ export function NoteEditorDialog({
   };
 
   const handleSave = async () => {
-    if (!content.trim()) return;
+    if (!contentRef.current.trim()) return;
     await saveNote({
       verseKey,
       surahId,
-      content: content.trim(),
+      content: contentRef.current.trim(),
+      contentJson: contentJsonRef.current || undefined,
       tags,
       id: existingNote?.id,
     });
@@ -89,12 +108,10 @@ export function NoteEditorDialog({
       </DialogHeader>
 
       <div className="space-y-4">
-        <Textarea
-          placeholder="Write your note..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={5}
-          aria-label="Note content"
+        <RichNoteEditor
+          content={initialContent}
+          onChange={handleEditorChange}
+          editable
         />
 
         <div>
@@ -135,7 +152,7 @@ export function NoteEditorDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={!content.trim()}>
+        <Button onClick={handleSave} disabled={!hasContent}>
           Save
         </Button>
       </DialogFooter>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
-import type { Verse, Translation, Note } from "@/core/types";
+import type { Verse, Translation, TranslationLayout, Note } from "@/core/types";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useNotes } from "@/presentation/hooks/use-notes";
@@ -14,12 +14,16 @@ interface ReadingSurfaceProps {
   surahId: number;
   verses: Verse[];
   translations: Translation[];
+  showArabic?: boolean;
+  translationLayout?: TranslationLayout;
 }
 
 export function ReadingSurface({
   surahId,
   verses,
   translations,
+  showArabic = true,
+  translationLayout = "stacked",
 }: ReadingSurfaceProps) {
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const { bookmarks } = useBookmarks(surahId);
@@ -36,10 +40,16 @@ export function ReadingSurface({
     existingNote?: Note;
   } | null>(null);
 
-  const translationMap = useMemo(() => {
-    const map = new Map<string, Translation>();
+  // Group translations by verseKey -> Translation[]
+  const translationsByVerse = useMemo(() => {
+    const map = new Map<string, Translation[]>();
     for (const t of translations) {
-      map.set(t.verseKey, t);
+      const existing = map.get(t.verseKey);
+      if (existing) {
+        existing.push(t);
+      } else {
+        map.set(t.verseKey, [t]);
+      }
     }
     return map;
   }, [translations]);
@@ -80,11 +90,13 @@ export function ReadingSurface({
             key={verse.verseKey}
             verse={verse}
             surahId={surahId}
-            translation={translationMap.get(verse.verseKey)}
+            translations={translationsByVerse.get(verse.verseKey) ?? []}
             observerRef={observerRef}
             isBookmarked={bookmarkedKeys.has(verse.verseKey)}
             hasNote={notesByVerse.has(verse.verseKey)}
             onNoteClick={() => handleNoteClick(verse.verseKey)}
+            showArabic={showArabic}
+            translationLayout={translationLayout}
           />
         ))}
       </div>

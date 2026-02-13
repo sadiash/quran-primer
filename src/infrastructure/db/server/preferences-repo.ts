@@ -3,6 +3,7 @@
 import { eq } from "drizzle-orm";
 import type { PreferencesRepository } from "@/core/ports";
 import type { UserPreferences } from "@/core/types";
+import { toUserPreferences } from "@/core/types";
 import type { DrizzleDb } from "./connection";
 import { preferences } from "./schema";
 
@@ -17,7 +18,7 @@ export class DrizzlePreferencesRepository implements PreferencesRepository {
       .where(eq(preferences.id, lookupId))
       .limit(1);
 
-    return rows[0] ? toPreferences(rows[0]) : null;
+    return rows[0] ? toUserPreferences(rows[0]) : null;
   }
 
   async save(prefs: UserPreferences): Promise<void> {
@@ -31,6 +32,9 @@ export class DrizzlePreferencesRepository implements PreferencesRepository {
         translationFontSize: prefs.translationFontSize,
         showTranslation: prefs.showTranslation,
         defaultTranslationId: prefs.defaultTranslationId,
+        activeTranslationIds: prefs.activeTranslationIds,
+        translationLayout: prefs.translationLayout,
+        showArabic: prefs.showArabic,
         defaultReciterId: prefs.defaultReciterId,
         updatedAt: prefs.updatedAt,
       })
@@ -43,6 +47,9 @@ export class DrizzlePreferencesRepository implements PreferencesRepository {
           translationFontSize: prefs.translationFontSize,
           showTranslation: prefs.showTranslation,
           defaultTranslationId: prefs.defaultTranslationId,
+          activeTranslationIds: prefs.activeTranslationIds,
+          translationLayout: prefs.translationLayout,
+          showArabic: prefs.showArabic,
           defaultReciterId: prefs.defaultReciterId,
           updatedAt: prefs.updatedAt,
         },
@@ -50,19 +57,3 @@ export class DrizzlePreferencesRepository implements PreferencesRepository {
   }
 }
 
-function toPreferences(
-  row: typeof preferences.$inferSelect,
-): UserPreferences {
-  return {
-    id: row.id,
-    theme: row.theme as UserPreferences["theme"],
-    arabicFont: row.arabicFont as UserPreferences["arabicFont"],
-    arabicFontSize: row.arabicFontSize as UserPreferences["arabicFontSize"],
-    translationFontSize:
-      row.translationFontSize as UserPreferences["translationFontSize"],
-    showTranslation: row.showTranslation,
-    defaultTranslationId: row.defaultTranslationId,
-    defaultReciterId: row.defaultReciterId,
-    updatedAt: row.updatedAt,
-  };
-}

@@ -14,6 +14,10 @@ export function createMockQuranService(): {
       surah: createMockSurahWithVerses(),
       translations: [],
     }),
+    getSurahWithMultipleTranslations: vi.fn().mockResolvedValue({
+      surah: createMockSurahWithVerses(),
+      translations: {},
+    }),
     getAvailableTranslations: vi.fn().mockResolvedValue([]),
     getTranslations: vi.fn().mockResolvedValue([]),
     getAvailableTafsirs: vi.fn().mockResolvedValue([]),
@@ -28,5 +32,12 @@ export function createMockHadithAdapter() {
   return {
     getCollections: vi.fn().mockResolvedValue([]),
     searchHadith: vi.fn().mockResolvedValue([]),
+  };
+}
+
+export function createMockCrossReferenceAdapter() {
+  return {
+    getCrossReferences: vi.fn().mockResolvedValue([]),
+    searchCrossReferences: vi.fn().mockResolvedValue([]),
   };
 }

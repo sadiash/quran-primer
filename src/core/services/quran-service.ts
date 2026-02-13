@@ -75,6 +75,34 @@ export class QuranService {
     return { surah, translations };
   }
 
+  /** Get a surah with multiple translations in one call */
+  async getSurahWithMultipleTranslations(
+    surahId: number,
+    translationIds: number[],
+  ): Promise<{
+    surah: SurahWithVerses;
+    translations: Record<number, Translation[]>;
+  } | null> {
+    const [surah, ...translationResults] = await Promise.all([
+      this.deps.quran.getSurah(surahId),
+      ...translationIds.map((id) =>
+        this.deps.translations.getTranslations(surahId, id),
+      ),
+    ]);
+
+    if (!surah) return null;
+
+    const translations: Record<number, Translation[]> = {};
+    for (let i = 0; i < translationIds.length; i++) {
+      const id = translationIds[i];
+      if (id !== undefined) {
+        translations[id] = translationResults[i] ?? [];
+      }
+    }
+
+    return { surah, translations };
+  }
+
   // --- Tafsir ---
 
   getAvailableTafsirs(): Promise<TafsirResource[]> {

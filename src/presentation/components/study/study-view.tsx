@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import type { Verse, Surah } from "@/core/types";
 import { toEasternArabicNumeral } from "@/lib/arabic-utils";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
+import { usePanelManager } from "@/presentation/providers/panel-provider";
 import { IconButton } from "@/presentation/components/ui";
 import { Play, Pause } from "lucide-react";
 import { TafsirPanel } from "./tafsir-panel";
@@ -15,8 +17,14 @@ interface StudyViewProps {
 
 export function StudyView({ verse, surah }: StudyViewProps) {
   const audio = useAudioPlayer();
+  const { focusVerse } = usePanelManager();
   const isPlaying =
     audio.currentVerseKey === verse.verseKey && audio.isPlaying;
+
+  // Set focused verse key when the study view mounts or verse changes
+  useEffect(() => {
+    focusVerse(verse.verseKey);
+  }, [verse.verseKey, focusVerse]);
 
   const handlePlay = () => {
     if (isPlaying) {
@@ -59,8 +67,8 @@ export function StudyView({ verse, surah }: StudyViewProps) {
 
       {/* Panels */}
       <div className="grid gap-6 md:grid-cols-2">
-        <TafsirPanel verseKey={verse.verseKey} />
-        <HadithPanel defaultQuery={`${surah.nameSimple} ${verse.verseKey}`} />
+        <TafsirPanel />
+        <HadithPanel />
       </div>
     </div>
   );

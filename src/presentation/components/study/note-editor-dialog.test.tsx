@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@/test/helpers/test-utils";
+import { render, screen, waitFor } from "@/test/helpers/test-utils";
 import userEvent from "@testing-library/user-event";
 import { NoteEditorDialog } from "./note-editor-dialog";
 import { createMockNote } from "@/test/helpers/mock-data";
@@ -46,12 +46,23 @@ describe("NoteEditorDialog", () => {
     expect(screen.getByText("Edit Note")).toBeInTheDocument();
   });
 
-  it("allows typing content", async () => {
-    const user = userEvent.setup();
+  it("renders rich text editor with toolbar", async () => {
     render(<NoteEditorDialog {...defaultProps} />);
-    const textarea = screen.getByLabelText("Note content");
-    await user.type(textarea, "My reflection");
-    expect(textarea).toHaveValue("My reflection");
+    await waitFor(() => {
+      expect(screen.getByRole("toolbar")).toBeInTheDocument();
+    });
+    expect(screen.getByTitle("Bold")).toBeInTheDocument();
+    expect(screen.getByTitle("Italic")).toBeInTheDocument();
+  });
+
+  it("loads existing note content into editor", async () => {
+    const existingNote = createMockNote({ content: "My existing note" });
+    render(
+      <NoteEditorDialog {...defaultProps} existingNote={existingNote} />,
+    );
+    await waitFor(() => {
+      expect(screen.getByText("My existing note")).toBeInTheDocument();
+    });
   });
 
   it("adds tags on Enter", async () => {
@@ -73,16 +84,25 @@ describe("NoteEditorDialog", () => {
     expect(screen.queryByText("test")).not.toBeInTheDocument();
   });
 
-  it("calls saveNote on save", async () => {
+  it("calls saveNote with contentJson on save", async () => {
     const user = userEvent.setup();
-    render(<NoteEditorDialog {...defaultProps} />);
-    await user.type(screen.getByLabelText("Note content"), "A note");
+    const existingNote = createMockNote({ content: "Saveable content" });
+    render(
+      <NoteEditorDialog {...defaultProps} existingNote={existingNote} />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Saveable content")).toBeInTheDocument();
+    });
+
     await user.click(screen.getByText("Save"));
+
     expect(mockSaveNote).toHaveBeenCalledWith(
       expect.objectContaining({
         verseKey: "1:1",
         surahId: 1,
-        content: "A note",
+        content: expect.any(String),
+        contentJson: expect.any(String),
       }),
     );
   });
@@ -108,5 +128,27 @@ describe("NoteEditorDialog", () => {
     );
     await user.click(screen.getByText("Delete"));
     expect(mockRemoveNote).toHaveBeenCalledWith("note-42");
+  });
+
+  it("loads contentJson when available over plain text", async () => {
+    const contentJson = JSON.stringify({
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [{ type: "text", text: "Rich text note" }],
+        },
+      ],
+    });
+    const existingNote = createMockNote({
+      content: "Plain text fallback",
+      contentJson,
+    });
+    render(
+      <NoteEditorDialog {...defaultProps} existingNote={existingNote} />,
+    );
+    await waitFor(() => {
+      expect(screen.getByText("Rich text note")).toBeInTheDocument();
+    });
   });
 });

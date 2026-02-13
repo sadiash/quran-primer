@@ -29,6 +29,7 @@ export function useNotes(opts?: UseNotesOptions) {
     verseKey: string;
     surahId: number;
     content: string;
+    contentJson?: string;
     tags: string[];
     id?: string;
   }): Promise<void> {
@@ -37,6 +38,7 @@ export function useNotes(opts?: UseNotesOptions) {
     if (params.id) {
       await db.notes.update(params.id, {
         content: params.content,
+        contentJson: params.contentJson,
         tags: params.tags,
         updatedAt: now,
       });
@@ -46,6 +48,7 @@ export function useNotes(opts?: UseNotesOptions) {
         verseKey: params.verseKey,
         surahId: params.surahId,
         content: params.content,
+        contentJson: params.contentJson,
         tags: params.tags,
         createdAt: now,
         updatedAt: now,
