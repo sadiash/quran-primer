@@ -26,7 +26,25 @@
       "Bash(npm ls:*)",
       "WebSearch",
       "Bash(ls:*)",
-      "mcp__playwright__browser_resize"
+      "mcp__playwright__browser_resize",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd multi-panel workspace architecture, 8-theme system, and visual polish\n\nComplete 6-stream workspace redesign replacing the single fixed-width study\npanel with a VS Code/Logos-style multi-panel workspace. Users can now open\nmultiple study panels simultaneously \\(Tafsir, Hadith, Notes, Cross-Ref,\nKnowledge Graph, Context Preview\\) in resizable side-by-side groups.\n\n- Stream 1: Workspace state architecture \\(WorkspaceState, PanelInstance,\n  PanelGroup types, workspace reducer with 15+ actions\\)\n- Stream 2: Layout shell with react-resizable-panels \\(study region,\n  panel group containers, tab bars, breadcrumbs, resize handles\\)\n- Stream 3: Panel component migration to usePanelInstance\\(\\) with\n  per-panel verse sync and breadcrumb navigation\n- Stream 4: Command palette with Study Panels/Workspaces/Themes groups,\n  activity bar panel menu, 5 workspace presets \\(Daily Reading, Deep Study,\n  Translation Comparison, Research, Focus\\)\n- Stream 5: 8-theme system via CSS data-theme attribute \\(Library,\n  Observatory, Amethyst, Cosmos, Midnight, Sahara, Garden, Matrix\\)\n  with ThemeNameSync component and theme switcher UI\n- Stream 6: Visual polish — panel focus glow, sci-fi scan-line headers,\n  active tab text glow, verse-focused-indicator gradient, resize handle\n  styling\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(xargs:*)",
+      "Bash(npm run dev:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.quran-tafsir.com)",
+      "Bash(gh api:*)",
+      "Bash(gh auth:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(node scripts/seed-translations.mjs:*)",
+      "Bash(node scripts/seed-tafsirs.mjs:*)",
+      "Bash(node scripts/seed-hadith.mjs:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx next lint:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

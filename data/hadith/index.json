@@ -1,0 +1,26 @@
+[
+  {
+    "id": "bukhari",
+    "name": "Sahih al-Bukhari",
+    "hadithCount": 7277,
+    "chapterCount": 97
+  },
+  {
+    "id": "muslim",
+    "name": "Sahih Muslim",
+    "hadithCount": 7368,
+    "chapterCount": 56
+  },
+  {
+    "id": "abudawud",
+    "name": "Sunan Abu Dawud",
+    "hadithCount": 5276,
+    "chapterCount": 43
+  },
+  {
+    "id": "tirmidhi",
+    "name": "Jami at-Tirmidhi",
+    "hadithCount": 4053,
+    "chapterCount": 49
+  }
+]

@@ -11,7 +11,6 @@ interface ThemeOption {
   label: string;
   description: string;
   mode: "light" | "dark";
-  /** Representative color swatches [background, primary, accent] as raw HSL strings */
   swatches: [string, string, string];
 }
 
@@ -76,7 +75,6 @@ const THEMES: ThemeOption[] = [
 
 export interface ThemeSwitcherProps {
   className?: string;
-  /** Callback after theme selection (e.g. to close a popover) */
   onSelect?: () => void;
 }
 
@@ -110,22 +108,18 @@ export function ThemeSwitcher({ className, onSelect }: ThemeSwitcherProps) {
                 isActive && "bg-surface-active ring-1 ring-primary/30",
               )}
             >
-              {/* Color swatches */}
               <div className="flex shrink-0 gap-0.5">
                 {theme.swatches.map((color, i) => (
                   <div
                     key={i}
                     className={cn(
-                      "h-5 w-5 rounded-full border border-border/50",
-                      i === 0 && "h-5 w-5",
-                      i > 0 && "h-4 w-4",
+                      "rounded-full border border-border/50",
+                      i === 0 ? "h-5 w-5" : "h-4 w-4",
                     )}
                     style={{ backgroundColor: color }}
                   />
                 ))}
               </div>
-
-              {/* Label + description */}
               <div className="min-w-0 flex-1">
                 <div className="truncate text-xs font-medium text-foreground">
                   {theme.label}
@@ -134,13 +128,9 @@ export function ThemeSwitcher({ className, onSelect }: ThemeSwitcherProps) {
                   {theme.description}
                 </div>
               </div>
-
-              {/* Active indicator */}
               {isActive && (
                 <Check className="h-3.5 w-3.5 shrink-0 text-primary" />
               )}
-
-              {/* Mode badge */}
               <span className="shrink-0 rounded bg-muted px-1 py-0.5 text-[9px] font-medium text-muted-foreground uppercase">
                 {theme.mode}
               </span>

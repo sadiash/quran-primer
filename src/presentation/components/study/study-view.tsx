@@ -1,14 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import type { Verse, Surah } from "@/core/types";
-import { toEasternArabicNumeral } from "@/lib/arabic-utils";
-import { useAudioPlayer } from "@/presentation/providers/audio-provider";
-import { usePanelManager } from "@/presentation/providers/panel-provider";
-import { IconButton } from "@/presentation/components/ui";
-import { Play, Pause } from "lucide-react";
-import { TafsirPanel } from "./tafsir-panel";
-import { HadithPanel } from "./hadith-panel";
+import { BookOpen } from "lucide-react";
 
 interface StudyViewProps {
   verse: Verse;
@@ -16,59 +9,30 @@ interface StudyViewProps {
 }
 
 export function StudyView({ verse, surah }: StudyViewProps) {
-  const audio = useAudioPlayer();
-  const { focusVerse } = usePanelManager();
-  const isPlaying =
-    audio.currentVerseKey === verse.verseKey && audio.isPlaying;
-
-  // Set focused verse key when the study view mounts or verse changes
-  useEffect(() => {
-    focusVerse(verse.verseKey);
-  }, [verse.verseKey, focusVerse]);
-
-  const handlePlay = () => {
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play(verse.verseKey, surah.id);
-    }
-  };
-
   return (
-    <div className="flex flex-col gap-6">
-      {/* Verse Display */}
-      <div className="rounded-xl glass p-6 shadow-soft-md">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {surah.nameSimple} — Verse {verse.verseNumber}
-          </p>
-          <IconButton
-            label={isPlaying ? "Pause" : "Play"}
-            variant="ghost"
-            size="md"
-            onClick={handlePlay}
-          >
-            {isPlaying ? <Pause /> : <Play />}
-          </IconButton>
-        </div>
-
-        <div
-          className="text-center text-3xl leading-[2.4]"
-          dir="rtl"
-          lang="ar"
-          style={{ fontFamily: "var(--font-arabic-reading)" }}
-        >
-          {verse.textUthmani}
-          <span className="mx-2 text-xl text-primary/70">
-            ﴿{toEasternArabicNumeral(verse.verseNumber)}﴾
-          </span>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <BookOpen className="h-5 w-5 text-primary" />
+        <h1 className="text-xl font-bold text-foreground">
+          {surah.nameSimple} — Verse {verse.verseNumber}
+        </h1>
       </div>
 
-      {/* Panels */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <TafsirPanel />
-        <HadithPanel />
+      <div className="rounded-xl border border-border bg-card p-6">
+        <p
+          lang="ar"
+          dir="rtl"
+          className="arabic-reading text-3xl leading-loose text-foreground"
+        >
+          {verse.textUthmani}
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-6">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+          Verse Key
+        </p>
+        <p className="font-mono text-sm text-foreground">{verse.verseKey}</p>
       </div>
     </div>
   );

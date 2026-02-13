@@ -67,7 +67,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
-  // Lazily create audio element
   const getAudio = useCallback(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
@@ -75,7 +74,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     return audioRef.current;
   }, []);
 
-  // Load audio map for a surah
   const loadAudioMap = useCallback(
     async (surahId: number, rid: number) => {
       const map = await fetchAudioMap(surahId, rid);
@@ -94,7 +92,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     async (verseKey: string, surahId: number) => {
       const audio = getAudio();
 
-      // Load audio map if surah changed
       if (surahId !== currentSurahId || audioMapRef.current.size === 0) {
         await loadAudioMap(surahId, reciterId);
       }
@@ -155,7 +152,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setReciterIdState(id);
       if (currentSurahId) {
         await loadAudioMap(currentSurahId, id);
-        // If currently playing, restart with new reciter
         if (currentVerseKey && isPlaying) {
           const audio = getAudio();
           const url = audioMapRef.current.get(currentVerseKey);
@@ -171,16 +167,13 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   const seek = useCallback(
     (time: number) => {
-      const audio = getAudio();
-      audio.currentTime = time;
+      getAudio().currentTime = time;
     },
     [getAudio],
   );
 
-  // Audio element event listeners
   useEffect(() => {
     const audio = getAudio();
-
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onDurationChange = () => setDuration(audio.duration || 0);
     const onEnded = () => next();
@@ -196,25 +189,17 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     };
   }, [getAudio, next]);
 
-  // Global keyboard: Space to toggle play/pause
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.code !== "Space") return;
-
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       if ((e.target as HTMLElement)?.isContentEditable) return;
-
       if (!currentVerseKey) return;
-
       e.preventDefault();
-      if (isPlaying) {
-        pause();
-      } else {
-        resume();
-      }
+      if (isPlaying) pause();
+      else resume();
     };
-
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [currentVerseKey, isPlaying, pause, resume]);

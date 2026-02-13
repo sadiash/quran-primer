@@ -1,165 +1,98 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import type { Node, Edge } from "@xyflow/react";
-import type { KnowledgeGraph, GraphNode, GraphEdge } from "@/core/types";
-import { KnowledgeGraphService } from "@/core/services/knowledge-graph-service";
-import { DexieBookmarkRepository } from "@/infrastructure/db/client/bookmark-repo";
-import { DexieNoteRepository } from "@/infrastructure/db/client/note-repo";
+import { useState, useCallback } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/infrastructure/db/client";
+import type { GraphNode, GraphEdge } from "@/core/types";
 
 export interface UseKnowledgeGraphOptions {
-  verseKey?: string;
   tag?: string;
   surahId?: number;
+  verseKey?: string;
 }
 
-/**
- * Generate the knowledge graph client-side using Dexie (IndexedDB) repos.
- * The graph service reads bookmarks/notes from the browser's local database,
- * so this cannot run in a server-side API route.
- */
-async function generateGraphClientSide(
+interface UseKnowledgeGraphResult {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+export function useKnowledgeGraph(
   options?: UseKnowledgeGraphOptions,
-): Promise<KnowledgeGraph> {
-  const service = new KnowledgeGraphService({
-    bookmarks: new DexieBookmarkRepository(),
-    notes: new DexieNoteRepository(),
-  });
+): UseKnowledgeGraphResult {
+  const [error, setError] = useState<Error | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  return service.generateGraph({
-    verseKey: options?.verseKey,
-    tag: options?.tag,
-    surahId: options?.surahId,
-  });
-}
-
-/**
- * Lay out nodes in a radial/circle arrangement.
- * Verse nodes form the inner ring, note/theme nodes fan out around their connections.
- */
-function layoutNodes(
-  graphNodes: GraphNode[],
-  graphEdges: GraphEdge[],
-): Node[] {
-  const verseNodes = graphNodes.filter((n) => n.nodeType === "verse");
-  const noteNodes = graphNodes.filter((n) => n.nodeType === "note");
-  const themeNodes = graphNodes.filter((n) => n.nodeType === "theme");
-
-  const positionMap = new Map<string, { x: number; y: number }>();
-
-  // Place verse nodes in a circle
-  const verseRadius = Math.max(150, verseNodes.length * 60);
-  verseNodes.forEach((node, i) => {
-    const angle = (2 * Math.PI * i) / Math.max(verseNodes.length, 1);
-    positionMap.set(node.id, {
-      x: Math.cos(angle) * verseRadius,
-      y: Math.sin(angle) * verseRadius,
-    });
-  });
-
-  // Build adjacency: for each non-verse node, find connected verse node
-  const edgesBySource = new Map<string, GraphEdge[]>();
-  for (const edge of graphEdges) {
-    const existing = edgesBySource.get(edge.sourceNodeId);
-    if (existing) {
-      existing.push(edge);
-    } else {
-      edgesBySource.set(edge.sourceNodeId, [edge]);
-    }
-  }
-
-  // Place note nodes near their connected verse, offset outward
-  const noteOffset = 140;
-  const noteCountPerVerse = new Map<string, number>();
-  noteNodes.forEach((node) => {
-    const edges = edgesBySource.get(node.id) ?? [];
-    const connectedVerse = edges.find((e) => {
-      const target = graphNodes.find((n) => n.id === e.targetNodeId);
-      return target?.nodeType === "verse";
-    });
-
-    if (connectedVerse) {
-      const versePos = positionMap.get(connectedVerse.targetNodeId);
-      if (versePos) {
-        const count = noteCountPerVerse.get(connectedVerse.targetNodeId) ?? 0;
-        noteCountPerVerse.set(connectedVerse.targetNodeId, count + 1);
-        const spreadAngle = ((count - 1) * 0.4);
-        const baseAngle = Math.atan2(versePos.y, versePos.x);
-        positionMap.set(node.id, {
-          x: versePos.x + Math.cos(baseAngle + spreadAngle) * noteOffset,
-          y: versePos.y + Math.sin(baseAngle + spreadAngle) * noteOffset,
-        });
-        return;
+  const rawNodes = useLiveQuery(
+    async () => {
+      try {
+        if (options?.verseKey) {
+          return db.graphNodes.where("verseKey").equals(options.verseKey).toArray();
+        }
+        if (options?.surahId) {
+          return db.graphNodes.where("surahId").equals(options.surahId).toArray();
+        }
+        return db.graphNodes.toArray();
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error("Failed to load nodes"));
+        return [];
       }
-    }
-
-    // Fallback: place randomly
-    positionMap.set(node.id, {
-      x: (Math.random() - 0.5) * 600,
-      y: (Math.random() - 0.5) * 600,
-    });
-  });
-
-  // Place theme nodes in an outer ring
-  const themeRadius = verseRadius + 250;
-  themeNodes.forEach((node, i) => {
-    const angle = (2 * Math.PI * i) / Math.max(themeNodes.length, 1) + Math.PI / 4;
-    positionMap.set(node.id, {
-      x: Math.cos(angle) * themeRadius,
-      y: Math.sin(angle) * themeRadius,
-    });
-  });
-
-  return graphNodes.map((node) => {
-    const pos = positionMap.get(node.id) ?? { x: 0, y: 0 };
-    const rfNodeType =
-      node.nodeType === "verse" || node.nodeType === "bookmark" || node.nodeType === "surah"
-        ? "verse"
-        : node.nodeType === "note"
-          ? "note"
-          : "theme";
-
-    return {
-      id: node.id,
-      type: rfNodeType,
-      position: pos,
-      data: {
-        label: node.label,
-        verseKey: node.verseKey,
-        surahId: node.surahId,
-        metadata: node.metadata,
-      },
-    };
-  });
-}
-
-function transformEdges(graphEdges: GraphEdge[]): Edge[] {
-  return graphEdges.map((edge) => ({
-    id: edge.id,
-    source: edge.sourceNodeId,
-    target: edge.targetNodeId,
-    type: "custom",
-    data: {
-      edgeType: edge.edgeType,
-      weight: edge.weight,
     },
+    [options?.verseKey, options?.surahId, options?.tag, refreshKey],
+    undefined,
+  );
+
+  const rawEdges = useLiveQuery(
+    async () => {
+      try {
+        return db.graphEdges.toArray();
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error("Failed to load edges"));
+        return [];
+      }
+    },
+    [refreshKey],
+    undefined,
+  );
+
+  const isLoading = rawNodes === undefined || rawEdges === undefined;
+
+  const nodes: GraphNode[] = (rawNodes ?? []).map((n) => ({
+    id: n.id,
+    nodeType: n.nodeType as GraphNode["nodeType"],
+    label: n.label,
+    verseKey: n.verseKey,
+    surahId: n.surahId,
+    metadata: n.metadata ? JSON.parse(n.metadata) : undefined,
+    createdAt: n.createdAt,
   }));
-}
 
-export function useKnowledgeGraph(options?: UseKnowledgeGraphOptions) {
-  const query = useQuery({
-    queryKey: ["knowledge-graph", options?.verseKey, options?.tag, options?.surahId],
-    queryFn: () => generateGraphClientSide(options),
-  });
+  const edges: GraphEdge[] = (rawEdges ?? []).map((e) => ({
+    id: e.id,
+    sourceNodeId: e.sourceNodeId,
+    targetNodeId: e.targetNodeId,
+    edgeType: e.edgeType as GraphEdge["edgeType"],
+    weight: e.weight,
+    createdAt: e.createdAt,
+  }));
 
-  const nodes: Node[] = query.data ? layoutNodes(query.data.nodes, query.data.edges) : [];
-  const edges: Edge[] = query.data ? transformEdges(query.data.edges) : [];
+  // Filter edges to only include connected nodes
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  const filteredEdges = edges.filter(
+    (e) => nodeIds.has(e.sourceNodeId) && nodeIds.has(e.targetNodeId),
+  );
+
+  const refetch = useCallback(() => setRefreshKey((k) => k + 1), []);
+
+  // Reset error when filter options change — handled inside useLiveQuery callbacks
 
   return {
     nodes,
-    edges,
-    isLoading: query.isLoading,
-    error: query.error,
-    refetch: query.refetch,
+    edges: filteredEdges,
+    isLoading,
+    error,
+    refetch,
   };
 }

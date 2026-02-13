@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { createElement } from "react";
 
 const RECENT_KEY = "command-palette:recent";
 const MAX_RECENT = 5;
@@ -23,13 +31,22 @@ function saveRecentCommands(ids: string[]) {
   }
 }
 
-export function useCommandPalette() {
+interface CommandPaletteContextValue {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  toggle: () => void;
+  recentCommandIds: string[];
+  addRecentCommand: (commandId: string) => void;
+}
+
+const CommandPaletteContext = createContext<CommandPaletteContextValue | null>(null);
+
+export function CommandPaletteProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [recentCommandIds, setRecentCommandIds] = useState<string[]>(
     getRecentCommands,
   );
 
-  // Global keyboard shortcut: Cmd+K (Mac) / Ctrl+K (non-Mac)
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -54,5 +71,23 @@ export function useCommandPalette() {
     });
   }, []);
 
-  return { open, setOpen, toggle, recentCommandIds, addRecentCommand };
+  const value: CommandPaletteContextValue = {
+    open,
+    setOpen,
+    toggle,
+    recentCommandIds,
+    addRecentCommand,
+  };
+
+  return createElement(CommandPaletteContext.Provider, { value }, children);
+}
+
+export function useCommandPalette() {
+  const ctx = useContext(CommandPaletteContext);
+  if (!ctx) {
+    throw new Error(
+      "useCommandPalette must be used within a CommandPaletteProvider",
+    );
+  }
+  return ctx;
 }

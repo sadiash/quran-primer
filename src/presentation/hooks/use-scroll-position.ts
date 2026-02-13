@@ -9,14 +9,12 @@ export function useScrollPosition(key: string) {
     const el = containerRef.current;
     if (!el) return;
 
-    // Restore scroll position
     const storageKey = `scroll:${key}`;
     const saved = sessionStorage.getItem(storageKey);
     if (saved) {
       el.scrollTop = Number(saved);
     }
 
-    // Save scroll position (debounced)
     let timer: ReturnType<typeof setTimeout>;
     const handleScroll = () => {
       clearTimeout(timer);

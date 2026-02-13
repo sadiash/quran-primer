@@ -1,0 +1,16 @@
+[
+  {
+    "id": 74,
+    "name": "Al-Jalalayn",
+    "authorName": "Jalal ad-Din al-Mahalli & Jalal ad-Din as-Suyuti",
+    "languageCode": "en",
+    "slug": "en-al-jalalayn"
+  },
+  {
+    "id": 169,
+    "name": "Tafsir Ibn Kathir (abridged)",
+    "authorName": "Hafiz Ibn Kathir",
+    "languageCode": "en",
+    "slug": "en-tafisr-ibn-kathir"
+  }
+]
