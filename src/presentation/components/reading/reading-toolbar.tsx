@@ -1,0 +1,167 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Type,
+  Languages,
+  LayoutGrid,
+  Eye,
+  EyeOff,
+  Minus,
+  Plus,
+  Settings2,
+} from "lucide-react";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { cn } from "@/lib/utils";
+import type { ArabicFontSize, TranslationFontSize, TranslationLayout } from "@/core/types";
+
+const ARABIC_SIZES: ArabicFontSize[] = ["sm", "md", "lg", "xl", "2xl"];
+const TRANS_SIZES: TranslationFontSize[] = ["sm", "md", "lg"];
+const LAYOUTS: { value: TranslationLayout; label: string }[] = [
+  { value: "stacked", label: "Stacked" },
+  { value: "columnar", label: "Side by side" },
+];
+
+export function ReadingToolbar() {
+  const { preferences, updatePreferences } = usePreferences();
+  const [open, setOpen] = useState(false);
+
+  const arabicIdx = ARABIC_SIZES.indexOf(preferences.arabicFontSize);
+  const transIdx = TRANS_SIZES.indexOf(preferences.translationFontSize);
+
+  return (
+    <div className="absolute bottom-6 right-6 z-10">
+      {/* Toggle button */}
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex h-10 w-10 items-center justify-center rounded-full shadow-soft-md transition-all",
+          "bg-card border border-border text-muted-foreground hover:text-foreground hover:shadow-soft-lg",
+          open && "bg-primary text-primary-foreground",
+        )}
+        aria-label="Reading settings"
+      >
+        <Settings2 className="h-4 w-4" />
+      </button>
+
+      {/* Panel */}
+      {open && (
+        <div className="absolute bottom-12 right-0 w-64 rounded-xl border border-border bg-card p-4 shadow-soft-lg animate-scale-in">
+          <div className="space-y-4">
+            {/* Arabic font size */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                <Type className="h-3.5 w-3.5" />
+                Arabic Size
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (arabicIdx > 0) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx - 1] });
+                  }}
+                  disabled={arabicIdx <= 0}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
+                  {preferences.arabicFontSize}
+                </span>
+                <button
+                  onClick={() => {
+                    if (arabicIdx < ARABIC_SIZES.length - 1) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx + 1] });
+                  }}
+                  disabled={arabicIdx >= ARABIC_SIZES.length - 1}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Translation font size */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                <Languages className="h-3.5 w-3.5" />
+                Translation Size
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (transIdx > 0) updatePreferences({ translationFontSize: TRANS_SIZES[transIdx - 1] });
+                  }}
+                  disabled={transIdx <= 0}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
+                  {preferences.translationFontSize}
+                </span>
+                <button
+                  onClick={() => {
+                    if (transIdx < TRANS_SIZES.length - 1) updatePreferences({ translationFontSize: TRANS_SIZES[transIdx + 1] });
+                  }}
+                  disabled={transIdx >= TRANS_SIZES.length - 1}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Layout toggle */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Translation Layout
+              </label>
+              <div className="flex gap-1">
+                {LAYOUTS.map((l) => (
+                  <button
+                    key={l.value}
+                    onClick={() => updatePreferences({ translationLayout: l.value })}
+                    className={cn(
+                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      preferences.translationLayout === l.value
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-surface-hover",
+                    )}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Toggle Arabic */}
+            <button
+              onClick={() => updatePreferences({ showArabic: !preferences.showArabic })}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
+            >
+              {preferences.showArabic ? (
+                <Eye className="h-3.5 w-3.5" />
+              ) : (
+                <EyeOff className="h-3.5 w-3.5" />
+              )}
+              {preferences.showArabic ? "Hide Arabic" : "Show Arabic"}
+            </button>
+
+            {/* Toggle Translation */}
+            <button
+              onClick={() => updatePreferences({ showTranslation: !preferences.showTranslation })}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
+            >
+              {preferences.showTranslation ? (
+                <Eye className="h-3.5 w-3.5" />
+              ) : (
+                <EyeOff className="h-3.5 w-3.5" />
+              )}
+              {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

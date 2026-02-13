@@ -34,7 +34,6 @@ export function useNotes(opts?: UseNotesOptions) {
     id?: string;
   }): Promise<void> {
     const now = new Date();
-
     if (params.id) {
       await db.notes.update(params.id, {
         content: params.content,

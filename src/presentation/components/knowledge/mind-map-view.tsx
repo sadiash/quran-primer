@@ -3,94 +3,81 @@
 import { useCallback } from "react";
 import {
   ReactFlow,
-  Controls,
-  MiniMap,
   Background,
-  BackgroundVariant,
+  Controls,
   type Node,
   type Edge,
-  type NodeMouseHandler,
-  ReactFlowProvider,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import type { GraphNode, GraphEdge } from "@/core/types";
+import { cn } from "@/lib/utils";
 
-import { GraphNodeVerse } from "./graph-node-verse";
-import { GraphNodeNote } from "./graph-node-note";
-import { GraphNodeTheme } from "./graph-node-theme";
-import { GraphEdgeCustom } from "./graph-edge-custom";
-
-const nodeTypes = {
-  verse: GraphNodeVerse,
-  note: GraphNodeNote,
-  theme: GraphNodeTheme,
-} as const;
-
-const edgeTypes = {
-  custom: GraphEdgeCustom,
-} as const;
-
-export interface MindMapViewProps {
-  nodes: Node[];
-  edges: Edge[];
+interface MindMapViewProps {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
   onNodeClick?: (nodeId: string) => void;
-  /** When true, hides controls and minimap (for embedded/mini view) */
-  minimal?: boolean;
   className?: string;
 }
 
-function MindMapViewInner({
+function toFlowNodes(nodes: GraphNode[]): Node[] {
+  const cols = Math.ceil(Math.sqrt(nodes.length));
+  return nodes.map((n, i) => ({
+    id: n.id,
+    type: "default",
+    position: {
+      x: (i % cols) * 200 + Math.random() * 40,
+      y: Math.floor(i / cols) * 120 + Math.random() * 40,
+    },
+    data: { label: n.label },
+    style: {
+      background: "hsl(var(--card))",
+      color: "hsl(var(--card-foreground))",
+      border: "1px solid hsl(var(--border))",
+      borderRadius: "8px",
+      padding: "8px 12px",
+      fontSize: "12px",
+    },
+  }));
+}
+
+function toFlowEdges(edges: GraphEdge[]): Edge[] {
+  return edges.map((e) => ({
+    id: e.id,
+    source: e.sourceNodeId,
+    target: e.targetNodeId,
+    animated: true,
+    style: { stroke: "hsl(var(--primary) / 0.4)" },
+  }));
+}
+
+export function MindMapView({
   nodes,
   edges,
   onNodeClick,
-  minimal = false,
   className,
 }: MindMapViewProps) {
-  const handleNodeClick: NodeMouseHandler = useCallback(
-    (_event, node) => {
+  const flowNodes = toFlowNodes(nodes);
+  const flowEdges = toFlowEdges(edges);
+
+  const handleNodeClick = useCallback(
+    (_: React.MouseEvent, node: Node) => {
       onNodeClick?.(node.id);
     },
     [onNodeClick],
   );
 
   return (
-    <div className={className ?? "h-full w-full"}>
+    <div className={cn("h-full w-full", className)}>
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
+        nodes={flowNodes}
+        edges={flowEdges}
         onNodeClick={handleNodeClick}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
-        minZoom={0.2}
-        maxZoom={2}
         proOptions={{ hideAttribution: true }}
-        nodesDraggable
-        nodesConnectable={false}
       >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} className="!bg-background" />
-        {!minimal && (
-          <>
-            <Controls
-              showInteractive={false}
-              className="!bg-background/80 !backdrop-blur-sm !border-border !shadow-sm"
-            />
-            <MiniMap
-              nodeStrokeWidth={3}
-              className="!bg-background/80 !backdrop-blur-sm !border-border"
-              maskColor="hsl(var(--muted) / 0.3)"
-            />
-          </>
-        )}
+        <Background />
+        <Controls />
       </ReactFlow>
     </div>
-  );
-}
-
-export function MindMapView(props: MindMapViewProps) {
-  return (
-    <ReactFlowProvider>
-      <MindMapViewInner {...props} />
-    </ReactFlowProvider>
   );
 }

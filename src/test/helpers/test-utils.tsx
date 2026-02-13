@@ -2,7 +2,7 @@ import { render, type RenderOptions } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactElement } from "react";
 import { AudioProvider } from "@/presentation/providers/audio-provider";
-import { PanelProvider } from "@/presentation/providers/panel-provider";
+import { WorkspaceProvider } from "@/presentation/providers/workspace-provider";
 import { ToastProvider } from "@/presentation/components/ui/toast";
 
 function createTestQueryClient() {
@@ -21,9 +21,9 @@ function AllProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AudioProvider>
-        <PanelProvider>
+        <WorkspaceProvider>
           <ToastProvider>{children}</ToastProvider>
-        </PanelProvider>
+        </WorkspaceProvider>
       </AudioProvider>
     </QueryClientProvider>
   );

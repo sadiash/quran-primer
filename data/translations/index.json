@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1001,
+    "name": "The Clear Quran",
+    "authorName": "Mustafa Khattab",
+    "languageCode": "en",
+    "slug": "eng-mustafakhattaba"
+  },
+  {
+    "id": 1002,
+    "name": "Abdullah Yusuf Ali",
+    "authorName": "Abdullah Yusuf Ali",
+    "languageCode": "en",
+    "slug": "eng-abdullahyusufal"
+  },
+  {
+    "id": 1003,
+    "name": "Marmaduke Pickthall",
+    "authorName": "Mohammed Marmaduke William Pickthall",
+    "languageCode": "en",
+    "slug": "eng-mohammedmarmadu"
+  },
+  {
+    "id": 1004,
+    "name": "Al-Hilali & Muhsin Khan",
+    "authorName": "Muhammad Taqi-ud-Din al-Hilali & Muhammad Muhsin Khan",
+    "languageCode": "en",
+    "slug": "eng-muhammadtaqiudd"
+  },
+  {
+    "id": 1005,
+    "name": "Abdel Haleem",
+    "authorName": "M.A.S. Abdel Haleem",
+    "languageCode": "en",
+    "slug": "eng-abdelhaleem"
+  },
+  {
+    "id": 1006,
+    "name": "Tafhim-ul-Quran",
+    "authorName": "Abul Ala Maududi",
+    "languageCode": "en",
+    "slug": "eng-abulalamaududi"
+  }
+]

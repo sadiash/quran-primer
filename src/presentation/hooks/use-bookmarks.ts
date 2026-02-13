@@ -29,7 +29,7 @@ export function useBookmarks(surahId?: number) {
 
     if (existing) {
       await db.bookmarks.delete(existing.id);
-      return false; // removed
+      return false;
     }
 
     await db.bookmarks.put({
@@ -39,7 +39,7 @@ export function useBookmarks(surahId?: number) {
       note: "",
       createdAt: new Date(),
     });
-    return true; // added
+    return true;
   }
 
   async function removeBookmark(id: string): Promise<void> {

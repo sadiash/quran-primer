@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
   useReducer,
-  useState,
+  useRef,
   type ReactNode,
 } from "react";
 import {
@@ -123,8 +123,8 @@ export const WORKSPACE_PRESETS: WorkspacePreset[] = [
   {
     id: "deep-study",
     label: "Deep Study",
-    description: "Tafsir + Hadith + Notes side by side",
-    panelKinds: [["tafsir"], ["hadith"], ["notes"]],
+    description: "Tafsir (2/3) + Hadith (1/3) stacked",
+    panelKinds: [["tafsir", "hadith"]],
   },
   {
     id: "translation-comparison",
@@ -135,8 +135,8 @@ export const WORKSPACE_PRESETS: WorkspacePreset[] = [
   {
     id: "research",
     label: "Research",
-    description: "Tafsir + Cross-Ref + Notes (40/30/30)",
-    panelKinds: [["tafsir"], ["crossref"], ["notes"]],
+    description: "Tafsir + Cross-Ref + Notes stacked",
+    panelKinds: [["tafsir", "crossref", "notes"]],
   },
   {
     id: "focus",
@@ -173,7 +173,7 @@ type WorkspaceAction =
   | { type: "HYDRATE"; state: Partial<WorkspaceState> };
 
 // ---------------------------------------------------------------------------
-// Initial State
+// Initial State — defaults to "daily-reading" (clean surface, no panels)
 // ---------------------------------------------------------------------------
 
 const initialState: WorkspaceState = {
@@ -183,7 +183,7 @@ const initialState: WorkspaceState = {
   focusedVerseKey: null,
   studyRegionOpen: false,
   bottomPanel: { open: false, activeTab: null, sizePercent: 30 },
-  leftSidebar: { open: false, collapsed: false },
+  leftSidebar: { open: false, collapsed: true },
   nextPanelId: 1,
   nextGroupId: 1,
 };
@@ -283,7 +283,6 @@ function workspaceReducer(
       const panelId = `panel-${state.nextPanelId}`;
       const panel = createPanel(panelId, action.kind, action.config);
 
-      // If targeting a specific group, add as tab
       if (action.targetGroupId) {
         const groupIdx = state.studyGroups.findIndex(
           (g) => g.id === action.targetGroupId,
@@ -307,7 +306,6 @@ function workspaceReducer(
         }
       }
 
-      // At max groups? Tab into focused group
       if (state.studyGroups.length >= MAX_GROUPS) {
         const focusedGroup =
           state.studyGroups.find(
@@ -337,7 +335,6 @@ function workspaceReducer(
         }
       }
 
-      // Create new group
       const groupId = `group-${state.nextGroupId}`;
       const newGroup: PanelGroup = {
         id: groupId,
@@ -365,12 +362,12 @@ function workspaceReducer(
 
     case "CLOSE_PANEL": {
       const { [action.panelId]: _, ...remainingPanels } = state.panels;
+      void _; // consumed
 
       let updatedGroups = state.studyGroups
         .map((group) => {
           const idx = group.panelIds.indexOf(action.panelId);
           if (idx === -1) return group;
-
           const newPanelIds = group.panelIds.filter(
             (id) => id !== action.panelId,
           );
@@ -385,7 +382,6 @@ function workspaceReducer(
         })
         .filter((g) => g.panelIds.length > 0);
 
-      // Redistribute sizes
       const sizes = equalGroupSizes(updatedGroups.length);
       updatedGroups = updatedGroups.map((g, i) => ({
         ...g,
@@ -407,10 +403,9 @@ function workspaceReducer(
       };
     }
 
-    case "FOCUS_PANEL": {
+    case "FOCUS_PANEL":
       if (!state.panels[action.panelId]) return state;
       return { ...state, focusedPanelId: action.panelId };
-    }
 
     case "SET_PANEL_CONFIG": {
       const panel = state.panels[action.panelId];
@@ -442,7 +437,6 @@ function workspaceReducer(
     case "PUSH_BREADCRUMB": {
       const panel = state.panels[action.panelId];
       if (!panel) return state;
-      // Avoid duplicate consecutive pushes
       const last = panel.breadcrumbs[panel.breadcrumbs.length - 1];
       if (last?.id === action.item.id) return state;
       return {
@@ -487,7 +481,7 @@ function workspaceReducer(
       };
     }
 
-    case "SET_ACTIVE_TAB": {
+    case "SET_ACTIVE_TAB":
       return {
         ...state,
         studyGroups: state.studyGroups.map((g) =>
@@ -497,12 +491,9 @@ function workspaceReducer(
         ),
         focusedPanelId: action.panelId,
       };
-    }
 
     case "SPLIT_PANEL": {
-      // Move focused panel to its own new group
       if (state.studyGroups.length >= MAX_GROUPS) return state;
-
       const sourceGroup = state.studyGroups.find((g) =>
         g.panelIds.includes(action.panelId),
       );
@@ -550,7 +541,7 @@ function workspaceReducer(
       };
     }
 
-    case "RESIZE_GROUPS": {
+    case "RESIZE_GROUPS":
       if (action.sizes.length !== state.studyGroups.length) return state;
       return {
         ...state,
@@ -559,7 +550,6 @@ function workspaceReducer(
           sizePercent: action.sizes[i]!,
         })),
       };
-    }
 
     case "FOCUS_VERSE":
       return { ...state, focusedVerseKey: action.verseKey };
@@ -568,10 +558,7 @@ function workspaceReducer(
       return { ...state, focusedVerseKey: null };
 
     case "TOGGLE_STUDY_REGION":
-      return {
-        ...state,
-        studyRegionOpen: !state.studyRegionOpen,
-      };
+      return { ...state, studyRegionOpen: !state.studyRegionOpen };
 
     case "TOGGLE_BOTTOM_PANEL":
       return {
@@ -646,7 +633,6 @@ function saveWorkspaceState(state: WorkspaceState) {
       nextPanelId: state.nextPanelId,
       nextGroupId: state.nextGroupId,
       bottomPanel: { ...state.bottomPanel },
-      leftSidebar: { ...state.leftSidebar },
     };
     localStorage.setItem(WORKSPACE_KEY, JSON.stringify(toSave));
   } catch {
@@ -690,23 +676,21 @@ const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(workspaceReducer, initialState);
-  const [hydrated, setHydrated] = useState(false);
+  const hydratedRef = useRef(false);
 
-  // Hydrate from localStorage
   useEffect(() => {
     const saved = loadWorkspaceState();
     if (saved) {
       dispatch({ type: "HYDRATE", state: saved });
     }
-    setHydrated(true);
+    hydratedRef.current = true;
   }, []);
 
-  // Persist on changes
   useEffect(() => {
-    if (hydrated) {
+    if (hydratedRef.current) {
       saveWorkspaceState(state);
     }
-  }, [state, hydrated]);
+  }, [state]);
 
   const addPanel = useCallback(
     (kind: PanelKind, targetGroupId?: string, config?: Record<string, unknown>) => {
@@ -714,93 +698,24 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
-
-  const closePanel = useCallback((panelId: string) => {
-    dispatch({ type: "CLOSE_PANEL", panelId });
-  }, []);
-
-  const focusPanel = useCallback((panelId: string) => {
-    dispatch({ type: "FOCUS_PANEL", panelId });
-  }, []);
-
-  const setPanelConfig = useCallback(
-    (panelId: string, config: Record<string, unknown>) => {
-      dispatch({ type: "SET_PANEL_CONFIG", panelId, config });
-    },
-    [],
-  );
-
-  const setPanelScroll = useCallback(
-    (panelId: string, scrollTop: number) => {
-      dispatch({ type: "SET_PANEL_SCROLL", panelId, scrollTop });
-    },
-    [],
-  );
-
-  const pushBreadcrumb = useCallback(
-    (panelId: string, item: BreadcrumbItem) => {
-      dispatch({ type: "PUSH_BREADCRUMB", panelId, item });
-    },
-    [],
-  );
-
-  const popBreadcrumb = useCallback((panelId: string) => {
-    dispatch({ type: "POP_BREADCRUMB", panelId });
-  }, []);
-
-  const gotoBreadcrumb = useCallback(
-    (panelId: string, index: number) => {
-      dispatch({ type: "GOTO_BREADCRUMB", panelId, index });
-    },
-    [],
-  );
-
-  const setActiveTab = useCallback(
-    (groupId: string, panelId: string) => {
-      dispatch({ type: "SET_ACTIVE_TAB", groupId, panelId });
-    },
-    [],
-  );
-
-  const splitPanel = useCallback((panelId: string) => {
-    dispatch({ type: "SPLIT_PANEL", panelId });
-  }, []);
-
-  const resizeGroups = useCallback((sizes: number[]) => {
-    dispatch({ type: "RESIZE_GROUPS", sizes });
-  }, []);
-
-  const focusVerse = useCallback((verseKey: string) => {
-    dispatch({ type: "FOCUS_VERSE", verseKey });
-  }, []);
-
-  const clearFocusedVerse = useCallback(() => {
-    dispatch({ type: "CLEAR_FOCUSED_VERSE" });
-  }, []);
-
-  const toggleStudyRegion = useCallback(() => {
-    dispatch({ type: "TOGGLE_STUDY_REGION" });
-  }, []);
-
-  const toggleBottomPanel = useCallback(() => {
-    dispatch({ type: "TOGGLE_BOTTOM_PANEL" });
-  }, []);
-
-  const setBottomPanelSize = useCallback((size: number) => {
-    dispatch({ type: "SET_BOTTOM_PANEL_SIZE", size });
-  }, []);
-
-  const toggleSidebar = useCallback(() => {
-    dispatch({ type: "TOGGLE_SIDEBAR" });
-  }, []);
-
-  const applyPreset = useCallback((preset: WorkspacePresetId) => {
-    dispatch({ type: "APPLY_PRESET", preset });
-  }, []);
-
-  const closeAllPanels = useCallback(() => {
-    dispatch({ type: "CLOSE_ALL_PANELS" });
-  }, []);
+  const closePanel = useCallback((panelId: string) => dispatch({ type: "CLOSE_PANEL", panelId }), []);
+  const focusPanel = useCallback((panelId: string) => dispatch({ type: "FOCUS_PANEL", panelId }), []);
+  const setPanelConfig = useCallback((panelId: string, config: Record<string, unknown>) => dispatch({ type: "SET_PANEL_CONFIG", panelId, config }), []);
+  const setPanelScroll = useCallback((panelId: string, scrollTop: number) => dispatch({ type: "SET_PANEL_SCROLL", panelId, scrollTop }), []);
+  const pushBreadcrumb = useCallback((panelId: string, item: BreadcrumbItem) => dispatch({ type: "PUSH_BREADCRUMB", panelId, item }), []);
+  const popBreadcrumb = useCallback((panelId: string) => dispatch({ type: "POP_BREADCRUMB", panelId }), []);
+  const gotoBreadcrumb = useCallback((panelId: string, index: number) => dispatch({ type: "GOTO_BREADCRUMB", panelId, index }), []);
+  const setActiveTab = useCallback((groupId: string, panelId: string) => dispatch({ type: "SET_ACTIVE_TAB", groupId, panelId }), []);
+  const splitPanel = useCallback((panelId: string) => dispatch({ type: "SPLIT_PANEL", panelId }), []);
+  const resizeGroups = useCallback((sizes: number[]) => dispatch({ type: "RESIZE_GROUPS", sizes }), []);
+  const focusVerse = useCallback((verseKey: string) => dispatch({ type: "FOCUS_VERSE", verseKey }), []);
+  const clearFocusedVerse = useCallback(() => dispatch({ type: "CLEAR_FOCUSED_VERSE" }), []);
+  const toggleStudyRegion = useCallback(() => dispatch({ type: "TOGGLE_STUDY_REGION" }), []);
+  const toggleBottomPanel = useCallback(() => dispatch({ type: "TOGGLE_BOTTOM_PANEL" }), []);
+  const setBottomPanelSize = useCallback((size: number) => dispatch({ type: "SET_BOTTOM_PANEL_SIZE", size }), []);
+  const toggleSidebar = useCallback(() => dispatch({ type: "TOGGLE_SIDEBAR" }), []);
+  const applyPreset = useCallback((preset: WorkspacePresetId) => dispatch({ type: "APPLY_PRESET", preset }), []);
+  const closeAllPanels = useCallback(() => dispatch({ type: "CLOSE_ALL_PANELS" }), []);
 
   const openPanelCount = Object.keys(state.panels).length;
 

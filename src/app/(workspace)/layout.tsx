@@ -1,5 +1,7 @@
 import { AppShell } from "@/presentation/components/layout";
-import { PanelProvider } from "@/presentation/providers";
+import { WorkspaceProvider } from "@/presentation/providers";
+import { CommandPaletteProvider } from "@/presentation/hooks/use-command-palette";
+import { CommandPalette } from "@/presentation/components/command-palette/command-palette";
 
 export default function WorkspaceLayout({
   children,
@@ -7,8 +9,11 @@ export default function WorkspaceLayout({
   children: React.ReactNode;
 }) {
   return (
-    <PanelProvider>
-      <AppShell>{children}</AppShell>
-    </PanelProvider>
+    <WorkspaceProvider>
+      <CommandPaletteProvider>
+        <AppShell>{children}</AppShell>
+        <CommandPalette />
+      </CommandPaletteProvider>
+    </WorkspaceProvider>
   );
 }

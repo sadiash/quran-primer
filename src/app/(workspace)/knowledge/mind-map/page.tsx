@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { Suspense, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Brain, Filter, RefreshCw } from "lucide-react";
 import { useKnowledgeGraph } from "@/presentation/hooks/use-knowledge-graph";
@@ -11,6 +11,23 @@ import { Button, Input, EmptyState, Skeleton } from "@/presentation/components/u
 type FilterMode = "all" | "tag" | "surah" | "verse";
 
 export default function MindMapPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[calc(100vh-3.5rem)] items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <Brain className="h-8 w-8 animate-pulse text-primary" />
+            <p className="text-sm text-muted-foreground">Loading mind map...</p>
+          </div>
+        </div>
+      }
+    >
+      <MindMapPageContent />
+    </Suspense>
+  );
+}
+
+function MindMapPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
