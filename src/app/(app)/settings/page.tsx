@@ -2,6 +2,7 @@
 
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { ThemeSwitcher } from "@/presentation/components/ui/theme-switcher";
+import { PageHeader } from "@/presentation/components/layout/page-header";
 import { cn } from "@/lib/utils";
 import type {
   ArabicFont,
@@ -60,10 +61,10 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
-      <h1 className="text-2xl font-semibold text-foreground">Settings</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Customize your reading and study experience.
-      </p>
+      <PageHeader
+        title="Settings"
+        subtitle="Customize your reading and study experience."
+      />
 
       <div className="mt-8 space-y-10">
         {/* ── Reading ── */}

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { StickyNote, Search, Trash2, Tag } from "lucide-react";
 import { useNotes } from "@/presentation/hooks/use-notes";
+import { PageHeader } from "@/presentation/components/layout/page-header";
 import { getSurahName } from "@/lib/surah-names";
 import { cn } from "@/lib/utils";
 
@@ -43,15 +44,11 @@ export default function NotesPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
-      <div className="flex items-center gap-3">
-        <StickyNote className="h-6 w-6 text-primary" />
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Notes</h1>
-          <p className="text-sm text-muted-foreground">
-            {notes.length} note{notes.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Notes"
+        subtitle={`${notes.length} note${notes.length !== 1 ? "s" : ""}`}
+        icon={StickyNote}
+      />
 
       {notes.length > 0 && (
         <>

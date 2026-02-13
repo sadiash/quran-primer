@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Bookmark, Search, Trash2 } from "lucide-react";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
+import { PageHeader } from "@/presentation/components/layout/page-header";
 import { getSurahName } from "@/lib/surah-names";
 import { cn } from "@/lib/utils";
 
@@ -41,15 +42,11 @@ export default function BookmarksPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
-      <div className="flex items-center gap-3">
-        <Bookmark className="h-6 w-6 text-primary" />
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Bookmarks</h1>
-          <p className="text-sm text-muted-foreground">
-            {bookmarks.length} bookmarked verse{bookmarks.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Bookmarks"
+        subtitle={`${bookmarks.length} bookmarked verse${bookmarks.length !== 1 ? "s" : ""}`}
+        icon={Bookmark}
+      />
 
       {bookmarks.length > 0 && (
         <>

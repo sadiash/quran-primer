@@ -1,5 +1,6 @@
 import { getQuranService } from "@/lib/services";
 import { SurahBrowser } from "@/presentation/components/quran/surah-browser";
+import { PageHeader } from "@/presentation/components/layout/page-header";
 
 export const metadata = {
   title: "Browse Surahs — The Primer",
@@ -11,10 +12,7 @@ export default async function BrowsePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
-      <h1 className="text-2xl font-semibold text-foreground">Browse Surahs</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        All 114 surahs of the Quran
-      </p>
+      <PageHeader title="Browse Surahs" subtitle="All 114 surahs of the Quran" />
       <div className="mt-6">
         <SurahBrowser surahs={surahs} />
       </div>
