@@ -10,15 +10,14 @@ import {
   StickyNote,
   Search,
   Palette,
-  Layout,
   Brain,
-  Home,
   Settings2,
+  Library,
 } from "lucide-react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
-import { useWorkspace, WORKSPACE_PRESETS } from "@/presentation/providers";
+import { usePanels } from "@/presentation/providers/panel-provider";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
-import type { ThemeName, WorkspacePresetId } from "@/core/types";
+import type { ThemeName } from "@/core/types";
 
 const SURAH_NAMES = [
   "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -49,7 +48,7 @@ const THEMES: { name: ThemeName; label: string }[] = [
 export function CommandPalette() {
   const { open, setOpen, addRecentCommand } = useCommandPalette();
   const router = useRouter();
-  const { applyPreset, addPanel, toggleStudyRegion } = useWorkspace();
+  const { openPanel } = usePanels();
   const { updatePreferences } = usePreferences();
   const [search, setSearch] = useState("");
 
@@ -112,15 +111,9 @@ export function CommandPalette() {
             {/* Navigation */}
             <Command.Group heading="Navigation" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               <CommandItem
-                onSelect={() => runCommand("nav:home", () => router.push("/"))}
+                onSelect={() => runCommand("nav:browse", () => router.push("/browse"))}
               >
-                <Home className="h-4 w-4" />
-                Go Home
-              </CommandItem>
-              <CommandItem
-                onSelect={() => runCommand("nav:surahs", () => router.push("/surahs"))}
-              >
-                <BookOpen className="h-4 w-4" />
+                <Library className="h-4 w-4" />
                 Browse Surahs
               </CommandItem>
               <CommandItem
@@ -141,6 +134,12 @@ export function CommandPalette() {
                 <Brain className="h-4 w-4" />
                 Knowledge Map
               </CommandItem>
+              <CommandItem
+                onSelect={() => runCommand("nav:settings", () => router.push("/settings"))}
+              >
+                <Settings2 className="h-4 w-4" />
+                Settings
+              </CommandItem>
             </Command.Group>
 
             {/* Surahs */}
@@ -151,7 +150,7 @@ export function CommandPalette() {
                   return (
                     <CommandItem
                       key={surahNum}
-                      onSelect={() => runCommand(`surah:${surahNum}`, () => router.push(`/surahs/${surahNum}`))}
+                      onSelect={() => runCommand(`surah:${surahNum}`, () => router.push(`/surah/${surahNum}`))}
                     >
                       <BookText className="h-4 w-4" />
                       <span className="font-mono text-muted-foreground text-xs w-6">{surahNum}.</span>
@@ -162,46 +161,32 @@ export function CommandPalette() {
               </Command.Group>
             )}
 
-            {/* Panels */}
-            <Command.Group heading="Panels" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            {/* Study Tools */}
+            <Command.Group heading="Study Tools" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               <CommandItem
-                onSelect={() => runCommand("panel:tafsir", () => addPanel("tafsir"))}
+                onSelect={() => runCommand("panel:tafsir", () => openPanel("tafsir"))}
               >
                 <BookOpen className="h-4 w-4" />
                 Open Tafsir
               </CommandItem>
               <CommandItem
-                onSelect={() => runCommand("panel:hadith", () => addPanel("hadith"))}
+                onSelect={() => runCommand("panel:hadith", () => openPanel("hadith"))}
               >
                 <BookText className="h-4 w-4" />
                 Open Hadith
               </CommandItem>
               <CommandItem
-                onSelect={() => runCommand("panel:notes", () => addPanel("notes"))}
+                onSelect={() => runCommand("panel:notes", () => openPanel("notes"))}
               >
                 <StickyNote className="h-4 w-4" />
                 Open Notes
               </CommandItem>
               <CommandItem
-                onSelect={() => runCommand("panel:toggle", () => toggleStudyRegion())}
+                onSelect={() => runCommand("panel:ai", () => openPanel("ai"))}
               >
-                <Layout className="h-4 w-4" />
-                Toggle Study Region
+                <Brain className="h-4 w-4" />
+                Open AI
               </CommandItem>
-            </Command.Group>
-
-            {/* Presets */}
-            <Command.Group heading="Workspace Presets" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              {WORKSPACE_PRESETS.map((preset) => (
-                <CommandItem
-                  key={preset.id}
-                  onSelect={() => runCommand(`preset:${preset.id}`, () => applyPreset(preset.id as WorkspacePresetId))}
-                >
-                  <Layout className="h-4 w-4" />
-                  {preset.label}
-                  <span className="ml-auto text-[10px] text-muted-foreground">{preset.description}</span>
-                </CommandItem>
-              ))}
             </Command.Group>
 
             {/* Themes */}
@@ -215,22 +200,6 @@ export function CommandPalette() {
                   {theme.label}
                 </CommandItem>
               ))}
-            </Command.Group>
-
-            {/* Settings */}
-            <Command.Group heading="Settings" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              <CommandItem
-                onSelect={() => runCommand("settings:font-up", () => updatePreferences({ arabicFontSize: "xl" }))}
-              >
-                <Settings2 className="h-4 w-4" />
-                Increase Arabic Font Size
-              </CommandItem>
-              <CommandItem
-                onSelect={() => runCommand("settings:font-down", () => updatePreferences({ arabicFontSize: "md" }))}
-              >
-                <Settings2 className="h-4 w-4" />
-                Decrease Arabic Font Size
-              </CommandItem>
             </Command.Group>
           </Command.List>
         </Command>

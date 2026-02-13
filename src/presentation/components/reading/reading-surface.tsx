@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import type { Surah, Verse, Translation } from "@/core/types";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
-import { useWorkspace } from "@/presentation/providers";
+import { usePanels } from "@/presentation/providers/panel-provider";
 import { useProgress } from "@/presentation/hooks/use-progress";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
@@ -24,16 +24,21 @@ export function ReadingSurface({
   translations,
 }: ReadingSurfaceProps) {
   const { preferences } = usePreferences();
-  const { focusVerse, state } = useWorkspace();
+  const { focusVerse, focusedVerseKey } = usePanels();
   const { updateProgress } = useProgress(surah.id);
   const { isBookmarked, toggleBookmark } = useBookmarks(surah.id);
   const audio = useAudioPlayer();
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Filter translations to user's active selection
+  const activeTranslations = translations.filter((t) =>
+    preferences.activeTranslationIds.includes(t.resourceId),
+  );
+
   // Group translations by verse
   const translationsByVerse = new Map<string, Translation[]>();
-  for (const t of translations) {
+  for (const t of activeTranslations) {
     const existing = translationsByVerse.get(t.verseKey) ?? [];
     existing.push(t);
     translationsByVerse.set(t.verseKey, existing);
@@ -105,7 +110,7 @@ export function ReadingSurface({
         ref={containerRef}
         className="h-full overflow-y-auto scroll-smooth"
       >
-        <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
           <SurahHeader surah={surah} />
 
           <div className="mt-8 space-y-0 divide-y divide-border/30">
@@ -119,7 +124,7 @@ export function ReadingSurface({
                 arabicSizeClass={arabicSizeClass}
                 translationSizeClass={translationSizeClass}
                 translationLayout={preferences.translationLayout}
-                isFocused={state.focusedVerseKey === verse.verseKey}
+                isFocused={focusedVerseKey === verse.verseKey}
                 isBookmarked={isBookmarked(verse.verseKey)}
                 isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
                 onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}

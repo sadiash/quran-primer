@@ -1,8 +1,10 @@
 "use client";
 
-import { MapPin, FileText, Play } from "lucide-react";
+import Link from "next/link";
+import { MapPin, FileText, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Surah } from "@/core/types";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
+import { cn } from "@/lib/utils";
 
 interface SurahHeaderProps {
   surah: Surah;
@@ -10,9 +12,48 @@ interface SurahHeaderProps {
 
 export function SurahHeader({ surah }: SurahHeaderProps) {
   const audio = useAudioPlayer();
+  const hasPrev = surah.id > 1;
+  const hasNext = surah.id < 114;
 
   return (
     <div className="text-center">
+      {/* Prev / Next surah navigation */}
+      <div className="flex items-center justify-center gap-4 mb-6">
+        <Link
+          href={hasPrev ? `/surah/${surah.id - 1}` : "#"}
+          className={cn(
+            "flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-fast",
+            hasPrev
+              ? "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+              : "pointer-events-none opacity-30 text-muted-foreground",
+          )}
+          aria-label="Previous surah"
+          aria-disabled={!hasPrev}
+          tabIndex={hasPrev ? 0 : -1}
+        >
+          <ChevronLeft className="h-3.5 w-3.5" />
+          Previous
+        </Link>
+        <span className="text-xs font-medium text-muted-foreground">
+          {surah.id} / 114
+        </span>
+        <Link
+          href={hasNext ? `/surah/${surah.id + 1}` : "#"}
+          className={cn(
+            "flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-fast",
+            hasNext
+              ? "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+              : "pointer-events-none opacity-30 text-muted-foreground",
+          )}
+          aria-label="Next surah"
+          aria-disabled={!hasNext}
+          tabIndex={hasNext ? 0 : -1}
+        >
+          Next
+          <ChevronRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
       {/* Arabic name */}
       <h1
         lang="ar"

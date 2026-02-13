@@ -2,9 +2,9 @@
 
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
-import { Bookmark, BookmarkCheck, Play, Pause } from "lucide-react";
 import type { Verse, Translation, TranslationLayout } from "@/core/types";
 import { cn } from "@/lib/utils";
+import { VerseActions } from "./verse-actions";
 
 function sanitizeHtml(html: string): string {
   if (typeof window === "undefined") return html;
@@ -54,47 +54,22 @@ export function VerseBlock({
       )}
       onClick={onFocus}
     >
-      {/* Verse number */}
+      {/* Verse number + actions */}
       <div className="mb-2 flex items-center justify-between">
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
           {verse.verseNumber}
         </span>
 
-        {/* Actions — visible on hover */}
-        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onPlay();
-            }}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? (
-              <Pause className="h-3.5 w-3.5" />
-            ) : (
-              <Play className="h-3.5 w-3.5" />
-            )}
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleBookmark();
-            }}
-            className={cn(
-              "rounded-md p-1.5 transition-fast",
-              isBookmarked
-                ? "text-primary"
-                : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-            )}
-            aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-          >
-            {isBookmarked ? (
-              <BookmarkCheck className="h-3.5 w-3.5" />
-            ) : (
-              <Bookmark className="h-3.5 w-3.5" />
-            )}
-          </button>
+        {/* Actions — visible on hover/focus */}
+        <div className="opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+          <VerseActions
+            verseKey={verse.verseKey}
+            arabicText={verse.textUthmani}
+            isBookmarked={isBookmarked}
+            isPlaying={isPlaying}
+            onToggleBookmark={onToggleBookmark}
+            onPlay={onPlay}
+          />
         </div>
       </div>
 

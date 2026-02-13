@@ -57,6 +57,9 @@ export interface UserPreferences {
   translationLayout: TranslationLayout;
   showArabic: boolean;
   defaultReciterId: number;
+  activeTafsirIds: number[];
+  activeHadithCollections: string[];
+  onboardingComplete: boolean;
   updatedAt: Date;
 }
 
@@ -74,6 +77,9 @@ export function toUserPreferences(raw: {
   translationLayout?: string | null;
   showArabic?: boolean | null;
   defaultReciterId: number;
+  activeTafsirIds?: number[] | null;
+  activeHadithCollections?: string[] | null;
+  onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
   return {
@@ -85,10 +91,13 @@ export function toUserPreferences(raw: {
     translationFontSize: raw.translationFontSize as TranslationFontSize,
     showTranslation: raw.showTranslation,
     defaultTranslationId: raw.defaultTranslationId,
-    activeTranslationIds: raw.activeTranslationIds ?? [20],
+    activeTranslationIds: raw.activeTranslationIds ?? [1001],
     translationLayout: (raw.translationLayout ?? "stacked") as TranslationLayout,
     showArabic: raw.showArabic ?? true,
     defaultReciterId: raw.defaultReciterId,
+    activeTafsirIds: raw.activeTafsirIds ?? [74],
+    activeHadithCollections: raw.activeHadithCollections ?? ["bukhari", "muslim"],
+    onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };
 }
