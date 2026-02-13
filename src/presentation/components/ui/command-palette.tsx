@@ -5,9 +5,27 @@ import { Command as CommandPrimitive } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Search, BookOpen, Hash, Sun, Moon, Sparkles } from "lucide-react";
+import {
+  Search,
+  BookOpen,
+  BookText,
+  Hash,
+  Sun,
+  Moon,
+  Sparkles,
+  Palette,
+  GitBranch,
+  StickyNote,
+  Brain,
+  Eye,
+  Layout,
+  X,
+} from "lucide-react";
 import { useToast } from "@/presentation/components/ui/toast";
-import type { Surah } from "@/core/types";
+import { useWorkspace, WORKSPACE_PRESETS, PANEL_REGISTRY } from "@/presentation/providers/workspace-provider";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
+import type { Surah, ThemeName } from "@/core/types";
+import type { PanelKind } from "@/core/types/workspace";
 
 export interface CommandPaletteProps {
   open: boolean;
@@ -19,6 +37,17 @@ export interface CommandPaletteProps {
 
 const VERSE_PATTERN = /^(\d{1,3}):(\d{1,3})$/;
 
+const THEME_OPTIONS: { name: ThemeName; label: string; mode: string }[] = [
+  { name: "library", label: "The Library", mode: "light" },
+  { name: "observatory", label: "The Observatory", mode: "dark" },
+  { name: "amethyst", label: "Amethyst", mode: "light" },
+  { name: "cosmos", label: "Cosmos", mode: "dark" },
+  { name: "midnight", label: "Midnight", mode: "dark" },
+  { name: "sahara", label: "Sahara", mode: "light" },
+  { name: "garden", label: "Garden", mode: "light" },
+  { name: "matrix", label: "Matrix", mode: "dark" },
+];
+
 export function CommandPalette({
   open,
   onOpenChange,
@@ -29,6 +58,8 @@ export function CommandPalette({
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
+  const ws = useWorkspace();
+  const { preferences, updatePreferences } = usePreferences();
 
   const prefersReducedMotion = useReducedMotion();
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
@@ -195,6 +226,97 @@ export function CommandPalette({
                       <span className="text-xs text-muted-foreground" dir="rtl">
                         {surah.nameArabic}
                       </span>
+                    </CommandPrimitive.Item>
+                  ))}
+                </CommandPrimitive.Group>
+
+                {/* Study Panels */}
+                <CommandPrimitive.Group heading="Study Panels">
+                  {(
+                    [
+                      "tafsir",
+                      "hadith",
+                      "notes",
+                      "crossref",
+                      "knowledge-graph",
+                      "context-preview",
+                    ] as PanelKind[]
+                  ).map((kind) => {
+                    const info = PANEL_REGISTRY[kind];
+                    const Icon = info.icon;
+                    return (
+                      <CommandPrimitive.Item
+                        key={kind}
+                        value={`open panel ${info.label} ${kind}`}
+                        onSelect={() => {
+                          execute(`panel-${kind}`, () => {
+                            ws.addPanel(kind);
+                          });
+                        }}
+                        className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground aria-selected:bg-surface-hover"
+                      >
+                        <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="flex-1">Open {info.label}</span>
+                      </CommandPrimitive.Item>
+                    );
+                  })}
+                </CommandPrimitive.Group>
+
+                {/* Workspaces */}
+                <CommandPrimitive.Group heading="Workspaces">
+                  {WORKSPACE_PRESETS.map((preset) => (
+                    <CommandPrimitive.Item
+                      key={preset.id}
+                      value={`workspace preset ${preset.label} ${preset.description}`}
+                      onSelect={() => {
+                        execute(`preset-${preset.id}`, () => {
+                          ws.applyPreset(preset.id);
+                        });
+                      }}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground aria-selected:bg-surface-hover"
+                    >
+                      <Layout className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="flex-1">{preset.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {preset.description}
+                      </span>
+                    </CommandPrimitive.Item>
+                  ))}
+                  <CommandPrimitive.Item
+                    value="close all panels workspace"
+                    onSelect={() => {
+                      execute("close-all-panels", () => {
+                        ws.closeAllPanels();
+                      });
+                    }}
+                    className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground aria-selected:bg-surface-hover"
+                  >
+                    <X className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="flex-1">Close All Panels</span>
+                  </CommandPrimitive.Item>
+                </CommandPrimitive.Group>
+
+                {/* Themes */}
+                <CommandPrimitive.Group heading="Themes">
+                  {THEME_OPTIONS.map((t) => (
+                    <CommandPrimitive.Item
+                      key={t.name}
+                      value={`theme ${t.name} ${t.label} ${t.mode}`}
+                      onSelect={() => {
+                        execute(`theme-${t.name}`, () => {
+                          updatePreferences({ themeName: t.name });
+                        });
+                      }}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground aria-selected:bg-surface-hover"
+                    >
+                      <Palette className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="flex-1">{t.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {t.mode}
+                      </span>
+                      {preferences.themeName === t.name && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      )}
                     </CommandPrimitive.Item>
                   ))}
                 </CommandPrimitive.Group>

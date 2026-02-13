@@ -3,15 +3,20 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/infrastructure/db/client";
 import type { UserPreferences } from "@/core/types";
+import { toUserPreferences } from "@/core/types";
 
 const DEFAULT_PREFERENCES: UserPreferences = {
   id: "default",
   theme: "system",
+  themeName: "library",
   arabicFont: "uthmani",
   arabicFontSize: "lg",
   translationFontSize: "md",
   showTranslation: true,
   defaultTranslationId: 20,
+  activeTranslationIds: [20],
+  translationLayout: "stacked",
+  showArabic: true,
   defaultReciterId: 7,
   updatedAt: new Date(0),
 };
@@ -20,14 +25,7 @@ export function usePreferences() {
   const raw = useLiveQuery(() => db.preferences.get("default"), []);
   const isLoading = raw === undefined;
   const preferences: UserPreferences = raw
-    ? {
-        ...raw,
-        theme: raw.theme as UserPreferences["theme"],
-        arabicFont: raw.arabicFont as UserPreferences["arabicFont"],
-        arabicFontSize: raw.arabicFontSize as UserPreferences["arabicFontSize"],
-        translationFontSize:
-          raw.translationFontSize as UserPreferences["translationFontSize"],
-      }
+    ? toUserPreferences(raw)
     : DEFAULT_PREFERENCES;
 
   async function updatePreferences(

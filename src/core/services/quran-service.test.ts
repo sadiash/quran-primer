@@ -108,6 +108,36 @@ describe("QuranService", () => {
     expect(result).toBeNull();
   });
 
+  it("getSurahWithMultipleTranslations() fetches surah and all translations in parallel", async () => {
+    const { service, deps } = createService();
+    const result = await service.getSurahWithMultipleTranslations(1, [20, 85]);
+
+    expect(result).not.toBeNull();
+    expect(result!.surah.nameSimple).toBe("Al-Fatihah");
+    expect(deps.quran.getSurah).toHaveBeenCalledWith(1);
+    expect(deps.translations.getTranslations).toHaveBeenCalledWith(1, 20);
+    expect(deps.translations.getTranslations).toHaveBeenCalledWith(1, 85);
+    expect(result!.translations[20]).toHaveLength(1);
+    expect(result!.translations[85]).toHaveLength(1);
+  });
+
+  it("getSurahWithMultipleTranslations() returns null if surah not found", async () => {
+    const { service, deps } = createService();
+    (deps.quran.getSurah as ReturnType<typeof vi.fn>).mockResolvedValueOnce(null);
+
+    const result = await service.getSurahWithMultipleTranslations(999, [20, 85]);
+    expect(result).toBeNull();
+  });
+
+  it("getSurahWithMultipleTranslations() handles single translation id", async () => {
+    const { service } = createService();
+    const result = await service.getSurahWithMultipleTranslations(1, [131]);
+
+    expect(result).not.toBeNull();
+    expect(Object.keys(result!.translations)).toHaveLength(1);
+    expect(result!.translations[131]).toHaveLength(1);
+  });
+
   it("searchQuran() delegates to quran port", async () => {
     const { service, deps } = createService();
     await service.searchQuran("بسم");

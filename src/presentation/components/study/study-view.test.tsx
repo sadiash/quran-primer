@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@/test/helpers/test-utils";
+import { render, screen, waitFor } from "@/test/helpers/test-utils";
 import { StudyView } from "./study-view";
 import { createMockVerse, createMockSurah } from "@/test/helpers/mock-data";
 
@@ -14,6 +14,10 @@ beforeEach(() => {
       this.addEventListener = vi.fn();
       this.removeEventListener = vi.fn();
     }) as unknown as () => HTMLAudioElement,
+  );
+
+  vi.spyOn(globalThis, "fetch").mockResolvedValue(
+    new Response(JSON.stringify({ ok: true, data: [] })),
   );
 
   return () => {
@@ -42,14 +46,18 @@ describe("StudyView", () => {
     expect(screen.getByText(/Verse 255/)).toBeInTheDocument();
   });
 
-  it("renders tafsir panel", () => {
+  it("renders tafsir panel with verse key", async () => {
     render(<StudyView verse={verse} surah={surah} />);
-    expect(screen.getByText("Tafsir")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Tafsir for 2:255")).toBeInTheDocument();
+    });
   });
 
-  it("renders hadith panel", () => {
+  it("renders hadith panel with verse key", async () => {
     render(<StudyView verse={verse} surah={surah} />);
-    expect(screen.getByText("Related Hadith")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Related Hadith for 2:255")).toBeInTheDocument();
+    });
   });
 
   it("renders play button", () => {

@@ -51,11 +51,15 @@ describe("Study domain types", () => {
     const prefs: UserPreferences = {
       id: "default",
       theme: "system",
+      themeName: "library",
       arabicFont: "uthmani",
       arabicFontSize: "lg",
       translationFontSize: "md",
       showTranslation: true,
       defaultTranslationId: 131,
+      activeTranslationIds: [131],
+      translationLayout: "stacked",
+      showArabic: true,
       defaultReciterId: 7,
       updatedAt: new Date(),
     };

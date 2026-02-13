@@ -4,7 +4,29 @@
       "WebFetch(domain:www.gnu.org)",
       "Bash(curl:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: project scaffold with Quran data\n\nRepository setup with AGPL-3.0 license, project plan, bundled Quran data\n\\(114 surahs + metadata\\), design docs, Docker Compose for PostgreSQL,\nand seed script.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: project scaffold with Quran data\n\nRepository setup with AGPL-3.0 license, project plan, bundled Quran data\n\\(114 surahs + metadata\\), design docs, Docker Compose for PostgreSQL,\nand seed script.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npx tsc:*)",
+      "Bash(node -e:*)",
+      "Bash(npx vitest:*)",
+      "Bash(git restore:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_click",
+      "Bash(pkill:*)",
+      "mcp__playwright__browser_close",
+      "Bash(lsof -i:*)",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_press_key",
+      "Bash(lsof:*)",
+      "Bash(grep:*)",
+      "Bash(npm ls:*)",
+      "WebSearch",
+      "Bash(ls:*)",
+      "mcp__playwright__browser_resize"
     ]
   }
 }

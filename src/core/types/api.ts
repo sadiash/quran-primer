@@ -23,9 +23,3 @@ export interface ApiMeta {
   total?: number;
   cached?: boolean;
 }
-
-/** Pagination params for list endpoints */
-export interface PaginationParams {
-  page?: number;
-  perPage?: number;
-}

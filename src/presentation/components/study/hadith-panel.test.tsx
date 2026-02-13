@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { useEffect } from "react";
 import { render, screen, waitFor } from "@/test/helpers/test-utils";
 import { HadithPanel } from "./hadith-panel";
+import { usePanelManager } from "@/presentation/providers/panel-provider";
 import { createMockHadith } from "@/test/helpers/mock-data";
 
 beforeEach(() => {
@@ -21,24 +23,50 @@ beforeEach(() => {
   };
 });
 
+/** Helper that focuses a verse via useEffect before rendering the panel */
+function HadithPanelWithFocus({ verseKey }: { verseKey: string }) {
+  const { focusVerse } = usePanelManager();
+  useEffect(() => {
+    focusVerse(verseKey);
+  }, [verseKey, focusVerse]);
+  return <HadithPanel />;
+}
+
 describe("HadithPanel", () => {
-  it("renders the heading", () => {
+  it("renders empty state when no verse focused", () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ ok: true, data: [] })),
     );
 
-    render(<HadithPanel defaultQuery="Al-Fatihah 1:1" />);
-    expect(screen.getByText("Related Hadith")).toBeInTheDocument();
+    render(<HadithPanel />);
+    expect(
+      screen.getByText("Select a verse to view related hadith"),
+    ).toBeInTheDocument();
   });
 
-  it("renders search input with default query", () => {
+  it("renders the heading with verse key", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ ok: true, data: [] })),
     );
 
-    render(<HadithPanel defaultQuery="Al-Fatihah 1:1" />);
-    const input = screen.getByPlaceholderText("Search hadith...");
-    expect(input).toHaveValue("Al-Fatihah 1:1");
+    render(<HadithPanelWithFocus verseKey="1:1" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Related Hadith for 1:1")).toBeInTheDocument();
+    });
+  });
+
+  it("renders search input with verse key as query", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, data: [] })),
+    );
+
+    render(<HadithPanelWithFocus verseKey="1:1" />);
+
+    await waitFor(() => {
+      const input = screen.getByPlaceholderText("Search hadith...");
+      expect(input).toHaveValue("1:1");
+    });
   });
 
   it("renders hadith cards with badges", async () => {
@@ -56,7 +84,7 @@ describe("HadithPanel", () => {
       new Response(JSON.stringify({ ok: true, data: hadiths })),
     );
 
-    render(<HadithPanel defaultQuery="test" />);
+    render(<HadithPanelWithFocus verseKey="test" />);
 
     await waitFor(() => {
       expect(screen.getByText("Sahih Bukhari")).toBeInTheDocument();
@@ -72,7 +100,7 @@ describe("HadithPanel", () => {
       new Response(JSON.stringify({ ok: true, data: [] })),
     );
 
-    render(<HadithPanel defaultQuery="nonexistent" />);
+    render(<HadithPanelWithFocus verseKey="nonexistent" />);
 
     await waitFor(() => {
       expect(

@@ -7,10 +7,12 @@ import { QuranTranslationAdapter } from "@/infrastructure/adapters/quran-transla
 import { TafsirAdapter } from "@/infrastructure/adapters/tafsir-adapter";
 import { AudioAdapter } from "@/infrastructure/adapters/audio-adapter";
 import { HadithAdapter } from "@/infrastructure/adapters/hadith-adapter";
-import type { HadithPort } from "@/core/ports";
+import { CrossReferenceAdapter } from "@/infrastructure/adapters/cross-reference-adapter";
+import type { HadithPort, CrossReferencePort } from "@/core/ports";
 
 const QURAN_SERVICE_TOKEN = "QuranService";
 const HADITH_ADAPTER_TOKEN = "HadithAdapter";
+const CROSS_REFERENCE_ADAPTER_TOKEN = "CrossReferenceAdapter";
 
 function ensureRegistered() {
   if (!container.has(QURAN_SERVICE_TOKEN)) {
@@ -26,6 +28,13 @@ function ensureRegistered() {
   if (!container.has(HADITH_ADAPTER_TOKEN)) {
     container.register(HADITH_ADAPTER_TOKEN, () => new HadithAdapter());
   }
+
+  if (!container.has(CROSS_REFERENCE_ADAPTER_TOKEN)) {
+    container.register(
+      CROSS_REFERENCE_ADAPTER_TOKEN,
+      () => new CrossReferenceAdapter(),
+    );
+  }
 }
 
 export function getQuranService(): QuranService {
@@ -36,4 +45,9 @@ export function getQuranService(): QuranService {
 export function getHadithAdapter(): HadithPort {
   ensureRegistered();
   return container.resolve<HadithPort>(HADITH_ADAPTER_TOKEN);
+}
+
+export function getCrossReferenceAdapter(): CrossReferencePort {
+  ensureRegistered();
+  return container.resolve<CrossReferencePort>(CROSS_REFERENCE_ADAPTER_TOKEN);
 }

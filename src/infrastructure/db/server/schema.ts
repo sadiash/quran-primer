@@ -7,6 +7,8 @@ import {
   boolean,
   timestamp,
   primaryKey,
+  json,
+  real,
 } from "drizzle-orm/pg-core";
 
 export const bookmarks = pgTable("bookmarks", {
@@ -24,6 +26,7 @@ export const notes = pgTable("notes", {
   verseKey: text("verse_key").notNull(),
   surahId: integer("surah_id").notNull(),
   content: text("content").notNull(),
+  contentJson: text("content_json"),
   tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
@@ -51,6 +54,38 @@ export const preferences = pgTable("preferences", {
   translationFontSize: text("translation_font_size").notNull().default("md"),
   showTranslation: boolean("show_translation").notNull().default(true),
   defaultTranslationId: integer("default_translation_id").notNull().default(20),
+  activeTranslationIds: json("active_translation_ids").$type<number[]>().default([20]),
+  translationLayout: text("translation_layout").notNull().default("stacked"),
+  showArabic: boolean("show_arabic").notNull().default(true),
   defaultReciterId: integer("default_reciter_id").notNull().default(7),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const crossReferences = pgTable("cross_references", {
+  id: text("id").primaryKey(),
+  quranVerseKey: text("quran_verse_key").notNull(),
+  scriptureRef: text("scripture_ref").notNull(),
+  scriptureText: text("scripture_text").notNull(),
+  source: text("source").notNull(),
+  clusterSummary: text("cluster_summary").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const graphNodes = pgTable("graph_nodes", {
+  id: text("id").primaryKey(),
+  nodeType: text("node_type").notNull(),
+  label: text("label").notNull(),
+  verseKey: text("verse_key"),
+  surahId: integer("surah_id"),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const graphEdges = pgTable("graph_edges", {
+  id: text("id").primaryKey(),
+  sourceNodeId: text("source_node_id").notNull(),
+  targetNodeId: text("target_node_id").notNull(),
+  edgeType: text("edge_type").notNull(),
+  weight: real("weight"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

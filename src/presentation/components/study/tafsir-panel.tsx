@@ -4,23 +4,29 @@ import { useState } from "react";
 import DOMPurify from "dompurify";
 import { useTafsir, useTafsirResources } from "@/presentation/hooks/api";
 import { Skeleton } from "@/presentation/components/ui";
-
-interface TafsirPanelProps {
-  verseKey: string;
-}
+import { useVerseContext } from "@/presentation/hooks/use-verse-context";
 
 const DEFAULT_TAFSIR_ID = 169; // Ibn Kathir (English)
 
-export function TafsirPanel({ verseKey }: TafsirPanelProps) {
+export function TafsirPanel() {
+  const verseKey = useVerseContext();
   const [selectedTafsirId, setSelectedTafsirId] = useState(DEFAULT_TAFSIR_ID);
   const { data: resources = [] } = useTafsirResources();
   const { data: tafsir, isLoading, error } = useTafsir(verseKey, selectedTafsirId);
 
+  if (!verseKey) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center text-muted-foreground">
+        <p className="text-sm">Select a verse to view tafsir</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 rounded-xl glass p-4 shadow-soft-md">
+    <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Tafsir
+          Tafsir for {verseKey}
         </h3>
         {resources.length > 0 && (
           <select

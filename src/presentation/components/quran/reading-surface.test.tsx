@@ -70,6 +70,37 @@ describe("ReadingSurface", () => {
     expect(screen.getByText("All praise is due to God")).toBeInTheDocument();
   });
 
+  it("renders verses with multiple translations per verse", () => {
+    const multiTranslations: Translation[] = [
+      { id: 1, resourceId: 131, resourceName: "Sahih International", languageCode: "en", verseKey: "1:1", text: "In the name of God" },
+      { id: 3, resourceId: 85, resourceName: "Yusuf Ali", languageCode: "en", verseKey: "1:1", text: "In the name of Allah" },
+      { id: 2, resourceId: 131, resourceName: "Sahih International", languageCode: "en", verseKey: "1:2", text: "All praise is due to God" },
+      { id: 4, resourceId: 85, resourceName: "Yusuf Ali", languageCode: "en", verseKey: "1:2", text: "Praise be to Allah" },
+    ];
+    render(
+      <ReadingSurface surahId={1} verses={verses} translations={multiTranslations} />,
+    );
+    expect(screen.getByText("In the name of God")).toBeInTheDocument();
+    expect(screen.getByText("In the name of Allah")).toBeInTheDocument();
+    expect(screen.getByText("All praise is due to God")).toBeInTheDocument();
+    expect(screen.getByText("Praise be to Allah")).toBeInTheDocument();
+  });
+
+  it("hides Arabic text when showArabic is false", () => {
+    render(
+      <ReadingSurface
+        surahId={1}
+        verses={verses}
+        translations={translations}
+        showArabic={false}
+      />,
+    );
+    expect(screen.queryByText("بِسْمِ ٱللَّهِ")).not.toBeInTheDocument();
+    expect(screen.queryByText("ٱلْحَمْدُ لِلَّهِ")).not.toBeInTheDocument();
+    // Translations should still be there
+    expect(screen.getByText("In the name of God")).toBeInTheDocument();
+  });
+
   it("hides bismillah for surah 1", () => {
     render(
       <ReadingSurface surahId={1} verses={verses} translations={[]} />,

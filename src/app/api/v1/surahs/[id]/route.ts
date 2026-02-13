@@ -18,8 +18,33 @@ export async function GET(
     }
 
     const url = new URL(request.url);
+    const translationsParam = url.searchParams.get("translations");
     const translationParam = url.searchParams.get("translation");
 
+    // Multi-translation: ?translations=20,85,131
+    if (translationsParam) {
+      const ids = translationsParam
+        .split(",")
+        .map((s) => Number(s.trim()))
+        .filter((n) => n > 0);
+
+      if (ids.length === 0) {
+        return toResponse(
+          badRequest("translations must be comma-separated numbers"),
+        );
+      }
+
+      const result = await getQuranService().getSurahWithMultipleTranslations(
+        surahId,
+        ids,
+      );
+      if (!result) {
+        return toResponse(notFound("Surah not found"));
+      }
+      return toResponse(ok(result));
+    }
+
+    // Single translation (backward compat): ?translation=20
     if (translationParam) {
       const translationId = Number(translationParam);
       if (!translationId) {

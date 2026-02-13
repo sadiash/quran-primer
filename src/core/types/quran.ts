@@ -24,16 +24,6 @@ export interface SurahWithVerses extends Surah {
   verses: Verse[];
 }
 
-export interface Word {
-  id: number;
-  verseKey: string;
-  position: number;
-  textUthmani: string;
-  textSimple: string;
-  translation: string | null;
-  transliteration: string | null;
-}
-
 export interface Translation {
   id: number;
   resourceId: number;

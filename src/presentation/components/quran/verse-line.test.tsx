@@ -77,10 +77,85 @@ describe("VerseLine", () => {
       <VerseLine
         verse={verse}
         surahId={2}
-        translation={translation}
+        translations={[translation]}
         observerRef={mockObserverRef}
       />,
     );
+    expect(
+      screen.getByText("God - there is no deity except Him"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders multiple translations in stacked layout", () => {
+    const translation2: Translation = {
+      id: 2,
+      resourceId: 85,
+      resourceName: "Yusuf Ali",
+      languageCode: "en",
+      verseKey: "2:255",
+      text: "Allah! There is no god but He",
+    };
+    render(
+      <VerseLine
+        verse={verse}
+        surahId={2}
+        translations={[translation, translation2]}
+        translationLayout="stacked"
+        observerRef={mockObserverRef}
+      />,
+    );
+    expect(
+      screen.getByText("God - there is no deity except Him"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Allah! There is no god but He"),
+    ).toBeInTheDocument();
+    // Should show resource names when multiple translations
+    expect(screen.getByText("Sahih International")).toBeInTheDocument();
+    expect(screen.getByText("Yusuf Ali")).toBeInTheDocument();
+  });
+
+  it("renders tabbed layout with tabs", () => {
+    const translation2: Translation = {
+      id: 2,
+      resourceId: 85,
+      resourceName: "Yusuf Ali",
+      languageCode: "en",
+      verseKey: "2:255",
+      text: "Allah! There is no god but He",
+    };
+    render(
+      <VerseLine
+        verse={verse}
+        surahId={2}
+        translations={[translation, translation2]}
+        translationLayout="tabbed"
+        observerRef={mockObserverRef}
+      />,
+    );
+    // Tab list should exist
+    const tablist = screen.getByRole("tablist");
+    expect(tablist).toBeInTheDocument();
+    // First translation should be visible by default
+    expect(
+      screen.getByText("God - there is no deity except Him"),
+    ).toBeInTheDocument();
+  });
+
+  it("hides Arabic text when showArabic is false", () => {
+    render(
+      <VerseLine
+        verse={verse}
+        surahId={2}
+        translations={[translation]}
+        showArabic={false}
+        observerRef={mockObserverRef}
+      />,
+    );
+    expect(
+      screen.queryByText("ٱللَّهُ لَآ إِلَـٰهَ إِلَّا هُوَ"),
+    ).not.toBeInTheDocument();
+    // Translation should still be shown
     expect(
       screen.getByText("God - there is no deity except Him"),
     ).toBeInTheDocument();

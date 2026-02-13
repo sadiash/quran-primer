@@ -9,3 +9,5 @@ export type {
   ProgressRepository,
   PreferencesRepository,
 } from "./study-port";
+export type { CrossReferencePort } from "./cross-reference-port";
+export type { KnowledgeGraphPort } from "./knowledge-graph-port";

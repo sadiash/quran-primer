@@ -1,28 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { useHadith } from "@/presentation/hooks/api";
 import { Badge, Skeleton, Input } from "@/presentation/components/ui";
+import { useVerseContext } from "@/presentation/hooks/use-verse-context";
 
-interface HadithPanelProps {
-  defaultQuery: string;
-}
+export function HadithPanel() {
+  const verseKey = useVerseContext();
 
-export function HadithPanel({ defaultQuery }: HadithPanelProps) {
-  const [query, setQuery] = useState(defaultQuery);
-  const [searchInput, setSearchInput] = useState(defaultQuery);
-  const { data: hadiths = [], isLoading, error } = useHadith(query);
+  // Track previous verseKey to detect changes and reset the custom query
+  const prevVerseKeyRef = useRef(verseKey);
+  const [customQuery, setCustomQuery] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState(verseKey ?? "");
+
+  // When verseKey changes, reset custom query and input
+  if (prevVerseKeyRef.current !== verseKey) {
+    prevVerseKeyRef.current = verseKey;
+    setCustomQuery(null);
+    setSearchInput(verseKey ?? "");
+  }
+
+  const activeQuery = customQuery ?? verseKey ?? "";
+  const { data: hadiths = [], isLoading, error } = useHadith(activeQuery);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setQuery(searchInput.trim());
+    const trimmed = searchInput.trim();
+    if (trimmed) {
+      setCustomQuery(trimmed);
+    }
   };
 
+  if (!verseKey) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center text-muted-foreground">
+        <p className="text-sm">Select a verse to view related hadith</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 rounded-xl glass p-4 shadow-soft-md">
+    <div className="flex flex-col gap-4 p-4">
       <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-        Related Hadith
+        Related Hadith for {verseKey}
       </h3>
 
       <form onSubmit={handleSearch}>
@@ -51,7 +72,7 @@ export function HadithPanel({ defaultQuery }: HadithPanelProps) {
         </p>
       )}
 
-      {!isLoading && !error && query && hadiths.length === 0 && (
+      {!isLoading && !error && activeQuery && hadiths.length === 0 && (
         <p className="text-sm text-muted-foreground">
           No hadith found for this query.
         </p>
