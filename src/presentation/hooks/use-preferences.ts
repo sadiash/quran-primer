@@ -23,6 +23,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   defaultReciterId: 7,
   activeTafsirIds: [74],
   activeHadithCollections: ["bukhari", "muslim"],
+  showConcepts: true,
   onboardingComplete: false,
   updatedAt: new Date(0),
 };

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getQuranService } from "@/lib/services";
+import { getQuranService, getOntologyAdapter } from "@/lib/services";
 import { ReadingPage } from "@/presentation/components/quran/reading-page";
 
 /** All 6 bundled translations — loaded server-side from local files (fast). */
@@ -39,13 +39,35 @@ export default async function SurahPage({ params }: SurahPageProps) {
   }
 
   // Load ALL bundled translations — client-side filters to user's activeTranslationIds
-  const result = await getQuranService().getSurahWithMultipleTranslations(
-    surahId,
-    ALL_BUNDLED_TRANSLATION_IDS,
-  );
+  const [result, conceptsRaw] = await Promise.all([
+    getQuranService().getSurahWithMultipleTranslations(
+      surahId,
+      ALL_BUNDLED_TRANSLATION_IDS,
+    ),
+    getOntologyAdapter().getConceptsForSurah(surahId),
+  ]);
 
   if (!result) {
     notFound();
+  }
+
+  // Slim concepts to { id, name } pairs, deduped by id
+  const conceptsByVerse: Record<string, { id: string; name: string }[]> = {};
+  for (const [verseKey, concepts] of Object.entries(conceptsRaw)) {
+    const seen = new Set<string>();
+    const deduped: { id: string; name: string }[] = [];
+    for (const c of concepts) {
+      if (seen.has(c.id)) continue;
+      seen.add(c.id);
+      deduped.push({
+        id: c.id,
+        name: c.id
+          .split("-")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" "),
+      });
+    }
+    conceptsByVerse[verseKey] = deduped;
   }
 
   const { surah, translations: translationsByResource } = result;
@@ -64,6 +86,7 @@ export default async function SurahPage({ params }: SurahPageProps) {
       }}
       verses={surah.verses}
       translations={allTranslations}
+      conceptsByVerse={conceptsByVerse}
     />
   );
 }

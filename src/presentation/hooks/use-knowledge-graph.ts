@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/infrastructure/db/client";
+import { DexieBookmarkRepository } from "@/infrastructure/db/client/bookmark-repo";
+import { DexieNoteRepository } from "@/infrastructure/db/client/note-repo";
+import { KnowledgeGraphService } from "@/core/services/knowledge-graph-service";
 import type { GraphNode, GraphEdge } from "@/core/types";
 
 export interface UseKnowledgeGraphOptions {
@@ -14,10 +17,18 @@ export interface UseKnowledgeGraphOptions {
 interface UseKnowledgeGraphResult {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  allTags: string[];
   isLoading: boolean;
   error: Error | null;
   refetch: () => void;
 }
+
+const bookmarkRepo = new DexieBookmarkRepository();
+const noteRepo = new DexieNoteRepository();
+const graphService = new KnowledgeGraphService({
+  bookmarks: bookmarkRepo,
+  notes: noteRepo,
+});
 
 export function useKnowledgeGraph(
   options?: UseKnowledgeGraphOptions,
@@ -25,72 +36,42 @@ export function useKnowledgeGraph(
   const [error, setError] = useState<Error | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const rawNodes = useLiveQuery(
+  // Live-query that rebuilds the graph whenever bookmarks/notes change
+  const graph = useLiveQuery(
     async () => {
       try {
-        if (options?.verseKey) {
-          return db.graphNodes.where("verseKey").equals(options.verseKey).toArray();
-        }
-        if (options?.surahId) {
-          return db.graphNodes.where("surahId").equals(options.surahId).toArray();
-        }
-        return db.graphNodes.toArray();
+        // Touch both tables so Dexie tracks them for reactivity
+        await db.bookmarks.count();
+        await db.notes.count();
+        return graphService.generateGraph(options);
       } catch (e) {
-        setError(e instanceof Error ? e : new Error("Failed to load nodes"));
-        return [];
+        setError(e instanceof Error ? e : new Error("Failed to build graph"));
+        return { nodes: [], edges: [] };
       }
     },
     [options?.verseKey, options?.surahId, options?.tag, refreshKey],
     undefined,
   );
 
-  const rawEdges = useLiveQuery(
-    async () => {
-      try {
-        return db.graphEdges.toArray();
-      } catch (e) {
-        setError(e instanceof Error ? e : new Error("Failed to load edges"));
-        return [];
-      }
-    },
-    [refreshKey],
-    undefined,
-  );
+  const isLoading = graph === undefined;
+  const nodes = graph?.nodes ?? [];
+  const edges = graph?.edges ?? [];
 
-  const isLoading = rawNodes === undefined || rawEdges === undefined;
-
-  const nodes: GraphNode[] = (rawNodes ?? []).map((n) => ({
-    id: n.id,
-    nodeType: n.nodeType as GraphNode["nodeType"],
-    label: n.label,
-    verseKey: n.verseKey,
-    surahId: n.surahId,
-    metadata: n.metadata ? JSON.parse(n.metadata) : undefined,
-    createdAt: n.createdAt,
-  }));
-
-  const edges: GraphEdge[] = (rawEdges ?? []).map((e) => ({
-    id: e.id,
-    sourceNodeId: e.sourceNodeId,
-    targetNodeId: e.targetNodeId,
-    edgeType: e.edgeType as GraphEdge["edgeType"],
-    weight: e.weight,
-    createdAt: e.createdAt,
-  }));
-
-  // Filter edges to only include connected nodes
-  const nodeIds = new Set(nodes.map((n) => n.id));
-  const filteredEdges = edges.filter(
-    (e) => nodeIds.has(e.sourceNodeId) && nodeIds.has(e.targetNodeId),
-  );
+  // Collect all unique tags across note nodes
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    for (const n of nodes) {
+      if (n.nodeType === "theme") tags.add(n.label);
+    }
+    return [...tags].sort();
+  }, [nodes]);
 
   const refetch = useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  // Reset error when filter options change — handled inside useLiveQuery callbacks
-
   return {
     nodes,
-    edges: filteredEdges,
+    edges,
+    allTags,
     isLoading,
     error,
     refetch,

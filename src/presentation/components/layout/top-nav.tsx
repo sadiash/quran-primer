@@ -15,6 +15,7 @@ import {
   BookText,
   Bot,
   ExternalLink,
+  Network,
 } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
@@ -43,6 +44,7 @@ export function TopNav() {
         <NavLink href="/browse" icon={Library} label="Browse" pathname={pathname} />
         <NavLink href="/bookmarks" icon={Bookmark} label="Bookmarks" pathname={pathname} />
         <NavLink href="/notes" icon={StickyNote} label="Notes" pathname={pathname} />
+        <NavLink href="/knowledge/mind-map" icon={Network} label="Mind Map" pathname={pathname} />
       </nav>
 
       {/* Spacer */}

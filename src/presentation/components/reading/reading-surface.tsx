@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import type { Surah, Verse, Translation } from "@/core/types";
+import type { ConceptTag } from "@/presentation/components/quran/reading-page";
+import { getResolvedTranslationConfigs } from "@/core/types";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useProgress } from "@/presentation/hooks/use-progress";
@@ -17,12 +19,14 @@ interface ReadingSurfaceProps {
   surah: Surah;
   verses: Verse[];
   translations: Translation[];
+  conceptsByVerse?: Record<string, ConceptTag[]>;
 }
 
 export function ReadingSurface({
   surah,
   verses,
   translations,
+  conceptsByVerse,
 }: ReadingSurfaceProps) {
   const { preferences } = usePreferences();
   const { focusVerse, focusedVerseKey, openPanel } = usePanels();
@@ -69,18 +73,42 @@ export function ReadingSurface({
     return () => clearTimeout(timer);
   }, [longPressedKey]);
 
+  // Resolve per-translation configs (order, font size, color)
+  const resolvedConfigs = useMemo(
+    () =>
+      getResolvedTranslationConfigs(
+        preferences.activeTranslationIds,
+        preferences.translationConfigs,
+        preferences.translationFontSize,
+      ),
+    [preferences.activeTranslationIds, preferences.translationConfigs, preferences.translationFontSize],
+  );
+
   // Filter translations to user's active selection
   const activeTranslations = translations.filter((t) =>
     preferences.activeTranslationIds.includes(t.resourceId),
   );
 
-  // Group translations by verse
-  const translationsByVerse = new Map<string, Translation[]>();
-  for (const t of activeTranslations) {
-    const existing = translationsByVerse.get(t.verseKey) ?? [];
-    existing.push(t);
-    translationsByVerse.set(t.verseKey, existing);
-  }
+  // Group translations by verse, sorted by config order
+  const translationsByVerse = useMemo(() => {
+    const configOrderMap = new Map<number, number>();
+    for (const c of resolvedConfigs) configOrderMap.set(c.translationId, c.order);
+
+    const byVerse = new Map<string, Translation[]>();
+    for (const t of activeTranslations) {
+      const existing = byVerse.get(t.verseKey) ?? [];
+      existing.push(t);
+      byVerse.set(t.verseKey, existing);
+    }
+
+    // Sort each verse's translations by config order
+    for (const [key, arr] of byVerse) {
+      arr.sort((a, b) => (configOrderMap.get(a.resourceId) ?? 0) - (configOrderMap.get(b.resourceId) ?? 0));
+      byVerse.set(key, arr);
+    }
+
+    return byVerse;
+  }, [activeTranslations, resolvedConfigs]);
 
   // Track reading progress
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -137,11 +165,7 @@ export function ReadingSurface({
     "2xl": "text-5xl",
   }[preferences.arabicFontSize];
 
-  const translationSizeClass = {
-    sm: "text-xs",
-    md: "text-sm",
-    lg: "text-base",
-  }[preferences.translationFontSize];
+  // translationSizeClass removed — now per-translation via resolvedConfigs
 
   // Keyboard shortcuts: j/k/b/t/n + arrows
   useEffect(() => {
@@ -220,7 +244,7 @@ export function ReadingSurface({
                 showTranslation={preferences.showTranslation}
                 showVerseNumbers={preferences.showVerseNumbers}
                 arabicSizeClass={arabicSizeClass}
-                translationSizeClass={translationSizeClass}
+                translationConfigs={resolvedConfigs}
                 translationLayout={preferences.translationLayout}
                 isFocused={focusedVerseKey === verse.verseKey}
                 isBookmarked={isBookmarked(verse.verseKey)}
@@ -232,6 +256,7 @@ export function ReadingSurface({
                 onFocus={() => focusVerseManually(verse.verseKey)}
                 onLongPress={() => setLongPressedKey(verse.verseKey)}
                 onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
+                concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
               />
             ))}
           </div>
