@@ -47,5 +47,9 @@ yarn-error.log*
 references/
 
 
+# Raw ontology source files (too large for git — regenerate with scripts/parse-semantic-hadith.ts)
+data/ontology/semantic-hadith/SemanticHadithKGV2.ttl
+data/ontology/semantic-hadith/SemanticHadith2.0.owl
+
 #Ignore cursor AI rules
 .cursor/rules/codacy.mdc
