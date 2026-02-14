@@ -52,7 +52,7 @@ describe("mock data factories", () => {
 
   it("creates a default note", () => {
     const note = createMockNote();
-    expect(note.verseKey).toBe("1:1");
+    expect(note.verseKeys).toEqual(["1:1"]);
     expect(note.tags).toContain("reflection");
   });
 });

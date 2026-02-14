@@ -1,0 +1,147 @@
+"use client";
+
+import type { Editor } from "@tiptap/react";
+import {
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Quote,
+  Link,
+  Undo2,
+  Redo2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface EditorToolbarProps {
+  editor: Editor | null;
+}
+
+interface ToolbarButtonProps {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  active?: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+}
+
+function ToolbarButton({
+  icon: Icon,
+  label,
+  active,
+  disabled,
+  onClick,
+}: ToolbarButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      className={cn(
+        "flex h-7 w-7 items-center justify-center rounded-md transition-fast",
+        active
+          ? "bg-primary/15 text-primary"
+          : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+        disabled && "pointer-events-none opacity-40",
+      )}
+    >
+      <Icon className="h-3.5 w-3.5" />
+    </button>
+  );
+}
+
+function Divider() {
+  return <div className="mx-0.5 h-5 w-px bg-border" />;
+}
+
+export function EditorToolbar({ editor }: EditorToolbarProps) {
+  if (!editor) return null;
+
+  const handleLink = () => {
+    const prev = editor.getAttributes("link").href as string | undefined;
+    const url = window.prompt("Enter URL:", prev ?? "https://");
+    if (url === null) return; // cancelled
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-0.5 border-b border-border px-2 py-1.5">
+      <ToolbarButton
+        icon={Bold}
+        label="Bold"
+        active={editor.isActive("bold")}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+      />
+      <ToolbarButton
+        icon={Italic}
+        label="Italic"
+        active={editor.isActive("italic")}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={Heading2}
+        label="Heading 2"
+        active={editor.isActive("heading", { level: 2 })}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+      />
+      <ToolbarButton
+        icon={Heading3}
+        label="Heading 3"
+        active={editor.isActive("heading", { level: 3 })}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={List}
+        label="Bullet List"
+        active={editor.isActive("bulletList")}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+      />
+      <ToolbarButton
+        icon={ListOrdered}
+        label="Ordered List"
+        active={editor.isActive("orderedList")}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={Quote}
+        label="Blockquote"
+        active={editor.isActive("blockquote")}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+      />
+      <ToolbarButton
+        icon={Link}
+        label="Link"
+        active={editor.isActive("link")}
+        onClick={handleLink}
+      />
+      <Divider />
+      <ToolbarButton
+        icon={Undo2}
+        label="Undo"
+        disabled={!editor.can().undo()}
+        onClick={() => editor.chain().focus().undo().run()}
+      />
+      <ToolbarButton
+        icon={Redo2}
+        label="Redo"
+        disabled={!editor.can().redo()}
+        onClick={() => editor.chain().focus().redo().run()}
+      />
+    </div>
+  );
+}

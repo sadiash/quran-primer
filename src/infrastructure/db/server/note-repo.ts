@@ -1,6 +1,6 @@
 /** Drizzle-backed note repository — scoped by userId */
 
-import { eq, and, desc, arrayContains } from "drizzle-orm";
+import { eq, and, desc, arrayContains, arrayOverlaps } from "drizzle-orm";
 import type { NoteRepository } from "@/core/ports";
 import type { Note } from "@/core/types";
 import type { DrizzleDb } from "./connection";
@@ -26,7 +26,12 @@ export class DrizzleNoteRepository implements NoteRepository {
     const rows = await this.db
       .select()
       .from(notes)
-      .where(and(eq(notes.userId, this.userId), eq(notes.surahId, surahId)));
+      .where(
+        and(
+          eq(notes.userId, this.userId),
+          arrayContains(notes.surahIds, [surahId]),
+        ),
+      );
 
     return rows.map(toNote);
   }
@@ -36,7 +41,10 @@ export class DrizzleNoteRepository implements NoteRepository {
       .select()
       .from(notes)
       .where(
-        and(eq(notes.userId, this.userId), eq(notes.verseKey, verseKey)),
+        and(
+          eq(notes.userId, this.userId),
+          arrayContains(notes.verseKeys, [verseKey]),
+        ),
       );
 
     return rows.map(toNote);
@@ -53,15 +61,59 @@ export class DrizzleNoteRepository implements NoteRepository {
     return rows.map(toNote);
   }
 
+  async getForVerse(verseKey: string, surahId: number): Promise<Note[]> {
+    const rows = await this.db
+      .select()
+      .from(notes)
+      .where(
+        and(
+          eq(notes.userId, this.userId),
+          arrayOverlaps(notes.verseKeys, [verseKey]),
+        ),
+      );
+
+    const bySurah = await this.db
+      .select()
+      .from(notes)
+      .where(
+        and(
+          eq(notes.userId, this.userId),
+          arrayContains(notes.surahIds, [surahId]),
+        ),
+      );
+
+    const seen = new Set<string>();
+    const result: Note[] = [];
+    for (const row of [...rows, ...bySurah]) {
+      if (!seen.has(row.id)) {
+        seen.add(row.id);
+        result.push(toNote(row));
+      }
+    }
+    return result;
+  }
+
+  async getById(id: string): Promise<Note | null> {
+    const rows = await this.db
+      .select()
+      .from(notes)
+      .where(eq(notes.id, id))
+      .limit(1);
+
+    const row = rows[0];
+    return row ? toNote(row) : null;
+  }
+
   async save(note: Note): Promise<void> {
     await this.db
       .insert(notes)
       .values({
         id: note.id,
         userId: this.userId,
-        verseKey: note.verseKey,
-        surahId: note.surahId,
+        verseKeys: note.verseKeys,
+        surahIds: note.surahIds,
         content: note.content,
+        contentJson: note.contentJson,
         tags: note.tags,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
@@ -69,7 +121,10 @@ export class DrizzleNoteRepository implements NoteRepository {
       .onConflictDoUpdate({
         target: notes.id,
         set: {
+          verseKeys: note.verseKeys,
+          surahIds: note.surahIds,
           content: note.content,
+          contentJson: note.contentJson,
           tags: note.tags,
           updatedAt: note.updatedAt,
         },
@@ -84,9 +139,10 @@ export class DrizzleNoteRepository implements NoteRepository {
 function toNote(row: typeof notes.$inferSelect): Note {
   return {
     id: row.id,
-    verseKey: row.verseKey,
-    surahId: row.surahId,
+    verseKeys: row.verseKeys,
+    surahIds: row.surahIds,
     content: row.content,
+    contentJson: row.contentJson ?? undefined,
     tags: row.tags,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

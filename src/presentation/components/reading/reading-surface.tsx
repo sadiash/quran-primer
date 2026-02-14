@@ -28,17 +28,39 @@ export function ReadingSurface({
   const { focusVerse, focusedVerseKey, openPanel } = usePanels();
   const { updateProgress } = useProgress(surah.id);
   const { isBookmarked, toggleBookmark } = useBookmarks(surah.id);
-  const { notes } = useNotes({ surahId: surah.id });
+  const { notes } = useNotes({ forSurahReading: surah.id });
   const audio = useAudioPlayer();
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
   const [longPressedKey, setLongPressedKey] = useState<string | null>(null);
 
-  // Derive set of verse keys that have notes
-  const noteVerseKeys = useMemo(
-    () => new Set(notes.map((n) => n.verseKey)),
-    [notes],
+  // After a manual focus (click, keyboard, menu), suppress scroll-based
+  // polling for 5 seconds so the user's selection stays put.
+  const manualFocusUntil = useRef(0);
+  const focusVerseManually = useCallback(
+    (key: string) => {
+      manualFocusUntil.current = Date.now() + 5000;
+      focusVerse(key);
+    },
+    [focusVerse],
   );
+
+  // Derive set of verse keys that have notes
+  const noteVerseKeys = useMemo(() => {
+    const keys = new Set<string>();
+    const prefix = `${surah.id}:`;
+    for (const n of notes) {
+      // Verse-level: only verseKeys matching this surah
+      for (const vk of n.verseKeys) {
+        if (vk.startsWith(prefix)) keys.add(vk);
+      }
+      // Surah-level: mark all verses
+      if (n.surahIds.includes(surah.id)) {
+        for (const v of verses) keys.add(v.verseKey);
+      }
+    }
+    return keys;
+  }, [notes, surah.id, verses]);
 
   // Auto-clear long-press after 3s
   useEffect(() => {
@@ -94,9 +116,10 @@ export function ReadingSurface({
     };
   }, [observerRef, verses]);
 
-  // Poll observer for current visible verse
+  // Poll observer for current visible verse — skip during manual focus cooldown
   useEffect(() => {
     const interval = setInterval(() => {
+      if (Date.now() < manualFocusUntil.current) return;
       const key = getCurrentVerseKey();
       if (key) {
         const [, num] = key.split(":");
@@ -145,7 +168,7 @@ export function ReadingSurface({
         const nextIdx = Math.min(currentIdx + 1, verses.length - 1);
         const next = verses[nextIdx];
         if (next) {
-          focusVerse(next.verseKey);
+          focusVerseManually(next.verseKey);
           containerRef.current
             ?.querySelector(`[data-verse-key="${next.verseKey}"]`)
             ?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -155,7 +178,7 @@ export function ReadingSurface({
         const prevIdx = Math.max(currentIdx - 1, 0);
         const prev = verses[prevIdx];
         if (prev) {
-          focusVerse(prev.verseKey);
+          focusVerseManually(prev.verseKey);
           containerRef.current
             ?.querySelector(`[data-verse-key="${prev.verseKey}"]`)
             ?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -174,7 +197,7 @@ export function ReadingSurface({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [focusedVerseKey, verses, focusVerse, toggleBookmark, surah.id, openPanel]);
+  }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel]);
 
   return (
     <div className="relative h-full">
@@ -206,7 +229,7 @@ export function ReadingSurface({
                 showActions={longPressedKey === verse.verseKey}
                 onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
                 onPlay={() => audio.play(verse.verseKey, surah.id)}
-                onFocus={() => focusVerse(verse.verseKey)}
+                onFocus={() => focusVerseManually(verse.verseKey)}
                 onLongPress={() => setLongPressedKey(verse.verseKey)}
                 onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
               />

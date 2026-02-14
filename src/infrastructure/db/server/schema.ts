@@ -23,8 +23,8 @@ export const bookmarks = pgTable("bookmarks", {
 export const notes = pgTable("notes", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
-  verseKey: text("verse_key").notNull(),
-  surahId: integer("surah_id").notNull(),
+  verseKeys: text("verse_keys").array().notNull().default([]),
+  surahIds: integer("surah_ids").array().notNull().default([]),
   content: text("content").notNull(),
   contentJson: text("content_json"),
   tags: text("tags").array().notNull().default([]),

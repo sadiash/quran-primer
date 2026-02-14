@@ -25,7 +25,7 @@ export type {
   ThemeName,
   UserPreferences,
 } from "./study";
-export { toUserPreferences } from "./study";
+export { toUserPreferences, noteLocationLabel } from "./study";
 
 export type {
   NodeType,
@@ -54,3 +54,9 @@ export { PANEL_REGISTRY } from "./panel";
 
 export type { WorkspacePreset } from "./preset";
 export { BUILT_IN_PRESETS } from "./preset";
+
+export type {
+  QuranicConcept,
+  HadithVerseLink,
+  HadithTopic,
+} from "./ontology";

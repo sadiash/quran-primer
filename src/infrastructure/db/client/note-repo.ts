@@ -10,15 +10,36 @@ export class DexieNoteRepository implements NoteRepository {
   }
 
   async getBySurah(surahId: number): Promise<Note[]> {
-    return db.notes.where("surahId").equals(surahId).toArray();
+    return db.notes.where("surahIds").equals(surahId).toArray();
   }
 
   async getByVerseKey(verseKey: string): Promise<Note[]> {
-    return db.notes.where("verseKey").equals(verseKey).toArray();
+    return db.notes.where("verseKeys").equals(verseKey).toArray();
   }
 
   async getByTag(tag: string): Promise<Note[]> {
     return db.notes.where("tags").equals(tag).toArray();
+  }
+
+  async getForVerse(verseKey: string, surahId: number): Promise<Note[]> {
+    // Two parallel multiEntry queries + JS dedupe (Dexie .or() unreliable across multiEntry)
+    const [byVerse, bySurah] = await Promise.all([
+      db.notes.where("verseKeys").equals(verseKey).toArray(),
+      db.notes.where("surahIds").equals(surahId).toArray(),
+    ]);
+    const seen = new Set<string>();
+    const result: Note[] = [];
+    for (const n of [...byVerse, ...bySurah]) {
+      if (!seen.has(n.id)) {
+        seen.add(n.id);
+        result.push(n);
+      }
+    }
+    return result;
+  }
+
+  async getById(id: string): Promise<Note | null> {
+    return (await db.notes.get(id)) ?? null;
   }
 
   async save(note: Note): Promise<void> {

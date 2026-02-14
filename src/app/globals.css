@@ -169,6 +169,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(36 72% 44%) 0%, hsl(32 78% 50%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(36 80% 50% / 0.06) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(38 30% 98%) 0%, hsl(36 26% 95%) 100%);
+
+  /* Translation accent colors — warm library tones */
+  --translation-1: 30 12% 38%;
+  --translation-2: 168 20% 34%;
+  --translation-3: 20 18% 40%;
+  --translation-4: 340 12% 40%;
+  --translation-5: 260 10% 40%;
+  --translation-6: 200 14% 36%;
 }
 
 /* ─── The Observatory (Dark Mode) ─── */
@@ -236,6 +244,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(42 88% 56%) 0%, hsl(36 90% 62%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(42 90% 58% / 0.08) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(225 30% 11%) 0%, hsl(225 28% 9%) 100%);
+
+  /* Translation accent colors — cool observatory tones */
+  --translation-1: 220 18% 62%;
+  --translation-2: 185 30% 58%;
+  --translation-3: 42 30% 60%;
+  --translation-4: 340 18% 62%;
+  --translation-5: 270 18% 64%;
+  --translation-6: 160 22% 58%;
 }
 
 /* ─── Amethyst (Light — purple theme) ─── */
@@ -299,6 +315,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(265 90% 55%) 0%, hsl(280 85% 60%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(265 90% 55% / 0.06) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(220 35% 98%) 0%, hsl(230 30% 96%) 100%);
+
+  /* Translation accent colors — amethyst tones */
+  --translation-1: 265 18% 38%;
+  --translation-2: 200 22% 36%;
+  --translation-3: 240 14% 42%;
+  --translation-4: 330 16% 40%;
+  --translation-5: 290 14% 38%;
+  --translation-6: 180 18% 36%;
 }
 
 /* ─── Cosmos (Dark — cosmic luxury) ─── */
@@ -362,6 +386,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(270 85% 70%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.1) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(220 22% 12%) 0%, hsl(220 24% 10%) 100%);
+
+  /* Translation accent colors — cosmic tones */
+  --translation-1: 200 35% 62%;
+  --translation-2: 270 30% 66%;
+  --translation-3: 45 28% 60%;
+  --translation-4: 340 25% 62%;
+  --translation-5: 170 28% 58%;
+  --translation-6: 230 22% 64%;
 }
 
 /* ─── Midnight (Dark — true black OLED) ─── */
@@ -425,6 +457,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(160 90% 50%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.04) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(0 0% 8%) 0%, hsl(0 0% 5%) 100%);
+
+  /* Translation accent colors — midnight tones */
+  --translation-1: 200 25% 60%;
+  --translation-2: 160 28% 55%;
+  --translation-3: 40 20% 58%;
+  --translation-4: 340 18% 60%;
+  --translation-5: 270 18% 62%;
+  --translation-6: 180 22% 56%;
 }
 
 /* ─── Sahara (Light — warm earthy) ─── */
@@ -488,6 +528,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(25 80% 50%) 0%, hsl(20 85% 55%) 100%);
   --gradient-glow: none;
   --gradient-card: linear-gradient(160deg, hsl(35 35% 97%) 0%, hsl(33 30% 94%) 100%);
+
+  /* Translation accent colors — warm earth tones */
+  --translation-1: 25 16% 38%;
+  --translation-2: 168 18% 34%;
+  --translation-3: 10 20% 40%;
+  --translation-4: 340 14% 40%;
+  --translation-5: 45 14% 36%;
+  --translation-6: 200 12% 38%;
 }
 
 /* ─── Garden (Light — pastel green) ─── */
@@ -551,6 +599,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(145 45% 55%) 0%, hsl(155 50% 50%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(145 45% 55% / 0.04) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(145 25% 97%) 0%, hsl(142 22% 95%) 100%);
+
+  /* Translation accent colors — garden tones */
+  --translation-1: 150 14% 36%;
+  --translation-2: 280 12% 40%;
+  --translation-3: 120 16% 38%;
+  --translation-4: 340 12% 40%;
+  --translation-5: 200 14% 36%;
+  --translation-6: 40 14% 38%;
 }
 
 /* ─── Matrix (Dark — terminal green) ─── */
@@ -614,6 +670,14 @@
   --gradient-primary: linear-gradient(135deg, hsl(120 100% 50%) 0%, hsl(120 80% 35%) 100%);
   --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(120 100% 50% / 0.08) 0%, transparent 70%);
   --gradient-card: linear-gradient(160deg, hsl(120 12% 10%) 0%, hsl(120 14% 7%) 100%);
+
+  /* Translation accent colors — matrix tones */
+  --translation-1: 120 35% 55%;
+  --translation-2: 80 30% 52%;
+  --translation-3: 150 28% 50%;
+  --translation-4: 60 25% 52%;
+  --translation-5: 100 30% 48%;
+  --translation-6: 160 25% 52%;
 }
 
 /* ─── Base Styles ─── */
@@ -834,4 +898,79 @@ body {
 
 [data-resize-handle-active] {
   background: hsl(var(--primary) / 0.25) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TipTap Rich Text Editor Styles
+   ═══════════════════════════════════════════════════════════ */
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground) / 0.5);
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  color: hsl(var(--foreground));
+}
+
+.tiptap h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  color: hsl(var(--foreground));
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.tiptap li {
+  margin: 0.125rem 0;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid hsl(var(--primary) / 0.4);
+  padding-left: 0.75rem;
+  margin: 0.5rem 0;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.tiptap a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.tiptap a:hover {
+  color: hsl(var(--primary) / 0.8);
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 0.75rem 0;
+}
+
+.tiptap p {
+  margin: 0.125rem 0;
 }

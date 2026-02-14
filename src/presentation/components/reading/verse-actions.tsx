@@ -8,6 +8,7 @@ import {
   Bookmark,
   BookmarkCheck,
   StickyNote,
+  Link2,
   Copy,
   Languages,
   Play,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import type { Translation } from "@/core/types";
 import { usePanels } from "@/presentation/providers/panel-provider";
+import { LinkToNoteMenu } from "@/presentation/components/notes/link-to-note-menu";
 import { cn } from "@/lib/utils";
 
 interface VerseActionsProps {
@@ -37,6 +39,7 @@ export function VerseActions({
   onPlay,
 }: VerseActionsProps) {
   const [open, setOpen] = useState(false);
+  const [showLinkMenu, setShowLinkMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { openPanel, focusVerse } = usePanels();
 
@@ -45,6 +48,7 @@ export function VerseActions({
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
+        setShowLinkMenu(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -54,6 +58,7 @@ export function VerseActions({
   function handleAction(action: () => void) {
     action();
     setOpen(false);
+    setShowLinkMenu(false);
   }
 
   async function copyToClipboard(text: string) {
@@ -108,6 +113,7 @@ export function VerseActions({
           onClick={(e) => {
             e.stopPropagation();
             setOpen(!open);
+            setShowLinkMenu(false);
           }}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
           aria-label="More actions"
@@ -117,7 +123,7 @@ export function VerseActions({
       </div>
 
       {/* Dropdown menu */}
-      {open && (
+      {open && !showLinkMenu && (
         <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-soft-lg animate-scale-in">
           <MenuItem
             icon={BookOpen}
@@ -148,6 +154,11 @@ export function VerseActions({
               openPanel("notes");
             })}
           />
+          <MenuItem
+            icon={Link2}
+            label="Link to Note"
+            onClick={() => setShowLinkMenu(true)}
+          />
           <div className="my-1 h-px bg-border" />
           <MenuItem
             icon={Copy}
@@ -166,6 +177,31 @@ export function VerseActions({
                 })
                 .join("\n\n");
               copyToClipboard(text || verseKey);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Link to note submenu */}
+      {open && showLinkMenu && (
+        <div className="absolute right-0 top-full z-50 mt-1 rounded-lg border border-border bg-card shadow-soft-lg animate-scale-in">
+          <div className="flex items-center gap-1.5 border-b border-border px-3 py-2">
+            <button
+              type="button"
+              onClick={() => setShowLinkMenu(false)}
+              className="text-xs text-muted-foreground hover:text-foreground transition-fast"
+            >
+              Back
+            </button>
+            <span className="text-xs font-medium text-foreground">
+              Link to Note
+            </span>
+          </div>
+          <LinkToNoteMenu
+            verseKey={verseKey}
+            onLinked={() => {
+              setOpen(false);
+              setShowLinkMenu(false);
             }}
           />
         </div>

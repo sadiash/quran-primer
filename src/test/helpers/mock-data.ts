@@ -210,8 +210,8 @@ export function createMockHadith(
 export function createMockNote(
   overrides: Partial<{
     id: string;
-    verseKey: string;
-    surahId: number;
+    verseKeys: string[];
+    surahIds: number[];
     content: string;
     contentJson: string;
     tags: string[];
@@ -221,8 +221,8 @@ export function createMockNote(
 ) {
   return {
     id: "note-1",
-    verseKey: "1:1",
-    surahId: 1,
+    verseKeys: ["1:1"],
+    surahIds: [1],
     content: "Test note content",
     tags: ["reflection"],
     createdAt: new Date("2025-01-01"),

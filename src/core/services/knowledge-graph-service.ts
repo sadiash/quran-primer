@@ -62,44 +62,50 @@ export class KnowledgeGraphService {
 
     // 2. Build note nodes and verse nodes from notes
     for (const note of notes) {
-      // Ensure a verse node exists for this note's verse
-      const verseNodeId = `verse:${note.verseKey}`;
-      if (!nodeMap.has(verseNodeId)) {
-        const verseNode: GraphNode = {
-          id: verseNodeId,
-          nodeType: "verse",
-          label: note.verseKey,
-          verseKey: note.verseKey,
-          surahId: note.surahId,
-          createdAt: note.createdAt,
-        };
-        nodeMap.set(verseNodeId, verseNode);
-        nodes.push(verseNode);
-      }
-
-      // Note node
+      // Note node — use first verseKey/surahId for graph positioning
       const noteNodeId = `note:${note.id}`;
+      const firstVk = note.verseKeys[0];
+      const firstSurahId = firstVk
+        ? Number(firstVk.split(":")[0])
+        : note.surahIds[0];
       const noteNode: GraphNode = {
         id: noteNodeId,
         nodeType: "note",
         label: note.content.slice(0, 60) || "Note",
-        verseKey: note.verseKey,
-        surahId: note.surahId,
+        verseKey: firstVk,
+        surahId: firstSurahId,
         metadata: { tags: note.tags },
         createdAt: note.createdAt,
       };
       nodeMap.set(noteNodeId, noteNode);
       nodes.push(noteNode);
 
-      // Edge: note → verse (references)
-      edges.push({
-        id: `edge:ref:${note.id}:${note.verseKey}`,
-        sourceNodeId: noteNodeId,
-        targetNodeId: verseNodeId,
-        edgeType: "references",
-        weight: 1,
-        createdAt: note.createdAt,
-      });
+      // Ensure verse nodes exist and create edges for each linked verse
+      for (const vk of note.verseKeys) {
+        const verseNodeId = `verse:${vk}`;
+        if (!nodeMap.has(verseNodeId)) {
+          const [s] = vk.split(":");
+          const verseNode: GraphNode = {
+            id: verseNodeId,
+            nodeType: "verse",
+            label: vk,
+            verseKey: vk,
+            surahId: Number(s),
+            createdAt: note.createdAt,
+          };
+          nodeMap.set(verseNodeId, verseNode);
+          nodes.push(verseNode);
+        }
+
+        edges.push({
+          id: `edge:ref:${note.id}:${vk}`,
+          sourceNodeId: noteNodeId,
+          targetNodeId: verseNodeId,
+          edgeType: "references",
+          weight: 1,
+          createdAt: note.createdAt,
+        });
+      }
     }
 
     // 3. Build theme nodes from unique tags
