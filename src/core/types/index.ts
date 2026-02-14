@@ -21,11 +21,13 @@ export type {
   ArabicFont,
   ArabicFontSize,
   TranslationFontSize,
+  TranslationColorSlot,
+  TranslationConfig,
   TranslationLayout,
   ThemeName,
   UserPreferences,
 } from "./study";
-export { toUserPreferences, noteLocationLabel } from "./study";
+export { toUserPreferences, getResolvedTranslationConfigs, noteLocationLabel } from "./study";
 
 export type {
   NodeType,
