@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
-import type { Verse, Translation, TranslationLayout } from "@/core/types";
+import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize } from "@/core/types";
+import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { cn } from "@/lib/utils";
 import { useGestures } from "@/presentation/hooks/use-gestures";
 import { VerseActions } from "./verse-actions";
@@ -15,14 +16,12 @@ function sanitizeHtml(html: string): string {
   });
 }
 
-/**
- * Maps a translation's position (index among active translations) to
- * the corresponding CSS custom property defined per-theme in globals.css.
- */
-function getTranslationColorVar(index: number): string {
-  const slot = (index % 6) + 1;
-  return `var(--translation-${slot})`;
-}
+const TRANSLATION_SIZE_CLASS: Record<TranslationFontSize, string> = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-base",
+  xl: "text-lg",
+};
 
 interface VerseBlockProps {
   verse: Verse;
@@ -31,7 +30,7 @@ interface VerseBlockProps {
   showTranslation: boolean;
   showVerseNumbers?: boolean;
   arabicSizeClass: string;
-  translationSizeClass: string;
+  translationConfigs: TranslationConfig[];
   translationLayout: TranslationLayout;
   isFocused: boolean;
   isBookmarked: boolean;
@@ -43,6 +42,7 @@ interface VerseBlockProps {
   onFocus: () => void;
   onLongPress?: () => void;
   onSwipeRight?: () => void;
+  concepts?: ConceptTag[];
 }
 
 export function VerseBlock({
@@ -52,7 +52,7 @@ export function VerseBlock({
   showTranslation,
   showVerseNumbers = true,
   arabicSizeClass,
-  translationSizeClass,
+  translationConfigs,
   translationLayout,
   isFocused,
   isBookmarked,
@@ -64,6 +64,7 @@ export function VerseBlock({
   onFocus,
   onLongPress,
   onSwipeRight,
+  concepts = [],
 }: VerseBlockProps) {
   const gestureHandlers = useGestures({ onLongPress, onSwipeRight });
 
@@ -133,8 +134,14 @@ export function VerseBlock({
         <TranslationGroup
           translations={translations}
           layout={translationLayout}
-          sizeClass={translationSizeClass}
+          configs={translationConfigs}
+          showArabic={showArabic}
         />
+      )}
+
+      {/* Concept tags */}
+      {concepts.length > 0 && (
+        <ConceptPills concepts={concepts} />
       )}
     </div>
   );
@@ -145,13 +152,20 @@ export function VerseBlock({
 function TranslationGroup({
   translations,
   layout,
-  sizeClass,
+  configs,
+  showArabic,
 }: {
   translations: Translation[];
   layout: TranslationLayout;
-  sizeClass: string;
+  configs: TranslationConfig[];
+  showArabic: boolean;
 }) {
   const multi = translations.length > 1;
+  const configMap = useMemo(() => {
+    const m = new Map<number, TranslationConfig>();
+    for (const c of configs) m.set(c.translationId, c);
+    return m;
+  }, [configs]);
 
   if (layout === "columnar" && multi) {
     return (
@@ -166,8 +180,8 @@ function TranslationGroup({
           <TranslationText
             key={`${t.resourceId}-${t.verseKey}`}
             translation={t}
-            sizeClass={sizeClass}
-            colorIndex={i}
+            config={configMap.get(t.resourceId)}
+            isPrimary={!showArabic && i === 0}
             useColor={multi}
           />
         ))}
@@ -182,8 +196,8 @@ function TranslationGroup({
         <TranslationText
           key={`${t.resourceId}-${t.verseKey}`}
           translation={t}
-          sizeClass={sizeClass}
-          colorIndex={i}
+          config={configMap.get(t.resourceId)}
+          isPrimary={!showArabic && i === 0}
           useColor={multi}
         />
       ))}
@@ -195,20 +209,27 @@ function TranslationGroup({
 
 function TranslationText({
   translation,
-  sizeClass,
-  colorIndex,
+  config,
+  isPrimary,
   useColor,
 }: {
   translation: Translation;
-  sizeClass: string;
-  colorIndex: number;
+  config?: TranslationConfig;
+  isPrimary: boolean;
   useColor: boolean;
 }) {
   const html = useMemo(() => sanitizeHtml(translation.text), [translation.text]);
   const hasHtml = html !== translation.text || /<[^>]+>/.test(translation.text);
 
+  const fontSize = config?.fontSize ?? "md";
+  const colorSlot = config?.colorSlot ?? 1;
+  const sizeClass = isPrimary
+    ? TRANSLATION_SIZE_CLASS["xl"]
+    : TRANSLATION_SIZE_CLASS[fontSize];
+  const colorVar = `var(--translation-${colorSlot})`;
+
   const colorStyle = useColor
-    ? { color: `hsl(${getTranslationColorVar(colorIndex)})` }
+    ? { color: `hsl(${colorVar})` }
     : undefined;
 
   return (
@@ -217,7 +238,7 @@ function TranslationText({
         className="text-[11px] font-medium tracking-wide"
         style={
           useColor
-            ? { color: `hsl(${getTranslationColorVar(colorIndex)} / 0.6)` }
+            ? { color: `hsl(${colorVar} / 0.6)` }
             : undefined
         }
       >
@@ -238,6 +259,33 @@ function TranslationText({
         >
           {translation.text}
         </p>
+      )}
+    </div>
+  );
+}
+
+/* ─── Concept tag pills ─── */
+
+const MAX_VISIBLE_CONCEPTS = 5;
+
+function ConceptPills({ concepts }: { concepts: ConceptTag[] }) {
+  const visible = concepts.slice(0, MAX_VISIBLE_CONCEPTS);
+  const remaining = concepts.length - MAX_VISIBLE_CONCEPTS;
+
+  return (
+    <div className="mt-2 flex flex-wrap gap-1">
+      {visible.map((c) => (
+        <span
+          key={c.id}
+          className="inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+        >
+          {c.name}
+        </span>
+      ))}
+      {remaining > 0 && (
+        <span className="inline-flex items-center rounded-full bg-muted/60 px-1.5 py-0.5 text-[10px] text-muted-foreground/70">
+          +{remaining} more
+        </span>
       )}
     </div>
   );

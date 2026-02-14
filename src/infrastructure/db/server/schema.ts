@@ -57,6 +57,8 @@ export const preferences = pgTable("preferences", {
   activeTranslationIds: json("active_translation_ids").$type<number[]>().default([1001]),
   translationLayout: text("translation_layout").notNull().default("stacked"),
   showArabic: boolean("show_arabic").notNull().default(true),
+  translationConfigs: json("translation_configs").$type<{ translationId: number; order: number; fontSize: string; colorSlot: number }[]>(),
+  showConcepts: boolean("show_concepts").notNull().default(true),
   defaultReciterId: integer("default_reciter_id").notNull().default(7),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

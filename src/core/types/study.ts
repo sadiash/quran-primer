@@ -31,7 +31,15 @@ export interface ReadingProgress {
 export type ThemeMode = "light" | "dark" | "system";
 export type ArabicFont = "uthmani" | "simple";
 export type ArabicFontSize = "sm" | "md" | "lg" | "xl" | "2xl";
-export type TranslationFontSize = "sm" | "md" | "lg";
+export type TranslationFontSize = "sm" | "md" | "lg" | "xl";
+export type TranslationColorSlot = 1 | 2 | 3 | 4 | 5 | 6;
+
+export interface TranslationConfig {
+  translationId: number;
+  order: number;
+  fontSize: TranslationFontSize;
+  colorSlot: TranslationColorSlot;
+}
 export type TranslationLayout = "stacked" | "columnar";
 
 export type ThemeName =
@@ -62,6 +70,8 @@ export interface UserPreferences {
   defaultReciterId: number;
   activeTafsirIds: number[];
   activeHadithCollections: string[];
+  translationConfigs?: TranslationConfig[];
+  showConcepts: boolean;
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -85,6 +95,8 @@ export function toUserPreferences(raw: {
   defaultReciterId: number;
   activeTafsirIds?: number[] | null;
   activeHadithCollections?: string[] | null;
+  translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number }[] | null;
+  showConcepts?: boolean | null;
   onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
@@ -106,9 +118,55 @@ export function toUserPreferences(raw: {
     defaultReciterId: raw.defaultReciterId,
     activeTafsirIds: raw.activeTafsirIds ?? [74],
     activeHadithCollections: raw.activeHadithCollections ?? ["bukhari", "muslim"],
+    translationConfigs: raw.translationConfigs?.map((c) => ({
+      translationId: c.translationId,
+      order: c.order,
+      fontSize: c.fontSize as TranslationFontSize,
+      colorSlot: c.colorSlot as TranslationColorSlot,
+    })) ?? undefined,
+    showConcepts: raw.showConcepts ?? true,
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };
+}
+
+/**
+ * Merge saved TranslationConfigs with the current activeTranslationIds,
+ * auto-assigning defaults for any translation missing an explicit config.
+ */
+export function getResolvedTranslationConfigs(
+  activeIds: number[],
+  configs: TranslationConfig[] | undefined,
+  globalFontSize: TranslationFontSize,
+): TranslationConfig[] {
+  const configMap = new Map<number, TranslationConfig>();
+  if (configs) {
+    for (const c of configs) configMap.set(c.translationId, c);
+  }
+
+  const resolved: TranslationConfig[] = [];
+  for (let i = 0; i < activeIds.length; i++) {
+    const id = activeIds[i]!;
+    const existing = configMap.get(id);
+    resolved.push(
+      existing ?? {
+        translationId: id,
+        order: i,
+        fontSize: globalFontSize,
+        colorSlot: ((i % 6) + 1) as TranslationColorSlot,
+      },
+    );
+  }
+
+  // Sort by saved order
+  resolved.sort((a, b) => a.order - b.order);
+
+  // Re-normalize order to be contiguous 0..n-1
+  for (let i = 0; i < resolved.length; i++) {
+    resolved[i] = { ...resolved[i]!, order: i };
+  }
+
+  return resolved;
 }
 
 /** Human-readable location label for a note */
