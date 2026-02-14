@@ -1,0 +1,257 @@
+{
+  "Ablution": {
+    "subTopics": [],
+    "hadithCount": 113
+  },
+  "Adultry": {
+    "subTopics": [],
+    "hadithCount": 44
+  },
+  "Agriculture": {
+    "subTopics": [],
+    "hadithCount": 31
+  },
+  "Azan": {
+    "subTopics": [],
+    "hadithCount": 381
+  },
+  "BeginningOfCreation": {
+    "subTopics": [],
+    "hadithCount": 136
+  },
+  "BreakPromise": {
+    "subTopics": [],
+    "hadithCount": 15
+  },
+  "Charity": {
+    "subTopics": [],
+    "hadithCount": 118
+  },
+  "Cleanliness": {
+    "subTopics": [
+      "Ablution",
+      "Tayammum",
+      "Wash"
+    ],
+    "hadithCount": 0
+  },
+  "Dajjal": {
+    "subTopics": [],
+    "hadithCount": 59
+  },
+  "DayOfNahr": {
+    "subTopics": [],
+    "hadithCount": 46
+  },
+  "DayOfResurrection": {
+    "subTopics": [],
+    "hadithCount": 311
+  },
+  "DispraisedMorals": {
+    "subTopics": [
+      "Backbiting",
+      "BreakPromise",
+      "Lying",
+      "Stealing",
+      "Villification"
+    ],
+    "hadithCount": 0
+  },
+  "Divorce": {
+    "subTopics": [],
+    "hadithCount": 100
+  },
+  "DrinkingAlcohol": {
+    "subTopics": [],
+    "hadithCount": 200
+  },
+  "EidAdha": {
+    "subTopics": [],
+    "hadithCount": 10
+  },
+  "EidFitr": {
+    "subTopics": [],
+    "hadithCount": 29
+  },
+  "Expiation": {
+    "subTopics": [],
+    "hadithCount": 15
+  },
+  "Faith": {
+    "subTopics": [],
+    "hadithCount": 47
+  },
+  "Family": {
+    "subTopics": [],
+    "hadithCount": 22
+  },
+  "Friday": {
+    "subTopics": [],
+    "hadithCount": 88
+  },
+  "GoodMorals": {
+    "subTopics": [
+      "Charity",
+      "Honesty"
+    ],
+    "hadithCount": 257
+  },
+  "GreatCrimes": {
+    "subTopics": [],
+    "hadithCount": 88
+  },
+  "Hajj": {
+    "subTopics": [],
+    "hadithCount": 3345
+  },
+  "Health": {
+    "subTopics": [],
+    "hadithCount": 105
+  },
+  "Heaven": {
+    "subTopics": [],
+    "hadithCount": 1024
+  },
+  "Hell": {
+    "subTopics": [],
+    "hadithCount": 1006
+  },
+  "Honesty": {
+    "subTopics": [],
+    "hadithCount": 22
+  },
+  "Hunting": {
+    "subTopics": [],
+    "hadithCount": 70
+  },
+  "Jihad": {
+    "subTopics": [],
+    "hadithCount": 309
+  },
+  "KhandakBattle": {
+    "subTopics": [],
+    "hadithCount": 36
+  },
+  "Kufr": {
+    "subTopics": [],
+    "hadithCount": 66
+  },
+  "Marriage": {
+    "subTopics": [],
+    "hadithCount": 287
+  },
+  "Monday": {
+    "subTopics": [],
+    "hadithCount": 6
+  },
+  "Mortgages": {
+    "subTopics": [],
+    "hadithCount": 8
+  },
+  "Murder": {
+    "subTopics": [],
+    "hadithCount": 69
+  },
+  "Punishments": {
+    "subTopics": [],
+    "hadithCount": 145
+  },
+  "Qadr": {
+    "subTopics": [],
+    "hadithCount": 21
+  },
+  "Rajjab": {
+    "subTopics": [],
+    "hadithCount": 14
+  },
+  "Ramadan": {
+    "subTopics": [],
+    "hadithCount": 121
+  },
+  "Revelation": {
+    "subTopics": [],
+    "hadithCount": 7
+  },
+  "Salah": {
+    "subTopics": [],
+    "hadithCount": 3826
+  },
+  "Sale": {
+    "subTopics": [],
+    "hadithCount": 210
+  },
+  "Satan": {
+    "subTopics": [],
+    "hadithCount": 112
+  },
+  "Saturday": {
+    "subTopics": [],
+    "hadithCount": 5
+  },
+  "Saum": {
+    "subTopics": [],
+    "hadithCount": 749
+  },
+  "Stealing": {
+    "subTopics": [],
+    "hadithCount": 3
+  },
+  "Sunday": {
+    "subTopics": [],
+    "hadithCount": 3
+  },
+  "Tauhid": {
+    "subTopics": [],
+    "hadithCount": 817
+  },
+  "Tayammum": {
+    "subTopics": [],
+    "hadithCount": 15
+  },
+  "Testimony": {
+    "subTopics": [],
+    "hadithCount": 22
+  },
+  "Thursday": {
+    "subTopics": [],
+    "hadithCount": 6
+  },
+  "Trade": {
+    "subTopics": [
+      "Sale"
+    ],
+    "hadithCount": 210
+  },
+  "Tuesday": {
+    "subTopics": [],
+    "hadithCount": 2
+  },
+  "Uhud": {
+    "subTopics": [],
+    "hadithCount": 102
+  },
+  "Wash": {
+    "subTopics": [],
+    "hadithCount": 46
+  },
+  "Wednesday": {
+    "subTopics": [],
+    "hadithCount": 1
+  },
+  "Zakah": {
+    "subTopics": [],
+    "hadithCount": 990
+  },
+  "kufr": {
+    "subTopics": [],
+    "hadithCount": 22
+  },
+  "salah": {
+    "subTopics": [],
+    "hadithCount": 553
+  },
+  "usury": {
+    "subTopics": [],
+    "hadithCount": 80
+  }
+}

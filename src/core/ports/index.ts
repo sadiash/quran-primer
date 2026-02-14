@@ -11,3 +11,4 @@ export type {
 } from "./study-port";
 export type { CrossReferencePort } from "./cross-reference-port";
 export type { KnowledgeGraphPort } from "./knowledge-graph-port";
+export type { OntologyPort } from "./ontology-port";

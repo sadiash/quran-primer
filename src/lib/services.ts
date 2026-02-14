@@ -11,11 +11,13 @@ import { AudioAdapter } from "@/infrastructure/adapters/audio-adapter";
 import { HadithAdapter } from "@/infrastructure/adapters/hadith-adapter";
 import { HadithLocalAdapter } from "@/infrastructure/adapters/hadith-local-adapter";
 import { CrossReferenceAdapter } from "@/infrastructure/adapters/cross-reference-adapter";
-import type { HadithPort, CrossReferencePort } from "@/core/ports";
+import { OntologyLocalAdapter } from "@/infrastructure/adapters/ontology-local-adapter";
+import type { HadithPort, CrossReferencePort, OntologyPort } from "@/core/ports";
 
 const QURAN_SERVICE_TOKEN = "QuranService";
 const HADITH_ADAPTER_TOKEN = "HadithAdapter";
 const CROSS_REFERENCE_ADAPTER_TOKEN = "CrossReferenceAdapter";
+const ONTOLOGY_ADAPTER_TOKEN = "OntologyAdapter";
 
 function ensureRegistered() {
   if (!container.has(QURAN_SERVICE_TOKEN)) {
@@ -46,6 +48,13 @@ function ensureRegistered() {
       () => new CrossReferenceAdapter(),
     );
   }
+
+  if (!container.has(ONTOLOGY_ADAPTER_TOKEN)) {
+    container.register(
+      ONTOLOGY_ADAPTER_TOKEN,
+      () => new OntologyLocalAdapter(),
+    );
+  }
 }
 
 export function getQuranService(): QuranService {
@@ -61,4 +70,9 @@ export function getHadithAdapter(): HadithPort {
 export function getCrossReferenceAdapter(): CrossReferencePort {
   ensureRegistered();
   return container.resolve<CrossReferencePort>(CROSS_REFERENCE_ADAPTER_TOKEN);
+}
+
+export function getOntologyAdapter(): OntologyPort {
+  ensureRegistered();
+  return container.resolve<OntologyPort>(ONTOLOGY_ADAPTER_TOKEN);
 }
