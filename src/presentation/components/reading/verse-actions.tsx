@@ -13,12 +13,14 @@ import {
   Play,
   Pause,
 } from "lucide-react";
+import type { Translation } from "@/core/types";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { cn } from "@/lib/utils";
 
 interface VerseActionsProps {
   verseKey: string;
   arabicText: string;
+  translations: Translation[];
   isBookmarked: boolean;
   isPlaying: boolean;
   onToggleBookmark: () => void;
@@ -28,6 +30,7 @@ interface VerseActionsProps {
 export function VerseActions({
   verseKey,
   arabicText,
+  translations,
   isBookmarked,
   isPlaying,
   onToggleBookmark,
@@ -155,8 +158,14 @@ export function VerseActions({
             icon={Languages}
             label="Copy Translation"
             onClick={() => {
-              // TODO: copy active translation text
-              setOpen(false);
+              const text = translations
+                .map((t) => {
+                  // Strip HTML tags to get plain text
+                  const plain = t.text.replace(/<[^>]+>/g, "");
+                  return `[${t.resourceName}] ${plain}`;
+                })
+                .join("\n\n");
+              copyToClipboard(text || verseKey);
             }}
           />
         </div>

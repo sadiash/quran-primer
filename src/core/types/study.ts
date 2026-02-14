@@ -56,6 +56,9 @@ export interface UserPreferences {
   activeTranslationIds: number[];
   translationLayout: TranslationLayout;
   showArabic: boolean;
+  showVerseNumbers: boolean;
+  showSurahHeaders: boolean;
+  showBismillah: boolean;
   defaultReciterId: number;
   activeTafsirIds: number[];
   activeHadithCollections: string[];
@@ -76,6 +79,9 @@ export function toUserPreferences(raw: {
   activeTranslationIds?: number[] | null;
   translationLayout?: string | null;
   showArabic?: boolean | null;
+  showVerseNumbers?: boolean | null;
+  showSurahHeaders?: boolean | null;
+  showBismillah?: boolean | null;
   defaultReciterId: number;
   activeTafsirIds?: number[] | null;
   activeHadithCollections?: string[] | null;
@@ -94,6 +100,9 @@ export function toUserPreferences(raw: {
     activeTranslationIds: raw.activeTranslationIds ?? [1001],
     translationLayout: (raw.translationLayout ?? "stacked") as TranslationLayout,
     showArabic: raw.showArabic ?? true,
+    showVerseNumbers: raw.showVerseNumbers ?? true,
+    showSurahHeaders: raw.showSurahHeaders ?? true,
+    showBismillah: raw.showBismillah ?? true,
     defaultReciterId: raw.defaultReciterId,
     activeTafsirIds: raw.activeTafsirIds ?? [74],
     activeHadithCollections: raw.activeHadithCollections ?? ["bukhari", "muslim"],

@@ -51,3 +51,6 @@ export type {
 
 export type { PanelId, DockPosition, PanelConfig } from "./panel";
 export { PANEL_REGISTRY } from "./panel";
+
+export type { WorkspacePreset } from "./preset";
+export { BUILT_IN_PRESETS } from "./preset";
