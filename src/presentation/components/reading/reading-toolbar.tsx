@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   Type,
-  Languages,
   LayoutGrid,
   Eye,
   EyeOff,
@@ -16,10 +15,9 @@ import {
 } from "lucide-react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
-import type { ArabicFontSize, TranslationFontSize, TranslationLayout } from "@/core/types";
+import type { ArabicFontSize, TranslationLayout } from "@/core/types";
 
 const ARABIC_SIZES: ArabicFontSize[] = ["sm", "md", "lg", "xl", "2xl"];
-const TRANS_SIZES: TranslationFontSize[] = ["sm", "md", "lg"];
 const LAYOUTS: { value: TranslationLayout; label: string }[] = [
   { value: "stacked", label: "Stacked" },
   { value: "columnar", label: "Side by side" },
@@ -30,7 +28,6 @@ export function ReadingToolbar() {
   const [open, setOpen] = useState(false);
 
   const arabicIdx = ARABIC_SIZES.indexOf(preferences.arabicFontSize);
-  const transIdx = TRANS_SIZES.indexOf(preferences.translationFontSize);
 
   return (
     <div className="absolute bottom-6 right-6 z-10">
@@ -75,37 +72,6 @@ export function ReadingToolbar() {
                     if (arabicIdx < ARABIC_SIZES.length - 1) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx + 1] });
                   }}
                   disabled={arabicIdx >= ARABIC_SIZES.length - 1}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Translation font size */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <Languages className="h-3.5 w-3.5" />
-                Translation Size
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    if (transIdx > 0) updatePreferences({ translationFontSize: TRANS_SIZES[transIdx - 1] });
-                  }}
-                  disabled={transIdx <= 0}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
-                >
-                  <Minus className="h-3.5 w-3.5" />
-                </button>
-                <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
-                  {preferences.translationFontSize}
-                </span>
-                <button
-                  onClick={() => {
-                    if (transIdx < TRANS_SIZES.length - 1) updatePreferences({ translationFontSize: TRANS_SIZES[transIdx + 1] });
-                  }}
-                  disabled={transIdx >= TRANS_SIZES.length - 1}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
                 >
                   <Plus className="h-3.5 w-3.5" />
