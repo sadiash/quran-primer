@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
+  useNodesState,
+  useEdgesState,
   type Node,
   type Edge,
 } from "@xyflow/react";
@@ -212,8 +214,20 @@ export function MindMapView({
   onNodeClick,
   className,
 }: MindMapViewProps) {
-  const flowNodes = useMemo(() => layoutNodes(nodes, edges), [nodes, edges]);
-  const flowEdges = useMemo(() => toFlowEdges(edges), [edges]);
+  const initialNodes = useMemo(() => layoutNodes(nodes, edges), [nodes, edges]);
+  const initialEdges = useMemo(() => toFlowEdges(edges), [edges]);
+
+  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState(initialNodes);
+  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Sync when graph data changes (new notes/bookmarks added)
+  const [prevKey, setPrevKey] = useState("");
+  const key = nodes.map((n) => n.id).join(",");
+  if (key !== prevKey) {
+    setPrevKey(key);
+    setFlowNodes(initialNodes);
+    setFlowEdges(initialEdges);
+  }
 
   // Build lookup for GraphNode by id for click handler
   const nodeById = useMemo(() => {
@@ -235,11 +249,14 @@ export function MindMapView({
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
         fitView
         proOptions={{ hideAttribution: true }}
         minZoom={0.2}
         maxZoom={2}
+        nodesDraggable
       >
         <Background />
         <Controls />
