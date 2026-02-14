@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState, useMemo } from "react";
+import { useEffect, useRef, useCallback, useState, useMemo, Fragment } from "react";
 import type { Surah, Verse, Translation } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { getResolvedTranslationConfigs } from "@/core/types";
@@ -234,6 +234,14 @@ export function ReadingSurface({
             <SurahHeader surah={surah} showBismillah={preferences.showBismillah} />
           )}
 
+          {/* Translation color legend — only when multiple translations active */}
+          {resolvedConfigs.length > 1 && preferences.showTranslation && (
+            <TranslationLegend
+              configs={resolvedConfigs}
+              translations={activeTranslations}
+            />
+          )}
+
           <div className="mt-8 space-y-0 divide-y divide-border/30">
             {verses.map((verse) => (
               <VerseBlock
@@ -267,6 +275,63 @@ export function ReadingSurface({
       </div>
 
       <ReadingToolbar />
+    </div>
+  );
+}
+
+/* ─── Translation color legend ─── */
+
+import type { TranslationConfig } from "@/core/types";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+function TranslationLegend({
+  configs,
+  translations,
+}: {
+  configs: TranslationConfig[];
+  translations: Translation[];
+}) {
+  const [open, setOpen] = useState(true);
+
+  // Build a name lookup from the translations we received
+  const nameMap = useMemo(() => {
+    const m = new Map<number, string>();
+    for (const t of translations) {
+      if (!m.has(t.resourceId)) m.set(t.resourceId, t.resourceName);
+    }
+    return m;
+  }, [translations]);
+
+  return (
+    <div className="mt-6">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70 hover:text-muted-foreground transition-fast"
+      >
+        <ChevronDown
+          className={cn(
+            "h-3 w-3 transition-transform",
+            !open && "-rotate-90",
+          )}
+        />
+        {open ? "Hide" : "Show"} translation key
+      </button>
+      {open && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1">
+          {configs.map((c) => (
+            <span key={c.translationId} className="flex items-center gap-1.5 text-[11px]">
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: `hsl(var(--translation-${c.colorSlot}))` }}
+              />
+              <span className="text-muted-foreground">
+                {nameMap.get(c.translationId) ?? `Translation ${c.translationId}`}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
