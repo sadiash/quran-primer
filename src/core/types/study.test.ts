@@ -22,8 +22,8 @@ describe("Study domain types", () => {
   it("Note has tags and timestamps", () => {
     const note: Note = {
       id: "note-1",
-      verseKey: "2:255",
-      surahId: 2,
+      verseKeys: ["2:255"],
+      surahIds: [2],
       content: "Reflection on Ayat al-Kursi",
       tags: ["reflection", "favorites"],
       createdAt: new Date("2025-01-01"),
@@ -60,6 +60,9 @@ describe("Study domain types", () => {
       activeTranslationIds: [131],
       translationLayout: "stacked",
       showArabic: true,
+      showVerseNumbers: true,
+      showSurahHeaders: true,
+      showBismillah: true,
       defaultReciterId: 7,
       activeTafsirIds: [74],
       activeHadithCollections: ["bukhari", "muslim"],

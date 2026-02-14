@@ -19,6 +19,8 @@ function createMockNoteRepo(): NoteRepository {
     getBySurah: vi.fn().mockResolvedValue([]),
     getByVerseKey: vi.fn().mockResolvedValue([]),
     getByTag: vi.fn().mockResolvedValue([]),
+    getForVerse: vi.fn().mockResolvedValue([]),
+    getById: vi.fn().mockResolvedValue(null),
     save: vi.fn().mockResolvedValue(undefined),
     remove: vi.fn().mockResolvedValue(undefined),
   };
@@ -38,8 +40,8 @@ function makeBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
 function makeNote(overrides: Partial<Note> = {}): Note {
   return {
     id: "note-1",
-    verseKey: "2:247",
-    surahId: 2,
+    verseKeys: ["2:247"],
+    surahIds: [2],
     content: "A reflection on sovereignty",
     tags: ["sovereignty", "history"],
     createdAt: new Date("2025-01-01"),
@@ -118,7 +120,7 @@ describe("KnowledgeGraphService", () => {
         makeBookmark({ id: "bm-1", verseKey: "2:247" }),
       ]);
       (noteRepo.getAll as ReturnType<typeof vi.fn>).mockResolvedValue([
-        makeNote({ id: "note-1", verseKey: "2:247" }),
+        makeNote({ id: "note-1", verseKeys: ["2:247"] }),
       ]);
 
       const graph = await service.generateGraph();
@@ -131,7 +133,7 @@ describe("KnowledgeGraphService", () => {
   describe("generateGraph with notes", () => {
     it("creates note nodes and verse nodes from notes", async () => {
       (noteRepo.getAll as ReturnType<typeof vi.fn>).mockResolvedValue([
-        makeNote({ id: "note-1", verseKey: "2:247" }),
+        makeNote({ id: "note-1", verseKeys: ["2:247"] }),
       ]);
 
       const graph = await service.generateGraph();
@@ -144,7 +146,7 @@ describe("KnowledgeGraphService", () => {
 
     it("creates references edges from notes to verses", async () => {
       (noteRepo.getAll as ReturnType<typeof vi.fn>).mockResolvedValue([
-        makeNote({ id: "note-1", verseKey: "2:247" }),
+        makeNote({ id: "note-1", verseKeys: ["2:247"] }),
       ]);
 
       const graph = await service.generateGraph();
@@ -176,7 +178,7 @@ describe("KnowledgeGraphService", () => {
     it("creates thematic edges from notes to theme nodes", async () => {
       (noteRepo.getAll as ReturnType<typeof vi.fn>).mockResolvedValue([
         makeNote({ id: "note-1", tags: ["patience"] }),
-        makeNote({ id: "note-2", verseKey: "3:186", tags: ["patience"] }),
+        makeNote({ id: "note-2", verseKeys: ["3:186"], tags: ["patience"] }),
       ]);
 
       const graph = await service.generateGraph();
@@ -196,7 +198,7 @@ describe("KnowledgeGraphService", () => {
       const bm = makeBookmark({ id: "bm-1", verseKey: "2:247" });
       (bookmarkRepo.getByVerseKey as ReturnType<typeof vi.fn>).mockResolvedValue(bm);
       (noteRepo.getByVerseKey as ReturnType<typeof vi.fn>).mockResolvedValue([
-        makeNote({ id: "note-1", verseKey: "2:247" }),
+        makeNote({ id: "note-1", verseKeys: ["2:247"] }),
       ]);
 
       const graph = await service.generateGraph({ verseKey: "2:247" });
@@ -221,7 +223,7 @@ describe("KnowledgeGraphService", () => {
 
     it("filters by tag (notes fetched by tag, graph filtered to reachable)", async () => {
       (noteRepo.getByTag as ReturnType<typeof vi.fn>).mockResolvedValue([
-        makeNote({ id: "note-1", verseKey: "2:247", tags: ["patience"] }),
+        makeNote({ id: "note-1", verseKeys: ["2:247"], tags: ["patience"] }),
       ]);
 
       const graph = await service.generateGraph({ tag: "patience" });
@@ -260,12 +262,12 @@ describe("KnowledgeGraphService", () => {
       (noteRepo.getAll as ReturnType<typeof vi.fn>).mockResolvedValue([
         makeNote({
           id: "note-1",
-          verseKey: "2:247",
+          verseKeys: ["2:247"],
           tags: ["sovereignty"],
         }),
         makeNote({
           id: "note-2",
-          verseKey: "2:255",
+          verseKeys: ["2:255"],
           tags: ["sovereignty", "power"],
         }),
       ]);

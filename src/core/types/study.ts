@@ -10,10 +10,10 @@ export interface Bookmark {
 
 export interface Note {
   id: string;
-  verseKey: string;
-  surahId: number;
+  verseKeys: string[];    // ["1:1", "2:255"] or [] for standalone
+  surahIds: number[];     // [1] for whole-surah link, or []
   content: string;
-  contentJson?: string; // TipTap JSON for rich text, alongside plain text for backward compat
+  contentJson?: string;   // TipTap JSON for rich text, alongside plain text for backward compat
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -32,7 +32,7 @@ export type ThemeMode = "light" | "dark" | "system";
 export type ArabicFont = "uthmani" | "simple";
 export type ArabicFontSize = "sm" | "md" | "lg" | "xl" | "2xl";
 export type TranslationFontSize = "sm" | "md" | "lg";
-export type TranslationLayout = "stacked" | "columnar" | "tabbed";
+export type TranslationLayout = "stacked" | "columnar";
 
 export type ThemeName =
   | "library"
@@ -98,7 +98,7 @@ export function toUserPreferences(raw: {
     showTranslation: raw.showTranslation,
     defaultTranslationId: raw.defaultTranslationId,
     activeTranslationIds: raw.activeTranslationIds ?? [1001],
-    translationLayout: (raw.translationLayout ?? "stacked") as TranslationLayout,
+    translationLayout: (raw.translationLayout === "columnar" ? "columnar" : "stacked") as TranslationLayout,
     showArabic: raw.showArabic ?? true,
     showVerseNumbers: raw.showVerseNumbers ?? true,
     showSurahHeaders: raw.showSurahHeaders ?? true,
@@ -109,4 +109,21 @@ export function toUserPreferences(raw: {
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };
+}
+
+/** Human-readable location label for a note */
+export function noteLocationLabel(
+  note: Note,
+  getSurahName: (id: number) => string,
+): string {
+  const totalRefs = note.verseKeys.length + note.surahIds.length;
+  if (totalRefs === 0) return "Standalone";
+  if (totalRefs === 1) {
+    if (note.verseKeys.length === 1) {
+      const parts = note.verseKeys[0]!.split(":");
+      return `${getSurahName(Number(parts[0]))} ${parts[0]}:${parts[1]}`;
+    }
+    return `${getSurahName(note.surahIds[0]!)} (surah)`;
+  }
+  return `${totalRefs} references`;
 }

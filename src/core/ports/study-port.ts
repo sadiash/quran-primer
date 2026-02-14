@@ -20,6 +20,8 @@ export interface NoteRepository {
   getBySurah(surahId: number): Promise<Note[]>;
   getByVerseKey(verseKey: string): Promise<Note[]>;
   getByTag(tag: string): Promise<Note[]>;
+  getForVerse(verseKey: string, surahId: number): Promise<Note[]>;
+  getById(id: string): Promise<Note | null>;
   save(note: Note): Promise<void>;
   remove(id: string): Promise<void>;
 }

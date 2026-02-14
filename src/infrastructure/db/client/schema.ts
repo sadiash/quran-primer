@@ -12,8 +12,8 @@ export interface BookmarkRecord {
 
 export interface NoteRecord {
   id: string;
-  verseKey: string;
-  surahId: number;
+  verseKeys: string[];
+  surahIds: number[];
   content: string;
   contentJson?: string;
   tags: string[];
@@ -116,6 +116,37 @@ export class AppDatabase extends Dexie {
       graphNodes: "id, nodeType, verseKey, surahId, createdAt",
       graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
     });
+
+    // v4: notes — verseKey→verseKeys[], surahId→surahIds[] (multiEntry indexes)
+    this.version(4)
+      .stores({
+        bookmarks: "id, verseKey, surahId, createdAt",
+        notes: "id, *verseKeys, *surahIds, *tags, updatedAt",
+        progress: "surahId, updatedAt",
+        preferences: "id",
+        crossReferences: "id, quranVerseKey, source, createdAt",
+        graphNodes: "id, nodeType, verseKey, surahId, createdAt",
+        graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
+      })
+      .upgrade((tx) => {
+        return tx
+          .table("notes")
+          .toCollection()
+          .modify((note: Record<string, unknown>) => {
+            // Idempotent: only migrate if old scalar fields exist
+            if (typeof note.verseKey === "string") {
+              note.verseKeys = note.verseKey ? [note.verseKey] : [];
+              delete note.verseKey;
+            }
+            if (typeof note.surahId === "number") {
+              note.surahIds = note.surahId ? [note.surahId] : [];
+              delete note.surahId;
+            }
+            // Ensure arrays exist even if fields were missing
+            if (!Array.isArray(note.verseKeys)) note.verseKeys = [];
+            if (!Array.isArray(note.surahIds)) note.surahIds = [];
+          });
+      });
   }
 }
 

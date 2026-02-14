@@ -15,6 +15,15 @@ function sanitizeHtml(html: string): string {
   });
 }
 
+/**
+ * Maps a translation's position (index among active translations) to
+ * the corresponding CSS custom property defined per-theme in globals.css.
+ */
+function getTranslationColorVar(index: number): string {
+  const slot = (index % 6) + 1;
+  return `var(--translation-${slot})`;
+}
+
 interface VerseBlockProps {
   verse: Verse;
   translations: Translation[];
@@ -121,49 +130,112 @@ export function VerseBlock({
 
       {/* Translations */}
       {showTranslation && translations.length > 0 && (
-        <div
-          className={cn(
-            "mt-3",
-            translationLayout === "columnar" && translations.length > 1
-              ? "grid grid-cols-2 gap-4"
-              : "space-y-2",
-          )}
-        >
-          {translations.map((t) => (
-            <TranslationText
-              key={`${t.resourceId}-${t.verseKey}`}
-              translation={t}
-              sizeClass={translationSizeClass}
-            />
-          ))}
-        </div>
+        <TranslationGroup
+          translations={translations}
+          layout={translationLayout}
+          sizeClass={translationSizeClass}
+        />
       )}
     </div>
   );
 }
 
+/* ─── Translation layout switcher ─── */
+
+function TranslationGroup({
+  translations,
+  layout,
+  sizeClass,
+}: {
+  translations: Translation[];
+  layout: TranslationLayout;
+  sizeClass: string;
+}) {
+  const multi = translations.length > 1;
+
+  if (layout === "columnar" && multi) {
+    return (
+      <div
+        className={cn(
+          "mt-3 grid gap-3",
+          translations.length === 2 && "grid-cols-2",
+          translations.length >= 3 && "grid-cols-2 lg:grid-cols-3",
+        )}
+      >
+        {translations.map((t, i) => (
+          <TranslationText
+            key={`${t.resourceId}-${t.verseKey}`}
+            translation={t}
+            sizeClass={sizeClass}
+            colorIndex={i}
+            useColor={multi}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Stacked (default)
+  return (
+    <div className="mt-3 space-y-1.5">
+      {translations.map((t, i) => (
+        <TranslationText
+          key={`${t.resourceId}-${t.verseKey}`}
+          translation={t}
+          sizeClass={sizeClass}
+          colorIndex={i}
+          useColor={multi}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Individual translation block ─── */
+
 function TranslationText({
   translation,
   sizeClass,
+  colorIndex,
+  useColor,
 }: {
   translation: Translation;
   sizeClass: string;
+  colorIndex: number;
+  useColor: boolean;
 }) {
   const html = useMemo(() => sanitizeHtml(translation.text), [translation.text]);
   const hasHtml = html !== translation.text || /<[^>]+>/.test(translation.text);
 
+  const colorStyle = useColor
+    ? { color: `hsl(${getTranslationColorVar(colorIndex)})` }
+    : undefined;
+
   return (
     <div className="space-y-0.5">
-      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-        {translation.resourceName}
+      <p
+        className="text-[11px] font-medium tracking-wide"
+        style={
+          useColor
+            ? { color: `hsl(${getTranslationColorVar(colorIndex)} / 0.6)` }
+            : undefined
+        }
+      >
+        <span className={useColor ? "" : "text-muted-foreground/70"}>
+          {translation.resourceName}
+        </span>
       </p>
       {hasHtml ? (
         <p
-          className={cn("text-muted-foreground leading-relaxed", sizeClass)}
+          className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
+          style={colorStyle}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <p className={cn("text-muted-foreground leading-relaxed", sizeClass)}>
+        <p
+          className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
+          style={colorStyle}
+        >
           {translation.text}
         </p>
       )}

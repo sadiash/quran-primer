@@ -13,8 +13,8 @@ describe("DexieNoteRepository", () => {
   function makeNote(overrides: Partial<Note> = {}): Note {
     return {
       id: "note-1",
-      verseKey: "2:255",
-      surahId: 2,
+      verseKeys: ["2:255"],
+      surahIds: [2],
       content: "Ayat al-Kursi reflection",
       tags: ["reflection"],
       createdAt: new Date("2025-01-01"),
@@ -30,9 +30,9 @@ describe("DexieNoteRepository", () => {
     expect(all[0]?.content).toBe("Ayat al-Kursi reflection");
   });
 
-  it("getBySurah() filters by surahId", async () => {
-    await repo.save(makeNote({ id: "n1", surahId: 2 }));
-    await repo.save(makeNote({ id: "n2", surahId: 3, verseKey: "3:1" }));
+  it("getBySurah() filters by surahIds", async () => {
+    await repo.save(makeNote({ id: "n1", surahIds: [2] }));
+    await repo.save(makeNote({ id: "n2", surahIds: [3], verseKeys: ["3:1"] }));
 
     const s2 = await repo.getBySurah(2);
     expect(s2).toHaveLength(1);
@@ -40,7 +40,7 @@ describe("DexieNoteRepository", () => {
 
   it("getByVerseKey() returns notes for a verse", async () => {
     await repo.save(makeNote({ id: "n1" }));
-    await repo.save(makeNote({ id: "n2", verseKey: "2:255" }));
+    await repo.save(makeNote({ id: "n2", verseKeys: ["2:255"] }));
 
     const notes = await repo.getByVerseKey("2:255");
     expect(notes).toHaveLength(2);
@@ -69,5 +69,24 @@ describe("DexieNoteRepository", () => {
     await repo.remove("note-1");
     const all = await repo.getAll();
     expect(all).toHaveLength(0);
+  });
+
+  it("getForVerse() returns notes by verseKey or surahId", async () => {
+    await repo.save(makeNote({ id: "n1", verseKeys: ["2:255"], surahIds: [] }));
+    await repo.save(makeNote({ id: "n2", verseKeys: [], surahIds: [2] }));
+    await repo.save(makeNote({ id: "n3", verseKeys: ["3:1"], surahIds: [3] }));
+
+    const notes = await repo.getForVerse("2:255", 2);
+    expect(notes).toHaveLength(2);
+    expect(notes.map((n) => n.id).sort()).toEqual(["n1", "n2"]);
+  });
+
+  it("getById() returns a single note", async () => {
+    await repo.save(makeNote({ id: "n1" }));
+    const note = await repo.getById("n1");
+    expect(note?.id).toBe("n1");
+
+    const missing = await repo.getById("nonexistent");
+    expect(missing).toBeNull();
   });
 });

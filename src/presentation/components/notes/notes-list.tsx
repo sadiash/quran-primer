@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { StickyNote, Trash2 } from "lucide-react";
 import { useNotes } from "@/presentation/hooks/use-notes";
+import { noteLocationLabel } from "@/core/types/study";
+import { getSurahName } from "@/lib/surah-names";
 import { cn } from "@/lib/utils";
 
 export function NotesList() {
@@ -22,7 +24,11 @@ export function NotesList() {
   return (
     <div className="space-y-2">
       {notes.map((note) => {
-        const [surahId] = note.verseKey.split(":");
+        const firstVk = note.verseKeys[0];
+        const surahId = firstVk
+          ? Number(firstVk.split(":")[0])
+          : note.surahIds[0];
+        const href = surahId ? `/surah/${surahId}` : "/notes";
         return (
           <div
             key={note.id}
@@ -32,11 +38,11 @@ export function NotesList() {
             )}
           >
             <Link
-              href={`/surahs/${surahId}`}
+              href={href}
               className="flex-1 min-w-0"
             >
               <p className="text-sm font-medium text-foreground">
-                Verse {note.verseKey}
+                {noteLocationLabel(note, getSurahName)}
               </p>
               <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
                 {note.content}
