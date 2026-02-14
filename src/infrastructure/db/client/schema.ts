@@ -44,6 +44,8 @@ export interface PreferencesRecord {
   defaultReciterId: number;
   activeTafsirIds?: number[];
   activeHadithCollections?: string[];
+  translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number }[];
+  showConcepts?: boolean;
   onboardingComplete?: boolean;
   updatedAt: Date;
 }

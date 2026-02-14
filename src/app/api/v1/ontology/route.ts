@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const type = url.searchParams.get("type");
     const verse = url.searchParams.get("verse");
+    const surah = url.searchParams.get("surah");
     const hadith = url.searchParams.get("hadith");
 
     const adapter = getOntologyAdapter();
@@ -29,6 +30,15 @@ export async function GET(request: NextRequest) {
         if (verse) {
           const concepts = await adapter.getConceptsForVerse(verse);
           return toResponse(ok(concepts, { total: concepts.length }));
+        }
+        if (surah) {
+          const surahId = Number(surah);
+          if (!surahId || surahId < 1 || surahId > 114) {
+            return toResponse(badRequest("Invalid surah ID (1-114)"));
+          }
+          const conceptsBySurah = await adapter.getConceptsForSurah(surahId);
+          const total = Object.values(conceptsBySurah).reduce((sum, arr) => sum + arr.length, 0);
+          return toResponse(ok(conceptsBySurah, { total }));
         }
         const concepts = await adapter.getConcepts();
         return toResponse(ok(concepts, { total: concepts.length }));

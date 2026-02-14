@@ -8,8 +8,12 @@ import type {
   ArabicFont,
   ArabicFontSize,
   TranslationFontSize,
+  TranslationColorSlot,
+  TranslationConfig,
   TranslationLayout,
 } from "@/core/types";
+import { getResolvedTranslationConfigs } from "@/core/types";
+import { ChevronUp, ChevronDown, X, Plus } from "lucide-react";
 
 const TRANSLATIONS = [
   { id: 1001, name: "The Clear Quran", author: "Mustafa Khattab" },
@@ -35,12 +39,56 @@ const HADITH_COLLECTIONS = [
 export default function SettingsPage() {
   const { preferences, updatePreferences } = usePreferences();
 
-  const toggleTranslation = (id: number) => {
-    const current = preferences.activeTranslationIds;
-    const next = current.includes(id)
-      ? current.filter((x) => x !== id)
-      : [...current, id];
-    if (next.length > 0) updatePreferences({ activeTranslationIds: next });
+  const resolvedConfigs = getResolvedTranslationConfigs(
+    preferences.activeTranslationIds,
+    preferences.translationConfigs,
+    preferences.translationFontSize,
+  );
+
+  const updateConfigs = (newConfigs: TranslationConfig[]) => {
+    const newActiveIds = newConfigs.map((c) => c.translationId);
+    updatePreferences({
+      activeTranslationIds: newActiveIds,
+      translationConfigs: newConfigs,
+    });
+  };
+
+  const deactivateTranslation = (id: number) => {
+    if (resolvedConfigs.length <= 1) return; // keep at least one
+    const next = resolvedConfigs.filter((c) => c.translationId !== id);
+    // Re-normalize order
+    const renumbered = next.map((c, i) => ({ ...c, order: i }));
+    updateConfigs(renumbered);
+  };
+
+  const activateTranslation = (id: number) => {
+    const alreadyActive = resolvedConfigs.some((c) => c.translationId === id);
+    if (alreadyActive) return;
+    const newConfig: TranslationConfig = {
+      translationId: id,
+      order: resolvedConfigs.length,
+      fontSize: preferences.translationFontSize,
+      colorSlot: (((resolvedConfigs.length) % 6) + 1) as TranslationColorSlot,
+    };
+    updateConfigs([...resolvedConfigs, newConfig]);
+  };
+
+  const moveTranslation = (id: number, direction: "up" | "down") => {
+    const idx = resolvedConfigs.findIndex((c) => c.translationId === id);
+    if (idx < 0) return;
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= resolvedConfigs.length) return;
+    const next = [...resolvedConfigs];
+    [next[idx], next[swapIdx]] = [next[swapIdx]!, next[idx]!];
+    const renumbered = next.map((c, i) => ({ ...c, order: i }));
+    updateConfigs(renumbered);
+  };
+
+  const updateTranslationConfig = (id: number, patch: Partial<Pick<TranslationConfig, "fontSize" | "colorSlot">>) => {
+    const next = resolvedConfigs.map((c) =>
+      c.translationId === id ? { ...c, ...patch } : c,
+    );
+    updateConfigs(next);
   };
 
   const toggleTafsir = (id: number) => {
@@ -78,7 +126,7 @@ export default function SettingsPage() {
           </SettingRow>
 
           {/* Arabic font */}
-          <SettingRow label="Arabic script style">
+          <SettingRow label="Arabic script style" disabled={!preferences.showArabic}>
             <SegmentedControl
               value={preferences.arabicFont}
               options={[
@@ -90,7 +138,7 @@ export default function SettingsPage() {
           </SettingRow>
 
           {/* Arabic font size */}
-          <SettingRow label="Arabic font size">
+          <SettingRow label="Arabic font size" disabled={!preferences.showArabic}>
             <SegmentedControl
               value={preferences.arabicFontSize}
               options={[
@@ -104,16 +152,11 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
-          {/* Translation font size */}
-          <SettingRow label="Translation font size">
-            <SegmentedControl
-              value={preferences.translationFontSize}
-              options={[
-                { value: "sm" as TranslationFontSize, label: "S" },
-                { value: "md" as TranslationFontSize, label: "M" },
-                { value: "lg" as TranslationFontSize, label: "L" },
-              ]}
-              onChange={(v) => updatePreferences({ translationFontSize: v })}
+          {/* Concept tags */}
+          <SettingRow label="Show concept tags">
+            <ToggleSwitch
+              checked={preferences.showConcepts}
+              onChange={(v) => updatePreferences({ showConcepts: v })}
             />
           </SettingRow>
 
@@ -123,30 +166,68 @@ export default function SettingsPage() {
               value={preferences.translationLayout}
               options={[
                 { value: "stacked" as TranslationLayout, label: "Stacked" },
-                { value: "columnar" as TranslationLayout, label: "Columns" },
-                { value: "tabbed" as TranslationLayout, label: "Tabbed" },
+                { value: "columnar" as TranslationLayout, label: "Side by side" },
               ]}
               onChange={(v) => updatePreferences({ translationLayout: v })}
             />
           </SettingRow>
 
-          {/* Translations */}
+          {/* Active translations — reorderable with per-translation controls */}
           <div className="pt-2">
             <p className="text-sm font-medium text-foreground mb-3">
               Active translations
             </p>
-            <div className="space-y-1.5">
-              {TRANSLATIONS.map((t) => (
-                <CheckRow
-                  key={t.id}
-                  label={t.name}
-                  description={t.author}
-                  checked={preferences.activeTranslationIds.includes(t.id)}
-                  onToggle={() => toggleTranslation(t.id)}
-                />
-              ))}
+            <div className="space-y-2">
+              {resolvedConfigs.map((config, idx) => {
+                const info = TRANSLATIONS.find((t) => t.id === config.translationId);
+                if (!info) return null;
+                return (
+                  <TranslationConfigRow
+                    key={config.translationId}
+                    name={info.name}
+                    author={info.author}
+                    config={config}
+                    isPrimary={idx === 0}
+                    isFirst={idx === 0}
+                    isLast={idx === resolvedConfigs.length - 1}
+                    canRemove={resolvedConfigs.length > 1}
+                    onMoveUp={() => moveTranslation(config.translationId, "up")}
+                    onMoveDown={() => moveTranslation(config.translationId, "down")}
+                    onRemove={() => deactivateTranslation(config.translationId)}
+                    onChangeFontSize={(fs) => updateTranslationConfig(config.translationId, { fontSize: fs })}
+                    onChangeColor={(cs) => updateTranslationConfig(config.translationId, { colorSlot: cs })}
+                  />
+                );
+              })}
             </div>
           </div>
+
+          {/* Inactive translations — add buttons */}
+          {(() => {
+            const activeIds = new Set(resolvedConfigs.map((c) => c.translationId));
+            const inactive = TRANSLATIONS.filter((t) => !activeIds.has(t.id));
+            if (inactive.length === 0) return null;
+            return (
+              <div className="pt-2">
+                <p className="text-sm font-medium text-muted-foreground mb-2">
+                  Available translations
+                </p>
+                <div className="space-y-1">
+                  {inactive.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => activateTranslation(t.id)}
+                      className="flex w-full items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:border-muted-foreground/30 hover:bg-surface-hover transition-fast"
+                    >
+                      <Plus className="h-3.5 w-3.5 shrink-0" />
+                      <span>{t.name}</span>
+                      <span className="text-xs text-muted-foreground/60 ml-auto">{t.author}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </Section>
 
         {/* ── Study ── */}
@@ -216,12 +297,14 @@ function Section({
 function SettingRow({
   label,
   children,
+  disabled,
 }: {
   label: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className={cn("flex items-center justify-between gap-4", disabled && "opacity-40 pointer-events-none")}>
       <span className="text-sm text-foreground">{label}</span>
       {children}
     </div>
@@ -338,5 +421,137 @@ function CheckRow({
         )}
       </div>
     </button>
+  );
+}
+
+/* ─── Per-translation config row ─── */
+
+const FONT_SIZES: { value: TranslationFontSize; label: string }[] = [
+  { value: "sm", label: "S" },
+  { value: "md", label: "M" },
+  { value: "lg", label: "L" },
+  { value: "xl", label: "XL" },
+];
+
+const COLOR_SLOTS: TranslationColorSlot[] = [1, 2, 3, 4, 5, 6];
+
+function TranslationConfigRow({
+  name,
+  author,
+  config,
+  isPrimary,
+  isFirst,
+  isLast,
+  canRemove,
+  onMoveUp,
+  onMoveDown,
+  onRemove,
+  onChangeFontSize,
+  onChangeColor,
+}: {
+  name: string;
+  author: string;
+  config: TranslationConfig;
+  isPrimary: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  canRemove: boolean;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onRemove: () => void;
+  onChangeFontSize: (fs: TranslationFontSize) => void;
+  onChangeColor: (cs: TranslationColorSlot) => void;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 space-y-2.5">
+      {/* Header row: name, primary badge, reorder, remove */}
+      <div className="flex items-center gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium text-foreground truncate">{name}</p>
+            {isPrimary && (
+              <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                Primary
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground truncate">{author}</p>
+        </div>
+
+        <div className="flex items-center gap-0.5 shrink-0">
+          <button
+            onClick={onMoveUp}
+            disabled={isFirst}
+            className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
+            aria-label="Move up"
+          >
+            <ChevronUp className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={onMoveDown}
+            disabled={isLast}
+            className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
+            aria-label="Move down"
+          >
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={onRemove}
+            disabled={!canRemove}
+            className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-20 transition-fast"
+            aria-label="Remove"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Controls row: font size + color */}
+      <div className="flex items-center gap-4">
+        {/* Font size */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Size</span>
+          <div className="flex rounded-md border border-border">
+            {FONT_SIZES.map((fs, i) => (
+              <button
+                key={fs.value}
+                onClick={() => onChangeFontSize(fs.value)}
+                className={cn(
+                  "px-2 py-1 text-[11px] font-medium transition-colors",
+                  config.fontSize === fs.value
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                  i === 0 && "rounded-l-md",
+                  i === FONT_SIZES.length - 1 && "rounded-r-md",
+                )}
+              >
+                {fs.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Color */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Color</span>
+          <div className="flex gap-1">
+            {COLOR_SLOTS.map((slot) => (
+              <button
+                key={slot}
+                onClick={() => onChangeColor(slot)}
+                className={cn(
+                  "h-5 w-5 rounded-full border-2 transition-all",
+                  config.colorSlot === slot
+                    ? "border-foreground scale-110"
+                    : "border-transparent hover:scale-105",
+                )}
+                style={{ backgroundColor: `hsl(var(--translation-${slot}))` }}
+                aria-label={`Color ${slot}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -166,6 +166,18 @@ export class OntologyLocalAdapter implements OntologyPort {
     return index.get(verseKey) ?? [];
   }
 
+  async getConceptsForSurah(surahId: number): Promise<Record<string, QuranicConcept[]>> {
+    const index = await this.loadConceptsByVerse();
+    const prefix = `${surahId}:`;
+    const result: Record<string, QuranicConcept[]> = {};
+    for (const [key, concepts] of index) {
+      if (key.startsWith(prefix)) {
+        result[key] = concepts;
+      }
+    }
+    return result;
+  }
+
   async getHadithsForVerse(verseKey: string): Promise<string[]> {
     const data = await this.loadHadithVerses();
     return data[verseKey] ?? [];
