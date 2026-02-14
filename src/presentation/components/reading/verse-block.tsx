@@ -234,18 +234,14 @@ function TranslationText({
 
   return (
     <div className="space-y-0.5">
-      <p
-        className="text-[11px] font-medium tracking-wide"
-        style={
-          useColor
-            ? { color: `hsl(${colorVar} / 0.6)` }
-            : undefined
-        }
-      >
-        <span className={useColor ? "" : "text-muted-foreground/70"}>
-          {translation.resourceName}
-        </span>
-      </p>
+      {/* Show inline label only for single translation (no color key) */}
+      {!useColor && (
+        <p className="text-[11px] font-medium tracking-wide">
+          <span className="text-muted-foreground/70">
+            {translation.resourceName}
+          </span>
+        </p>
+      )}
       {hasHtml ? (
         <p
           className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
