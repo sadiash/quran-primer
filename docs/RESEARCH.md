@@ -16,6 +16,10 @@
 8. [Canonical Text Sources](#8-canonical-text-sources)
 9. [Runtime APIs](#9-runtime-apis)
 10. [Proposed Data Strategy](#10-proposed-data-strategy)
+11. [Quranic Ontology & Concept Mapping](#11-quranic-ontology--concept-mapping)
+12. [Hadith Ontology & Knowledge Graphs](#12-hadith-ontology--knowledge-graphs)
+13. [Quran-Hadith Cross-Referencing](#13-quran-hadith-cross-referencing)
+14. [Semantic Search Implementation](#14-semantic-search-implementation)
 
 ---
 
@@ -568,3 +572,397 @@ Quranic text is immutable. Translations and tafsirs change rarely. Bundling loca
 | Quranic Arabic Corpus | GNU GPL | Yes (with GPL terms) |
 | Quran.com API | OAuth2 required | Per their terms |
 | AlQuran.cloud | Open access | Per their terms |
+| SemanticHadith V2 KG | CC0-1.0 (Public Domain) | Yes |
+| CANERCorpus | Not specified | Unclear |
+| seelenbrecher/islamic-agent ontology.json | Not specified | Unclear |
+| ShathaTm/Quran_Hadith_Datasets | Not specified | Academic use |
+
+---
+
+## 11. Quranic Ontology & Concept Mapping
+
+### 11A. Quranic Arabic Corpus — Semantic Ontology (Deep Dive)
+
+**URL:** https://corpus.quran.com/ontology.jsp
+**JSON extract:** https://github.com/seelenbrecher/islamic-agent/tree/master/data/quran_data
+**License:** GNU GPL (corpus), extract license unclear
+**Maintained:** v0.4 by University of Leeds / quran.com team
+
+The Quranic Arabic Corpus provides a **semantic ontology of ~300 concepts** linked by **~350 relations** covering the entire Quran. This is the most structured "themes/topics per verse" index available.
+
+**12 Top-Level Categories:**
+
+| Category | Example Concepts |
+|----------|-----------------|
+| **Living Creation** | Prophets (24), Messengers (12), Angels (6), Historic Peoples (16), Historic Persons (15), Jinn |
+| **Location** | Makkah, Medinah, Paradise, Hell, Firdous, Saqar, Babylon, Badr |
+| **Event** | Day of Resurrection, Last Day, Al-Jahiliyah |
+| **Holy Book** | Quran, Torah, Injeel (Gospel), Zabur (Psalms) |
+| **Artifact** | Ark of the Covenant, Noah's Ark, Mosques, Churches, Weaponry |
+| **Religion** | Islam, Christianity, Judaism, Magians, Sabians |
+| **Astronomical Body** | Sun, Moon, Earth, Stars, Constellations |
+| **Physical Substance** | Clay, Coral, Pearl, Silk, Metals, Minerals |
+| **False Deity** | Al-Uzza, Allat, Baal, Manat, Idols |
+| **Weather Phenomena** | Cloud, Lightning, Rain, Thunder |
+| **Physical Attribute** | Colors |
+| **Language** | Arabic |
+
+Plus two root-level instances: **Allah** (2,721 verses) and **Allah's Throne**.
+
+**How Concepts Map to Verses:**
+
+Concepts are mapped **per-word** (named entity tagging + pronoun resolution). The public interface surfaces this as per-verse lists. Examples:
+- **Allah** → 2,721 verses
+- **Quran** → 69 verses
+- **Sun** → 33 verses
+
+**Available as JSON (`ontology.json`):**
+
+```json
+{
+  "allah": {
+    "Definition": "the one and only true God...",
+    "Subcategories": [],
+    "Related Concepts": [],
+    "Verses List": [{"surah_id": 1, "verse_id": 1}, ...] // 2721 entries
+  },
+  "fasting": {
+    "Definition": "...",
+    "Subcategories": [...],
+    "Related Concepts": [...],
+    "Verses List": [{"surah_id": 2, "verse_id": 183}, ...]
+  }
+}
+```
+
+**Hierarchy example (Living Creation):**
+```
+Concept (root)
+  └── Living Creation
+        └── Sentient Creation
+              ├── Angel (6): Azrael, Harut, Jibreel, Malik, Marut, Mikaeel
+              ├── Human
+              │     ├── Historic People (16): Aad, Thamud, Quraysh, Children of Israel, Romans...
+              │     ├── Historic Person (15): Maryam, Pharaoh, Luqman, Dhul Qarnayn...
+              │     ├── Messenger (12): Ibrahim, Musa, Jesus, Muhammad, Nuh...
+              │     └── Prophet (24): Adam, Yusuf, Ayyub, David, Solomon...
+              ├── Jinn
+              └── Beast of the Earth
+```
+
+**Assessment:** This is the **concept bridge** to hadith. When a user reads verse 2:183, we can look up its concepts (`fasting`, `ramadan`), then find hadiths discussing those same topics. The `ontology.json` from seelenbrecher/islamic-agent is immediately usable — no scraping needed.
+
+---
+
+### 11B. Quranic Arabic Corpus — Morphological Data
+
+**URL:** https://corpus.quran.com/download/
+**Improved fork:** https://github.com/mustafa0x/quran-morphology
+**Format:** Tab-separated text (Buckwalter transliteration), 77,430 words
+**License:** GNU GPL
+
+**Sample format** (`surah:ayah:word:segment`):
+```
+1:1:1:1    bi      P     PREF|LEM:b
+1:1:1:2    somi    N     ROOT:smw|LEM:{som|M|GEN
+1:1:2:1    {ll~ahi PN    ROOT:Alh|LEM:{ll~ah|GEN
+```
+
+**Features per token:** Part-of-speech tag (~40+ tags), root, lemma, gender, number, case, mood, verb form, aspect, voice.
+
+**Additional resources:**
+- `morphology-terms-ar.json` (Arabic definitions) from mustafa0x fork
+- JQuranTree Java API (`corpus.quran.com/java`) for programmatic access
+- Syntactic treebank (dependency grammar trees for every verse)
+
+---
+
+## 12. Hadith Ontology & Knowledge Graphs
+
+### 12A. SemanticHadith Knowledge Graph V2 (Primary Resource)
+
+**GitHub:** https://github.com/A-Kamran/SemanticHadith-V2
+**Docs:** https://a-kamran.github.io/SemanticHadith-V2/
+**V1 Docs:** https://a-kamran.github.io/SemanticHadithKG/
+**Figshare (V1 RDF):** https://figshare.com/articles/dataset/Semantic_Hadith_RDF/7964558
+**License:** CC0-1.0 (Public Domain)
+**Papers:**
+- [SemanticHadith: An ontology-driven knowledge graph (ScienceDirect)](https://www.sciencedirect.com/science/article/abs/pii/S1570826823000264)
+- [Semantic Enrichment of Hadith Corpus (Semantic Web Journal)](https://www.semantic-web-journal.net/content/semantic-enrichment-hadith-corpus-knowledge-graph-generation-islamic-text)
+
+**Collections covered:** All 6 major hadith collections (Bukhari, Muslim, Abu Dawud, Ibn Majah, Nasa'i, Tirmidhi).
+
+**V2 Ontology Classes:**
+
+| Category | Classes |
+|----------|---------|
+| Hadith structure | `Hadith`, `HadithText`, `HadithCollection`, `HadithBook`, `HadithChapter` |
+| Narration | `HadithNarrator`, `RootNarrator`, `HadithCollectionAuthor`, `ChainOfNarrators`, `NarratorChainSegment` |
+| Hadith types | `ElevatedHadith`, `SacredHadith`, `SeveredHadith`, `StoppedHadith` |
+| People | `Believer`, `Companion`, `Prophet`, `WifeOfProphet` |
+| Supernatural | `Angel`, `Jinn` |
+| Groups | `Nation`, `Tribe`, `HistoricGroupOfPeople` |
+| Nature | `Animal`, `Plant` |
+| Locations | `GeographicalLocation`, `DivineLocation` |
+| **Topics** | **`Topic` (parent), `ArticlesOfFaith`, `PillarsOfIslam`, `Crime`** |
+
+**Critical V2 properties:**
+- **`discussesTopic`** — links hadiths to topic categories
+- **`containsMentionOfVerse`** — links hadiths to specific Quran verses
+- **`containsMentionOf`** / **`mentionedIn`** — entity cross-references
+
+**Downloadable files:**
+- `SemanticHadith2.0.owl` — OWL ontology definition
+- `SemanticHadithKGV2.ttl.zip` — Full knowledge graph in Turtle/RDF format
+
+**SPARQL endpoint:** `http://semantichadith.com:8890/sparql/` (intermittent availability)
+
+**Assessment:** This is the single most valuable resource for hadith-verse linking. The V2 ontology has **topic tagging**, **named entity extraction**, and **direct Quran verse cross-references** per hadith. CC0 license means zero restrictions. The TTL file can be parsed to extract structured JSON mappings.
+
+---
+
+### 12B. CANERCorpus — Named Entity Recognition for Hadith
+
+**URL:** https://github.com/RamziSalah/Classical-Arabic-Named-Entity-Recognition-Corpus
+**Size:** 7,000+ hadiths from Sahih Al-Bukhari, 258,241 words, 72,000+ named entities
+**Formats:** CSV, JSON, SQL, TXT, XLSX, XML, CoNLL
+
+**20 Entity Classes:**
+Allah, Prophet, Paradise, Hell, Religion, Person, Location, Organization, Measurement, Money, Book, Date, Time, Clan, Natural Object, Crime, Day, Number, Sect, Month
+
+**Assessment:** Manually annotated by human experts — high quality. The entity classes overlap significantly with the Quranic ontology categories (Prophet, Angel, Location, etc.), making it a natural bridge dataset.
+
+---
+
+### 12C. HuggingFace Hadith Datasets (with Topic Proxies)
+
+**meeAtif/hadith_datasets:**
+- URL: https://huggingface.co/datasets/meeAtif/hadith_datasets
+- Size: 33.7K hadiths, 6 major books
+- Fields: `Book`, `Chapter_Number`, `Chapter_Title_Arabic`, `Chapter_Title_English`, `Arabic_Text`, `English_Text`, `Grade`, `Reference`
+- License: MIT
+- **323 unique English chapter titles** serve as topic labels
+
+**gurgutan/sunnah_ar_en_dataset:**
+- URL: https://huggingface.co/datasets/gurgutan/sunnah_ar_en_dataset
+- Size: 50,762 hadiths, 14 books (including Musnad Ahmad at 36,164)
+- Fields: `book_id`, `book_title_en/ar`, `hadith_chapter_id`, `hadith_chapter_name_en/ar`, `hadith_text_en/ar`, `hadith_narrator_en`
+- License: MIT
+- **530 unique English chapter names** as topic labels
+
+**cibfaye/hadiths_dataset:**
+- URL: https://huggingface.co/datasets/cibfaye/hadiths_dataset
+- Size: 37.3K hadiths, 15 collections (including Riyad as-Salihin, Mishkat, Bulugh al-Maram)
+
+---
+
+### 12D. Additional Hadith Data Repositories
+
+**AhmedBaset/hadith-json:**
+- URL: https://github.com/AhmedBaset/hadith-json
+- 50,884 hadiths across 17 books in structured JSON
+- Fields: `id`, `chapterId`, `bookId`, `arabic`, `english` (with `narrator` + `text`)
+
+**abdelrahmaan/Hadith-Data-Sets:**
+- URL: https://github.com/abdelrahmaan/Hadith-Data-Sets
+- 62,169 hadiths, 9 books, CSV/JSON, with/without tashkil
+
+**fawazahmed0/hadith-api:**
+- URL: https://github.com/fawazahmed0/hadith-api
+- CDN-hosted JSON, no API key, multiple languages/grades
+
+---
+
+### 12E. Rezwan Corpus (Upcoming — Largest Known)
+
+**Paper:** [Rezwan: Leveraging LLMs for Comprehensive Hadith Text Processing](https://arxiv.org/abs/2510.03781) (October 2025)
+- Size: 1.2M+ narrations, ~392 million words
+- Features: Machine translation (12 languages), diacritization, abstractive summaries, **thematic tagging**, semantic relationship mapping
+- Quality: Mean 8.46/10 across all dimensions
+- Status: Paper published, dataset availability unclear — may need to contact authors
+
+---
+
+## 13. Quran-Hadith Cross-Referencing
+
+### 13A. The Problem
+
+**No comprehensive, production-ready dataset exists that maps specific Quran verses to specific hadiths.** This is a recognized gap in Islamic digital scholarship. What exists falls into: small academic datasets, semantic search tools, ontology projects, and standalone corpora that can be combined.
+
+---
+
+### 13B. Direct Mapping Datasets
+
+**ShathaTm/Quran_Hadith_Datasets (Best Direct Match):**
+- URL: https://github.com/ShathaTm/Quran_Hadith_Datasets
+- Paper: [Challenging the Transformer-based models (LREC 2022)](https://aclanthology.org/2022.lrec-1.157/)
+- Thesis: [Artificial Intelligence for Understanding the Hadith (2023)](https://etheses.whiterose.ac.uk/id/eprint/32802/1/Altammami_SH_Computing_PhD_2023.pdf)
+- Data: **310 balanced pairs** of related/non-related Quran-verse and Hadith-teaching pairs + **4,072 balanced Quran-verse pairs**
+- Built from: Archived Fatwas of Islamic scholars
+- Quality: HIGH (peer-reviewed, LREC 2022) but too small for production (310 pairs)
+
+---
+
+### 13C. Semantic Search Projects (Compute-at-Runtime)
+
+**BasilSuhail/Quran-Hadith-Application-Database:**
+- URL: https://github.com/BasilSuhail/Quran-Hadith-Application-Database
+- Approach: Sentence Transformers + FAISS indices
+- Data: 6,236 verses (88 translations, 23 languages) + 15,432 hadiths
+- Stack: Flask, SQLite, FAISS
+- No static mapping — computes similarity at query time
+
+**kyb3r/quranic:**
+- URL: https://github.com/kyb3r/quranic
+- Python semantic search on Quran + Hadith using sentence embeddings
+
+**moinul-hossain-dhrubo/quran_hadith_verse_finder:**
+- URL: https://github.com/moinul-hossain-dhrubo/quran_hadith_verse_finder
+- Flask query-based retrieval across both corpora
+
+**fawazahmed0/quran-hadith-search:**
+- URL: https://github.com/fawazahmed0/quran-hadith-search
+- Keyword-based search engine across both corpora
+
+---
+
+### 13D. Ontology-Based Linking
+
+**Linking Quran and Hadith Topics (RQHT):**
+- Paper: [Linking Quran and Hadith Topics in an Ontology using Word Embeddings (ICNLSP 2024)](https://aclanthology.org/2024.icnlsp-1.46/)
+- Result: **91% F1 score, 84% accuracy** linking Quran and Hadith topics
+- Method: BERT word embeddings + Cellfie plugin for ontology population
+- Produces: RQHT ontology mapping QAC concepts → Hadith topics
+
+**Towards a Joint Ontology of Quran and Hadith:**
+- Paper: https://www.researchgate.net/publication/349807453
+- 51 classes, 168,122 individuals in Arabic and English
+- Merges hadith ontology with Quranic ontology
+
+**seelenbrecher/islamic-agent (Ontology-Guided Graph RAG):**
+- URL: https://github.com/seelenbrecher/islamic-agent
+- Approach: Ontology-guided graph traversal for verse retrieval
+- Contains: `ontology.json` (all ~285 concepts with verse lists), `verses.json`, `verses_with_context.json`
+
+---
+
+### 13E. Academic Papers on the Linking Problem
+
+| Paper | Year | Key Contribution |
+|-------|------|-----------------|
+| [Challenging Transformer Models: Quran and Hadith](https://aclanthology.org/2022.lrec-1.157/) | 2022 | Created 310-pair QH dataset, benchmarked BERT/GPT |
+| [AI for Understanding Hadith (PhD Thesis)](https://etheses.whiterose.ac.uk/id/eprint/32802/1/Altammami_SH_Computing_PhD_2023.pdf) | 2023 | Framework for creating Quran-Hadith pairs from Fatwa archives |
+| [SemanticHadith KG (ScienceDirect)](https://www.sciencedirect.com/science/article/abs/pii/S1570826823000264) | 2023 | RDF knowledge graph of 6 hadith collections |
+| [Linking Quran and Hadith Topics (ICNLSP)](https://aclanthology.org/2024.icnlsp-1.46/) | 2024 | 91% F1 linking topics via word embeddings |
+| [Joint Ontology of Quran and Hadith](https://www.researchgate.net/publication/349807453) | 2021 | Unified ontology: 51 classes, 168K individuals |
+| [RAG for Quranic/Hadith Content](https://aclanthology.org/2025.arabicnlp-sharedtasks.71.pdf) | 2025 | Shared task on RAG for Islamic text verification |
+| [Hadith Classification (IEEE)](https://ieeexplore.ieee.org/document/8876603/) | 2019 | 120 topic categories, 96.5% accuracy (Decision Tree) |
+| [Unsupervised Thematic Clustering of Hadith](https://arxiv.org/pdf/2512.16694) | 2024 | Apriori algorithm for theme discovery |
+| [Topic Extraction in Islamic Studies (EMNLP)](https://aclanthology.org/2024.findings-emnlp.534.pdf) | 2024 | Modern NLP topic extraction |
+| [Embedding Search for Quranic Texts](https://iajit.org/upload/files/Embedding-Search-for-Quranic-Texts-based-on-Large-Language-Models.pdf) | 2024 | LLM embeddings for Quranic verse retrieval |
+
+---
+
+### 13F. Practical Strategies for Building the Bridge
+
+**Strategy 1 — Parse SemanticHadith V2 KG (Highest Value)**
+Download `SemanticHadithKGV2.ttl.zip`, parse the Turtle RDF to extract per-hadith:
+- Topic tags (`discussesTopic`)
+- Quran verse references (`containsMentionOfVerse`)
+- Named entities (`containsMentionOf`)
+Map these to QAC ontology concepts for verse-to-hadith links.
+
+**Strategy 2 — Parse Ibn Kathir Tafsir (Already Bundled)**
+We already have Ibn Kathir tafsir in `data/tafsirs/`. It systematically cites hadiths per verse. Extract hadith references from tafsir prose via regex/NLP.
+
+**Strategy 3 — Parse Quran Citations from Hadiths**
+Many hadiths directly quote Quran. Substring-match hadith text against the Quran corpus to build reverse mappings.
+
+**Strategy 4 — Embed-and-Match (Semantic Search)**
+Generate embeddings for all verses (using English translations) + all hadiths. Compute cosine similarity, threshold to create a static mapping file.
+
+**Strategy 5 — Use Book/Chapter Names as Coarse Topics**
+Our existing bundled hadith data has `bookName` per hadith (97 Bukhari books, 56 Muslim books, etc.). These are already a coarse topic taxonomy that maps to Islamic jurisprudential categories.
+
+**Strategy 6 — Combine All Approaches**
+Use Strategy 2 + 3 for high-confidence pairs, Strategy 1 for structured topic links, Strategy 4 for similarity scores, and Strategy 5 as a fallback.
+
+---
+
+## 14. Semantic Search Implementation
+
+### 14A. Embedding Models for Islamic Text
+
+| Model | Dimensions | Languages | Arabic Quality | Access | Cost |
+|-------|-----------|-----------|---------------|--------|------|
+| OpenAI text-embedding-3-small | 1536 (or 512) | 100+ | Good | API | $0.02/1M tokens |
+| OpenAI text-embedding-3-large | 3072 (configurable) | 100+ | Very Good | API | $0.13/1M tokens |
+| Cohere embed-v4 | 1024 | 100+ | 62.3 MTEB | API | $0.10/1M tokens |
+| Voyage voyage-3-large | 1024 | 62 | Strong multilingual | API | $0.06/1M tokens |
+| BAAI/bge-m3 | 1024 | 100+ | Strong | Open-source | Free |
+| all-MiniLM-L6-v2 | 384 | English-only | N/A | Open-source/browser | Free |
+| Xenova/multilingual-e5-small | 384 | 100+ | Moderate | Open-source/browser | Free |
+| Arabic Matryoshka models | Variable | Arabic-focused | High | HuggingFace | Free |
+
+**For our use case** (English hadith text + English Quran translations): `all-MiniLM-L6-v2` (384 dims) is sufficient and runs in-browser via Transformers.js. For Arabic matching: step up to `bge-m3` or `multilingual-e5-small`.
+
+---
+
+### 14B. Vector Search Libraries (Compatible with Next.js)
+
+**Client-Side / Zero Infrastructure:**
+
+| Library | Vector Support | Size | Key Feature |
+|---------|---------------|------|-------------|
+| [Orama](https://github.com/oramasearch/orama) | Yes (hybrid) | <2KB | BM25 + vector search, runs in browser/Node/edge |
+| [Transformers.js](https://huggingface.co/docs/transformers.js) | Manual cosine | ~23MB model | Run embedding models in-browser |
+| [SemanticFinder](https://github.com/do-me/SemanticFinder) | Yes | Reference impl | Fully client-side semantic search demo |
+
+**Server-Side (Node.js, no external services):**
+
+| Library | Key Feature |
+|---------|-------------|
+| [Vectra](https://github.com/Stevenic/vectra) | JSON file index, in-memory queries, Pinecone-compatible API |
+| [VectorDB.js](https://vectordbjs.themaximalist.com/) | Simple in-memory vector DB for Node.js |
+
+**Managed (if we outgrow local):**
+
+| Service | Key Feature |
+|---------|-------------|
+| Supabase pgvector | PostgreSQL extension (fits our Drizzle + pg stack) |
+| Pinecone | Purpose-built, 100K vectors free tier |
+| Upstash Vector | Serverless, REST API, Vercel-friendly |
+
+---
+
+### 14C. Recommended Implementation Path
+
+**Phase 1 — Concept-Based Linking (No ML needed)**
+1. Bundle `ontology.json` from seelenbrecher/islamic-agent (~285 concepts with verse lists)
+2. Parse SemanticHadith V2 KG for per-hadith topic tags and verse references
+3. Map hadith topics → QAC concepts for structured verse-hadith links
+4. Use existing `bookName` from bundled hadith data as fallback topic taxonomy
+
+**Phase 2 — Pre-computed Embeddings + Hybrid Search**
+1. Write `scripts/generate-embeddings.ts` to process all verse translations + hadith texts
+2. Use OpenAI `text-embedding-3-small` (384 dims) — one-time cost ~$0.10
+3. Store as static JSON: `data/embeddings/verse-embeddings.json`, `data/embeddings/hadith-embeddings.json`
+4. Load into Orama for hybrid keyword + vector search at runtime
+5. Expose `getRelatedHadiths(verseKey: string, limit: number)` port
+
+**Phase 3 — Tafsir-Based Extraction**
+1. Parse bundled Ibn Kathir tafsir for hadith citations
+2. Build high-confidence verse-hadith pairs from scholarly cross-references
+3. Combine with embedding similarity scores for a quality-ranked mapping
+
+**Storage estimates for pre-computed embeddings:**
+- 384 dims × 30K texts × 4 bytes = ~46MB (Float32), ~23MB (Float16), ~12MB (Int8)
+
+---
+
+### 14D. Web Platforms with Cross-Referencing (Not Downloadable)
+
+- **[QuranX.com](https://quranx.com/)** — Shows hadiths alongside Quran content (data not downloadable)
+- **[Tebyin](https://tebyin.github.io/)** — Research platform for verse/tafsir/hadith cross-referencing
+- **[al-hadees.com](https://al-hadees.com/)** — Search engine: 27 translations, 11 tafaseer, 21 hadith books
+- **[IslamiCity](https://www.islamicity.org/quransearch/)** — Topic/word/phrase search across Quran texts
