@@ -13,10 +13,12 @@ import {
   Brain,
   Settings2,
   Library,
+  LayoutDashboard,
 } from "lucide-react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
 import type { ThemeName } from "@/core/types";
 
 const SURAH_NAMES = [
@@ -50,6 +52,7 @@ export function CommandPalette() {
   const router = useRouter();
   const { openPanel } = usePanels();
   const { updatePreferences } = usePreferences();
+  const { presets, applyPreset } = useWorkspacePresets();
   const [search, setSearch] = useState("");
 
   const filteredSurahs = useMemo(() => {
@@ -187,6 +190,19 @@ export function CommandPalette() {
                 <Brain className="h-4 w-4" />
                 Open AI
               </CommandItem>
+            </Command.Group>
+
+            {/* Workspace Presets */}
+            <Command.Group heading="Workspace Presets" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              {presets.map((preset) => (
+                <CommandItem
+                  key={preset.id}
+                  onSelect={() => runCommand(`preset:${preset.id}`, () => applyPreset(preset))}
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  {preset.name}
+                </CommandItem>
+              ))}
             </Command.Group>
 
             {/* Themes */}

@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 
 interface SurahHeaderProps {
   surah: Surah;
+  showBismillah?: boolean;
 }
 
-export function SurahHeader({ surah }: SurahHeaderProps) {
+export function SurahHeader({ surah, showBismillah = true }: SurahHeaderProps) {
   const audio = useAudioPlayer();
   const hasPrev = surah.id > 1;
   const hasNext = surah.id < 114;
@@ -94,7 +95,7 @@ export function SurahHeader({ surah }: SurahHeaderProps) {
       </button>
 
       {/* Bismillah */}
-      {surah.id !== 1 && surah.id !== 9 && (
+      {showBismillah && surah.id !== 1 && surah.id !== 9 && (
         <p
           lang="ar"
           dir="rtl"

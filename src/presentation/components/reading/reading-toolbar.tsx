@@ -10,6 +10,9 @@ import {
   Minus,
   Plus,
   Settings2,
+  Hash,
+  Heading,
+  Sparkles,
 } from "lucide-react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
@@ -158,6 +161,36 @@ export function ReadingToolbar() {
                 <EyeOff className="h-3.5 w-3.5" />
               )}
               {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
+            </button>
+
+            {/* Divider */}
+            <div className="h-px bg-border" />
+
+            {/* Toggle Verse Numbers */}
+            <button
+              onClick={() => updatePreferences({ showVerseNumbers: !preferences.showVerseNumbers })}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
+            >
+              <Hash className="h-3.5 w-3.5" />
+              {preferences.showVerseNumbers ? "Hide Verse Numbers" : "Show Verse Numbers"}
+            </button>
+
+            {/* Toggle Surah Headers */}
+            <button
+              onClick={() => updatePreferences({ showSurahHeaders: !preferences.showSurahHeaders })}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
+            >
+              <Heading className="h-3.5 w-3.5" />
+              {preferences.showSurahHeaders ? "Hide Surah Header" : "Show Surah Header"}
+            </button>
+
+            {/* Toggle Bismillah */}
+            <button
+              onClick={() => updatePreferences({ showBismillah: !preferences.showBismillah })}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {preferences.showBismillah ? "Hide Bismillah" : "Show Bismillah"}
             </button>
           </div>
         </div>

@@ -52,7 +52,9 @@
       "Bash(find:*)",
       "mcp__playwright__browser_console_messages",
       "Bash(cat:*)",
-      "Bash(npx next build:*)"
+      "Bash(npx next build:*)",
+      "Bash(git push:*)",
+      "Bash(open:*)"
     ]
   }
 }
