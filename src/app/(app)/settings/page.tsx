@@ -160,6 +160,51 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
+          {/* Concept tag sub-settings */}
+          <SettingRow label="Max visible per verse" disabled={!preferences.showConcepts}>
+            <SegmentedControl
+              value={String(preferences.conceptMaxVisible)}
+              options={[
+                { value: "3", label: "3" },
+                { value: "5", label: "5" },
+                { value: "10", label: "10" },
+                { value: "0", label: "All" },
+              ]}
+              onChange={(v) => updatePreferences({ conceptMaxVisible: Number(v) })}
+            />
+          </SettingRow>
+
+          <SettingRow label="Pill color" disabled={!preferences.showConcepts}>
+            <div className="flex gap-1.5">
+              {/* Slot 0: muted default */}
+              <button
+                onClick={() => updatePreferences({ conceptColorSlot: 0 })}
+                className={cn(
+                  "h-5 w-5 rounded-full bg-muted transition-all",
+                  preferences.conceptColorSlot === 0
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                    : "hover:scale-105",
+                )}
+                aria-label="Default muted color"
+              />
+              {/* Slots 1-6: translation color palette */}
+              {([1, 2, 3, 4, 5, 6] as const).map((slot) => (
+                <button
+                  key={slot}
+                  onClick={() => updatePreferences({ conceptColorSlot: slot })}
+                  className={cn(
+                    "h-5 w-5 rounded-full transition-all",
+                    preferences.conceptColorSlot === slot
+                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                      : "hover:scale-105",
+                  )}
+                  style={{ backgroundColor: `hsl(var(--translation-${slot}))` }}
+                  aria-label={`Color ${slot}`}
+                />
+              ))}
+            </div>
+          </SettingRow>
+
           {/* Translation layout */}
           <SettingRow label="Translation layout">
             <SegmentedControl
@@ -534,16 +579,16 @@ function TranslationConfigRow({
         {/* Color */}
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Color</span>
-          <div className="flex gap-1">
+          <div className="flex gap-1.5">
             {COLOR_SLOTS.map((slot) => (
               <button
                 key={slot}
                 onClick={() => onChangeColor(slot)}
                 className={cn(
-                  "h-5 w-5 rounded-full border-2 transition-all",
+                  "h-5 w-5 rounded-full transition-all",
                   config.colorSlot === slot
-                    ? "border-foreground scale-110"
-                    : "border-transparent hover:scale-105",
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                    : "hover:scale-105",
                 )}
                 style={{ backgroundColor: `hsl(var(--translation-${slot}))` }}
                 aria-label={`Color ${slot}`}

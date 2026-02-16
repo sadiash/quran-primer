@@ -108,9 +108,11 @@ describe("Quran domain types", () => {
       bookNumber: "1",
       hadithNumber: "1",
       text: "Actions are judged by intentions...",
-      grade: "sahih",
+      grade: "Sahih",
       narratedBy: "Umar ibn Al-Khattab",
+      reference: "https://sunnah.com/bukhari:1",
+      inBookReference: "Book 1, Hadith 1",
     };
-    expect(h.grade).toBe("sahih");
+    expect(h.grade).toBe("Sahih");
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState, useMemo, Fragment } from "react";
+import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import type { Surah, Verse, Translation } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { getResolvedTranslationConfigs } from "@/core/types";
@@ -36,7 +36,6 @@ export function ReadingSurface({
   const audio = useAudioPlayer();
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [longPressedKey, setLongPressedKey] = useState<string | null>(null);
 
   // After a manual focus (click, keyboard, menu), suppress scroll-based
   // polling for 5 seconds so the user's selection stays put.
@@ -65,13 +64,6 @@ export function ReadingSurface({
     }
     return keys;
   }, [notes, surah.id, verses]);
-
-  // Auto-clear long-press after 3s
-  useEffect(() => {
-    if (!longPressedKey) return;
-    const timer = setTimeout(() => setLongPressedKey(null), 3000);
-    return () => clearTimeout(timer);
-  }, [longPressedKey]);
 
   // Resolve per-translation configs (order, font size, color)
   const resolvedConfigs = useMemo(
@@ -258,13 +250,22 @@ export function ReadingSurface({
                 isBookmarked={isBookmarked(verse.verseKey)}
                 isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
                 hasNotes={noteVerseKeys.has(verse.verseKey)}
-                showActions={longPressedKey === verse.verseKey}
                 onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
-                onPlay={() => audio.play(verse.verseKey, surah.id)}
+                onTogglePlay={() => {
+                  if (audio.currentVerseKey === verse.verseKey && audio.isPlaying) {
+                    audio.pause();
+                  } else if (audio.currentVerseKey === verse.verseKey && !audio.isPlaying) {
+                    audio.resume();
+                  } else {
+                    audio.play(verse.verseKey, surah.id);
+                  }
+                }}
                 onFocus={() => focusVerseManually(verse.verseKey)}
-                onLongPress={() => setLongPressedKey(verse.verseKey)}
+                onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
                 onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
                 concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
+                conceptMaxVisible={preferences.conceptMaxVisible}
+                conceptColorSlot={preferences.conceptColorSlot}
               />
             ))}
           </div>

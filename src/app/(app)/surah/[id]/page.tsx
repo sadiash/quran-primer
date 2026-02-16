@@ -51,11 +51,11 @@ export default async function SurahPage({ params }: SurahPageProps) {
     notFound();
   }
 
-  // Slim concepts to { id, name } pairs, deduped by id
-  const conceptsByVerse: Record<string, { id: string; name: string }[]> = {};
+  // Slim concepts to { id, name, definition } pairs, deduped by id
+  const conceptsByVerse: Record<string, { id: string; name: string; definition: string }[]> = {};
   for (const [verseKey, concepts] of Object.entries(conceptsRaw)) {
     const seen = new Set<string>();
-    const deduped: { id: string; name: string }[] = [];
+    const deduped: { id: string; name: string; definition: string }[] = [];
     for (const c of concepts) {
       if (seen.has(c.id)) continue;
       seen.add(c.id);
@@ -65,6 +65,7 @@ export default async function SurahPage({ params }: SurahPageProps) {
           .split("-")
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
           .join(" "),
+        definition: c.definition,
       });
     }
     conceptsByVerse[verseKey] = deduped;

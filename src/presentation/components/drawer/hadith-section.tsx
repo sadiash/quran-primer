@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import DOMPurify from "dompurify";
-import { BookText, Search, ChevronDown, ChevronUp, Tag } from "lucide-react";
+import { BookText, Search, ExternalLink, Copy, Check, ChevronDown, Info } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith } from "@/core/types";
@@ -21,22 +21,62 @@ const COLLECTIONS = [
   { id: "muslim", label: "Muslim" },
   { id: "abudawud", label: "Abu Dawud" },
   { id: "tirmidhi", label: "Tirmidhi" },
+  { id: "nasai", label: "Nasa'i" },
+  { id: "ibnmajah", label: "Ibn Majah" },
 ];
 
-function gradeColor(grade: string | null): string {
-  if (!grade) return "text-muted-foreground bg-muted";
-  const lower = grade.toLowerCase();
-  if (lower.includes("sahih")) return "text-green-700 bg-green-500/10 dark:text-green-400";
-  if (lower.includes("hasan")) return "text-yellow-700 bg-yellow-500/10 dark:text-yellow-400";
-  if (lower.includes("daif") || lower.includes("weak")) return "text-orange-700 bg-orange-500/10 dark:text-orange-400";
-  return "text-muted-foreground bg-muted";
+/** Display-friendly collection names */
+const COLLECTION_NAMES: Record<string, string> = {
+  bukhari: "Sahih al-Bukhari",
+  muslim: "Sahih Muslim",
+  abudawud: "Sunan Abu Dawud",
+  tirmidhi: "Jami at-Tirmidhi",
+  nasai: "Sunan an-Nasa'i",
+  ibnmajah: "Sunan Ibn Majah",
+};
+
+/* ─── Grade helpers ─── */
+
+interface ParsedGrade {
+  label: string;   // e.g. "Sahih", "Hasan", "Da'if"
+  grader: string | null; // e.g. "Darussalam", "Al-Albani"
 }
+
+function parseGrade(raw: string | null): ParsedGrade | null {
+  if (!raw) return null;
+  const m = raw.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+  if (m && m[1] && m[2]) return { label: m[1].trim(), grader: m[2].trim() };
+  return { label: raw.trim(), grader: null };
+}
+
+type GradeCategory = "sahih" | "hasan" | "daif" | "fabricated" | "unknown";
+
+function categorizeGrade(label: string): GradeCategory {
+  const lower = label.toLowerCase();
+  if (lower.includes("maudu") || lower.includes("mawdu") || lower.includes("fabricat") || lower.includes("munkar"))
+    return "fabricated";
+  if (lower.includes("da'if") || lower.includes("daif") || lower.includes("da if") || lower.includes("da,if") || lower.includes("da`if") || lower.includes("weak"))
+    return "daif";
+  if (lower.includes("hasan")) return "hasan";
+  if (lower.includes("sahih") || lower.includes("sah,")) return "sahih";
+  return "unknown";
+}
+
+const GRADE_STYLES: Record<GradeCategory, string> = {
+  sahih: "text-emerald-700 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-500/10",
+  hasan: "text-amber-700 bg-amber-500/10 dark:text-amber-400 dark:bg-amber-500/10",
+  daif: "text-orange-700 bg-orange-500/10 dark:text-orange-400 dark:bg-orange-500/10",
+  fabricated: "text-red-700 bg-red-500/10 dark:text-red-400 dark:bg-red-500/10",
+  unknown: "text-muted-foreground bg-muted",
+};
+
+/* ─── Main section ─── */
 
 export function HadithSection() {
   const { focusedVerseKey } = usePanels();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState<string | undefined>(undefined);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const searchTerm = query || focusedVerseKey || "";
   const params = new URLSearchParams();
@@ -73,7 +113,7 @@ export function HadithSection() {
           />
         </div>
 
-        {/* Collection filter */}
+        {/* Collection filter chips */}
         <div className="flex flex-wrap gap-1">
           <button
             onClick={() => setCollection(undefined)}
@@ -115,7 +155,7 @@ export function HadithSection() {
       )}
 
       {/* Results */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         {isLoading && (
           <div className="flex items-center justify-center py-6">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
@@ -136,16 +176,24 @@ export function HadithSection() {
 
         {results.map((h) => (
           <HadithCard
-            key={h.id}
+            key={`${h.collection}-${h.hadithNumber}`}
             hadith={h}
-            expanded={expandedId === h.id}
-            onToggle={() => setExpandedId(expandedId === h.id ? null : h.id)}
+            expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
+            onToggle={() =>
+              setExpandedId(
+                expandedId === `${h.collection}-${h.hadithNumber}`
+                  ? null
+                  : `${h.collection}-${h.hadithNumber}`,
+              )
+            }
           />
         ))}
       </div>
     </div>
   );
 }
+
+/* ─── Hadith card ─── */
 
 function HadithCard({
   hadith,
@@ -159,66 +207,164 @@ function HadithCard({
   const sanitizedHtml = useMemo(() => sanitize(hadith.text), [hadith.text]);
   const preview = useMemo(() => {
     const plain = hadith.text.replace(/<[^>]+>/g, "");
-    return plain.length > 120 ? plain.slice(0, 120) + "..." : plain;
+    return plain.length > 150 ? plain.slice(0, 150) + "..." : plain;
   }, [hadith.text]);
+  const parsed = useMemo(() => parseGrade(hadith.grade), [hadith.grade]);
+  const category = parsed ? categorizeGrade(parsed.label) : "unknown";
 
   return (
-    <div className="rounded-lg border border-border/50 bg-surface/50 overflow-hidden">
+    <div
+      className={cn(
+        "group rounded-lg border transition-all",
+        expanded
+          ? "border-border bg-surface/80"
+          : "border-transparent hover:bg-surface/50",
+      )}
+    >
+      {/* Header — always visible */}
       <button
         onClick={onToggle}
-        className="flex w-full items-start gap-2 p-2.5 text-left transition-fast hover:bg-surface-hover"
+        className="flex w-full items-start gap-2 p-3 text-left"
       >
+        {/* Hadith number badge */}
+        <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
+          {hadith.hadithNumber.length <= 4 ? hadith.hadithNumber : "#"}
+        </span>
+
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-            <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold text-primary bg-primary/10 capitalize">
-              {hadith.collection}
+          {/* Top row: collection + grade pill */}
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[11px] font-medium text-foreground/80">
+              {COLLECTION_NAMES[hadith.collection] ?? hadith.collection}
             </span>
-            <span className="text-[10px] text-muted-foreground font-mono">
-              #{hadith.hadithNumber}
-            </span>
-            {hadith.grade && (
-              <span className={cn(
-                "rounded px-1.5 py-0.5 text-[10px] font-medium",
-                gradeColor(hadith.grade),
-              )}>
-                {hadith.grade}
-              </span>
+            {parsed && (
+              <GradePill label={parsed.label} category={category} />
             )}
           </div>
 
+          {/* Narrator */}
           {hadith.narratedBy && (
-            <p className="text-[10px] text-muted-foreground mb-1">
-              <span className="italic">{hadith.narratedBy}</span>
+            <p className="text-[11px] text-muted-foreground/70 mb-1 italic">
+              {hadith.narratedBy}
             </p>
           )}
 
+          {/* Preview text (collapsed) */}
           {!expanded && (
             <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
               {preview}
             </p>
           )}
         </div>
-        {expanded ? (
-          <ChevronUp className="h-3.5 w-3.5 shrink-0 text-muted-foreground mt-0.5" />
-        ) : (
-          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground mt-0.5" />
-        )}
+
+        <ChevronDown
+          className={cn(
+            "h-3.5 w-3.5 shrink-0 text-muted-foreground/50 mt-1 transition-transform",
+            expanded && "rotate-180",
+          )}
+        />
       </button>
 
+      {/* Expanded body */}
       {expanded && (
-        <div className="border-t border-border/30 px-2.5 py-2.5 space-y-2">
+        <div className="px-3 pb-3 space-y-3">
+          {/* Full text */}
           <div
-            className="text-xs leading-relaxed text-foreground [&_b]:font-semibold [&_strong]:font-semibold"
+            className="text-[13px] leading-[1.8] text-foreground/90 [&_b]:font-semibold [&_strong]:font-semibold pl-8"
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
-          <div className="flex items-center gap-1.5 pt-1 border-t border-border/20">
-            <Tag className="h-3 w-3 text-muted-foreground" />
-            <span className="text-[10px] text-muted-foreground">
-              {hadith.collection}, Book {hadith.bookNumber}, Hadith {hadith.hadithNumber}
-            </span>
+
+          {/* Metadata footer */}
+          <div className="ml-8 rounded-md bg-muted/50 px-3 py-2 space-y-1.5">
+            {/* Reference line */}
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Info className="h-3 w-3 shrink-0" />
+              <span>
+                {hadith.inBookReference ?? `Book ${hadith.bookNumber}, Hadith ${hadith.hadithNumber}`}
+              </span>
+            </div>
+
+            {/* Grade with grader */}
+            {parsed && (
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <GradePill label={parsed.label} category={category} />
+                {parsed.grader && (
+                  <span className="text-muted-foreground/70">
+                    graded by {parsed.grader}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Actions row */}
+            <div className="flex items-center gap-2 pt-1">
+              {hadith.reference && (
+                <a
+                  href={hadith.reference}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  sunnah.com
+                </a>
+              )}
+              <CopyButton text={hadith.text.replace(/<[^>]+>/g, "")} />
+            </div>
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+/* ─── Grade pill ─── */
+
+function GradePill({ label, category }: { label: string; category: GradeCategory }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none",
+        GRADE_STYLES[category],
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+/* ─── Copy button ─── */
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(text).catch(() => {});
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1200);
+      }}
+      className={cn(
+        "inline-flex items-center gap-1 text-[10px] transition-colors",
+        copied
+          ? "text-emerald-500"
+          : "text-muted-foreground/60 hover:text-muted-foreground",
+      )}
+    >
+      {copied ? (
+        <>
+          <Check className="h-3 w-3" />
+          Copied
+        </>
+      ) : (
+        <>
+          <Copy className="h-3 w-3" />
+          Copy
+        </>
+      )}
+    </button>
   );
 }

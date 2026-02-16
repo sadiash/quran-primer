@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import DOMPurify from "dompurify";
 import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { cn } from "@/lib/utils";
 import { useGestures } from "@/presentation/hooks/use-gestures";
-import { VerseActions } from "./verse-actions";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/presentation/components/ui/tooltip";
 
 function sanitizeHtml(html: string): string {
   if (typeof window === "undefined") return html;
@@ -36,13 +36,15 @@ interface VerseBlockProps {
   isBookmarked: boolean;
   isPlaying: boolean;
   hasNotes: boolean;
-  showActions?: boolean;
   onToggleBookmark: () => void;
-  onPlay: () => void;
+  onTogglePlay: () => void;
   onFocus: () => void;
+  onOpenNotes: () => void;
   onLongPress?: () => void;
   onSwipeRight?: () => void;
   concepts?: ConceptTag[];
+  conceptMaxVisible?: number;
+  conceptColorSlot?: number;
 }
 
 export function VerseBlock({
@@ -58,13 +60,15 @@ export function VerseBlock({
   isBookmarked,
   isPlaying,
   hasNotes,
-  showActions,
   onToggleBookmark,
-  onPlay,
+  onTogglePlay,
   onFocus,
+  onOpenNotes,
   onLongPress,
   onSwipeRight,
   concepts = [],
+  conceptMaxVisible = 5,
+  conceptColorSlot = 0,
 }: VerseBlockProps) {
   const gestureHandlers = useGestures({ onLongPress, onSwipeRight });
 
@@ -79,12 +83,7 @@ export function VerseBlock({
       onClick={onFocus}
       {...gestureHandlers}
     >
-      {/* Bookmark indicator — thin left edge line */}
-      {isBookmarked && (
-        <div className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-primary/40" />
-      )}
-
-      {/* Verse number + actions */}
+      {/* Verse number + inline actions */}
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           {showVerseNumbers && (
@@ -92,26 +91,68 @@ export function VerseBlock({
               {verse.verseNumber}
             </span>
           )}
-          {/* Notes indicator — amber dot */}
-          {hasNotes && (
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-400/60" />
-          )}
-        </div>
-
-        {/* Actions — visible on hover/focus or when forced via long-press */}
-        <div className={cn(
-          "transition-opacity",
-          showActions ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-within:opacity-100",
-        )}>
-          <VerseActions
-            verseKey={verse.verseKey}
-            arabicText={verse.textUthmani}
-            translations={translations}
-            isBookmarked={isBookmarked}
-            isPlaying={isPlaying}
-            onToggleBookmark={onToggleBookmark}
-            onPlay={onPlay}
+          {/* Bookmark toggle */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleBookmark(); }}
+            className={cn(
+              "transition-colors",
+              isBookmarked
+                ? "text-primary hover:text-primary/70"
+                : "text-muted-foreground/30 hover:text-muted-foreground/60",
+            )}
+            aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={isBookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+          </button>
+          {/* Notes — filled when has notes, outline when empty */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onOpenNotes(); }}
+            className={cn(
+              "transition-colors",
+              hasNotes
+                ? "text-amber-500/70 hover:text-amber-500"
+                : "text-muted-foreground/30 hover:text-muted-foreground/60",
+            )}
+            aria-label={hasNotes ? "View notes" : "Add note"}
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={hasNotes ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" />
+              <path d="M15 3v4a2 2 0 0 0 2 2h4" />
+            </svg>
+          </button>
+          {/* Copy top visible text */}
+          <CopyButton
+            getText={() => {
+              if (showArabic) return verse.textUthmani;
+              const first = translations[0];
+              if (first) return first.text.replace(/<[^>]+>/g, "");
+              return verse.textUthmani;
+            }}
           />
+          {/* Play / Pause audio */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
+            className={cn(
+              "transition-colors",
+              isPlaying
+                ? "text-primary hover:text-primary/70"
+                : "text-muted-foreground/30 hover:text-muted-foreground/60",
+            )}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="6 3 20 12 6 21 6 3" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
@@ -141,7 +182,7 @@ export function VerseBlock({
 
       {/* Concept tags */}
       {concepts.length > 0 && (
-        <ConceptPills concepts={concepts} />
+        <ConceptPills concepts={concepts} maxVisible={conceptMaxVisible} colorSlot={conceptColorSlot} />
       )}
     </div>
   );
@@ -260,23 +301,85 @@ function TranslationText({
   );
 }
 
+/* ─── Copy button with feedback ─── */
+
+function CopyButton({ getText }: { getText: () => string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(getText()).catch(() => {});
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1200);
+      }}
+      className={cn(
+        "transition-colors",
+        copied
+          ? "text-green-500"
+          : "text-muted-foreground/30 hover:text-muted-foreground/60",
+      )}
+      aria-label="Copy text"
+    >
+      {copied ? (
+        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      ) : (
+        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 /* ─── Concept tag pills ─── */
 
-const MAX_VISIBLE_CONCEPTS = 5;
+function ConceptPills({
+  concepts,
+  maxVisible,
+  colorSlot,
+}: {
+  concepts: ConceptTag[];
+  maxVisible: number;
+  colorSlot: number;
+}) {
+  const visible = maxVisible === 0 ? concepts : concepts.slice(0, maxVisible);
+  const remaining = maxVisible === 0 ? 0 : concepts.length - maxVisible;
 
-function ConceptPills({ concepts }: { concepts: ConceptTag[] }) {
-  const visible = concepts.slice(0, MAX_VISIBLE_CONCEPTS);
-  const remaining = concepts.length - MAX_VISIBLE_CONCEPTS;
+  const pillClass =
+    colorSlot === 0
+      ? "bg-muted text-muted-foreground"
+      : "text-white";
+  const pillStyle =
+    colorSlot >= 1 && colorSlot <= 6
+      ? { backgroundColor: `hsl(var(--translation-${colorSlot}) / 0.75)` }
+      : undefined;
 
   return (
     <div className="mt-2 flex flex-wrap gap-1">
       {visible.map((c) => (
-        <span
-          key={c.id}
-          className="inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
-        >
-          {c.name}
-        </span>
+        <Tooltip key={c.id}>
+          <TooltipTrigger asChild>
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium cursor-default",
+                pillClass,
+              )}
+              style={pillStyle}
+            >
+              {c.name}
+            </span>
+          </TooltipTrigger>
+          {c.definition && (
+            <TooltipContent className="max-w-xs text-xs">
+              {c.definition}
+            </TooltipContent>
+          )}
+        </Tooltip>
       ))}
       {remaining > 0 && (
         <span className="inline-flex items-center rounded-full bg-muted/60 px-1.5 py-0.5 text-[10px] text-muted-foreground/70">

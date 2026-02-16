@@ -6,6 +6,7 @@ import { ReadingSurface } from "@/presentation/components/reading/reading-surfac
 export interface ConceptTag {
   id: string;
   name: string;
+  definition: string;
 }
 
 interface ReadingPageProps {

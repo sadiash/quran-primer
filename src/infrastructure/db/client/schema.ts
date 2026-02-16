@@ -46,6 +46,8 @@ export interface PreferencesRecord {
   activeHadithCollections?: string[];
   translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number }[];
   showConcepts?: boolean;
+  conceptMaxVisible?: number;
+  conceptColorSlot?: number;
   onboardingComplete?: boolean;
   updatedAt: Date;
 }

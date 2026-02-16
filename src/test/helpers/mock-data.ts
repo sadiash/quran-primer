@@ -193,6 +193,8 @@ export function createMockHadith(
     text: string;
     grade: string | null;
     narratedBy: string | null;
+    reference: string | null;
+    inBookReference: string | null;
   }> = {}
 ) {
   return {
@@ -203,6 +205,8 @@ export function createMockHadith(
     text: "<p>Actions are judged by intentions.</p>",
     grade: "Sahih",
     narratedBy: "Umar ibn al-Khattab",
+    reference: "https://sunnah.com/bukhari:1",
+    inBookReference: "Book 1, Hadith 1",
     ...overrides,
   };
 }

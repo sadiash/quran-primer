@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpenText,
   Search,
-  Palette,
   Settings,
   Library,
   Bookmark,
@@ -19,7 +17,6 @@ import {
 } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
-import { ThemeSwitcher } from "@/presentation/components/ui/theme-switcher";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +24,6 @@ export function TopNav() {
   const pathname = usePathname();
   const { openPanels, togglePanel } = usePanels();
   const { toggle: togglePalette } = useCommandPalette();
-  const [showThemes, setShowThemes] = useState(false);
 
   return (
     <header className="relative z-50 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur-sm sm:gap-3 sm:px-4">
@@ -69,28 +65,6 @@ export function TopNav() {
         <PanelToggle id="notes" icon={StickyNote} label="Notes" isOpen={openPanels.has("notes")} onToggle={togglePanel} />
         <PanelToggle id="sources" icon={ExternalLink} label="Sources" isOpen={openPanels.has("sources")} onToggle={togglePanel} />
         <PanelToggle id="ai" icon={Bot} label="AI" isOpen={openPanels.has("ai")} onToggle={togglePanel} />
-      </div>
-
-      {/* Theme switcher */}
-      <div className="relative">
-        <button
-          onClick={() => setShowThemes(!showThemes)}
-          className="rounded-lg p-2 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
-          aria-label="Change theme"
-        >
-          <Palette className="h-4 w-4" />
-        </button>
-        {showThemes && (
-          <>
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setShowThemes(false)}
-            />
-            <div className="absolute right-0 top-full z-50 mt-1 w-80 rounded-xl border border-border bg-card p-3 shadow-soft-lg animate-scale-in">
-              <ThemeSwitcher onSelect={() => setShowThemes(false)} />
-            </div>
-          </>
-        )}
       </div>
 
       {/* Settings */}

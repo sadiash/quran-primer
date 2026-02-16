@@ -78,6 +78,8 @@ export interface Hadith {
   text: string; // may contain HTML
   grade: string | null;
   narratedBy: string | null;
+  reference: string | null;
+  inBookReference: string | null;
 }
 
 export interface HadithCollection {

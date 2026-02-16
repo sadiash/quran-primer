@@ -24,6 +24,8 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   activeTafsirIds: [74],
   activeHadithCollections: ["bukhari", "muslim"],
   showConcepts: true,
+  conceptMaxVisible: 5,
+  conceptColorSlot: 0,
   onboardingComplete: false,
   updatedAt: new Date(0),
 };
