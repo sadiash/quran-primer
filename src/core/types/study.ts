@@ -72,6 +72,8 @@ export interface UserPreferences {
   activeHadithCollections: string[];
   translationConfigs?: TranslationConfig[];
   showConcepts: boolean;
+  conceptMaxVisible: number;    // 3 | 5 | 10 | 0 (0 = show all)
+  conceptColorSlot: number;     // 0 = muted/default, 1-6 = translation color slots
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -97,6 +99,8 @@ export function toUserPreferences(raw: {
   activeHadithCollections?: string[] | null;
   translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number }[] | null;
   showConcepts?: boolean | null;
+  conceptMaxVisible?: number | null;
+  conceptColorSlot?: number | null;
   onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
@@ -125,6 +129,8 @@ export function toUserPreferences(raw: {
       colorSlot: c.colorSlot as TranslationColorSlot,
     })) ?? undefined,
     showConcepts: raw.showConcepts ?? true,
+    conceptMaxVisible: raw.conceptMaxVisible ?? 5,
+    conceptColorSlot: raw.conceptColorSlot ?? 0,
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };

@@ -1,9 +1,21 @@
 [
   {
+    "id": "abudawud",
+    "name": "Sunan Abu Dawud",
+    "hadithCount": 5276,
+    "chapterCount": 43
+  },
+  {
     "id": "bukhari",
     "name": "Sahih al-Bukhari",
     "hadithCount": 7277,
     "chapterCount": 97
+  },
+  {
+    "id": "ibnmajah",
+    "name": "Sunan Ibn Majah",
+    "hadithCount": 4079,
+    "chapterCount": 37
   },
   {
     "id": "muslim",
@@ -12,10 +24,10 @@
     "chapterCount": 56
   },
   {
-    "id": "abudawud",
-    "name": "Sunan Abu Dawud",
-    "hadithCount": 5276,
-    "chapterCount": 43
+    "id": "nasai",
+    "name": "Sunan an-Nasa'i",
+    "hadithCount": 5685,
+    "chapterCount": 51
   },
   {
     "id": "tirmidhi",

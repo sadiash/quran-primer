@@ -515,9 +515,10 @@ This covers ~80% of what the app needs through Phase 5 of the roadmap.
 
 | Source | What it adds | Priority |
 |--------|-------------|----------|
-| islamAndAi/QURAN-NLP | 700K+ hadiths, narrators database | High |
-| sunnah.com API | Verified, graded hadith with isnad chains | High |
-| AhmedBaset/hadith-json | Bulk hadith import (50K+ from 17 books) | Medium |
+| **meeAtif/hadith_datasets** | **✅ ADOPTED — 33.7K graded hadiths, 6 books, Arabic+English, MIT** | **Done** |
+| islamAndAi/QURAN-NLP | 700K+ hadiths, narrators database | Medium |
+| sunnah.com API | Verified, graded hadith with isnad chains (fallback) | Low |
+| AhmedBaset/hadith-json | Bulk hadith import (50K+ from 17 books) | Low |
 
 ### Phase 4 — Audio enrichment
 
@@ -736,12 +737,16 @@ Allah, Prophet, Paradise, Hell, Religion, Person, Location, Organization, Measur
 
 ### 12C. HuggingFace Hadith Datasets (with Topic Proxies)
 
-**meeAtif/hadith_datasets:**
+**meeAtif/hadith_datasets: ✅ ADOPTED as primary hadith data source (replacing sunnah.com scrape)**
 - URL: https://huggingface.co/datasets/meeAtif/hadith_datasets
-- Size: 33.7K hadiths, 6 major books
-- Fields: `Book`, `Chapter_Number`, `Chapter_Title_Arabic`, `Chapter_Title_English`, `Arabic_Text`, `English_Text`, `Grade`, `Reference`
+- Size: 33.7K hadiths, 6 major books (Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, Ibn Majah)
+- Fields: `Book`, `Chapter_Number`, `Chapter_Title_Arabic`, `Chapter_Title_English`, `Arabic_Text`, `English_Text`, `Grade`, `Reference`, `In-book_reference`
 - License: MIT
 - **323 unique English chapter titles** serve as topic labels
+- **59 unique grade values** including Sahih/Hasan/Da'if with grader attribution (e.g. "Sahih (Darussalam)")
+- **Full Arabic text with diacritics** — our previous dataset had no Arabic
+- **Direct sunnah.com reference URLs** per hadith
+- **Why we switched:** Previous sunnah.com scrape had 23,974 hadiths across 4 collections with grade=null for all, no Arabic text, and unclear licensing. This dataset is strictly superior: +2 collections, +10K hadiths, real grades, Arabic text, MIT license.
 
 **gurgutan/sunnah_ar_en_dataset:**
 - URL: https://huggingface.co/datasets/gurgutan/sunnah_ar_en_dataset

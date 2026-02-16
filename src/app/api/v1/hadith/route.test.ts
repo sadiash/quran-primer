@@ -21,7 +21,7 @@ describe("GET /api/v1/hadith", () => {
 
   it("returns hadith search results", async () => {
     const results = [
-      { id: 1, collection: "bukhari", bookNumber: "1", hadithNumber: "1", text: "hadith text", grade: null, narratedBy: null },
+      { id: 1, collection: "bukhari", bookNumber: "1", hadithNumber: "1", text: "hadith text", grade: null, narratedBy: null, reference: null, inBookReference: null },
     ];
     mockAdapter.searchHadith.mockResolvedValue(results);
 

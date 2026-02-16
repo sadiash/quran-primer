@@ -77,6 +77,8 @@ export class HadithAdapter implements HadithPort {
           text: english?.body ?? "",
           grade: english?.grades[0]?.grade ?? null,
           narratedBy: null,
+          reference: null,
+          inBookReference: null,
         };
       });
     } catch {

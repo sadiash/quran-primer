@@ -30,6 +30,8 @@ interface LocalChapterData {
     text: string;
     grade: string | null;
     narratedBy: string | null;
+    reference: string | null;
+    inBookReference: string | null;
   }>;
 }
 
@@ -151,6 +153,8 @@ export class HadithLocalAdapter implements HadithPort {
               text: h.text,
               grade: h.grade,
               narratedBy: h.narratedBy,
+              reference: h.reference ?? null,
+              inBookReference: h.inBookReference ?? null,
             });
           }
 

@@ -9,7 +9,6 @@ import {
   Bookmark,
   StickyNote,
   Search,
-  Palette,
   Brain,
   Settings2,
   Library,
@@ -17,9 +16,7 @@ import {
 } from "lucide-react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
-import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
-import type { ThemeName } from "@/core/types";
 
 const SURAH_NAMES = [
   "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -36,22 +33,10 @@ const SURAH_NAMES = [
   "Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas",
 ];
 
-const THEMES: { name: ThemeName; label: string }[] = [
-  { name: "library", label: "Library" },
-  { name: "observatory", label: "Observatory" },
-  { name: "amethyst", label: "Amethyst" },
-  { name: "cosmos", label: "Cosmos" },
-  { name: "midnight", label: "Midnight" },
-  { name: "sahara", label: "Sahara" },
-  { name: "garden", label: "Garden" },
-  { name: "matrix", label: "Matrix" },
-];
-
 export function CommandPalette() {
   const { open, setOpen, addRecentCommand } = useCommandPalette();
   const router = useRouter();
   const { openPanel } = usePanels();
-  const { updatePreferences } = usePreferences();
   const { presets, applyPreset } = useWorkspacePresets();
   const [search, setSearch] = useState("");
 
@@ -205,18 +190,6 @@ export function CommandPalette() {
               ))}
             </Command.Group>
 
-            {/* Themes */}
-            <Command.Group heading="Themes" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              {THEMES.map((theme) => (
-                <CommandItem
-                  key={theme.name}
-                  onSelect={() => runCommand(`theme:${theme.name}`, () => updatePreferences({ themeName: theme.name }))}
-                >
-                  <Palette className="h-4 w-4" />
-                  {theme.label}
-                </CommandItem>
-              ))}
-            </Command.Group>
           </Command.List>
         </Command>
       </div>
