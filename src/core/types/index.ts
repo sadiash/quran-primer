@@ -24,6 +24,7 @@ export type {
   TranslationColorSlot,
   TranslationConfig,
   TranslationLayout,
+  ReadingDensity,
   ThemeName,
   UserPreferences,
 } from "./study";

@@ -5,15 +5,31 @@ import { TopNav } from "./top-nav";
 import { MobileNav } from "./mobile-nav";
 import { PanelLayout } from "@/presentation/components/panels/panel-layout";
 import { MobileStudySheet } from "@/presentation/components/drawer/mobile-study-sheet";
+import { useAutoHideNav } from "@/presentation/hooks/use-auto-hide-nav";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 
 interface AppShellProps {
   children: ReactNode;
 }
 
 export function AppShell({ children }: AppShellProps) {
+  const navHidden = useAutoHideNav();
+  const { preferences } = usePreferences();
+  const zenMode = preferences.zenMode;
+
+  if (zenMode) {
+    return (
+      <div className="zen-mode flex h-dvh flex-col overflow-hidden">
+        <main id="main-content" className="h-full flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <TopNav />
+      <TopNav hidden={navHidden} />
 
       {/* Main area: multi-panel docking layout (desktop) */}
       <div className="flex flex-1 overflow-hidden">

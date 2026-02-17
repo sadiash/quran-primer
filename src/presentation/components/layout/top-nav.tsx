@@ -20,13 +20,20 @@ import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
 
-export function TopNav() {
+interface TopNavProps {
+  hidden?: boolean;
+}
+
+export function TopNav({ hidden = false }: TopNavProps) {
   const pathname = usePathname();
   const { openPanels, togglePanel } = usePanels();
   const { toggle: togglePalette } = useCommandPalette();
 
   return (
-    <header className="relative z-50 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur-sm sm:gap-3 sm:px-4">
+    <header className={cn(
+      "relative z-50 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur-sm sm:gap-3 sm:px-4",
+      hidden ? "nav-hidden" : "nav-visible",
+    )}>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2">
         <BookOpenText className="h-5 w-5 text-primary" />

@@ -974,3 +974,164 @@ body {
 .tiptap p {
   margin: 0.125rem 0;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Sacred Reading Surface — Density, Indicators, Ornaments
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Verse Bookmark Indicator (thin gold left-edge line) ─── */
+.verse-bookmarked::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 9999px;
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* ─── Verse Notes Indicator (tiny amber dot, top-right) ─── */
+.verse-has-notes::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: hsl(42 80% 55% / 0.7);
+}
+
+/* ─── Enhanced Verse Focus Indicator ─── */
+.verse-focused-indicator::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 0% 50%,
+    hsl(var(--primary) / 0.06) 0%,
+    transparent 70%
+  );
+}
+
+/* ─── Bismillah Ornament ─── */
+.bismillah-ornament {
+  position: relative;
+  padding: 0.75rem 0;
+}
+
+.bismillah-ornament::before,
+.bismillah-ornament::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 0 auto;
+  max-width: 200px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    hsl(var(--primary) / 0.3) 30%,
+    hsl(var(--primary) / 0.5) 50%,
+    hsl(var(--primary) / 0.3) 70%,
+    transparent 100%
+  );
+}
+
+.bismillah-ornament::before {
+  margin-bottom: 0.75rem;
+}
+
+.bismillah-ornament::after {
+  margin-top: 0.75rem;
+}
+
+/* ─── Surah Divider (gradient line with star glyph) ─── */
+.surah-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.surah-divider::before,
+.surah-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    hsl(var(--border) / 0.6) 50%,
+    transparent 100%
+  );
+}
+
+.surah-divider::after {
+  background: linear-gradient(
+    to left,
+    transparent 0%,
+    hsl(var(--border) / 0.6) 50%,
+    transparent 100%
+  );
+}
+
+/* ─── Arabic Density Classes ─── */
+.arabic-reading-comfortable {
+  line-height: 2.4;
+}
+
+.arabic-reading-compact {
+  line-height: 2.0;
+}
+
+.arabic-reading-dense {
+  line-height: 1.8;
+}
+
+/* ─── Arabic Typography Improvements ─── */
+.arabic-reading {
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+  font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+}
+
+/* ─── Verse Action Bar ─── */
+.verse-action-bar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.group:hover .verse-action-bar,
+.verse-action-bar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─── Zen Mode ─── */
+.zen-mode #main-content {
+  max-width: 100%;
+}
+
+/* ─── Top Nav Auto-Hide ─── */
+.nav-hidden {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden;
+  opacity: 0;
+  border-bottom-width: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+}
+
+.nav-visible {
+  max-height: 3rem;
+  opacity: 1;
+  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+}

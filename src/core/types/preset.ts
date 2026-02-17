@@ -52,4 +52,20 @@ export const BUILT_IN_PRESETS: WorkspacePreset[] = [
     },
     panels: [],
   },
+  {
+    id: "zen-reading",
+    name: "Zen Reading",
+    description: "Distraction-free edge-to-edge reading — no panels, no chrome",
+    preferences: {
+      zenMode: true,
+      readingDensity: "compact",
+      showArabic: true,
+      showTranslation: true,
+      showVerseNumbers: true,
+      showSurahHeaders: true,
+      showBismillah: true,
+      translationLayout: "stacked",
+    },
+    panels: [],
+  },
 ];

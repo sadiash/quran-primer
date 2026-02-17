@@ -17,6 +17,8 @@ import {
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
+import type { ReadingDensity } from "@/core/types";
 
 const SURAH_NAMES = [
   "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -38,6 +40,7 @@ export function CommandPalette() {
   const router = useRouter();
   const { openPanel } = usePanels();
   const { presets, applyPreset } = useWorkspacePresets();
+  const { preferences, updatePreferences } = usePreferences();
   const [search, setSearch] = useState("");
 
   const filteredSurahs = useMemo(() => {
@@ -175,6 +178,26 @@ export function CommandPalette() {
                 <Brain className="h-4 w-4" />
                 Open AI
               </CommandItem>
+            </Command.Group>
+
+            {/* Reading Mode */}
+            <Command.Group heading="Reading Mode" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              <CommandItem
+                onSelect={() => runCommand("toggle:zen", () => updatePreferences({ zenMode: !preferences.zenMode }))}
+              >
+                <Settings2 className="h-4 w-4" />
+                {preferences.zenMode ? "Exit Zen Mode" : "Toggle Zen Mode"}
+              </CommandItem>
+              {(["comfortable", "compact", "dense"] as ReadingDensity[]).map((d) => (
+                <CommandItem
+                  key={d}
+                  onSelect={() => runCommand(`density:${d}`, () => updatePreferences({ readingDensity: d }))}
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Density: {d.charAt(0).toUpperCase() + d.slice(1)}
+                  {preferences.readingDensity === d ? " (active)" : ""}
+                </CommandItem>
+              ))}
             </Command.Group>
 
             {/* Workspace Presets */}

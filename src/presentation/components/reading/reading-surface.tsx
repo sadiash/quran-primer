@@ -28,7 +28,7 @@ export function ReadingSurface({
   translations,
   conceptsByVerse,
 }: ReadingSurfaceProps) {
-  const { preferences } = usePreferences();
+  const { preferences, updatePreferences } = usePreferences();
   const { focusVerse, focusedVerseKey, openPanel } = usePanels();
   const { updateProgress } = useProgress(surah.id);
   const { isBookmarked, toggleBookmark } = useBookmarks(surah.id);
@@ -157,9 +157,7 @@ export function ReadingSurface({
     "2xl": "text-5xl",
   }[preferences.arabicFontSize];
 
-  // translationSizeClass removed — now per-translation via resolvedConfigs
-
-  // Keyboard shortcuts: j/k/b/t/n + arrows
+  // Keyboard shortcuts: j/k/b/t/n/Z/Escape + arrows
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       // Skip if inside input/textarea/contenteditable or modifier keys held
@@ -208,12 +206,25 @@ export function ReadingSurface({
       } else if (e.key === "n") {
         e.preventDefault();
         openPanel("notes");
+      } else if (e.key === "Z") {
+        e.preventDefault();
+        updatePreferences({ zenMode: !preferences.zenMode });
+      } else if (e.key === "Escape" && preferences.zenMode) {
+        e.preventDefault();
+        updatePreferences({ zenMode: false });
       }
     }
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel]);
+  }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
+
+  const density = preferences.readingDensity;
+  const dividerClass = density === "dense"
+    ? ""
+    : density === "compact"
+      ? "divide-y divide-border/10"
+      : "divide-y divide-border/20";
 
   return (
     <div className="relative h-full">
@@ -221,7 +232,7 @@ export function ReadingSurface({
         ref={containerRef}
         className="h-full overflow-y-auto scroll-smooth"
       >
-        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
           {preferences.showSurahHeaders && (
             <SurahHeader surah={surah} showBismillah={preferences.showBismillah} />
           )}
@@ -234,7 +245,7 @@ export function ReadingSurface({
             />
           )}
 
-          <div className="mt-8 space-y-0 divide-y divide-border/30">
+          <div className={`mt-4 space-y-0 ${dividerClass}`}>
             {verses.map((verse) => (
               <VerseBlock
                 key={verse.verseKey}
@@ -246,6 +257,7 @@ export function ReadingSurface({
                 arabicSizeClass={arabicSizeClass}
                 translationConfigs={resolvedConfigs}
                 translationLayout={preferences.translationLayout}
+                density={density}
                 isFocused={focusedVerseKey === verse.verseKey}
                 isBookmarked={isBookmarked(verse.verseKey)}
                 isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
@@ -262,6 +274,7 @@ export function ReadingSurface({
                 }}
                 onFocus={() => focusVerseManually(verse.verseKey)}
                 onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
+                onOpenStudy={() => { focusVerseManually(verse.verseKey); openPanel("tafsir"); }}
                 onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
                 concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
                 conceptMaxVisible={preferences.conceptMaxVisible}
@@ -305,7 +318,7 @@ function TranslationLegend({
   }, [translations]);
 
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70 hover:text-muted-foreground transition-fast"

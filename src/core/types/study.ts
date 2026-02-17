@@ -41,6 +41,7 @@ export interface TranslationConfig {
   colorSlot: TranslationColorSlot;
 }
 export type TranslationLayout = "stacked" | "columnar";
+export type ReadingDensity = "comfortable" | "compact" | "dense";
 
 export type ThemeName =
   | "library"
@@ -74,6 +75,8 @@ export interface UserPreferences {
   showConcepts: boolean;
   conceptMaxVisible: number;    // 3 | 5 | 10 | 0 (0 = show all)
   conceptColorSlot: number;     // 0 = muted/default, 1-6 = translation color slots
+  zenMode: boolean;
+  readingDensity: ReadingDensity;
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -101,6 +104,8 @@ export function toUserPreferences(raw: {
   showConcepts?: boolean | null;
   conceptMaxVisible?: number | null;
   conceptColorSlot?: number | null;
+  zenMode?: boolean | null;
+  readingDensity?: string | null;
   onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
@@ -131,6 +136,8 @@ export function toUserPreferences(raw: {
     showConcepts: raw.showConcepts ?? true,
     conceptMaxVisible: raw.conceptMaxVisible ?? 5,
     conceptColorSlot: raw.conceptColorSlot ?? 0,
+    zenMode: raw.zenMode ?? false,
+    readingDensity: (raw.readingDensity as ReadingDensity) ?? "compact",
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };

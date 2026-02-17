@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import DOMPurify from "dompurify";
-import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize } from "@/core/types";
+import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize, ReadingDensity } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { cn } from "@/lib/utils";
 import { useGestures } from "@/presentation/hooks/use-gestures";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/presentation/components/ui/tooltip";
+import { VerseActionBar } from "./verse-action-bar";
 
 function sanitizeHtml(html: string): string {
   if (typeof window === "undefined") return html;
@@ -23,6 +24,24 @@ const TRANSLATION_SIZE_CLASS: Record<TranslationFontSize, string> = {
   xl: "text-lg",
 };
 
+/** Convert western digits to Arabic-Indic numerals */
+function toArabicNumerals(n: number): string {
+  const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+  return String(n).replace(/\d/g, (d) => arabicDigits[Number(d)]!);
+}
+
+const DENSITY_PADDING: Record<ReadingDensity, string> = {
+  comfortable: "py-3 px-3",
+  compact: "py-1.5 px-2",
+  dense: "py-0.5 px-1.5",
+};
+
+const DENSITY_ARABIC_LINE_HEIGHT: Record<ReadingDensity, string> = {
+  comfortable: "arabic-reading-comfortable",
+  compact: "arabic-reading-compact",
+  dense: "arabic-reading-dense",
+};
+
 interface VerseBlockProps {
   verse: Verse;
   translations: Translation[];
@@ -36,10 +55,12 @@ interface VerseBlockProps {
   isBookmarked: boolean;
   isPlaying: boolean;
   hasNotes: boolean;
+  density: ReadingDensity;
   onToggleBookmark: () => void;
   onTogglePlay: () => void;
   onFocus: () => void;
   onOpenNotes: () => void;
+  onOpenStudy: () => void;
   onLongPress?: () => void;
   onSwipeRight?: () => void;
   concepts?: ConceptTag[];
@@ -47,7 +68,7 @@ interface VerseBlockProps {
   conceptColorSlot?: number;
 }
 
-export function VerseBlock({
+function VerseBlockInner({
   verse,
   translations,
   showArabic,
@@ -60,10 +81,12 @@ export function VerseBlock({
   isBookmarked,
   isPlaying,
   hasNotes,
+  density,
   onToggleBookmark,
   onTogglePlay,
   onFocus,
   onOpenNotes,
+  onOpenStudy,
   onLongPress,
   onSwipeRight,
   concepts = [],
@@ -72,102 +95,65 @@ export function VerseBlock({
 }: VerseBlockProps) {
   const gestureHandlers = useGestures({ onLongPress, onSwipeRight });
 
+  const copyText = () => {
+    const text = showArabic
+      ? verse.textUthmani
+      : translations[0]?.text.replace(/<[^>]+>/g, "") ?? verse.textUthmani;
+    navigator.clipboard.writeText(text).catch(() => {});
+  };
+
   return (
     <div
       data-verse-key={verse.verseKey}
       className={cn(
-        "group relative py-5 px-3 -mx-3 rounded-lg transition-all",
+        "group relative -mx-2 rounded-lg transition-all",
+        DENSITY_PADDING[density],
         isFocused && "bg-primary/5 verse-focused-indicator",
         isPlaying && "bg-primary/[0.03]",
+        isBookmarked && "verse-bookmarked",
+        hasNotes && "verse-has-notes",
       )}
       onClick={onFocus}
       {...gestureHandlers}
     >
-      {/* Verse number + inline actions */}
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          {showVerseNumbers && (
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
-              {verse.verseNumber}
-            </span>
-          )}
-          {/* Bookmark toggle */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleBookmark(); }}
-            className={cn(
-              "transition-colors",
-              isBookmarked
-                ? "text-primary hover:text-primary/70"
-                : "text-muted-foreground/30 hover:text-muted-foreground/60",
-            )}
-            aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-          >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={isBookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-            </svg>
-          </button>
-          {/* Notes — filled when has notes, outline when empty */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onOpenNotes(); }}
-            className={cn(
-              "transition-colors",
-              hasNotes
-                ? "text-amber-500/70 hover:text-amber-500"
-                : "text-muted-foreground/30 hover:text-muted-foreground/60",
-            )}
-            aria-label={hasNotes ? "View notes" : "Add note"}
-          >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={hasNotes ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" />
-              <path d="M15 3v4a2 2 0 0 0 2 2h4" />
-            </svg>
-          </button>
-          {/* Copy top visible text */}
-          <CopyButton
-            getText={() => {
-              if (showArabic) return verse.textUthmani;
-              const first = translations[0];
-              if (first) return first.text.replace(/<[^>]+>/g, "");
-              return verse.textUthmani;
-            }}
-          />
-          {/* Play / Pause audio */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onTogglePlay(); }}
-            className={cn(
-              "transition-colors",
-              isPlaying
-                ? "text-primary hover:text-primary/70"
-                : "text-muted-foreground/30 hover:text-muted-foreground/60",
-            )}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? (
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </svg>
-            ) : (
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="6 3 20 12 6 21 6 3" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
+      {/* Floating action bar — visible on hover or focus */}
+      <VerseActionBar
+        isBookmarked={isBookmarked}
+        hasNotes={hasNotes}
+        isPlaying={isPlaying}
+        isFocused={isFocused}
+        onToggleBookmark={onToggleBookmark}
+        onOpenNotes={onOpenNotes}
+        onTogglePlay={onTogglePlay}
+        onCopy={copyText}
+        onStudy={onOpenStudy}
+      />
 
-      {/* Arabic text */}
+      {/* Arabic text with inline verse number */}
       {showArabic && (
         <p
           lang="ar"
           dir="rtl"
           className={cn(
-            "arabic-reading leading-loose text-foreground",
+            "arabic-reading text-foreground",
             arabicSizeClass,
+            DENSITY_ARABIC_LINE_HEIGHT[density],
           )}
         >
           {verse.textUthmani}
+          {showVerseNumbers && (
+            <span className="mr-1 text-[0.5em] align-super text-muted-foreground/50 font-sans select-none">
+              {toArabicNumerals(verse.verseNumber)}
+            </span>
+          )}
         </p>
+      )}
+
+      {/* Verse number for translation-only mode */}
+      {!showArabic && showVerseNumbers && showTranslation && (
+        <span className="text-[10px] text-muted-foreground/40 font-mono select-none">
+          {verse.verseNumber}
+        </span>
       )}
 
       {/* Translations */}
@@ -177,6 +163,7 @@ export function VerseBlock({
           layout={translationLayout}
           configs={translationConfigs}
           showArabic={showArabic}
+          density={density}
         />
       )}
 
@@ -188,6 +175,28 @@ export function VerseBlock({
   );
 }
 
+export const VerseBlock = memo(VerseBlockInner, (prev, next) => {
+  return (
+    prev.verse.verseKey === next.verse.verseKey &&
+    prev.isFocused === next.isFocused &&
+    prev.isBookmarked === next.isBookmarked &&
+    prev.isPlaying === next.isPlaying &&
+    prev.hasNotes === next.hasNotes &&
+    prev.showArabic === next.showArabic &&
+    prev.showTranslation === next.showTranslation &&
+    prev.showVerseNumbers === next.showVerseNumbers &&
+    prev.arabicSizeClass === next.arabicSizeClass &&
+    prev.translationLayout === next.translationLayout &&
+    prev.density === next.density &&
+    prev.translations === next.translations &&
+    prev.translationConfigs === next.translationConfigs &&
+    prev.concepts === next.concepts &&
+    prev.conceptMaxVisible === next.conceptMaxVisible &&
+    prev.conceptColorSlot === next.conceptColorSlot
+  );
+});
+VerseBlock.displayName = "VerseBlock";
+
 /* ─── Translation layout switcher ─── */
 
 function TranslationGroup({
@@ -195,11 +204,13 @@ function TranslationGroup({
   layout,
   configs,
   showArabic,
+  density,
 }: {
   translations: Translation[];
   layout: TranslationLayout;
   configs: TranslationConfig[];
   showArabic: boolean;
+  density: ReadingDensity;
 }) {
   const multi = translations.length > 1;
   const configMap = useMemo(() => {
@@ -208,11 +219,14 @@ function TranslationGroup({
     return m;
   }, [configs]);
 
+  const gapClass = density === "dense" ? "mt-1" : density === "compact" ? "mt-1.5" : "mt-2";
+
   if (layout === "columnar" && multi) {
     return (
       <div
         className={cn(
-          "mt-3 grid gap-3",
+          "grid gap-2",
+          gapClass,
           translations.length === 2 && "grid-cols-2",
           translations.length >= 3 && "grid-cols-2 lg:grid-cols-3",
         )}
@@ -232,7 +246,7 @@ function TranslationGroup({
 
   // Stacked (default)
   return (
-    <div className="mt-3 space-y-1.5">
+    <div className={cn("space-y-1", gapClass)}>
       {translations.map((t, i) => (
         <TranslationText
           key={`${t.resourceId}-${t.verseKey}`}
@@ -274,15 +288,7 @@ function TranslationText({
     : undefined;
 
   return (
-    <div className="space-y-0.5">
-      {/* Show inline label only for single translation (no color key) */}
-      {!useColor && (
-        <p className="text-[11px] font-medium tracking-wide">
-          <span className="text-muted-foreground/70">
-            {translation.resourceName}
-          </span>
-        </p>
-      )}
+    <div>
       {hasHtml ? (
         <p
           className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
@@ -298,41 +304,6 @@ function TranslationText({
         </p>
       )}
     </div>
-  );
-}
-
-/* ─── Copy button with feedback ─── */
-
-function CopyButton({ getText }: { getText: () => string }) {
-  const [copied, setCopied] = useState(false);
-
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(getText()).catch(() => {});
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1200);
-      }}
-      className={cn(
-        "transition-colors",
-        copied
-          ? "text-green-500"
-          : "text-muted-foreground/30 hover:text-muted-foreground/60",
-      )}
-      aria-label="Copy text"
-    >
-      {copied ? (
-        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
-      ) : (
-        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-        </svg>
-      )}
-    </button>
   );
 }
 
@@ -360,7 +331,7 @@ function ConceptPills({
       : undefined;
 
   return (
-    <div className="mt-2 flex flex-wrap gap-1">
+    <div className="mt-1.5 flex flex-wrap gap-1">
       {visible.map((c) => (
         <Tooltip key={c.id}>
           <TooltipTrigger asChild>
