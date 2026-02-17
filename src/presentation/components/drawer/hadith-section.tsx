@@ -25,14 +25,14 @@ const COLLECTIONS = [
   { id: "ibnmajah", label: "Ibn Majah" },
 ];
 
-/** Display-friendly collection names */
-const COLLECTION_NAMES: Record<string, string> = {
-  bukhari: "Sahih al-Bukhari",
-  muslim: "Sahih Muslim",
-  abudawud: "Sunan Abu Dawud",
-  tirmidhi: "Jami at-Tirmidhi",
-  nasai: "Sunan an-Nasa'i",
-  ibnmajah: "Sunan Ibn Majah",
+/** Display-friendly collection names + colors */
+const COLLECTION_META: Record<string, { name: string; accent: string; badge: string }> = {
+  bukhari: { name: "Sahih al-Bukhari", accent: "border-l-emerald-400", badge: "bg-emerald-500/15 text-emerald-400" },
+  muslim: { name: "Sahih Muslim", accent: "border-l-teal-400", badge: "bg-teal-500/15 text-teal-400" },
+  abudawud: { name: "Sunan Abu Dawud", accent: "border-l-sky-400", badge: "bg-sky-500/15 text-sky-400" },
+  tirmidhi: { name: "Jami at-Tirmidhi", accent: "border-l-violet-400", badge: "bg-violet-500/15 text-violet-400" },
+  nasai: { name: "Sunan an-Nasa'i", accent: "border-l-rose-400", badge: "bg-rose-500/15 text-rose-400" },
+  ibnmajah: { name: "Sunan Ibn Majah", accent: "border-l-amber-400", badge: "bg-amber-500/15 text-amber-400" },
 };
 
 /* ─── Grade helpers ─── */
@@ -155,7 +155,7 @@ export function HadithSection() {
       )}
 
       {/* Results */}
-      <div className="space-y-1">
+      <div className="space-y-0.5">
         {isLoading && (
           <div className="flex items-center justify-center py-6">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
@@ -210,48 +210,56 @@ function HadithCard({
     return plain.length > 150 ? plain.slice(0, 150) + "..." : plain;
   }, [hadith.text]);
   const parsed = useMemo(() => parseGrade(hadith.grade), [hadith.grade]);
+  const hasGrade = parsed !== null;
   const category = parsed ? categorizeGrade(parsed.label) : "unknown";
+  const meta = COLLECTION_META[hadith.collection];
 
   return (
     <div
       className={cn(
-        "group rounded-lg border transition-all",
+        "group rounded-lg border-l-[3px] transition-all",
+        meta?.accent ?? "border-l-muted-foreground/30",
         expanded
-          ? "border-border bg-surface/80"
-          : "border-transparent hover:bg-surface/50",
+          ? "bg-surface/80 ring-1 ring-border/40"
+          : "hover:bg-surface/50",
       )}
     >
       {/* Header — always visible */}
       <button
         onClick={onToggle}
-        className="flex w-full items-start gap-2 p-3 text-left"
+        className="flex w-full items-start gap-2.5 p-3 text-left"
       >
-        {/* Hadith number badge */}
-        <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
-          {hadith.hadithNumber.length <= 4 ? hadith.hadithNumber : "#"}
-        </span>
-
         <div className="flex-1 min-w-0">
-          {/* Top row: collection + grade pill */}
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[11px] font-medium text-foreground/80">
-              {COLLECTION_NAMES[hadith.collection] ?? hadith.collection}
+          {/* Top row: collection badge + number + grade */}
+          <div className="flex items-center gap-2 mb-1">
+            <span className={cn(
+              "inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold",
+              meta?.badge ?? "bg-muted text-muted-foreground",
+            )}>
+              {meta?.name?.split(" ").pop() ?? hadith.collection}
             </span>
-            {parsed && (
+            <span className="text-[10px] font-mono text-muted-foreground/50">
+              #{hadith.hadithNumber}
+            </span>
+            {hasGrade && parsed ? (
               <GradePill label={parsed.label} category={category} />
+            ) : (
+              <span className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none text-muted-foreground/50 bg-muted/50">
+                Ungraded
+              </span>
             )}
           </div>
 
           {/* Narrator */}
           {hadith.narratedBy && (
-            <p className="text-[11px] text-muted-foreground/70 mb-1 italic">
+            <p className="text-[11px] text-muted-foreground/70 mb-1 italic leading-snug">
               {hadith.narratedBy}
             </p>
           )}
 
           {/* Preview text (collapsed) */}
           {!expanded && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+            <p className="text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">
               {preview}
             </p>
           )}
@@ -259,7 +267,7 @@ function HadithCard({
 
         <ChevronDown
           className={cn(
-            "h-3.5 w-3.5 shrink-0 text-muted-foreground/50 mt-1 transition-transform",
+            "h-3.5 w-3.5 shrink-0 text-muted-foreground/40 mt-1 transition-transform",
             expanded && "rotate-180",
           )}
         />
@@ -270,12 +278,12 @@ function HadithCard({
         <div className="px-3 pb-3 space-y-3">
           {/* Full text */}
           <div
-            className="text-[13px] leading-[1.8] text-foreground/90 [&_b]:font-semibold [&_strong]:font-semibold pl-8"
+            className="text-[13px] leading-[1.85] text-foreground/90 [&_b]:font-semibold [&_strong]:font-semibold"
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
 
           {/* Metadata footer */}
-          <div className="ml-8 rounded-md bg-muted/50 px-3 py-2 space-y-1.5">
+          <div className="rounded-lg bg-muted/40 px-3 py-2.5 space-y-2">
             {/* Reference line */}
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <Info className="h-3 w-3 shrink-0" />
@@ -297,7 +305,7 @@ function HadithCard({
             )}
 
             {/* Actions row */}
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-3 pt-0.5">
               {hadith.reference && (
                 <a
                   href={hadith.reference}
