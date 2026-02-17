@@ -80,6 +80,13 @@ export interface Hadith {
   narratedBy: string | null;
   reference: string | null;
   inBookReference: string | null;
+  bookName?: string;
+}
+
+export interface HadithBook {
+  bookNumber: number;
+  bookName: string;
+  hadithCount: number;
 }
 
 export interface HadithCollection {

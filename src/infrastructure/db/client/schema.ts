@@ -10,13 +10,24 @@ export interface BookmarkRecord {
   createdAt: Date;
 }
 
+export interface LinkedResourceRecord {
+  type: "hadith" | "tafsir";
+  label: string;
+  preview: string;
+  sourceUrl?: string;
+  metadata?: Record<string, string>;
+}
+
 export interface NoteRecord {
   id: string;
+  title?: string;
   verseKeys: string[];
   surahIds: number[];
   content: string;
   contentJson?: string;
   tags: string[];
+  pinned?: boolean;
+  linkedResources?: LinkedResourceRecord[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -151,6 +162,39 @@ export class AppDatabase extends Dexie {
             if (!Array.isArray(note.surahIds)) note.surahIds = [];
           });
       });
+
+    // v5: add pinned field to notes (defaults to false for existing notes)
+    this.version(5).stores({
+      bookmarks: "id, verseKey, surahId, createdAt",
+      notes: "id, *verseKeys, *surahIds, *tags, updatedAt, pinned",
+      progress: "surahId, updatedAt",
+      preferences: "id",
+      crossReferences: "id, quranVerseKey, source, createdAt",
+      graphNodes: "id, nodeType, verseKey, surahId, createdAt",
+      graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
+    });
+
+    // v6: add title field to notes (defaults to undefined for existing notes)
+    this.version(6).stores({
+      bookmarks: "id, verseKey, surahId, createdAt",
+      notes: "id, *verseKeys, *surahIds, *tags, updatedAt, pinned",
+      progress: "surahId, updatedAt",
+      preferences: "id",
+      crossReferences: "id, quranVerseKey, source, createdAt",
+      graphNodes: "id, nodeType, verseKey, surahId, createdAt",
+      graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
+    });
+
+    // v7: add linkedResources field to notes (hadith/tafsir cross-links)
+    this.version(7).stores({
+      bookmarks: "id, verseKey, surahId, createdAt",
+      notes: "id, *verseKeys, *surahIds, *tags, updatedAt, pinned",
+      progress: "surahId, updatedAt",
+      preferences: "id",
+      crossReferences: "id, quranVerseKey, source, createdAt",
+      graphNodes: "id, nodeType, verseKey, surahId, createdAt",
+      graphEdges: "id, sourceNodeId, targetNodeId, edgeType, createdAt",
+    });
   }
 }
 

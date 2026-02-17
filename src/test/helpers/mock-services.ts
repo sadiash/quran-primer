@@ -32,6 +32,8 @@ export function createMockHadithAdapter() {
   return {
     getCollections: vi.fn().mockResolvedValue([]),
     searchHadith: vi.fn().mockResolvedValue([]),
+    browseBooks: vi.fn().mockResolvedValue([]),
+    browseHadiths: vi.fn().mockResolvedValue([]),
   };
 }
 

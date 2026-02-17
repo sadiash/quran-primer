@@ -1,7 +1,7 @@
 /** Fetches hadith data — uses a simple search-based approach */
 
 import type { HadithPort } from "@/core/ports";
-import type { Hadith, HadithCollection } from "@/core/types";
+import type { Hadith, HadithBook, HadithCollection } from "@/core/types";
 import { HttpClient } from "@/infrastructure/http";
 
 const DEFAULT_BASE_URL = "https://api.sunnah.com/v1";
@@ -84,5 +84,15 @@ export class HadithAdapter implements HadithPort {
     } catch {
       return [];
     }
+  }
+
+  async browseBooks(_collection: string): Promise<HadithBook[]> {
+    // Browse is only supported via local data
+    return [];
+  }
+
+  async browseHadiths(_collection: string, _bookNumber: number): Promise<Hadith[]> {
+    // Browse is only supported via local data
+    return [];
   }
 }

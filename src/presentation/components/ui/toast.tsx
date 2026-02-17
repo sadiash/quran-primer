@@ -12,15 +12,21 @@ import { cn } from "@/lib/utils";
 
 export type ToastVariant = "default" | "success" | "error" | "warning";
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 export interface Toast {
   id: string;
   message: string;
   variant: ToastVariant;
+  action?: ToastAction;
 }
 
 interface ToastContextValue {
   toasts: Toast[];
-  addToast: (message: string, variant?: ToastVariant) => void;
+  addToast: (message: string, variant?: ToastVariant, action?: ToastAction) => void;
   removeToast: (id: string) => void;
 }
 
@@ -30,12 +36,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const addToast = useCallback(
-    (message: string, variant: ToastVariant = "default") => {
+    (message: string, variant: ToastVariant = "default", action?: ToastAction) => {
       const id = crypto.randomUUID();
-      setToasts((prev) => [...prev, { id, message, variant }]);
+      setToasts((prev) => [...prev, { id, message, variant, action }]);
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, 4000);
+      }, action ? 6000 : 4000);
     },
     [],
   );
@@ -61,6 +67,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             )}
           >
             <span className="flex-1">{toast.message}</span>
+            {toast.action && (
+              <button
+                onClick={() => {
+                  toast.action!.onClick();
+                  removeToast(toast.id);
+                }}
+                className="shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold underline underline-offset-2 hover:bg-muted transition-fast"
+              >
+                {toast.action.label}
+              </button>
+            )}
             <button
               onClick={() => removeToast(toast.id)}
               className="shrink-0 rounded p-0.5 hover:bg-muted transition-fast"
