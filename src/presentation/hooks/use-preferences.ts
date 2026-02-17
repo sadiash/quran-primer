@@ -26,6 +26,8 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   showConcepts: true,
   conceptMaxVisible: 5,
   conceptColorSlot: 0,
+  zenMode: false,
+  readingDensity: "compact",
   onboardingComplete: false,
   updatedAt: new Date(0),
 };

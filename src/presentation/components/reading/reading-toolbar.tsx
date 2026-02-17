@@ -15,12 +15,18 @@ import {
 } from "lucide-react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
-import type { ArabicFontSize, TranslationLayout } from "@/core/types";
+import type { ArabicFontSize, TranslationLayout, ReadingDensity } from "@/core/types";
 
 const ARABIC_SIZES: ArabicFontSize[] = ["sm", "md", "lg", "xl", "2xl"];
 const LAYOUTS: { value: TranslationLayout; label: string }[] = [
   { value: "stacked", label: "Stacked" },
   { value: "columnar", label: "Side by side" },
+];
+
+const DENSITIES: { value: ReadingDensity; label: string }[] = [
+  { value: "comfortable", label: "Comfortable" },
+  { value: "compact", label: "Compact" },
+  { value: "dense", label: "Dense" },
 ];
 
 export function ReadingToolbar() {
@@ -98,6 +104,30 @@ export function ReadingToolbar() {
                     )}
                   >
                     {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Reading density */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Density
+              </label>
+              <div className="flex gap-1">
+                {DENSITIES.map((d) => (
+                  <button
+                    key={d.value}
+                    onClick={() => updatePreferences({ readingDensity: d.value })}
+                    className={cn(
+                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      preferences.readingDensity === d.value
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-surface-hover",
+                    )}
+                  >
+                    {d.label}
                   </button>
                 ))}
               </div>
