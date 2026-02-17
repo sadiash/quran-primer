@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import DOMPurify from "dompurify";
-import { Loader2, Copy, Check, BookOpen } from "lucide-react";
+import { Loader2, Copy, Check, BookOpen, StickyNote } from "lucide-react";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import { usePanels } from "@/presentation/providers/panel-provider";
+import { useToast } from "@/presentation/components/ui/toast";
+import { db } from "@/infrastructure/db/client";
 import type { Tafsir } from "@/core/types";
+import type { LinkedResource } from "@/core/types/study";
 import { cn } from "@/lib/utils";
 
 const TAFSIR_RESOURCES = [
@@ -130,10 +133,13 @@ function TafsirContent({
   verseKey: string;
   showHeader: boolean;
 }) {
+  const { openPanel } = usePanels();
+  const { addToast } = useToast();
   const url = `/api/v1/tafsir?verse_key=${verseKey}&tafsir_id=${tafsirId}`;
   const fetchKey = `${verseKey}:${tafsirId}`;
   const { data: tafsir, error, isLoading } = useFetch<Tafsir>(url, fetchKey);
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const resource = TAFSIR_RESOURCES.find((r) => r.id === tafsirId);
   const tafsirText = tafsir?.text ?? "";
@@ -152,6 +158,40 @@ function TafsirContent({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const tafsirName = resource?.name ?? "Tafsir";
+
+  const handleSaveToNotes = useCallback(async () => {
+    if (!tafsir) return;
+    const plainText = tafsir.text.replace(/<[^>]+>/g, "");
+    const title = `${tafsirName} on ${verseKey}`;
+    const linkedResource: LinkedResource = {
+      type: "tafsir",
+      label: `${tafsirName} on ${verseKey}`,
+      preview: plainText.slice(0, 200),
+      metadata: {
+        tafsirId: String(tafsirId),
+        tafsirName,
+      },
+    };
+    const now = new Date();
+    await db.notes.put({
+      id: crypto.randomUUID(),
+      title,
+      verseKeys: [verseKey],
+      surahIds: [],
+      content: plainText,
+      tags: ["tafsir", tafsirName.toLowerCase()],
+      pinned: false,
+      linkedResources: [linkedResource],
+      createdAt: now,
+      updatedAt: now,
+    });
+    openPanel("notes");
+    setSaved(true);
+    addToast("Tafsir excerpt saved to notes", "success");
+    setTimeout(() => setSaved(false), 2000);
+  }, [tafsir, tafsirName, verseKey, tafsirId, openPanel, addToast]);
+
   const accentClass = resource?.accent ?? "border-l-primary/30";
   const bgClass = resource?.bg ?? "";
 
@@ -169,15 +209,32 @@ function TafsirContent({
           <p className="text-sm font-semibold text-foreground">{resource?.name}</p>
           <p className="text-[11px] text-muted-foreground/70">{resource?.authorName}</p>
         </div>
-        {tafsir && (
-          <button
-            onClick={handleCopy}
-            className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover"
-            aria-label="Copy tafsir text"
-          >
-            {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
-          </button>
-        )}
+        <div className="flex items-center gap-1">
+          {tafsir && (
+            <button
+              onClick={handleSaveToNotes}
+              className={cn(
+                "rounded-md p-1.5 transition-fast",
+                saved
+                  ? "text-emerald-500"
+                  : "text-muted-foreground hover:bg-surface-hover",
+              )}
+              aria-label="Save tafsir to notes"
+              title="Save to Notes"
+            >
+              {saved ? <Check className="h-3.5 w-3.5" /> : <StickyNote className="h-3.5 w-3.5" />}
+            </button>
+          )}
+          {tafsir && (
+            <button
+              onClick={handleCopy}
+              className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover"
+              aria-label="Copy tafsir text"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+            </button>
+          )}
+        </div>
       </div>
 
       {isLoading && (

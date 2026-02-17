@@ -1,11 +1,28 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import DOMPurify from "dompurify";
-import { BookText, Search, ExternalLink, Copy, Check, ChevronDown, Info } from "lucide-react";
+import {
+  BookText,
+  Search,
+  ExternalLink,
+  Copy,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Info,
+  X,
+  Library,
+  ArrowLeft,
+  Loader2,
+  StickyNote,
+} from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
+import { useToast } from "@/presentation/components/ui/toast";
 import { useFetch } from "@/presentation/hooks/use-fetch";
-import type { Hadith } from "@/core/types";
+import { db } from "@/infrastructure/db/client";
+import type { Hadith, HadithBook } from "@/core/types";
+import type { LinkedResource } from "@/core/types/study";
 import { cn } from "@/lib/utils";
 
 function sanitize(html: string): string {
@@ -25,21 +42,21 @@ const COLLECTIONS = [
   { id: "ibnmajah", label: "Ibn Majah" },
 ];
 
-/** Display-friendly collection names + colors */
-const COLLECTION_META: Record<string, { name: string; accent: string; badge: string }> = {
-  bukhari: { name: "Sahih al-Bukhari", accent: "border-l-emerald-400", badge: "bg-emerald-500/15 text-emerald-400" },
-  muslim: { name: "Sahih Muslim", accent: "border-l-teal-400", badge: "bg-teal-500/15 text-teal-400" },
-  abudawud: { name: "Sunan Abu Dawud", accent: "border-l-sky-400", badge: "bg-sky-500/15 text-sky-400" },
-  tirmidhi: { name: "Jami at-Tirmidhi", accent: "border-l-violet-400", badge: "bg-violet-500/15 text-violet-400" },
-  nasai: { name: "Sunan an-Nasa'i", accent: "border-l-rose-400", badge: "bg-rose-500/15 text-rose-400" },
-  ibnmajah: { name: "Sunan Ibn Majah", accent: "border-l-amber-400", badge: "bg-amber-500/15 text-amber-400" },
+/** Display-friendly collection names + colors (inline styles for border to avoid Tailwind purge) */
+const COLLECTION_META: Record<string, { name: string; accentColor: string; badge: string }> = {
+  bukhari: { name: "Sahih al-Bukhari", accentColor: "#34d399", badge: "bg-emerald-500/15 text-emerald-400" },
+  muslim: { name: "Sahih Muslim", accentColor: "#2dd4bf", badge: "bg-teal-500/15 text-teal-400" },
+  abudawud: { name: "Sunan Abu Dawud", accentColor: "#38bdf8", badge: "bg-sky-500/15 text-sky-400" },
+  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "#a78bfa", badge: "bg-violet-500/15 text-violet-400" },
+  nasai: { name: "Sunan an-Nasa'i", accentColor: "#fb7185", badge: "bg-rose-500/15 text-rose-400" },
+  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "#fbbf24", badge: "bg-amber-500/15 text-amber-400" },
 };
 
 /* ─── Grade helpers ─── */
 
 interface ParsedGrade {
-  label: string;   // e.g. "Sahih", "Hasan", "Da'if"
-  grader: string | null; // e.g. "Darussalam", "Al-Albani"
+  label: string;
+  grader: string | null;
 }
 
 function parseGrade(raw: string | null): ParsedGrade | null {
@@ -70,36 +87,221 @@ const GRADE_STYLES: Record<GradeCategory, string> = {
   unknown: "text-muted-foreground bg-muted",
 };
 
+type GradeFilter = "all" | "sahih" | "hasan" | "daif";
+
+const GRADE_FILTERS: { id: GradeFilter; label: string; style: string }[] = [
+  { id: "all", label: "All Grades", style: "" },
+  { id: "sahih", label: "Sahih", style: "text-emerald-700 dark:text-emerald-400" },
+  { id: "hasan", label: "Hasan", style: "text-amber-700 dark:text-amber-400" },
+  { id: "daif", label: "Da'if", style: "text-orange-700 dark:text-orange-400" },
+];
+
+type TabMode = "search" | "browse";
+
+const EXAMPLE_SEARCHES = ["patience", "prayer", "charity", "fasting", "knowledge"];
+const RECENT_SEARCHES_KEY = "hadith:recent-searches";
+const MAX_RECENT = 5;
+
+function getRecentSearches(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
+    return stored ? (JSON.parse(stored) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecentSearch(query: string) {
+  if (typeof window === "undefined" || !query.trim()) return;
+  try {
+    const existing = getRecentSearches();
+    const trimmed = query.trim();
+    const updated = [trimmed, ...existing.filter((s) => s !== trimmed)].slice(0, MAX_RECENT);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+  } catch {
+    // ignore
+  }
+}
+
 /* ─── Main section ─── */
 
 export function HadithSection() {
   const { focusedVerseKey } = usePanels();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState<string | undefined>(undefined);
+  const [gradeFilter, setGradeFilter] = useState<GradeFilter>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [tabMode, setTabMode] = useState<TabMode>("search");
+  const [visibleCount, setVisibleCount] = useState(10);
 
+  // Search mode
   const searchTerm = query || focusedVerseKey || "";
   const params = new URLSearchParams();
   if (searchTerm) params.set("q", searchTerm);
   if (collection) params.set("collection", collection);
 
-  const url = searchTerm ? `/api/v1/hadith?${params}` : null;
-  const fetchKey = `${searchTerm}:${collection ?? "all"}`;
+  const url = tabMode === "search" && searchTerm ? `/api/v1/hadith?${params}` : null;
+  const fetchKey = `search:${searchTerm}:${collection ?? "all"}`;
   const { data: hadiths, error, isLoading } = useFetch<Hadith[]>(url, fetchKey);
 
-  const results = hadiths ?? [];
+  const allResults = hadiths ?? [];
 
-  if (!focusedVerseKey && !query) {
-    return (
-      <div className="flex items-center gap-2 px-4 py-4 text-muted-foreground/70">
-        <BookText className="h-4 w-4 shrink-0" />
-        <p className="text-xs">Select a verse or search for related hadith</p>
-      </div>
-    );
-  }
+  // Client-side grade filtering
+  const filteredResults = useMemo(() => {
+    if (gradeFilter === "all") return allResults;
+    return allResults.filter((h) => {
+      const parsed = parseGrade(h.grade);
+      if (!parsed) return false;
+      const cat = categorizeGrade(parsed.label);
+      return cat === gradeFilter;
+    });
+  }, [allResults, gradeFilter]);
+
+  // Client-side pagination
+  const visibleResults = useMemo(
+    () => filteredResults.slice(0, visibleCount),
+    [filteredResults, visibleCount],
+  );
+  const hasMore = filteredResults.length > visibleCount;
+
+  // Grade filter counts
+  const gradeCounts = useMemo(() => {
+    const counts: Record<GradeFilter, number> = { all: allResults.length, sahih: 0, hasan: 0, daif: 0 };
+    for (const h of allResults) {
+      const parsed = parseGrade(h.grade);
+      if (!parsed) continue;
+      const cat = categorizeGrade(parsed.label);
+      if (cat === "sahih") counts.sahih++;
+      else if (cat === "hasan") counts.hasan++;
+      else if (cat === "daif" || cat === "fabricated") counts.daif++;
+    }
+    return counts;
+  }, [allResults]);
+
+  // Reset pagination when search changes
+  const handleSearch = useCallback((newQuery: string) => {
+    setQuery(newQuery);
+    setVisibleCount(10);
+    setGradeFilter("all");
+  }, []);
+
+  const handleSubmitSearch = useCallback((term: string) => {
+    if (term.trim()) {
+      saveRecentSearch(term.trim());
+    }
+  }, []);
 
   return (
     <div className="flex flex-col gap-3 p-4">
+      {/* Tab toggle: Search | Browse */}
+      <div className="flex shrink-0 rounded-lg bg-muted/50 p-0.5">
+        <button
+          onClick={() => setTabMode("search")}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+            tabMode === "search"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <Search className="h-3 w-3" />
+          Search
+        </button>
+        <button
+          onClick={() => setTabMode("browse")}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+            tabMode === "browse"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <Library className="h-3 w-3" />
+          Browse
+        </button>
+      </div>
+
+      {tabMode === "search" ? (
+        <SearchMode
+          query={query}
+          setQuery={handleSearch}
+          onSubmit={handleSubmitSearch}
+          collection={collection}
+          setCollection={(c) => { setCollection(c); setVisibleCount(10); }}
+          gradeFilter={gradeFilter}
+          setGradeFilter={(g) => { setGradeFilter(g); setVisibleCount(10); }}
+          gradeCounts={gradeCounts}
+          results={visibleResults}
+          totalFiltered={filteredResults.length}
+          totalAll={allResults.length}
+          hasMore={hasMore}
+          onShowMore={() => setVisibleCount((c) => c + 10)}
+          isLoading={isLoading}
+          error={error}
+          expandedId={expandedId}
+          setExpandedId={setExpandedId}
+          focusedVerseKey={focusedVerseKey}
+          searchTerm={searchTerm}
+        />
+      ) : (
+        <BrowseMode
+          expandedId={expandedId}
+          setExpandedId={setExpandedId}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ─── Search Mode ─── */
+
+function SearchMode({
+  query,
+  setQuery,
+  onSubmit,
+  collection,
+  setCollection,
+  gradeFilter,
+  setGradeFilter,
+  gradeCounts,
+  results,
+  totalFiltered,
+  totalAll,
+  hasMore,
+  onShowMore,
+  isLoading,
+  error,
+  expandedId,
+  setExpandedId,
+  focusedVerseKey,
+  searchTerm,
+}: {
+  query: string;
+  setQuery: (q: string) => void;
+  onSubmit: (q: string) => void;
+  collection: string | undefined;
+  setCollection: (c: string | undefined) => void;
+  gradeFilter: GradeFilter;
+  setGradeFilter: (g: GradeFilter) => void;
+  gradeCounts: Record<GradeFilter, number>;
+  results: Hadith[];
+  totalFiltered: number;
+  totalAll: number;
+  hasMore: boolean;
+  onShowMore: () => void;
+  isLoading: boolean;
+  error: string | null;
+  expandedId: string | null;
+  setExpandedId: (id: string | null) => void;
+  focusedVerseKey: string | null;
+  searchTerm: string;
+}) {
+  const [recentSearches] = useState(getRecentSearches);
+  const showEmptyState = !focusedVerseKey && !query;
+
+  return (
+    <>
       {/* Search bar */}
       <div className="shrink-0 space-y-2">
         <div className="relative">
@@ -108,9 +310,20 @@ export function HadithSection() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onSubmit(query);
+            }}
             placeholder="Search hadith..."
-            className="w-full rounded-lg border border-border bg-surface py-1.5 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-surface py-1.5 pl-8 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
 
         {/* Collection filter chips */}
@@ -126,39 +339,138 @@ export function HadithSection() {
           >
             All
           </button>
-          {COLLECTIONS.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setCollection(c.id === collection ? undefined : c.id)}
-              className={cn(
-                "rounded-md px-2 py-1 text-[10px] font-medium transition-fast",
-                c.id === collection
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-surface-hover",
-              )}
-            >
-              {c.label}
-            </button>
-          ))}
+          {COLLECTIONS.map((c) => {
+            const meta = COLLECTION_META[c.id];
+            const isActive = c.id === collection;
+            return (
+              <button
+                key={c.id}
+                onClick={() => setCollection(c.id === collection ? undefined : c.id)}
+                className={cn(
+                  "rounded-md px-2 py-1 text-[10px] font-medium transition-fast",
+                  isActive
+                    ? meta?.badge ?? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-surface-hover",
+                )}
+                style={isActive && meta ? { borderLeft: `2px solid ${meta.accentColor}` } : undefined}
+              >
+                {c.label}
+              </button>
+            );
+          })}
         </div>
+
+        {/* Grade filter chips - only show when we have results */}
+        {totalAll > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {GRADE_FILTERS.map((g) => {
+              const count = gradeCounts[g.id];
+              const isActive = gradeFilter === g.id;
+              return (
+                <button
+                  key={g.id}
+                  onClick={() => setGradeFilter(g.id === gradeFilter ? "all" : g.id)}
+                  className={cn(
+                    "rounded-md px-2 py-1 text-[10px] font-medium transition-fast inline-flex items-center gap-1",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-surface-hover",
+                    isActive && g.id !== "all" && g.style,
+                  )}
+                >
+                  {g.label}
+                  {g.id !== "all" && count > 0 && (
+                    <span className={cn(
+                      "text-[9px] opacity-70",
+                      isActive ? "" : "text-muted-foreground/50",
+                    )}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {/* Results count */}
-      {focusedVerseKey && (
-        <p className="shrink-0 text-xs text-muted-foreground">
-          {query ? "Searching" : "Related to"}{" "}
-          <span className="font-mono text-foreground">{query || focusedVerseKey}</span>
-          {!isLoading && results.length > 0 && (
-            <span className="text-muted-foreground/70"> — {results.length} found</span>
+      {/* Empty state: no query, no focused verse */}
+      {showEmptyState && (
+        <div className="space-y-4 py-4">
+          <div className="flex items-center gap-2 text-muted-foreground/70">
+            <BookText className="h-4 w-4 shrink-0" />
+            <p className="text-xs">Select a verse or search for related hadith</p>
+          </div>
+
+          {/* Recent searches */}
+          {recentSearches.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">
+                Recent searches
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {recentSearches.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => { setQuery(s); onSubmit(s); }}
+                    className="rounded-md bg-muted/60 px-2.5 py-1 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
+
+          {/* Example searches */}
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">
+              Try searching for
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {EXAMPLE_SEARCHES.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setQuery(s); onSubmit(s); }}
+                  className="rounded-md border border-border/50 px-2.5 py-1 text-[11px] text-muted-foreground/70 hover:bg-surface-hover hover:text-foreground transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Results header */}
+      {!showEmptyState && searchTerm && (
+        <div className="shrink-0 flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            {query ? "Searching" : "Related to"}{" "}
+            <span className="font-mono text-foreground">{query || focusedVerseKey}</span>
+            {!isLoading && totalAll > 0 && (
+              <span className="text-muted-foreground/70">
+                {" "}&mdash;{" "}
+                {gradeFilter !== "all" ? `${totalFiltered} of ${totalAll}` : totalAll} found
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Contextual message for verse-related hadith */}
+      {!query && focusedVerseKey && !isLoading && results.length > 0 && (
+        <p className="text-[11px] text-muted-foreground/60 italic">
+          Showing hadiths related to verse {focusedVerseKey}
         </p>
       )}
 
       {/* Results */}
-      <div className="space-y-0.5">
+      <div className="space-y-1.5">
         {isLoading && (
-          <div className="flex items-center justify-center py-6">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+          <div className="flex items-center justify-center gap-2 py-6">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Searching...</span>
           </div>
         )}
 
@@ -168,28 +480,196 @@ export function HadithSection() {
           </div>
         )}
 
-        {!isLoading && !error && results.length === 0 && (
+        {!isLoading && !error && !showEmptyState && results.length === 0 && searchTerm && (
           <p className="text-xs text-muted-foreground/70 italic py-4 text-center">
             No hadiths found.
           </p>
         )}
 
-        {results.map((h) => (
-          <HadithCard
-            key={`${h.collection}-${h.hadithNumber}`}
-            hadith={h}
-            expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
-            onToggle={() =>
-              setExpandedId(
-                expandedId === `${h.collection}-${h.hadithNumber}`
-                  ? null
-                  : `${h.collection}-${h.hadithNumber}`,
-              )
-            }
-          />
+        {results.map((h, i) => (
+          <div key={`${h.collection}-${h.hadithNumber}`}>
+            {i > 0 && <div className="mx-3 border-t border-border/30" />}
+            <HadithCard
+              hadith={h}
+              expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
+              onToggle={() =>
+                setExpandedId(
+                  expandedId === `${h.collection}-${h.hadithNumber}`
+                    ? null
+                    : `${h.collection}-${h.hadithNumber}`,
+                )
+              }
+            />
+          </div>
         ))}
+
+        {/* Show more button */}
+        {hasMore && (
+          <button
+            onClick={onShowMore}
+            className="w-full rounded-lg border border-border/50 py-2 text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-colors"
+          >
+            Show more ({totalFiltered - results.length} remaining)
+          </button>
+        )}
       </div>
-    </div>
+    </>
+  );
+}
+
+/* ─── Browse Mode ─── */
+
+function BrowseMode({
+  expandedId,
+  setExpandedId,
+}: {
+  expandedId: string | null;
+  setExpandedId: (id: string | null) => void;
+}) {
+  const [browseCollection, setBrowseCollection] = useState("bukhari");
+  const [selectedBook, setSelectedBook] = useState<number | null>(null);
+
+  // Load books for selected collection
+  const booksUrl = `/api/v1/hadith/browse?collection=${browseCollection}`;
+  const booksKey = `browse:books:${browseCollection}`;
+  const { data: books, isLoading: booksLoading } = useFetch<HadithBook[]>(booksUrl, booksKey);
+
+  // Load hadiths for selected book
+  const hadithsUrl = selectedBook !== null
+    ? `/api/v1/hadith/browse?collection=${browseCollection}&book=${selectedBook}`
+    : null;
+  const hadithsKey = `browse:hadiths:${browseCollection}:${selectedBook ?? "none"}`;
+  const { data: bookHadiths, isLoading: hadithsLoading } = useFetch<Hadith[]>(hadithsUrl, hadithsKey);
+
+  const selectedBookData = useMemo(
+    () => books?.find((b) => b.bookNumber === selectedBook),
+    [books, selectedBook],
+  );
+
+  return (
+    <>
+      {/* Collection selector */}
+      <div className="shrink-0 space-y-2">
+        <div className="flex flex-wrap gap-1">
+          {COLLECTIONS.map((c) => {
+            const meta = COLLECTION_META[c.id];
+            const isActive = c.id === browseCollection;
+            return (
+              <button
+                key={c.id}
+                onClick={() => {
+                  setBrowseCollection(c.id);
+                  setSelectedBook(null);
+                }}
+                className={cn(
+                  "rounded-md px-2 py-1 text-[10px] font-medium transition-fast",
+                  isActive
+                    ? meta?.badge ?? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-surface-hover",
+                )}
+                style={isActive && meta ? { borderLeft: `2px solid ${meta.accentColor}` } : undefined}
+              >
+                {c.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Back button when viewing a book */}
+      {selectedBook !== null && (
+        <button
+          onClick={() => setSelectedBook(null)}
+          className="flex shrink-0 items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
+        >
+          <ArrowLeft className="h-3 w-3" />
+          Back to books
+        </button>
+      )}
+
+      {/* Book list or hadiths */}
+      {selectedBook === null ? (
+        <div className="space-y-0.5">
+          {booksLoading && (
+            <div className="flex items-center justify-center gap-2 py-6">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Loading books...</span>
+            </div>
+          )}
+
+          {!booksLoading && books && books.length === 0 && (
+            <p className="text-xs text-muted-foreground/70 italic py-4 text-center">
+              No books found.
+            </p>
+          )}
+
+          {books?.map((book) => (
+            <button
+              key={book.bookNumber}
+              onClick={() => setSelectedBook(book.bookNumber)}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-surface-hover group"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted/60 text-[11px] font-mono text-muted-foreground group-hover:bg-muted">
+                {book.bookNumber}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-foreground/90 leading-snug line-clamp-2">
+                  {book.bookName}
+                </p>
+                <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                  {book.hadithCount} hadith{book.hadithCount !== 1 ? "s" : ""}
+                </p>
+              </div>
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/30 group-hover:text-muted-foreground/60" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-1.5">
+          {/* Book header */}
+          {selectedBookData && (
+            <div className="rounded-lg bg-muted/30 px-3 py-2 mb-1">
+              <p className="text-[11px] font-medium text-foreground/80">
+                Book {selectedBookData.bookNumber}: {selectedBookData.bookName}
+              </p>
+              <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                {selectedBookData.hadithCount} hadith{selectedBookData.hadithCount !== 1 ? "s" : ""}
+              </p>
+            </div>
+          )}
+
+          {hadithsLoading && (
+            <div className="flex items-center justify-center gap-2 py-6">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Loading hadiths...</span>
+            </div>
+          )}
+
+          {!hadithsLoading && bookHadiths && bookHadiths.length === 0 && (
+            <p className="text-xs text-muted-foreground/70 italic py-4 text-center">
+              No hadiths found in this book.
+            </p>
+          )}
+
+          {bookHadiths?.map((h, i) => (
+            <div key={`${h.collection}-${h.hadithNumber}`}>
+              {i > 0 && <div className="mx-3 border-t border-border/30" />}
+              <HadithCard
+                hadith={h}
+                expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
+                onToggle={() =>
+                  setExpandedId(
+                    expandedId === `${h.collection}-${h.hadithNumber}`
+                      ? null
+                      : `${h.collection}-${h.hadithNumber}`,
+                  )
+                }
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -204,25 +684,64 @@ function HadithCard({
   expanded: boolean;
   onToggle: () => void;
 }) {
+  const { focusedVerseKey, openPanel } = usePanels();
+  const { addToast } = useToast();
+  const [saved, setSaved] = useState(false);
+
   const sanitizedHtml = useMemo(() => sanitize(hadith.text), [hadith.text]);
+  const plainText = useMemo(() => hadith.text.replace(/<[^>]+>/g, ""), [hadith.text]);
   const preview = useMemo(() => {
-    const plain = hadith.text.replace(/<[^>]+>/g, "");
-    return plain.length > 150 ? plain.slice(0, 150) + "..." : plain;
-  }, [hadith.text]);
+    return plainText.length > 150 ? plainText.slice(0, 150) + "..." : plainText;
+  }, [plainText]);
   const parsed = useMemo(() => parseGrade(hadith.grade), [hadith.grade]);
   const hasGrade = parsed !== null;
   const category = parsed ? categorizeGrade(parsed.label) : "unknown";
   const meta = COLLECTION_META[hadith.collection];
 
+  const collectionName = meta?.name?.split(" ").pop() ?? hadith.collection;
+
+  const handleSaveToNotes = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const title = `${collectionName} Hadith #${hadith.hadithNumber}`;
+    const linkedResource: LinkedResource = {
+      type: "hadith",
+      label: `${collectionName} #${hadith.hadithNumber}`,
+      preview: plainText.slice(0, 200),
+      sourceUrl: hadith.reference ?? undefined,
+      metadata: {
+        collection: hadith.collection,
+        hadithNumber: hadith.hadithNumber,
+        ...(hadith.grade ? { grade: hadith.grade } : {}),
+      },
+    };
+    const now = new Date();
+    await db.notes.put({
+      id: crypto.randomUUID(),
+      title,
+      verseKeys: focusedVerseKey ? [focusedVerseKey] : [],
+      surahIds: [],
+      content: plainText,
+      tags: [hadith.collection],
+      pinned: false,
+      linkedResources: [linkedResource],
+      createdAt: now,
+      updatedAt: now,
+    });
+    openPanel("notes");
+    setSaved(true);
+    addToast("Hadith saved to notes", "success");
+    setTimeout(() => setSaved(false), 2000);
+  }, [collectionName, hadith, plainText, focusedVerseKey, openPanel, addToast]);
+
   return (
     <div
       className={cn(
-        "group rounded-lg border-l-[3px] transition-all",
-        meta?.accent ?? "border-l-muted-foreground/30",
+        "group rounded-lg transition-all",
         expanded
           ? "bg-surface/80 ring-1 ring-border/40"
           : "hover:bg-surface/50",
       )}
+      style={{ borderLeft: `3px solid ${meta?.accentColor ?? "#666"}` }}
     >
       {/* Header — always visible */}
       <button
@@ -230,6 +749,13 @@ function HadithCard({
         className="flex w-full items-start gap-2.5 p-3 text-left"
       >
         <div className="flex-1 min-w-0">
+          {/* Book name */}
+          {hadith.bookName && (
+            <p className="text-[10px] text-muted-foreground/60 mb-1 leading-snug line-clamp-1">
+              {hadith.bookName}
+            </p>
+          )}
+
           {/* Top row: collection badge + number + grade */}
           <div className="flex items-center gap-2 mb-1">
             <span className={cn(
@@ -238,8 +764,8 @@ function HadithCard({
             )}>
               {meta?.name?.split(" ").pop() ?? hadith.collection}
             </span>
-            <span className="text-[10px] font-mono text-muted-foreground/50">
-              #{hadith.hadithNumber}
+            <span className="text-[10px] font-mono text-muted-foreground/70 font-medium">
+              Hadith #{hadith.hadithNumber}
             </span>
             {hasGrade && parsed ? (
               <GradePill label={parsed.label} category={category} />
@@ -318,7 +844,28 @@ function HadithCard({
                   sunnah.com
                 </a>
               )}
-              <CopyButton text={hadith.text.replace(/<[^>]+>/g, "")} />
+              <CopyButton text={plainText} />
+              <button
+                onClick={handleSaveToNotes}
+                className={cn(
+                  "inline-flex items-center gap-1 text-[10px] transition-colors",
+                  saved
+                    ? "text-emerald-500"
+                    : "text-muted-foreground/60 hover:text-muted-foreground",
+                )}
+              >
+                {saved ? (
+                  <>
+                    <Check className="h-3 w-3" />
+                    Saved
+                  </>
+                ) : (
+                  <>
+                    <StickyNote className="h-3 w-3" />
+                    Save to Notes
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>

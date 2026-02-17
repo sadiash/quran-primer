@@ -1,6 +1,7 @@
 export { AppDatabase, db } from "./schema";
 export type {
   BookmarkRecord,
+  LinkedResourceRecord,
   NoteRecord,
   ProgressRecord,
   PreferencesRecord,

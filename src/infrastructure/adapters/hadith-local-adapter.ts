@@ -5,7 +5,7 @@
  */
 
 import type { HadithPort } from "@/core/ports";
-import type { Hadith, HadithCollection } from "@/core/types";
+import type { Hadith, HadithBook, HadithCollection } from "@/core/types";
 import fs from "fs/promises";
 import path from "path";
 
@@ -124,6 +124,7 @@ export class HadithLocalAdapter implements HadithPort {
     if (terms.length === 0) return [];
 
     const results: Hadith[] = [];
+    const MAX_RESULTS = 50;
     const collectionsToSearch = collection
       ? index.filter((c) => c.id === collection)
       : index;
@@ -155,14 +156,15 @@ export class HadithLocalAdapter implements HadithPort {
               narratedBy: h.narratedBy,
               reference: h.reference ?? null,
               inBookReference: h.inBookReference ?? null,
+              bookName: chapter.bookName,
             });
           }
 
-          if (results.length >= 20) break;
+          if (results.length >= MAX_RESULTS) break;
         }
-        if (results.length >= 20) break;
+        if (results.length >= MAX_RESULTS) break;
       }
-      if (results.length >= 20) break;
+      if (results.length >= MAX_RESULTS) break;
     }
 
     // If local search found results, return them
@@ -174,5 +176,33 @@ export class HadithLocalAdapter implements HadithPort {
     }
 
     return [];
+  }
+
+  async browseBooks(collection: string): Promise<HadithBook[]> {
+    const chapters = await this.loadCollection(collection);
+    return chapters.map((ch) => ({
+      bookNumber: ch.book,
+      bookName: ch.bookName,
+      hadithCount: ch.hadiths.length,
+    }));
+  }
+
+  async browseHadiths(collection: string, bookNumber: number): Promise<Hadith[]> {
+    const chapters = await this.loadCollection(collection);
+    const chapter = chapters.find((ch) => ch.book === bookNumber);
+    if (!chapter) return [];
+
+    return chapter.hadiths.map((h) => ({
+      id: h.id,
+      collection: chapter.collection,
+      bookNumber: String(chapter.book),
+      hadithNumber: h.hadithNumber,
+      text: h.text,
+      grade: h.grade,
+      narratedBy: h.narratedBy,
+      reference: h.reference ?? null,
+      inBookReference: h.inBookReference ?? null,
+      bookName: chapter.bookName,
+    }));
   }
 }

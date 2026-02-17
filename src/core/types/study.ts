@@ -8,13 +8,24 @@ export interface Bookmark {
   createdAt: Date;
 }
 
+export interface LinkedResource {
+  type: "hadith" | "tafsir";
+  label: string;       // e.g., "Bukhari #1" or "Ibn Kathir on 2:255"
+  preview: string;     // first ~200 chars of text
+  sourceUrl?: string;  // sunnah.com link for hadith
+  metadata?: Record<string, string>; // collection, hadithNumber, tafsirId, etc.
+}
+
 export interface Note {
   id: string;
+  title?: string;         // Optional title, displayed as card heading
   verseKeys: string[];    // ["1:1", "2:255"] or [] for standalone
   surahIds: number[];     // [1] for whole-surah link, or []
   content: string;
   contentJson?: string;   // TipTap JSON for rich text, alongside plain text for backward compat
   tags: string[];
+  pinned?: boolean;       // Pinned notes appear at the top regardless of sort
+  linkedResources?: LinkedResource[]; // Saved hadith/tafsir references
   createdAt: Date;
   updatedAt: Date;
 }

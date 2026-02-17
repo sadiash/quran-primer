@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { X, Pencil, Trash2, BookOpen, Tag } from "lucide-react";
+import { X, Pencil, Trash2, BookOpen, BookText, Tag, Pin, PinOff, ExternalLink } from "lucide-react";
 import { NoteContentRenderer } from "./note-content-renderer";
 import { noteLocationLabel } from "@/core/types/study";
 import { getSurahName } from "@/lib/surah-names";
@@ -14,6 +14,7 @@ interface NoteDetailDrawerProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: (id: string) => void;
+  onTogglePin?: (id: string) => void;
 }
 
 export function NoteDetailDrawer({
@@ -22,6 +23,7 @@ export function NoteDetailDrawer({
   onClose,
   onEdit,
   onDelete,
+  onTogglePin,
 }: NoteDetailDrawerProps) {
   // Close on Escape
   const handleKeyDown = useCallback(
@@ -83,6 +85,26 @@ export function NoteDetailDrawer({
                 <X className="h-4 w-4" />
               </button>
               <div className="flex items-center gap-1">
+                {onTogglePin && (
+                  <button
+                    type="button"
+                    onClick={() => onTogglePin(note.id)}
+                    className={cn(
+                      "rounded-md p-1.5 transition-fast",
+                      note.pinned
+                        ? "text-primary hover:bg-primary/10"
+                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                    )}
+                    aria-label={note.pinned ? "Unpin note" : "Pin note"}
+                    title={note.pinned ? "Unpin note" : "Pin note"}
+                  >
+                    {note.pinned ? (
+                      <PinOff className="h-4 w-4" />
+                    ) : (
+                      <Pin className="h-4 w-4" />
+                    )}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={onEdit}
@@ -100,6 +122,21 @@ export function NoteDetailDrawer({
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
+            </div>
+
+            {/* Title */}
+            <div className="border-b border-border px-4 py-3">
+              <h2 className="text-base font-semibold text-foreground">
+                {note.title || "Untitled Note"}
+              </h2>
+              {note.pinned && (
+                <div className="mt-1 flex items-center gap-1">
+                  <Pin className="h-2.5 w-2.5 text-primary/60" />
+                  <span className="text-[9px] font-semibold uppercase tracking-wider text-primary/50">
+                    Pinned
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Reference badges */}
@@ -130,11 +167,56 @@ export function NoteDetailDrawer({
             )}
 
             {/* Body — full content, no line-clamp */}
-            <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
               <NoteContentRenderer
                 content={note.content}
                 contentJson={note.contentJson}
               />
+
+              {/* Linked Resources */}
+              {note.linkedResources && note.linkedResources.length > 0 && (
+                <div className="space-y-2 pt-2 border-t border-border/50">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+                    Linked Resources
+                  </p>
+                  {note.linkedResources.map((resource, idx) => (
+                    <div
+                      key={`${resource.type}-${resource.label}-${idx}`}
+                      className={cn(
+                        "rounded-lg border p-3 space-y-1.5",
+                        resource.type === "hadith"
+                          ? "border-emerald-500/20 bg-emerald-500/5"
+                          : "border-amber-500/20 bg-amber-500/5",
+                      )}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        {resource.type === "hadith" ? (
+                          <BookText className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                        ) : (
+                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                        )}
+                        <span className="text-sm font-medium text-foreground">
+                          {resource.label}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground/80 leading-relaxed line-clamp-3">
+                        {resource.preview}
+                      </p>
+                      {resource.sourceUrl && (
+                        <a
+                          href={resource.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          View on sunnah.com
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Footer — tags + date */}

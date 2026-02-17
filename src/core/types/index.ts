@@ -10,11 +10,13 @@ export type {
   AudioRecitation,
   Reciter,
   Hadith,
+  HadithBook,
   HadithCollection,
 } from "./quran";
 
 export type {
   Bookmark,
+  LinkedResource,
   Note,
   ReadingProgress,
   ThemeMode,
