@@ -1119,6 +1119,13 @@ body {
   max-width: 100%;
 }
 
+/* ─── Tafsir Prose Typography ─── */
+.tafsir-prose {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
 /* ─── Top Nav Auto-Hide ─── */
 .nav-hidden {
   max-height: 0 !important;

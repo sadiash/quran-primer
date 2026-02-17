@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import {
   StickyNote,
   Plus,
@@ -10,6 +10,9 @@ import {
   Tag,
   BookOpen,
   Link2,
+  MessageSquare,
+  HelpCircle,
+  Link,
 } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useNotes } from "@/presentation/hooks/use-notes";
@@ -25,9 +28,11 @@ export function NotesSection() {
 
   if (!focusedVerseKey) {
     return (
-      <div className="flex items-center gap-2 px-4 py-8 text-muted-foreground/70">
-        <StickyNote className="h-4 w-4 shrink-0" />
-        <p className="text-xs">Select a verse to view and add notes</p>
+      <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+        <StickyNote className="h-6 w-6 text-muted-foreground/20" />
+        <p className="text-xs text-muted-foreground/60">
+          Select a verse to view and add notes
+        </p>
       </div>
     );
   }
@@ -41,6 +46,12 @@ interface NotesContentProps {
   verseKey: string;
 }
 
+const QUICK_PROMPTS = [
+  { icon: MessageSquare, label: "Reflection", placeholder: "What stood out to me..." },
+  { icon: HelpCircle, label: "Question", placeholder: "I want to understand..." },
+  { icon: Link, label: "Connection", placeholder: "This connects to..." },
+];
+
 function NotesContent({ verseKey }: NotesContentProps) {
   const [, verseNum] = verseKey.split(":");
   const surahId = Number(verseKey.split(":")[0]);
@@ -51,6 +62,9 @@ function NotesContent({ verseKey }: NotesContentProps) {
   });
   const [mode, setMode] = useState<"list" | "editor">("list");
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [quickText, setQuickText] = useState("");
+  const [quickPlaceholder, setQuickPlaceholder] = useState("Add a quick note...");
+  const quickInputRef = useRef<HTMLTextAreaElement>(null);
 
   const editingNote = editingNoteId
     ? notes.find((n) => n.id === editingNoteId) ?? null
@@ -92,6 +106,21 @@ function NotesContent({ verseKey }: NotesContentProps) {
     },
     [saveNote, editingNoteId],
   );
+
+  /** Quick save: single text, auto-linked to verse */
+  const handleQuickSave = useCallback(async () => {
+    const text = quickText.trim();
+    if (!text) return;
+    await saveNote({
+      verseKeys: [verseKey],
+      surahIds: [],
+      content: text,
+      contentJson: "",
+      tags: [],
+    });
+    setQuickText("");
+    setQuickPlaceholder("Add a quick note...");
+  }, [quickText, verseKey, saveNote]);
 
   /** One-click toggle: link/unlink note to the whole surah */
   const handleToggleSurahLink = useCallback(
@@ -143,28 +172,80 @@ function NotesContent({ verseKey }: NotesContentProps) {
 
   // ─── List mode ───
   return (
-    <div className="flex flex-col gap-2 p-3">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">
-          {surahName} — Verse {verseNum}
-        </span>
+    <div className="flex flex-col gap-3 p-3">
+      {/* Header with accent */}
+      <div className="flex items-center justify-between rounded-lg bg-primary/5 px-3 py-2">
+        <div className="flex items-center gap-2">
+          <StickyNote className="h-4 w-4 text-primary/60" />
+          <span className="text-xs font-semibold text-foreground">
+            {surahName} — Verse {verseNum}
+          </span>
+        </div>
         <button
           type="button"
           onClick={handleNewNote}
-          className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-primary/10 transition-fast"
+          className="flex items-center gap-1 rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-fast"
         >
           <Plus className="h-3.5 w-3.5" />
-          New Note
+          New
         </button>
+      </div>
+
+      {/* Quick-add input — visually prominent */}
+      <div className="rounded-lg border-2 border-dashed border-border/60 bg-surface/30 transition-all focus-within:border-primary/40 focus-within:bg-surface/60">
+        <textarea
+          ref={quickInputRef}
+          value={quickText}
+          onChange={(e) => setQuickText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              handleQuickSave();
+            }
+          }}
+          placeholder={quickPlaceholder}
+          rows={2}
+          className="w-full resize-none bg-transparent px-3 pt-2.5 pb-1 text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
+        />
+        <div className="flex items-center justify-between px-2 pb-2">
+          {/* Quick prompt chips */}
+          <div className="flex gap-1">
+            {QUICK_PROMPTS.map((p) => (
+              <button
+                key={p.label}
+                type="button"
+                onClick={() => {
+                  setQuickPlaceholder(p.placeholder);
+                  quickInputRef.current?.focus();
+                }}
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium transition-fast",
+                  "bg-muted/50 text-muted-foreground/70 hover:bg-muted hover:text-foreground",
+                )}
+              >
+                <p.icon className="h-3 w-3" />
+                {p.label}
+              </button>
+            ))}
+          </div>
+          {quickText.trim() && (
+            <button
+              type="button"
+              onClick={handleQuickSave}
+              className="rounded-md px-3 py-1 text-[11px] font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-fast"
+            >
+              Save
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Notes list */}
       {notes.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 py-8 text-center">
-          <StickyNote className="h-8 w-8 text-muted-foreground/30" />
-          <p className="text-xs text-muted-foreground">
-            No notes for this verse yet.
+        <div className="flex flex-col items-center gap-2 py-6 text-center">
+          <StickyNote className="h-5 w-5 text-muted-foreground/20" />
+          <p className="text-[11px] text-muted-foreground/50">
+            No notes yet — type above or use the full editor
           </p>
         </div>
       ) : (
