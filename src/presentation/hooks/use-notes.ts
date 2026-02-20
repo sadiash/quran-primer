@@ -157,6 +157,22 @@ export function useNotes(opts?: UseNotesOptions) {
     });
   }
 
+  /** Add a linked resource (hadith/tafsir) to an existing note */
+  async function addResourceToNote(
+    noteId: string,
+    resource: LinkedResource,
+  ): Promise<void> {
+    const note = await db.notes.get(noteId);
+    if (!note) return;
+    const existing = note.linkedResources ?? [];
+    // Deduplicate by type + label
+    if (existing.some((r) => r.type === resource.type && r.label === resource.label)) return;
+    await db.notes.update(noteId, {
+      linkedResources: [...existing, resource],
+      updatedAt: new Date(),
+    });
+  }
+
   /** Get all notes (for export) */
   async function getAllNotes(): Promise<Note[]> {
     return db.notes.orderBy("updatedAt").reverse().toArray();
@@ -208,6 +224,7 @@ export function useNotes(opts?: UseNotesOptions) {
     togglePin,
     restoreNote,
     addVerseToNote,
+    addResourceToNote,
     getAllNotes,
     importNotes,
     sortNotes,

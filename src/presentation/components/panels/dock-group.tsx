@@ -32,10 +32,10 @@ interface DockGroupProps {
 }
 
 export function DockGroup({ dock }: DockGroupProps) {
-  const { openPanels } = usePanels();
+  const { openPanels, focusedVerseKey } = usePanels();
 
   const visiblePanels = PANEL_REGISTRY.filter(
-    (p) => p.dock === dock && openPanels.has(p.id),
+    (p) => p.dock === dock && openPanels.has(p.id) && (!p.requiresVerse || focusedVerseKey !== null),
   );
 
   if (visiblePanels.length === 0) return null;
