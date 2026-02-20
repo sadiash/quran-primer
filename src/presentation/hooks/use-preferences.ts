@@ -28,6 +28,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   conceptColorSlot: 0,
   zenMode: false,
   readingDensity: "compact",
+  readingFlow: "blocks",
   onboardingComplete: false,
   updatedAt: new Date(0),
 };

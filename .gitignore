@@ -51,5 +51,12 @@ references/
 data/ontology/semantic-hadith/SemanticHadithKGV2.ttl
 data/ontology/semantic-hadith/SemanticHadith2.0.owl
 
+# PWA generated files
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/swe-worker-*.js
+
 #Ignore cursor AI rules
 .cursor/rules/codacy.mdc

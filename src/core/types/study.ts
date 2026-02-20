@@ -53,6 +53,7 @@ export interface TranslationConfig {
 }
 export type TranslationLayout = "stacked" | "columnar";
 export type ReadingDensity = "comfortable" | "compact" | "dense";
+export type ReadingFlow = "prose" | "blocks";
 
 export type ThemeName =
   | "library"
@@ -88,6 +89,7 @@ export interface UserPreferences {
   conceptColorSlot: number;     // 0 = muted/default, 1-6 = translation color slots
   zenMode: boolean;
   readingDensity: ReadingDensity;
+  readingFlow: ReadingFlow;
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -117,6 +119,7 @@ export function toUserPreferences(raw: {
   conceptColorSlot?: number | null;
   zenMode?: boolean | null;
   readingDensity?: string | null;
+  readingFlow?: string | null;
   onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
@@ -149,6 +152,7 @@ export function toUserPreferences(raw: {
     conceptColorSlot: raw.conceptColorSlot ?? 0,
     zenMode: raw.zenMode ?? false,
     readingDensity: (raw.readingDensity as ReadingDensity) ?? "compact",
+    readingFlow: (raw.readingFlow as ReadingFlow) ?? "blocks",
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };

@@ -28,6 +28,7 @@ import { getSurahName } from "@/lib/surah-names";
 import { noteLocationLabel } from "@/core/types/study";
 import { cn } from "@/lib/utils";
 import type { Note, LinkedResource } from "@/core/types";
+import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
 
 const SORT_STORAGE_KEY = "notes:sort";
 
@@ -263,8 +264,15 @@ function NotesContent({ verseKey }: NotesContentProps) {
 
   // ─── Editor mode ───
   if (mode === "editor") {
+    const editorTitle = editingNote
+      ? (editingNote.title || "Untitled")
+      : "New Note";
     return (
       <div className="flex flex-col gap-2 p-3">
+        <PanelBreadcrumb items={[
+          { label: "Notes", onClick: handleCancel },
+          { label: editorTitle },
+        ]} />
         <div className="flex items-center gap-2">
           <button
             type="button"

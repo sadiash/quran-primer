@@ -220,11 +220,15 @@ export function ReadingSurface({
   }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
 
   const density = preferences.readingDensity;
-  const dividerClass = density === "dense"
+  const readingFlow = preferences.readingFlow ?? "blocks";
+  const isProse = readingFlow === "prose";
+  const dividerClass = isProse
     ? ""
-    : density === "compact"
-      ? "divide-y divide-border/10"
-      : "divide-y divide-border/20";
+    : density === "dense"
+      ? ""
+      : density === "compact"
+        ? "divide-y divide-border/10"
+        : "divide-y divide-border/20";
 
   return (
     <div className="relative h-full">
@@ -245,7 +249,11 @@ export function ReadingSurface({
             />
           )}
 
-          <div className={`mt-4 space-y-0 ${dividerClass}`}>
+          <div className={cn(
+            "mt-4 space-y-0",
+            dividerClass,
+            isProse && (preferences.showArabic ? "prose-container" : "prose-container-ltr"),
+          )}>
             {verses.map((verse) => (
               <VerseBlock
                 key={verse.verseKey}
@@ -258,6 +266,7 @@ export function ReadingSurface({
                 translationConfigs={resolvedConfigs}
                 translationLayout={preferences.translationLayout}
                 density={density}
+                readingFlow={readingFlow}
                 isFocused={focusedVerseKey === verse.verseKey}
                 isBookmarked={isBookmarked(verse.verseKey)}
                 isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}

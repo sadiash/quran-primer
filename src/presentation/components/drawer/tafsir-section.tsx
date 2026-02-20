@@ -10,6 +10,7 @@ import { db } from "@/infrastructure/db/client";
 import type { Tafsir } from "@/core/types";
 import type { LinkedResource } from "@/core/types/study";
 import { cn } from "@/lib/utils";
+import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
 
 const TAFSIR_RESOURCES = [
   { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", accent: "border-l-emerald-400", bg: "bg-emerald-500/5", chip: "bg-emerald-500/15 text-emerald-400 ring-emerald-500/20" },
@@ -82,15 +83,21 @@ export function TafsirSection() {
     );
   };
 
+  const activeNames = activeTafsirIds
+    .map((id) => TAFSIR_RESOURCES.find((r) => r.id === id)?.name)
+    .filter(Boolean)
+    .join(" + ");
+
   return (
     <div className="flex flex-col gap-3 p-4">
+      {/* Breadcrumb */}
+      <PanelBreadcrumb items={[
+        { label: focusedVerseKey },
+        { label: activeNames || "Tafsir" },
+      ]} />
+
       {/* Scholar selector */}
       <div className="shrink-0 space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">
-            Verse <span className="font-mono text-foreground">{focusedVerseKey}</span>
-          </p>
-        </div>
         <div className="flex flex-wrap gap-1.5">
           {TAFSIR_RESOURCES.map((r) => (
             <button

@@ -25,10 +25,22 @@ const scheherazadeNew = Scheherazade_New({
   weight: ["400", "700"],
 });
 
+import type { Viewport } from "next";
+
 export const metadata: Metadata = {
   title: "The Primer",
   description:
     "VS Code for the Quran — a personal knowledge system disguised as a reading app.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "The Primer",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#C9A227",
 };
 
 export default function RootLayout({

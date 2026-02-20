@@ -5,6 +5,7 @@ import { TopNav } from "./top-nav";
 import { MobileNav } from "./mobile-nav";
 import { PanelLayout } from "@/presentation/components/panels/panel-layout";
 import { MobileStudySheet } from "@/presentation/components/drawer/mobile-study-sheet";
+import { AudioDock } from "@/presentation/components/layout/audio-dock";
 import { useAutoHideNav } from "@/presentation/hooks/use-auto-hide-nav";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 
@@ -23,6 +24,7 @@ export function AppShell({ children }: AppShellProps) {
         <main id="main-content" className="h-full flex-1 overflow-y-auto">
           {children}
         </main>
+        <AudioDock />
       </div>
     );
   }
@@ -39,6 +41,9 @@ export function AppShell({ children }: AppShellProps) {
           </main>
         </PanelLayout>
       </div>
+
+      {/* Audio playback dock */}
+      <AudioDock />
 
       {/* Mobile bottom sheet for study tools */}
       <MobileStudySheet />

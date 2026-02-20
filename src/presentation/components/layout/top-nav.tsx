@@ -13,10 +13,12 @@ import {
   BookText,
   Bot,
   ExternalLink,
-  Network,
+  PlayCircle,
 } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
+import { useProgress } from "@/presentation/hooks/use-progress";
+import { getSurahName } from "@/lib/surah-names";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +30,8 @@ export function TopNav({ hidden = false }: TopNavProps) {
   const pathname = usePathname();
   const { openPanels, togglePanel } = usePanels();
   const { toggle: togglePalette } = useCommandPalette();
+  const { getLatestProgress } = useProgress();
+  const latest = getLatestProgress();
 
   return (
     <header className={cn(
@@ -47,8 +51,21 @@ export function TopNav({ hidden = false }: TopNavProps) {
         <NavLink href="/browse" icon={Library} label="Browse" pathname={pathname} />
         <NavLink href="/bookmarks" icon={Bookmark} label="Bookmarks" pathname={pathname} />
         <NavLink href="/notes" icon={StickyNote} label="Notes" pathname={pathname} />
-        <NavLink href="/knowledge/mind-map" icon={Network} label="Mind Map" pathname={pathname} />
       </nav>
+
+      {/* Continue Reading */}
+      {latest && (
+        <Link
+          href={`/surah/${latest.surahId}`}
+          className="hidden md:flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 transition-fast"
+          title={`Continue: ${getSurahName(latest.surahId)} ${latest.lastVerseKey}`}
+        >
+          <PlayCircle className="h-3.5 w-3.5" />
+          <span className="max-w-[120px] truncate">
+            {getSurahName(latest.surahId)} {latest.lastVerseKey.split(":")[1]}
+          </span>
+        </Link>
+      )}
 
       {/* Spacer */}
       <div className="flex-1" />

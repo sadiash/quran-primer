@@ -1,8 +1,8 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useRef, useEffect } from "react";
 import DOMPurify from "dompurify";
-import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize, ReadingDensity } from "@/core/types";
+import type { Verse, Translation, TranslationLayout, TranslationConfig, TranslationFontSize, ReadingDensity, ReadingFlow } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { cn } from "@/lib/utils";
 import { useGestures } from "@/presentation/hooks/use-gestures";
@@ -56,6 +56,7 @@ interface VerseBlockProps {
   isPlaying: boolean;
   hasNotes: boolean;
   density: ReadingDensity;
+  readingFlow?: ReadingFlow;
   onToggleBookmark: () => void;
   onTogglePlay: () => void;
   onFocus: () => void;
@@ -82,6 +83,7 @@ function VerseBlockInner({
   isPlaying,
   hasNotes,
   density,
+  readingFlow = "blocks",
   onToggleBookmark,
   onTogglePlay,
   onFocus,
@@ -102,42 +104,61 @@ function VerseBlockInner({
     navigator.clipboard.writeText(text).catch(() => {});
   };
 
+  const isProse = readingFlow === "prose";
+
   return (
     <div
       data-verse-key={verse.verseKey}
       className={cn(
-        "group relative -mx-2 rounded-lg transition-all",
-        DENSITY_PADDING[density],
-        isFocused && "bg-primary/5 verse-focused-indicator",
-        isPlaying && "bg-primary/[0.03]",
-        isBookmarked && "verse-bookmarked",
-        hasNotes && "verse-has-notes",
+        "group relative transition-all",
+        isProse
+          ? "verse-prose py-0 px-0"
+          : cn("-mx-2 rounded-lg", DENSITY_PADDING[density]),
+        isFocused && (isProse ? "verse-focused-prose" : "bg-primary/5 verse-focused-indicator"),
+        isPlaying && !isProse && "bg-primary/[0.03]",
+        isBookmarked && !isProse && "verse-bookmarked",
+        hasNotes && !isProse && "verse-has-notes",
       )}
       onClick={onFocus}
       {...gestureHandlers}
     >
-      {/* Floating action bar — visible on hover or focus */}
-      <VerseActionBar
-        isBookmarked={isBookmarked}
-        hasNotes={hasNotes}
-        isPlaying={isPlaying}
-        isFocused={isFocused}
-        onToggleBookmark={onToggleBookmark}
-        onOpenNotes={onOpenNotes}
-        onTogglePlay={onTogglePlay}
-        onCopy={copyText}
-        onStudy={onOpenStudy}
-      />
+      {/* Action bar: full bar in blocks mode, compact popover in prose mode */}
+      {isProse ? (
+        <ProseActionTrigger
+          isFocused={isFocused}
+          isBookmarked={isBookmarked}
+          hasNotes={hasNotes}
+          isPlaying={isPlaying}
+          onToggleBookmark={onToggleBookmark}
+          onOpenNotes={onOpenNotes}
+          onTogglePlay={onTogglePlay}
+          onCopy={copyText}
+          onStudy={onOpenStudy}
+        />
+      ) : (
+        <VerseActionBar
+          isBookmarked={isBookmarked}
+          hasNotes={hasNotes}
+          isPlaying={isPlaying}
+          isFocused={isFocused}
+          onToggleBookmark={onToggleBookmark}
+          onOpenNotes={onOpenNotes}
+          onTogglePlay={onTogglePlay}
+          onCopy={copyText}
+          onStudy={onOpenStudy}
+        />
+      )}
 
       {/* Arabic text with inline verse number */}
       {showArabic && (
-        <p
+        <span
           lang="ar"
           dir="rtl"
           className={cn(
             "arabic-reading text-foreground",
             arabicSizeClass,
             DENSITY_ARABIC_LINE_HEIGHT[density],
+            isProse ? "inline" : "block",
           )}
         >
           {verse.textUthmani}
@@ -146,18 +167,29 @@ function VerseBlockInner({
               {toArabicNumerals(verse.verseNumber)}
             </span>
           )}
-        </p>
+        </span>
       )}
 
-      {/* Verse number for translation-only mode */}
-      {!showArabic && showVerseNumbers && showTranslation && (
+      {/* Verse number for translation-only mode (blocks only — prose handles it inline) */}
+      {!showArabic && showVerseNumbers && showTranslation && !isProse && (
         <span className="text-[10px] text-muted-foreground/40 font-mono select-none">
           {verse.verseNumber}
         </span>
       )}
 
-      {/* Translations */}
-      {showTranslation && translations.length > 0 && (
+      {/* Translations — inline in prose mode */}
+      {showTranslation && translations.length > 0 && isProse && (
+        <ProseTranslations
+          translations={translations}
+          showArabic={showArabic}
+          verseNumber={verse.verseNumber}
+          showVerseNumbers={showVerseNumbers ?? true}
+          globalFontSize={translationConfigs[0]?.fontSize ?? "md"}
+        />
+      )}
+
+      {/* Translations — block layout in blocks mode */}
+      {showTranslation && translations.length > 0 && !isProse && (
         <TranslationGroup
           translations={translations}
           layout={translationLayout}
@@ -188,6 +220,7 @@ export const VerseBlock = memo(VerseBlockInner, (prev, next) => {
     prev.arabicSizeClass === next.arabicSizeClass &&
     prev.translationLayout === next.translationLayout &&
     prev.density === next.density &&
+    prev.readingFlow === next.readingFlow &&
     prev.translations === next.translations &&
     prev.translationConfigs === next.translationConfigs &&
     prev.concepts === next.concepts &&
@@ -304,6 +337,201 @@ function TranslationText({
         </p>
       )}
     </div>
+  );
+}
+
+/* ─── Prose-mode compact action trigger ─── */
+
+function ProseActionTrigger({
+  isFocused,
+  isBookmarked,
+  hasNotes,
+  isPlaying,
+  onToggleBookmark,
+  onOpenNotes,
+  onTogglePlay,
+  onCopy,
+  onStudy,
+}: {
+  isFocused: boolean;
+  isBookmarked: boolean;
+  hasNotes: boolean;
+  isPlaying: boolean;
+  onToggleBookmark: () => void;
+  onOpenNotes: () => void;
+  onTogglePlay: () => void;
+  onCopy: () => void;
+  onStudy: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  // Only show trigger when this verse is focused
+  if (!isFocused) return null;
+
+  return (
+    <span className="relative inline-block align-middle" ref={popoverRef}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className="inline-flex items-center justify-center rounded-full w-5 h-5 text-primary/60 hover:text-primary hover:bg-primary/10 transition-fast mx-0.5"
+        aria-label="Verse actions"
+      >
+        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="5" r="2.5" />
+          <circle cx="12" cy="12" r="2.5" />
+          <circle cx="12" cy="19" r="2.5" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-20 flex items-center gap-0.5 rounded-lg px-1.5 py-1 bg-card border border-border shadow-soft-lg animate-scale-in">
+          <ProseAction
+            onClick={(e) => { e.stopPropagation(); onToggleBookmark(); setOpen(false); }}
+            active={isBookmarked}
+            label={isBookmarked ? "Remove bookmark" : "Bookmark"}
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={isBookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+          </ProseAction>
+          <ProseAction
+            onClick={(e) => { e.stopPropagation(); onOpenNotes(); setOpen(false); }}
+            active={hasNotes}
+            activeClass="text-amber-500/80"
+            label="Notes"
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={hasNotes ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" />
+              <path d="M15 3v4a2 2 0 0 0 2 2h4" />
+            </svg>
+          </ProseAction>
+          <ProseAction
+            onClick={(e) => { e.stopPropagation(); onStudy(); setOpen(false); }}
+            label="Tafsir"
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+          </ProseAction>
+          <ProseAction
+            onClick={(e) => { e.stopPropagation(); onCopy(); setOpen(false); }}
+            label="Copy"
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </ProseAction>
+          <ProseAction
+            onClick={(e) => { e.stopPropagation(); onTogglePlay(); setOpen(false); }}
+            active={isPlaying}
+            label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2}>
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="6 3 20 12 6 21 6 3" />
+              </svg>
+            )}
+          </ProseAction>
+        </div>
+      )}
+    </span>
+  );
+}
+
+function ProseAction({
+  children,
+  onClick,
+  active = false,
+  activeClass = "text-primary",
+  label,
+}: {
+  children: React.ReactNode;
+  onClick: (e: React.MouseEvent) => void;
+  active?: boolean;
+  activeClass?: string;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "rounded-md p-1 transition-fast",
+        active
+          ? activeClass
+          : "text-muted-foreground/60 hover:text-foreground",
+      )}
+      aria-label={label}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ─── Prose-mode inline translations ─── */
+
+function ProseTranslations({
+  translations,
+  showArabic,
+  verseNumber,
+  showVerseNumbers,
+  globalFontSize,
+}: {
+  translations: Translation[];
+  showArabic: boolean;
+  verseNumber: number;
+  showVerseNumbers: boolean;
+  globalFontSize: TranslationFontSize;
+}) {
+  // In prose mode: uniform muted color, respect font size setting
+  const sizeClass = TRANSLATION_SIZE_CLASS[globalFontSize];
+
+  return (
+    <span className={showArabic ? "block mt-0.5" : "inline"}>
+      {translations.map((t, i) => {
+        const plainText = t.text.replace(/<[^>]+>/g, "");
+
+        return (
+          <span key={`${t.resourceId}-${t.verseKey}`}>
+            {i > 0 && <span className="text-muted-foreground/20"> / </span>}
+            <span
+              className={cn(
+                "leading-relaxed text-muted-foreground",
+                sizeClass,
+              )}
+              dir="ltr"
+              lang="en"
+            >
+              {plainText}
+            </span>
+          </span>
+        );
+      })}
+      {!showArabic && showVerseNumbers && (
+        <span className="text-[0.6em] align-super text-muted-foreground/40 font-mono select-none mx-0.5">
+          {verseNumber}
+        </span>
+      )}
+      {" "}
+    </span>
   );
 }
 
