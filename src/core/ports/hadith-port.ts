@@ -8,4 +8,6 @@ export interface HadithPort {
   browseBooks(collection: string): Promise<HadithBook[]>;
   /** Get all hadiths in a specific book of a collection */
   browseHadiths(collection: string, bookNumber: number): Promise<Hadith[]>;
+  /** Resolve ontology IDs (e.g. "SB-HD0003") to full Hadith objects */
+  getHadithsByOntologyIds(ids: string[]): Promise<Hadith[]>;
 }

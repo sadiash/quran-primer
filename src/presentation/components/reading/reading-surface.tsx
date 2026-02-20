@@ -37,12 +37,10 @@ export function ReadingSurface({
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // After a manual focus (click, keyboard, menu), suppress scroll-based
-  // polling for 5 seconds so the user's selection stays put.
-  const manualFocusUntil = useRef(0);
+  // Manual focus — used for clicks, keyboard nav, and verse action menus.
+  // The scroll-based poll only saves progress and never overrides this.
   const focusVerseManually = useCallback(
     (key: string) => {
-      manualFocusUntil.current = Date.now() + 5000;
       focusVerse(key);
     },
     [focusVerse],
@@ -102,11 +100,10 @@ export function ReadingSurface({
     return byVerse;
   }, [activeTranslations, resolvedConfigs]);
 
-  // Track reading progress
+  // Track reading progress (scroll-based — does NOT override manual verse focus)
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const handleVerseVisible = useCallback(
+  const saveProgress = useCallback(
     (verseKey: string, verseNumber: number) => {
-      focusVerse(verseKey);
       clearTimeout(saveProgressTimer.current);
       saveProgressTimer.current = setTimeout(() => {
         updateProgress({
@@ -119,7 +116,7 @@ export function ReadingSurface({
         });
       }, 2000);
     },
-    [focusVerse, updateProgress, surah.id, surah.versesCount],
+    [updateProgress, surah.id, surah.versesCount],
   );
 
   // Register verse elements with IntersectionObserver
@@ -136,18 +133,17 @@ export function ReadingSurface({
     };
   }, [observerRef, verses]);
 
-  // Poll observer for current visible verse — skip during manual focus cooldown
+  // Poll observer for current visible verse — only updates reading progress, never steals focus
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Date.now() < manualFocusUntil.current) return;
       const key = getCurrentVerseKey();
       if (key) {
         const [, num] = key.split(":");
-        handleVerseVisible(key, Number(num));
+        saveProgress(key, Number(num));
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [getCurrentVerseKey, handleVerseVisible]);
+  }, [getCurrentVerseKey, saveProgress]);
 
   const arabicSizeClass = {
     sm: "text-xl",

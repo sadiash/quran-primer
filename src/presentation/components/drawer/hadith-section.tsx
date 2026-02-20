@@ -136,28 +136,43 @@ export function HadithSection() {
   const [tabMode, setTabMode] = useState<TabMode>("search");
   const [visibleCount, setVisibleCount] = useState(10);
 
-  // Search mode
-  const searchTerm = query || focusedVerseKey || "";
-  const params = new URLSearchParams();
-  if (searchTerm) params.set("q", searchTerm);
-  if (collection) params.set("collection", collection);
+  // Text search (only when user types a query)
+  const searchParams = new URLSearchParams();
+  if (query) searchParams.set("q", query);
+  if (collection) searchParams.set("collection", collection);
 
-  const url = tabMode === "search" && searchTerm ? `/api/v1/hadith?${params}` : null;
-  const fetchKey = `search:${searchTerm}:${collection ?? "all"}`;
-  const { data: hadiths, error, isLoading } = useFetch<Hadith[]>(url, fetchKey);
+  const searchUrl = tabMode === "search" && query ? `/api/v1/hadith?${searchParams}` : null;
+  const searchKey = `search:${query}:${collection ?? "all"}`;
+  const { data: searchHadiths, error: searchError, isLoading: searchLoading } = useFetch<Hadith[]>(searchUrl, searchKey);
 
-  const allResults = hadiths ?? [];
+  // Related hadiths via ontology (when verse is focused and no query)
+  const relatedUrl = tabMode === "search" && !query && focusedVerseKey
+    ? `/api/v1/hadith/related?verse=${focusedVerseKey}`
+    : null;
+  const relatedKey = `related:${focusedVerseKey ?? "none"}`;
+  const { data: relatedHadiths, error: relatedError, isLoading: relatedLoading } = useFetch<Hadith[]>(relatedUrl, relatedKey);
 
-  // Client-side grade filtering
+  const isRelatedMode = !query && !!focusedVerseKey;
+  const allResults = (isRelatedMode ? relatedHadiths : searchHadiths) ?? [];
+  const error = isRelatedMode ? relatedError : searchError;
+  const isLoading = isRelatedMode ? relatedLoading : searchLoading;
+
+  // Client-side collection + grade filtering
   const filteredResults = useMemo(() => {
-    if (gradeFilter === "all") return allResults;
-    return allResults.filter((h) => {
-      const parsed = parseGrade(h.grade);
-      if (!parsed) return false;
-      const cat = categorizeGrade(parsed.label);
-      return cat === gradeFilter;
-    });
-  }, [allResults, gradeFilter]);
+    let results = allResults;
+    if (collection) {
+      results = results.filter((h) => h.collection === collection);
+    }
+    if (gradeFilter !== "all") {
+      results = results.filter((h) => {
+        const parsed = parseGrade(h.grade);
+        if (!parsed) return false;
+        const cat = categorizeGrade(parsed.label);
+        return cat === gradeFilter;
+      });
+    }
+    return results;
+  }, [allResults, collection, gradeFilter]);
 
   // Client-side pagination
   const visibleResults = useMemo(
@@ -166,10 +181,14 @@ export function HadithSection() {
   );
   const hasMore = filteredResults.length > visibleCount;
 
-  // Grade filter counts
+  // Grade filter counts (respect active collection filter)
+  const collectionFiltered = useMemo(
+    () => collection ? allResults.filter((h) => h.collection === collection) : allResults,
+    [allResults, collection],
+  );
   const gradeCounts = useMemo(() => {
-    const counts: Record<GradeFilter, number> = { all: allResults.length, sahih: 0, hasan: 0, daif: 0 };
-    for (const h of allResults) {
+    const counts: Record<GradeFilter, number> = { all: collectionFiltered.length, sahih: 0, hasan: 0, daif: 0 };
+    for (const h of collectionFiltered) {
       const parsed = parseGrade(h.grade);
       if (!parsed) continue;
       const cat = categorizeGrade(parsed.label);
@@ -178,7 +197,7 @@ export function HadithSection() {
       else if (cat === "daif" || cat === "fabricated") counts.daif++;
     }
     return counts;
-  }, [allResults]);
+  }, [collectionFiltered]);
 
   // Reset pagination when search changes
   const handleSearch = useCallback((newQuery: string) => {
@@ -235,7 +254,7 @@ export function HadithSection() {
           gradeCounts={gradeCounts}
           results={visibleResults}
           totalFiltered={filteredResults.length}
-          totalAll={allResults.length}
+          totalAll={collectionFiltered.length}
           hasMore={hasMore}
           onShowMore={() => setVisibleCount((c) => c + 10)}
           isLoading={isLoading}
@@ -243,7 +262,7 @@ export function HadithSection() {
           expandedId={expandedId}
           setExpandedId={setExpandedId}
           focusedVerseKey={focusedVerseKey}
-          searchTerm={searchTerm}
+          isRelatedMode={isRelatedMode}
         />
       ) : (
         <BrowseMode
@@ -276,7 +295,7 @@ function SearchMode({
   expandedId,
   setExpandedId,
   focusedVerseKey,
-  searchTerm,
+  isRelatedMode,
 }: {
   query: string;
   setQuery: (q: string) => void;
@@ -296,7 +315,7 @@ function SearchMode({
   expandedId: string | null;
   setExpandedId: (id: string | null) => void;
   focusedVerseKey: string | null;
-  searchTerm: string;
+  isRelatedMode: boolean;
 }) {
   const [recentSearches] = useState(getRecentSearches);
   const showEmptyState = !focusedVerseKey && !query;
@@ -444,11 +463,11 @@ function SearchMode({
       )}
 
       {/* Results header */}
-      {!showEmptyState && searchTerm && (
+      {!showEmptyState && (query || isRelatedMode) && (
         <div className="shrink-0 flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {query ? "Searching" : "Related to"}{" "}
-            <span className="font-mono text-foreground">{query || focusedVerseKey}</span>
+            {isRelatedMode ? "Linked to verse" : "Searching"}{" "}
+            <span className="font-mono text-foreground">{isRelatedMode ? focusedVerseKey : query}</span>
             {!isLoading && totalAll > 0 && (
               <span className="text-muted-foreground/70">
                 {" "}&mdash;{" "}
@@ -457,13 +476,6 @@ function SearchMode({
             )}
           </p>
         </div>
-      )}
-
-      {/* Contextual message for verse-related hadith */}
-      {!query && focusedVerseKey && !isLoading && results.length > 0 && (
-        <p className="text-[11px] text-muted-foreground/60 italic">
-          Showing hadiths related to verse {focusedVerseKey}
-        </p>
       )}
 
       {/* Results */}
@@ -481,10 +493,19 @@ function SearchMode({
           </div>
         )}
 
-        {!isLoading && !error && !showEmptyState && results.length === 0 && searchTerm && (
-          <p className="text-xs text-muted-foreground/70 italic py-4 text-center">
-            No hadiths found.
-          </p>
+        {!isLoading && !error && !showEmptyState && results.length === 0 && (query || isRelatedMode) && (
+          <div className="py-4 text-center space-y-2">
+            <p className="text-xs text-muted-foreground/70 italic">
+              {isRelatedMode
+                ? `No linked hadiths for verse ${focusedVerseKey}`
+                : "No hadiths found."}
+            </p>
+            {isRelatedMode && (
+              <p className="text-[11px] text-muted-foreground/50">
+                Try searching by keyword instead
+              </p>
+            )}
+          </div>
         )}
 
         {results.map((h, i) => (

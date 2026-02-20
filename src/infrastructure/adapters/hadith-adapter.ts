@@ -95,4 +95,9 @@ export class HadithAdapter implements HadithPort {
     // Browse is only supported via local data
     return [];
   }
+
+  async getHadithsByOntologyIds(_ids: string[]): Promise<Hadith[]> {
+    // Ontology resolution is only supported via local data
+    return [];
+  }
 }
