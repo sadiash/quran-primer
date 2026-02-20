@@ -780,7 +780,7 @@ function HadithCard({
         <div className="flex-1 min-w-0">
           {/* Book name */}
           {hadith.bookName && (
-            <p className="text-[10px] text-muted-foreground/60 mb-1 leading-snug line-clamp-1">
+            <p className="text-[10px] text-muted-foreground/60 mb-1 leading-snug">
               {hadith.bookName}
             </p>
           )}
@@ -810,6 +810,21 @@ function HadithCard({
             <p className="text-[11px] text-muted-foreground/70 mb-1 italic leading-snug">
               {hadith.narratedBy}
             </p>
+          )}
+
+          {/* Topic chips */}
+          {hadith.topics && hadith.topics.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-1">
+              {hadith.topics.map((topic) => (
+                <span
+                  key={topic}
+                  className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
+                  style={{ backgroundColor: "rgba(99,102,241,0.12)", color: "rgb(129,140,248)" }}
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
           )}
 
           {/* Preview text (collapsed) */}

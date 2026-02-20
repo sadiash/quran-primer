@@ -21,4 +21,7 @@ export interface OntologyPort {
 
   /** Get topic names for a specific hadith */
   getTopicsForHadith(hadithId: string): Promise<string[]>;
+
+  /** Get topic names for a batch of hadith IDs */
+  getTopicsBatch(hadithIds: string[]): Promise<Record<string, string[]>>;
 }

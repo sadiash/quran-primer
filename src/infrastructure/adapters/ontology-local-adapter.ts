@@ -201,4 +201,16 @@ export class OntologyLocalAdapter implements OntologyPort {
     const data = await this.loadHadithTopics();
     return data[hadithId] ?? [];
   }
+
+  async getTopicsBatch(hadithIds: string[]): Promise<Record<string, string[]>> {
+    const data = await this.loadHadithTopics();
+    const result: Record<string, string[]> = {};
+    for (const id of hadithIds) {
+      const topics = data[id];
+      if (topics && topics.length > 0) {
+        result[id] = topics;
+      }
+    }
+    return result;
+  }
 }

@@ -1,5 +1,6 @@
 import { ok, badRequest, serverError, toResponse } from "@/lib/api-helpers";
 import { getHadithAdapter } from "@/lib/services";
+import { enrichHadithTopics } from "@/lib/enrich-hadith-topics";
 import { createLogger } from "@/infrastructure/logging";
 import type { NextRequest } from "next/server";
 
@@ -23,7 +24,8 @@ export async function GET(request: NextRequest) {
         return toResponse(badRequest("book must be a number"));
       }
       const hadiths = await adapter.browseHadiths(collection, bookNum);
-      return toResponse(ok(hadiths, { total: hadiths.length }));
+      const enriched = await enrichHadithTopics(hadiths);
+      return toResponse(ok(enriched, { total: enriched.length }));
     }
 
     const books = await adapter.browseBooks(collection);

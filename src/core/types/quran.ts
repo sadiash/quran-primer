@@ -81,6 +81,7 @@ export interface Hadith {
   reference: string | null;
   inBookReference: string | null;
   bookName?: string;
+  topics?: string[];
 }
 
 export interface HadithBook {
