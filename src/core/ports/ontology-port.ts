@@ -24,4 +24,10 @@ export interface OntologyPort {
 
   /** Get topic names for a batch of hadith IDs */
   getTopicsBatch(hadithIds: string[]): Promise<Record<string, string[]>>;
+
+  /** Get the full verse→hadithIds map (for graph enrichment) */
+  getAllHadithVerses(): Promise<Record<string, string[]>>;
+
+  /** Get the full hadithId→topics map (for graph enrichment) */
+  getAllHadithTopics(): Promise<Record<string, string[]>>;
 }

@@ -63,6 +63,16 @@ export async function GET(request: NextRequest) {
         return toResponse(ok(topics, { total: topics.length }));
       }
 
+      case "hadiths-all": {
+        const allHV = await adapter.getAllHadithVerses();
+        return toResponse(ok(allHV, { total: Object.keys(allHV).length }));
+      }
+
+      case "topics-all": {
+        const allHT = await adapter.getAllHadithTopics();
+        return toResponse(ok(allHT, { total: Object.keys(allHT).length }));
+      }
+
       default:
         return toResponse(
           badRequest(
