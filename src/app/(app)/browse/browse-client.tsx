@@ -19,7 +19,7 @@ export function BrowsePageClient({ surahs }: { surahs: Surah[] }) {
   const [tab, setTab] = useState<BrowseTab>("quran");
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         title={tab === "quran" ? "Browse Surahs" : "Browse Hadith"}
         subtitle={tab === "quran" ? "All 114 surahs of the Quran" : "Browse hadith collections"}

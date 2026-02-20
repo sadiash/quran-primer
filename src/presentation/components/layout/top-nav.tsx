@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpenText,
-  Search,
   Settings,
   Library,
   Bookmark,
@@ -14,13 +14,40 @@ import {
   Bot,
   ExternalLink,
   PlayCircle,
+  PanelRight,
+  Palette,
 } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
-import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { useProgress } from "@/presentation/hooks/use-progress";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { getSurahName } from "@/lib/surah-names";
 import type { PanelId } from "@/core/types/panel";
+import type { ThemeName } from "@/core/types";
 import { cn } from "@/lib/utils";
+
+const THEME_OPTIONS: { name: ThemeName; label: string; mode: "light" | "dark"; swatches: [string, string, string] }[] = [
+  { name: "library", label: "Library", mode: "light", swatches: ["hsl(40 33% 96%)", "hsl(36 72% 44%)", "hsl(168 28% 38%)"] },
+  { name: "amethyst", label: "Amethyst", mode: "light", swatches: ["hsl(210 40% 98%)", "hsl(265 90% 55%)", "hsl(200 85% 60%)"] },
+  { name: "sahara", label: "Sahara", mode: "light", swatches: ["hsl(35 40% 95%)", "hsl(25 80% 50%)", "hsl(168 40% 42%)"] },
+  { name: "garden", label: "Garden", mode: "light", swatches: ["hsl(140 30% 97%)", "hsl(145 45% 55%)", "hsl(280 35% 70%)"] },
+  { name: "observatory", label: "Observatory", mode: "dark", swatches: ["hsl(225 35% 7%)", "hsl(42 88% 56%)", "hsl(185 55% 48%)"] },
+  { name: "cosmos", label: "Cosmos", mode: "dark", swatches: ["hsl(220 25% 8%)", "hsl(200 95% 65%)", "hsl(270 85% 70%)"] },
+  { name: "midnight", label: "Midnight", mode: "dark", swatches: ["hsl(0 0% 4%)", "hsl(200 95% 65%)", "hsl(160 90% 50%)"] },
+  { name: "matrix", label: "Matrix", mode: "dark", swatches: ["hsl(120 15% 6%)", "hsl(120 100% 50%)", "hsl(120 80% 35%)"] },
+];
+
+const PANEL_ITEMS: { id: PanelId; icon: React.ComponentType<{ className?: string }>; label: string }[] = [
+  { id: "tafsir", icon: BookOpen, label: "Tafsir" },
+  { id: "hadith", icon: BookText, label: "Hadith" },
+  { id: "notes", icon: StickyNote, label: "Notes" },
+  { id: "sources", icon: ExternalLink, label: "Sources" },
+  { id: "ai", icon: Bot, label: "AI" },
+];
+
+/** Routes where panels are available (reading routes) */
+function isReadingRoute(pathname: string): boolean {
+  return pathname === "/" || pathname.startsWith("/surah");
+}
 
 interface TopNavProps {
   hidden?: boolean;
@@ -29,9 +56,9 @@ interface TopNavProps {
 export function TopNav({ hidden = false }: TopNavProps) {
   const pathname = usePathname();
   const { openPanels, togglePanel } = usePanels();
-  const { toggle: togglePalette } = useCommandPalette();
   const { getLatestProgress } = useProgress();
   const latest = getLatestProgress();
+  const showPanels = isReadingRoute(pathname);
 
   return (
     <header className={cn(
@@ -53,43 +80,27 @@ export function TopNav({ hidden = false }: TopNavProps) {
         <NavLink href="/notes" icon={StickyNote} label="Notes" pathname={pathname} />
       </nav>
 
-      {/* Continue Reading */}
-      {latest && (
+      {/* Continue Reading — hidden when already on a surah page */}
+      {latest && !pathname.startsWith("/surah") && (
         <Link
-          href={`/surah/${latest.surahId}`}
+          href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
           className="hidden md:flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/15 transition-fast"
-          title={`Continue: ${getSurahName(latest.surahId)} ${latest.lastVerseKey}`}
         >
           <PlayCircle className="h-3.5 w-3.5" />
-          <span className="max-w-[120px] truncate">
-            {getSurahName(latest.surahId)} {latest.lastVerseKey.split(":")[1]}
-          </span>
+          Continue Surah {getSurahName(latest.surahId)} verse {latest.lastVerseKey.split(":")[1]}
         </Link>
       )}
 
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Search trigger */}
-      <button
-        onClick={togglePalette}
-        className="flex items-center gap-2 rounded-lg bg-surface px-3 py-1.5 text-xs text-muted-foreground transition-fast hover:bg-surface-hover"
-      >
-        <Search className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Search...</span>
-        <kbd className="hidden sm:inline rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium">
-          {typeof navigator !== "undefined" && navigator.platform?.includes("Mac") ? "\u2318K" : "Ctrl+K"}
-        </kbd>
-      </button>
+      {/* Theme switcher */}
+      <ThemeDropdown />
 
-      {/* Panel toggles (desktop only) */}
-      <div className="hidden md:flex items-center gap-0.5">
-        <PanelToggle id="tafsir" icon={BookOpen} label="Tafsir" isOpen={openPanels.has("tafsir")} onToggle={togglePanel} />
-        <PanelToggle id="hadith" icon={BookText} label="Hadith" isOpen={openPanels.has("hadith")} onToggle={togglePanel} />
-        <PanelToggle id="notes" icon={StickyNote} label="Notes" isOpen={openPanels.has("notes")} onToggle={togglePanel} />
-        <PanelToggle id="sources" icon={ExternalLink} label="Sources" isOpen={openPanels.has("sources")} onToggle={togglePanel} />
-        <PanelToggle id="ai" icon={Bot} label="AI" isOpen={openPanels.has("ai")} onToggle={togglePanel} />
-      </div>
+      {/* Panels dropdown (desktop only, reading routes only) */}
+      {showPanels && (
+        <PanelsDropdown openPanels={openPanels} onToggle={togglePanel} />
+      )}
 
       {/* Settings */}
       <Link
@@ -103,33 +114,142 @@ export function TopNav({ hidden = false }: TopNavProps) {
   );
 }
 
-function PanelToggle({
-  id,
-  icon: Icon,
-  label,
-  isOpen,
+function PanelsDropdown({
+  openPanels,
   onToggle,
 }: {
-  id: PanelId;
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  isOpen: boolean;
+  openPanels: Set<PanelId>;
   onToggle: (id: PanelId) => void;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <button
-      onClick={() => onToggle(id)}
-      className={cn(
-        "rounded-md p-1.5 transition-fast",
-        isOpen
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+    <div className="relative hidden md:block">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
+      >
+        <PanelRight className="h-4 w-4" />
+        <span className="hidden sm:inline">Panels</span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
+            {PANEL_ITEMS.map(({ id, icon: Icon, label }) => {
+              const isOpen = openPanels.has(id);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => onToggle(id)}
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-xs transition-fast",
+                    isOpen
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                  {isOpen && (
+                    <span className="ml-auto text-[10px] text-primary/60">on</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </>
       )}
-      aria-label={`${isOpen ? "Close" : "Open"} ${label} panel`}
-      title={label}
-    >
-      <Icon className="h-4 w-4" />
-    </button>
+    </div>
+  );
+}
+
+function ThemeDropdown() {
+  const [open, setOpen] = useState(false);
+  const { preferences, updatePreferences } = usePreferences();
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
+        aria-label="Change theme"
+      >
+        <Palette className="h-4 w-4" />
+        <span className="hidden sm:inline">Theme</span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1.5 shadow-soft-lg">
+            <p className="px-2 pb-1 pt-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Light</p>
+            {THEME_OPTIONS.filter((t) => t.mode === "light").map((theme) => {
+              const isActive = preferences.themeName === theme.name;
+              return (
+                <button
+                  key={theme.name}
+                  type="button"
+                  onClick={() => {
+                    updatePreferences({ themeName: theme.name });
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-fast",
+                    isActive
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                  )}
+                >
+                  <div className="flex shrink-0 gap-0.5">
+                    {theme.swatches.map((color, i) => (
+                      <div
+                        key={i}
+                        className="h-3 w-3 rounded-full border border-border/50"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                  {theme.label}
+                </button>
+              );
+            })}
+            <div className="my-1 border-t border-border" />
+            <p className="px-2 pb-1 pt-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Dark</p>
+            {THEME_OPTIONS.filter((t) => t.mode === "dark").map((theme) => {
+              const isActive = preferences.themeName === theme.name;
+              return (
+                <button
+                  key={theme.name}
+                  type="button"
+                  onClick={() => {
+                    updatePreferences({ themeName: theme.name });
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-fast",
+                    isActive
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                  )}
+                >
+                  <div className="flex shrink-0 gap-0.5">
+                    {theme.swatches.map((color, i) => (
+                      <div
+                        key={i}
+                        className="h-3 w-3 rounded-full border border-border/50"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                  {theme.label}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

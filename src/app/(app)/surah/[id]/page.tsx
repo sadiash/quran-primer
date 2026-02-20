@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getQuranService, getOntologyAdapter } from "@/lib/services";
@@ -75,19 +76,21 @@ export default async function SurahPage({ params }: SurahPageProps) {
   const allTranslations = Object.values(translationsByResource).flat();
 
   return (
-    <ReadingPage
-      surah={{
-        id: surah.id,
-        nameArabic: surah.nameArabic,
-        nameSimple: surah.nameSimple,
-        nameComplex: surah.nameComplex,
-        nameTranslation: surah.nameTranslation,
-        revelationType: surah.revelationType,
-        versesCount: surah.versesCount,
-      }}
-      verses={surah.verses}
-      translations={allTranslations}
-      conceptsByVerse={conceptsByVerse}
-    />
+    <Suspense>
+      <ReadingPage
+        surah={{
+          id: surah.id,
+          nameArabic: surah.nameArabic,
+          nameSimple: surah.nameSimple,
+          nameComplex: surah.nameComplex,
+          nameTranslation: surah.nameTranslation,
+          revelationType: surah.revelationType,
+          versesCount: surah.versesCount,
+        }}
+        verses={surah.verses}
+        translations={allTranslations}
+        conceptsByVerse={conceptsByVerse}
+      />
+    </Suspense>
   );
 }

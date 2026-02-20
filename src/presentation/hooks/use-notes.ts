@@ -1,7 +1,7 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { useMemo } from "react";
+
 import { db } from "@/infrastructure/db/client";
 import type { Note, LinkedResource } from "@/core/types";
 
@@ -200,22 +200,18 @@ export function useNotes(opts?: UseNotesOptions) {
     return { imported, skipped };
   }
 
-  // Collect all unique tags across all notes for suggestions
-  const allNotes = useLiveQuery(
-    () => db.notes.toArray(),
+  // Collect all unique tags across all notes for suggestions (lightweight: only fetch tags field)
+  const suggestedTags = useLiveQuery(
+    async () => {
+      const tagSet = new Set<string>();
+      await db.notes.each((n) => {
+        for (const t of n.tags) tagSet.add(t);
+      });
+      return [...tagSet].sort();
+    },
     [],
-    [] as Note[],
+    [] as string[],
   );
-
-  const suggestedTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    for (const n of allNotes) {
-      for (const t of n.tags) {
-        tagSet.add(t);
-      }
-    }
-    return [...tagSet].sort();
-  }, [allNotes]);
 
   return {
     notes,

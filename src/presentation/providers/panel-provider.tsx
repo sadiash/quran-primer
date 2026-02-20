@@ -32,9 +32,9 @@ const PanelContext = createContext<PanelContextValue | null>(null);
 
 const STORAGE_KEY = "panels:open";
 
-function panelsInDock(panels: Set<PanelId>, dock: DockPosition, focusedVerseKey: string | null): boolean {
+function panelsInDock(panels: Set<PanelId>, dock: DockPosition): boolean {
   return PANEL_REGISTRY.some(
-    (p) => p.dock === dock && panels.has(p.id) && (!p.requiresVerse || focusedVerseKey !== null),
+    (p) => p.dock === dock && panels.has(p.id),
   );
 }
 
@@ -129,9 +129,9 @@ export function PanelProvider({ children }: { children: ReactNode }) {
     setFocusedVerseKey(key);
   }, []);
 
-  const hasLeftDock = useMemo(() => panelsInDock(openPanels, "left", focusedVerseKey), [openPanels, focusedVerseKey]);
-  const hasRightDock = useMemo(() => panelsInDock(openPanels, "right", focusedVerseKey), [openPanels, focusedVerseKey]);
-  const hasBottomDock = useMemo(() => panelsInDock(openPanels, "bottom", focusedVerseKey), [openPanels, focusedVerseKey]);
+  const hasLeftDock = useMemo(() => panelsInDock(openPanels, "left"), [openPanels]);
+  const hasRightDock = useMemo(() => panelsInDock(openPanels, "right"), [openPanels]);
+  const hasBottomDock = useMemo(() => panelsInDock(openPanels, "bottom"), [openPanels]);
 
   const value = useMemo<PanelContextValue>(
     () => ({
