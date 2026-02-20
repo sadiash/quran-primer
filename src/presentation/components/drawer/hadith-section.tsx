@@ -23,6 +23,11 @@ import { useFetch } from "@/presentation/hooks/use-fetch";
 import { db } from "@/infrastructure/db/client";
 import type { Hadith, HadithBook } from "@/core/types";
 import type { LinkedResource } from "@/core/types/study";
+
+interface ConceptSearchResult {
+  concepts: string[];
+  hadiths: Hadith[];
+}
 import { cn } from "@/lib/utils";
 import { PanelBreadcrumb, type BreadcrumbItem } from "@/presentation/components/panels/panel-breadcrumb";
 
@@ -320,6 +325,19 @@ function SearchMode({
   const [recentSearches] = useState(getRecentSearches);
   const showEmptyState = !focusedVerseKey && !query;
 
+  // Build exclude list from direct-link hadith IDs
+  const excludeKeys = useMemo(
+    () => results.map((h) => `${h.collection}-${h.hadithNumber}`).join(","),
+    [results],
+  );
+
+  // Concept-based hadith search (only in related mode, after direct links load)
+  const conceptUrl = isRelatedMode && !isLoading
+    ? `/api/v1/hadith/concept-search?verse=${focusedVerseKey}${excludeKeys ? `&exclude=${excludeKeys}` : ""}`
+    : null;
+  const conceptKey = `concept:${focusedVerseKey ?? "none"}:${excludeKeys}`;
+  const { data: conceptData, isLoading: conceptLoading } = useFetch<ConceptSearchResult>(conceptUrl, conceptKey);
+
   return (
     <>
       {/* Search bar */}
@@ -463,11 +481,11 @@ function SearchMode({
       )}
 
       {/* Results header */}
-      {!showEmptyState && (query || isRelatedMode) && (
+      {!showEmptyState && query && (
         <div className="shrink-0 flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {isRelatedMode ? "Linked to verse" : "Searching"}{" "}
-            <span className="font-mono text-foreground">{isRelatedMode ? focusedVerseKey : query}</span>
+            Searching{" "}
+            <span className="font-mono text-foreground">{query}</span>
             {!isLoading && totalAll > 0 && (
               <span className="text-muted-foreground/70">
                 {" "}&mdash;{" "}
@@ -475,6 +493,26 @@ function SearchMode({
               </span>
             )}
           </p>
+        </div>
+      )}
+
+      {/* Linked to verse header (pill style) */}
+      {!showEmptyState && isRelatedMode && !isLoading && totalAll > 0 && (
+        <div className="flex items-center gap-2">
+          <div className="h-px flex-1 bg-border/40" />
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50 shrink-0">
+            Linked to verse
+          </p>
+          <span
+            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-mono font-medium leading-none"
+            style={{ backgroundColor: "rgba(52,211,153,0.12)", color: "rgb(52,211,153)" }}
+          >
+            {focusedVerseKey}
+          </span>
+          <span className="text-[10px] text-muted-foreground/40">
+            {gradeFilter !== "all" ? `${totalFiltered}/${totalAll}` : totalAll}
+          </span>
+          <div className="h-px flex-1 bg-border/40" />
         </div>
       )}
 
@@ -535,6 +573,61 @@ function SearchMode({
           </button>
         )}
       </div>
+
+      {/* Concept-based results (related mode only) */}
+      {isRelatedMode && !isLoading && (
+        <>
+          {conceptLoading && (
+            <div className="flex items-center justify-center gap-2 py-4">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground/60" />
+              <span className="text-[11px] text-muted-foreground/60">Finding related by concept...</span>
+            </div>
+          )}
+
+          {conceptData && conceptData.hadiths.length > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 pt-2">
+                <div className="h-px flex-1 bg-border/40" />
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50 shrink-0">
+                  Related by concept
+                </p>
+                <div className="h-px flex-1 bg-border/40" />
+              </div>
+
+              {conceptData.concepts.length > 0 && (
+                <div className="flex flex-wrap gap-1 px-1">
+                  {conceptData.concepts.map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
+                      style={{ backgroundColor: "rgba(99,102,241,0.12)", color: "rgb(129,140,248)" }}
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {conceptData.hadiths.map((h, i) => (
+                <div key={`${h.collection}-${h.hadithNumber}`}>
+                  {i > 0 && <div className="mx-3 border-t border-border/30" />}
+                  <HadithCard
+                    hadith={h}
+                    expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
+                    onToggle={() =>
+                      setExpandedId(
+                        expandedId === `${h.collection}-${h.hadithNumber}`
+                          ? null
+                          : `${h.collection}-${h.hadithNumber}`,
+                      )
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 }
@@ -829,7 +922,7 @@ function HadithCard({
 
           {/* Preview text (collapsed) */}
           {!expanded && (
-            <p className="text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">
               {preview}
             </p>
           )}
@@ -848,7 +941,7 @@ function HadithCard({
         <div className="px-3 pb-3 space-y-3">
           {/* Full text */}
           <div
-            className="text-[13px] leading-[1.85] text-foreground/90 [&_b]:font-semibold [&_strong]:font-semibold"
+            className="text-[15px] leading-[1.9] text-foreground/90 [&_b]:font-semibold [&_strong]:font-semibold"
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
 
