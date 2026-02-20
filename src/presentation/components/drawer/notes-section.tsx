@@ -60,6 +60,76 @@ export function NotesSection() {
   const { focusedVerseKey } = usePanels();
 
   if (!focusedVerseKey) {
+    return <AllNotesView />;
+  }
+
+  return <NotesContent key={focusedVerseKey} verseKey={focusedVerseKey} />;
+}
+
+/** Shows all notes when no verse is focused, so the panel is never a dead end */
+function AllNotesView() {
+  const { notes, saveNote, removeNote, togglePin, restoreNote, sortNotes, suggestedTags } = useNotes();
+  const { addToast } = useToast();
+  const [sortOption, setSortOption] = useState<NoteSortOption>("newest");
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+
+  const editingNote = editingNoteId
+    ? notes.find((n) => n.id === editingNoteId) ?? null
+    : null;
+
+  const sortedNotes = useMemo(
+    () => sortNotes(notes, sortOption),
+    [notes, sortOption, sortNotes],
+  );
+
+  const handleEditNote = useCallback((id: string) => {
+    setEditingNoteId(id);
+  }, []);
+
+  const handleCancelEdit = useCallback(() => {
+    setEditingNoteId(null);
+  }, []);
+
+  const handleSave = useCallback(
+    async (data: {
+      title?: string;
+      content: string;
+      contentJson: string;
+      tags: string[];
+      verseKeys: string[];
+      surahIds: number[];
+      linkedResources?: LinkedResource[];
+    }) => {
+      await saveNote({
+        title: data.title,
+        verseKeys: data.verseKeys,
+        surahIds: data.surahIds,
+        content: data.content,
+        contentJson: data.contentJson,
+        tags: data.tags,
+        linkedResources: data.linkedResources,
+        id: editingNoteId ?? undefined,
+      });
+      setEditingNoteId(null);
+    },
+    [saveNote, editingNoteId],
+  );
+
+  const handleDeleteNote = useCallback(
+    async (noteId: string) => {
+      const noteToDelete = notes.find((n) => n.id === noteId);
+      if (!noteToDelete) return;
+      const backup = { ...noteToDelete };
+      await removeNote(noteId);
+      addToast("Note deleted", "default", {
+        label: "Undo",
+        onClick: () => { restoreNote(backup); },
+      });
+    },
+    [notes, removeNote, restoreNote, addToast],
+  );
+
+  if (notes.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
         <div className="rounded-full bg-primary/5 p-3">
@@ -67,17 +137,80 @@ export function NotesSection() {
         </div>
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground/70">
-            No verse selected
+            No notes yet
           </p>
           <p className="text-[11px] text-muted-foreground/50 max-w-[200px]">
-            Click on any verse while reading to view and add notes here
+            Click on any verse while reading to add your first note
           </p>
         </div>
       </div>
     );
   }
 
-  return <NotesContent key={focusedVerseKey} verseKey={focusedVerseKey} />;
+  // Editor mode
+  if (editingNote) {
+    return (
+      <div className="flex flex-col gap-2 p-3">
+        <PanelBreadcrumb items={[
+          { label: "Notes", onClick: handleCancelEdit },
+          { label: editingNote.title || "Untitled" },
+        ]} />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="rounded-md p-1 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+            aria-label="Back to list"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <span className="text-xs font-medium text-foreground">Edit Note</span>
+        </div>
+        <NoteEditor
+          key={editingNoteId}
+          initialContent={editingNote.contentJson ?? editingNote.content}
+          initialTitle={editingNote.title ?? ""}
+          initialTags={editingNote.tags}
+          initialVerseKeys={editingNote.verseKeys}
+          initialSurahIds={editingNote.surahIds}
+          initialLinkedResources={editingNote.linkedResources}
+          suggestedTags={suggestedTags}
+          onSave={handleSave}
+          onCancel={handleCancelEdit}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3 p-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-foreground">
+          All Notes
+        </span>
+        <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+          {notes.length}
+        </span>
+      </div>
+      <p className="text-[10px] text-muted-foreground/50">
+        Select a verse to filter notes for that verse
+      </p>
+      <div className="space-y-2">
+        {sortedNotes.map((note) => (
+          <NoteCard
+            key={note.id}
+            note={note}
+            surahId={note.surahIds[0] ?? 0}
+            surahName={note.surahIds[0] ? getSurahName(note.surahIds[0]) : ""}
+            onEdit={handleEditNote}
+            onDelete={handleDeleteNote}
+            onTogglePin={togglePin}
+            onToggleSurahLink={() => {}}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ─── Inner component — remounts on verse change (React Compiler safe) ───
@@ -450,7 +583,7 @@ function NoteCard({ note, surahId, surahName, onEdit, onDelete, onTogglePin, onT
   const [expanded, setExpanded] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const isLinkedToSurah = note.surahIds.includes(surahId);
-  const displayTitle = note.title || note.content.slice(0, 40) + (note.content.length > 40 ? "..." : "");
+  const displayTitle = note.title || note.content.slice(0, 50) + (note.content.length > 50 ? "..." : "");
   const hasRealTitle = !!note.title;
   const sourceStyle = getNoteSourceStyle(note);
   const metaParts: string[] = [];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   ReactFlow,
   Background,
@@ -221,13 +221,10 @@ export function MindMapView({
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   // Sync when graph data changes (new notes/bookmarks added)
-  const [prevKey, setPrevKey] = useState("");
-  const key = nodes.map((n) => n.id).join(",");
-  if (key !== prevKey) {
-    setPrevKey(key);
+  useEffect(() => {
     setFlowNodes(initialNodes);
     setFlowEdges(initialEdges);
-  }
+  }, [initialNodes, initialEdges, setFlowNodes, setFlowEdges]);
 
   // Build lookup for GraphNode by id for click handler
   const nodeById = useMemo(() => {

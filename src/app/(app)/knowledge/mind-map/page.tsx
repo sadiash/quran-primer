@@ -21,13 +21,12 @@ function MindMapContent() {
   const handleNodeClick = useCallback(
     (node: GraphNode) => {
       if (node.nodeType === "verse" && node.verseKey) {
-        const surahId = node.verseKey.split(":")[0];
-        router.push(`/surah/${surahId}`);
+        const [surahId] = node.verseKey.split(":");
+        router.push(`/surah/${surahId}?verse=${node.verseKey}`);
       } else if (node.nodeType === "note") {
-        router.push("/notes");
+        router.push(`/notes`);
       } else if (node.nodeType === "theme") {
-        // Filter to this tag
-        setTagFilter(node.label);
+        setTagFilter((prev) => (prev === node.label ? undefined : node.label));
       }
     },
     [router],

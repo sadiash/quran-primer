@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Surah, Verse, Translation } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { getResolvedTranslationConfigs } from "@/core/types";
@@ -28,6 +29,7 @@ export function ReadingSurface({
   translations,
   conceptsByVerse,
 }: ReadingSurfaceProps) {
+  const searchParams = useSearchParams();
   const { preferences, updatePreferences } = usePreferences();
   const { focusVerse, focusedVerseKey, openPanel } = usePanels();
   const { updateProgress } = useProgress(surah.id);
@@ -144,6 +146,27 @@ export function ReadingSurface({
     }, 1000);
     return () => clearInterval(interval);
   }, [getCurrentVerseKey, saveProgress]);
+
+  // Scroll to verse from ?verse= query param on mount
+  const scrolledToParam = useRef(false);
+  useEffect(() => {
+    if (scrolledToParam.current) return;
+    const verseParam = searchParams.get("verse");
+    if (!verseParam) return;
+
+    // Small delay to let DOM render
+    const timer = setTimeout(() => {
+      const el = containerRef.current?.querySelector(
+        `[data-verse-key="${verseParam}"]`,
+      );
+      if (el) {
+        scrolledToParam.current = true;
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        focusVerseManually(verseParam);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchParams, focusVerseManually]);
 
   const arabicSizeClass = {
     sm: "text-xl",

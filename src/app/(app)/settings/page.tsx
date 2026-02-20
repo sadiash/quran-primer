@@ -1,7 +1,6 @@
 "use client";
 
 import { usePreferences } from "@/presentation/hooks/use-preferences";
-import { ThemeSwitcher } from "@/presentation/components/ui/theme-switcher";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { cn } from "@/lib/utils";
 import type {
@@ -108,7 +107,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 sm:py-8">
+    <div className="mx-auto px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         title="Settings"
         subtitle="Customize your reading and study experience."
@@ -311,10 +310,6 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        {/* ── Appearance ── */}
-        <Section title="Appearance">
-          <ThemeSwitcher />
-        </Section>
       </div>
     </div>
   );

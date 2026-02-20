@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   StickyNote,
@@ -330,7 +331,7 @@ export default function NotesPage() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex items-center justify-between">
         <PageHeader
           title="Notes"
@@ -452,7 +453,7 @@ export default function NotesPage() {
 
       {/* Mind Map Tab */}
       {activeTab === "mindmap" && (
-        <NotesMindMap />
+        <NotesMindMap notes={notes} onSelectNote={setSelectedNote} />
       )}
 
       {/* Notes Tab */}
@@ -588,10 +589,10 @@ export default function NotesPage() {
       )}
 
       {/* Note cards */}
-      {activeTab === "notes" && <div className="mt-6 space-y-2">
+      {activeTab === "notes" && <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((note) => {
           const label = noteLocationLabel(note, getSurahName);
-          const displayTitle = note.title || note.content.slice(0, 60) + (note.content.length > 60 ? "..." : "");
+          const displayTitle = note.title || note.content.slice(0, 50) + (note.content.length > 50 ? "..." : "");
           const hasRealTitle = !!note.title;
           return (
             <PageNoteCard
@@ -676,28 +677,35 @@ export default function NotesPage() {
 
 // ─── Mind Map Tab Content ───
 
-function NotesMindMap() {
+function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSelectNote: (note: Note) => void }) {
   const [tagFilter, setTagFilter] = useState<string | undefined>(undefined);
+  const router = useRouter();
   const { nodes, edges, allTags, isLoading } = useKnowledgeGraph(
     tagFilter ? { tag: tagFilter } : undefined,
   );
 
   const handleNodeClick = useCallback(
     (node: GraphNode) => {
-      if (node.nodeType === "theme") {
+      if (node.nodeType === "note") {
+        const note = allNotes.find((n) => n.id === node.id.replace("note-", ""));
+        if (note) onSelectNote(note);
+      } else if (node.nodeType === "verse" && node.verseKey) {
+        const [surahId] = node.verseKey.split(":");
+        router.push(`/surah/${surahId}?verse=${node.verseKey}`);
+      } else if (node.nodeType === "theme") {
         setTagFilter((prev) => (prev === node.label ? undefined : node.label));
       }
     },
-    [],
+    [allNotes, onSelectNote, router],
   );
 
   const isEmpty = !isLoading && nodes.length === 0;
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 flex flex-col" style={{ height: "calc(100vh - 12rem)" }}>
       {/* Tag filters */}
       {allTags.length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-1.5">
+        <div className="mb-4 flex shrink-0 flex-wrap gap-1.5">
           <button
             onClick={() => setTagFilter(undefined)}
             className={cn(
@@ -728,7 +736,7 @@ function NotesMindMap() {
       )}
 
       {/* Legend */}
-      <div className="mb-3 flex flex-wrap items-center gap-4 text-[10px] text-muted-foreground">
+      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-4 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary/20 ring-1 ring-primary/50" />
           Verse
@@ -747,7 +755,7 @@ function NotesMindMap() {
       </div>
 
       {/* Graph canvas */}
-      <div className="relative h-[calc(100vh-16rem)] rounded-xl border border-border overflow-hidden">
+      <div className="relative min-h-0 flex-1 rounded-xl border border-border overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -776,6 +784,20 @@ function NotesMindMap() {
   );
 }
 
+/** Color-code note cards by source/type — matches panel colors */
+function getNoteCardStyle(note: Note) {
+  const resources = note.linkedResources;
+  const hasHadith = resources?.some((r) => r.type === "hadith");
+  const hasTafsir = resources?.some((r) => r.type === "tafsir");
+  if (hasHadith && hasTafsir) return { borderColor: "#a78bfa", dotColor: "#a78bfa", label: "Hadith + Tafsir" };
+  if (hasHadith) return { borderColor: "#34d399", dotColor: "#34d399", label: "Hadith" };
+  if (hasTafsir) return { borderColor: "#fbbf24", dotColor: "#fbbf24", label: "Tafsir" };
+  if (note.tags.includes("reflection")) return { borderColor: "#60a5fa", dotColor: "#60a5fa", label: "Reflection" };
+  if (note.tags.includes("question")) return { borderColor: "#c084fc", dotColor: "#c084fc", label: "Question" };
+  if (note.tags.includes("connection")) return { borderColor: "#2dd4bf", dotColor: "#2dd4bf", label: "Connection" };
+  return { borderColor: "", dotColor: "", label: "" };
+}
+
 // ─── Page note card with title, overflow menu, compact metadata ───
 
 function PageNoteCard({
@@ -798,6 +820,7 @@ function PageNoteCard({
   onDelete: (id: string) => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
+  const cardStyle = getNoteCardStyle(note);
 
   return (
     <div
@@ -805,13 +828,15 @@ function PageNoteCard({
         "relative rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-soft-sm cursor-pointer",
         note.pinned && "border-primary/20 bg-primary/[0.02]",
       )}
+      style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
       onClick={() => onSelect(note)}
     >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          {/* Title row with pin */}
+          {/* Title row with pin + color dot */}
           <div className="flex items-center gap-1.5">
             {note.pinned && <Pin className="h-3 w-3 shrink-0 text-primary/60" />}
+            {cardStyle.dotColor && <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cardStyle.dotColor }} title={cardStyle.label} />}
             <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
               {displayTitle}
             </span>
