@@ -213,4 +213,12 @@ export class OntologyLocalAdapter implements OntologyPort {
     }
     return result;
   }
+
+  async getAllHadithVerses(): Promise<Record<string, string[]>> {
+    return this.loadHadithVerses();
+  }
+
+  async getAllHadithTopics(): Promise<Record<string, string[]>> {
+    return this.loadHadithTopics();
+  }
 }

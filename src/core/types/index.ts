@@ -39,6 +39,9 @@ export type {
   GraphNode,
   GraphEdge,
   KnowledgeGraph,
+  SimulationNode,
+  SimulationEdge,
+  GraphStats,
 } from "./graph";
 
 export type {

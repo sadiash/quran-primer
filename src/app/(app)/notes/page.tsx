@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useNotes, type NoteSortOption } from "@/presentation/hooks/use-notes";
 import { useKnowledgeGraph } from "@/presentation/hooks/use-knowledge-graph";
-import { MindMapView } from "@/presentation/components/knowledge/mind-map-view";
+import { NetworkGraph } from "@/presentation/components/knowledge";
 import { useToast } from "@/presentation/components/ui/toast";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { NoteContentRenderer } from "@/presentation/components/notes/note-content-renderer";
@@ -678,22 +678,27 @@ export default function NotesPage() {
 // ─── Mind Map Tab Content ───
 
 function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSelectNote: (note: Note) => void }) {
-  const [tagFilter, setTagFilter] = useState<string | undefined>(undefined);
   const router = useRouter();
-  const { nodes, edges, allTags, isLoading } = useKnowledgeGraph(
-    tagFilter ? { tag: tagFilter } : undefined,
-  );
+
+  // Ontology toggles
+  const [includeOntologyHadiths, setIncludeOntologyHadiths] = useState(false);
+  const [includeQuranicConcepts, setIncludeQuranicConcepts] = useState(false);
+  const [includeHadithTopics, setIncludeHadithTopics] = useState(false);
+
+  const { nodes, edges, allTags, stats, isLoading } = useKnowledgeGraph({
+    includeOntologyHadiths,
+    includeQuranicConcepts,
+    includeHadithTopics,
+  });
 
   const handleNodeClick = useCallback(
     (node: GraphNode) => {
       if (node.nodeType === "note") {
-        const note = allNotes.find((n) => n.id === node.id.replace("note-", ""));
+        const note = allNotes.find((n) => n.id === node.id.replace("note:", ""));
         if (note) onSelectNote(note);
       } else if (node.nodeType === "verse" && node.verseKey) {
         const [surahId] = node.verseKey.split(":");
         router.push(`/surah/${surahId}?verse=${node.verseKey}`);
-      } else if (node.nodeType === "theme") {
-        setTagFilter((prev) => (prev === node.label ? undefined : node.label));
       }
     },
     [allNotes, onSelectNote, router],
@@ -702,59 +707,7 @@ function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSele
   const isEmpty = !isLoading && nodes.length === 0;
 
   return (
-    <div className="mt-6 flex flex-col" style={{ height: "calc(100vh - 12rem)" }}>
-      {/* Tag filters */}
-      {allTags.length > 0 && (
-        <div className="mb-4 flex shrink-0 flex-wrap gap-1.5">
-          <button
-            onClick={() => setTagFilter(undefined)}
-            className={cn(
-              "flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-fast",
-              tagFilter === undefined
-                ? "bg-primary text-primary-foreground"
-                : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-            )}
-          >
-            All
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setTagFilter(tagFilter === tag ? undefined : tag)}
-              className={cn(
-                "flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-fast",
-                tagFilter === tag
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-              )}
-            >
-              <Tag className="h-3 w-3" />
-              {tag}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Legend */}
-      <div className="mb-3 flex shrink-0 flex-wrap items-center gap-4 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary/20 ring-1 ring-primary/50" />
-          Verse
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded border border-border bg-card" />
-          Note
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-5 rounded-full bg-primary/20 ring-2 ring-primary" />
-          Theme
-        </span>
-        <span className="ml-auto text-muted-foreground/60">
-          {nodes.length} nodes, {edges.length} connections
-        </span>
-      </div>
-
-      {/* Graph canvas */}
+    <div className="mt-4 flex flex-col" style={{ height: "calc(100vh - 12rem)" }}>
       <div className="relative min-h-0 flex-1 rounded-xl border border-border overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
@@ -767,16 +720,24 @@ function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSele
             <div>
               <p className="text-sm font-medium text-foreground">No connections yet</p>
               <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-                Your mind map builds automatically from your notes. Add notes with tags to see your knowledge graph grow.
+                Your knowledge graph builds automatically from your notes. Add notes with tags to see it grow.
               </p>
             </div>
           </div>
         ) : (
-          <MindMapView
+          <NetworkGraph
             nodes={nodes}
             edges={edges}
+            stats={stats}
+            allTags={allTags}
             onNodeClick={handleNodeClick}
             className="h-full"
+            includeOntologyHadiths={includeOntologyHadiths}
+            onToggleOntologyHadiths={() => setIncludeOntologyHadiths((v) => !v)}
+            includeQuranicConcepts={includeQuranicConcepts}
+            onToggleQuranicConcepts={() => setIncludeQuranicConcepts((v) => !v)}
+            includeHadithTopics={includeHadithTopics}
+            onToggleHadithTopics={() => setIncludeHadithTopics((v) => !v)}
           />
         )}
       </div>

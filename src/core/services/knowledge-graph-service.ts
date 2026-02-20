@@ -5,8 +5,12 @@ import type {
   KnowledgeGraph,
   GraphNode,
   GraphEdge,
+  GraphStats,
+  NodeType,
+  EdgeType,
   Bookmark,
   Note,
+  QuranicConcept,
 } from "@/core/types";
 
 export interface KnowledgeGraphServiceDeps {
@@ -18,6 +22,16 @@ export interface GenerateGraphOptions {
   verseKey?: string;
   tag?: string;
   surahId?: number;
+}
+
+/** Ontology data passed in for enrichment (fetched client-side by the hook) */
+export interface OntologyEnrichment {
+  /** Map of verseKey → hadith IDs from hadith-verses.json */
+  hadithVerseMap?: Map<string, string[]>;
+  /** Quranic concepts indexed by verse key */
+  conceptsByVerse?: Map<string, QuranicConcept[]>;
+  /** Map of hadithId → topic names from hadith-topics.json */
+  hadithTopicMap?: Map<string, string[]>;
 }
 
 export class KnowledgeGraphService {
@@ -179,12 +193,216 @@ export class KnowledgeGraphService {
       }
     }
 
-    // 5. Apply tag filter if specified
+    // 5. Tier 1 — hadith nodes from note linkedResources (always on)
+    for (const note of notes) {
+      if (!note.linkedResources) continue;
+      const noteNodeId = `note:${note.id}`;
+      for (const lr of note.linkedResources) {
+        if (lr.type !== "hadith") continue;
+        const hadithId =
+          lr.metadata?.hadithId ??
+          `${lr.metadata?.collection ?? "unknown"}-${lr.metadata?.hadithNumber ?? lr.label}`;
+        const hadithNodeId = `hadith:${hadithId}`;
+        if (!nodeMap.has(hadithNodeId)) {
+          const hadithNode: GraphNode = {
+            id: hadithNodeId,
+            nodeType: "hadith",
+            label: lr.label,
+            metadata: {
+              collection: lr.metadata?.collection,
+              hadithNumber: lr.metadata?.hadithNumber,
+              preview: lr.preview.slice(0, 120),
+            },
+            createdAt: note.createdAt,
+          };
+          nodeMap.set(hadithNodeId, hadithNode);
+          nodes.push(hadithNode);
+        }
+        edges.push({
+          id: `edge:note-hadith:${note.id}:${hadithId}`,
+          sourceNodeId: noteNodeId,
+          targetNodeId: hadithNodeId,
+          edgeType: "note-hadith",
+          weight: 1,
+          createdAt: note.createdAt,
+        });
+      }
+    }
+
+    // 6. Apply tag filter if specified
     if (options?.tag) {
       return this.filterByTag(nodes, edges, options.tag);
     }
 
     return { nodes, edges };
+  }
+
+  /**
+   * Enrich an existing graph with ontology data.
+   * Called separately after generateGraph so ontology fetching is opt-in.
+   */
+  enrichWithOntology(
+    graph: KnowledgeGraph,
+    enrichment: OntologyEnrichment,
+  ): KnowledgeGraph {
+    const nodes = [...graph.nodes];
+    const edges = [...graph.edges];
+    const nodeMap = new Map(nodes.map((n) => [n.id, n]));
+
+    // Collect verse keys present in graph
+    const verseKeys = new Set<string>();
+    for (const n of nodes) {
+      if (n.nodeType === "verse" && n.verseKey) verseKeys.add(n.verseKey);
+    }
+
+    // Collect hadith IDs present in graph
+    const hadithIds = new Set<string>();
+    for (const n of nodes) {
+      if (n.nodeType === "hadith") hadithIds.add(n.id.replace("hadith:", ""));
+    }
+
+    // Tier 2 — Related Hadiths from ontology (verse → hadith edges)
+    if (enrichment.hadithVerseMap) {
+      for (const vk of verseKeys) {
+        const hIds = enrichment.hadithVerseMap.get(vk);
+        if (!hIds) continue;
+        for (const hId of hIds) {
+          const hadithNodeId = `hadith:${hId}`;
+          if (!nodeMap.has(hadithNodeId)) {
+            const hadithNode: GraphNode = {
+              id: hadithNodeId,
+              nodeType: "hadith",
+              label: hId.replace(/^[A-Z]+-HD/, "").replace(/^0+/, "") || hId,
+              metadata: { ontology: true },
+              createdAt: new Date(),
+            };
+            nodeMap.set(hadithNodeId, hadithNode);
+            nodes.push(hadithNode);
+          }
+          hadithIds.add(hId);
+          edges.push({
+            id: `edge:hadith-verse:${hId}:${vk}`,
+            sourceNodeId: hadithNodeId,
+            targetNodeId: `verse:${vk}`,
+            edgeType: "hadith-verse",
+            weight: 0.8,
+            createdAt: new Date(),
+          });
+        }
+      }
+    }
+
+    // Tier 3 — Quranic Concepts (verse → concept edges)
+    if (enrichment.conceptsByVerse) {
+      const conceptNodeMap = new Map<string, GraphNode>();
+      for (const vk of verseKeys) {
+        const concepts = enrichment.conceptsByVerse.get(vk);
+        if (!concepts) continue;
+        for (const concept of concepts) {
+          const conceptNodeId = `concept:${concept.id}`;
+          if (!nodeMap.has(conceptNodeId)) {
+            const conceptNode: GraphNode = {
+              id: conceptNodeId,
+              nodeType: "concept",
+              label: concept.id.replace(/_/g, " "),
+              metadata: {
+                definition: concept.definition?.slice(0, 120),
+                subcategoryCount: concept.subcategories?.length ?? 0,
+              },
+              createdAt: new Date(),
+            };
+            nodeMap.set(conceptNodeId, conceptNode);
+            conceptNodeMap.set(concept.id, conceptNode);
+            nodes.push(conceptNode);
+          }
+          edges.push({
+            id: `edge:concept-verse:${concept.id}:${vk}`,
+            sourceNodeId: conceptNodeId,
+            targetNodeId: `verse:${vk}`,
+            edgeType: "concept-verse",
+            weight: 0.7,
+            createdAt: new Date(),
+          });
+        }
+      }
+
+      // concept-related edges between concepts that share the same verse
+      const conceptIds = [...conceptNodeMap.keys()];
+      for (let i = 0; i < conceptIds.length; i++) {
+        const cA = conceptIds[i]!;
+        for (let j = i + 1; j < conceptIds.length; j++) {
+          const cB = conceptIds[j]!;
+          // Check if they share any verse
+          let shared = false;
+          for (const vk of verseKeys) {
+            const cs = enrichment.conceptsByVerse.get(vk);
+            if (cs && cs.some((c) => c.id === cA) && cs.some((c) => c.id === cB)) {
+              shared = true;
+              break;
+            }
+          }
+          if (shared) {
+            edges.push({
+              id: `edge:concept-related:${cA}:${cB}`,
+              sourceNodeId: `concept:${cA}`,
+              targetNodeId: `concept:${cB}`,
+              edgeType: "concept-related",
+              weight: 0.5,
+              createdAt: new Date(),
+            });
+          }
+        }
+      }
+    }
+
+    // Tier 4 — Hadith Topics (hadith → topic edges)
+    if (enrichment.hadithTopicMap) {
+      for (const hId of hadithIds) {
+        const topics = enrichment.hadithTopicMap.get(hId);
+        if (!topics) continue;
+        for (const topic of topics) {
+          const topicNodeId = `hadith-topic:${topic}`;
+          if (!nodeMap.has(topicNodeId)) {
+            const topicNode: GraphNode = {
+              id: topicNodeId,
+              nodeType: "hadith-topic",
+              label: topic,
+              createdAt: new Date(),
+            };
+            nodeMap.set(topicNodeId, topicNode);
+            nodes.push(topicNode);
+          }
+          edges.push({
+            id: `edge:hadith-topic-link:${hId}:${topic}`,
+            sourceNodeId: `hadith:${hId}`,
+            targetNodeId: topicNodeId,
+            edgeType: "hadith-topic-link",
+            weight: 0.6,
+            createdAt: new Date(),
+          });
+        }
+      }
+    }
+
+    return { nodes, edges };
+  }
+
+  /** Compute stats from a graph */
+  static computeStats(graph: KnowledgeGraph): GraphStats {
+    const nodeCounts: Partial<Record<NodeType, number>> = {};
+    for (const n of graph.nodes) {
+      nodeCounts[n.nodeType] = (nodeCounts[n.nodeType] ?? 0) + 1;
+    }
+    const edgeCounts: Partial<Record<EdgeType, number>> = {};
+    for (const e of graph.edges) {
+      edgeCounts[e.edgeType] = (edgeCounts[e.edgeType] ?? 0) + 1;
+    }
+    return {
+      nodeCounts,
+      edgeCounts,
+      totalNodes: graph.nodes.length,
+      totalEdges: graph.edges.length,
+    };
   }
 
   private async fetchBookmarks(options?: GenerateGraphOptions): Promise<Bookmark[]> {
