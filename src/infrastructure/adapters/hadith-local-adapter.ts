@@ -12,6 +12,16 @@ import path from "path";
 const DATA_DIR = path.join(process.cwd(), "data", "hadith");
 const INDEX_PATH = path.join(DATA_DIR, "index.json");
 
+/** Ontology ID prefix → local collection slug */
+const PREFIX_TO_COLLECTION: Record<string, string> = {
+  SB: "bukhari",
+  SM: "muslim",
+  AT: "tirmidhi",
+  AD: "abudawud",
+  AN: "nasai",
+  IM: "ibnmajah",
+};
+
 interface LocalIndex {
   id: string;
   name: string;
@@ -204,5 +214,49 @@ export class HadithLocalAdapter implements HadithPort {
       inBookReference: h.inBookReference ?? null,
       bookName: chapter.bookName,
     }));
+  }
+
+  async getHadithsByOntologyIds(ids: string[]): Promise<Hadith[]> {
+    // Group IDs by collection for efficient loading
+    const byCollection = new Map<string, string[]>();
+    for (const id of ids) {
+      const match = id.match(/^([A-Z]{2})-HD(\d+)$/);
+      if (!match || !match[1] || !match[2]) continue;
+      const slug = PREFIX_TO_COLLECTION[match[1]];
+      if (!slug) continue;
+      const hadithNum = String(parseInt(match[2], 10)); // "0003" → "3"
+      if (!byCollection.has(slug)) byCollection.set(slug, []);
+      byCollection.get(slug)!.push(hadithNum);
+    }
+
+    const results: Hadith[] = [];
+
+    for (const [slug, nums] of byCollection) {
+      const chapters = await this.loadCollection(slug);
+      const needed = new Set(nums);
+
+      for (const chapter of chapters) {
+        for (const h of chapter.hadiths) {
+          if (!needed.has(h.hadithNumber)) continue;
+          needed.delete(h.hadithNumber);
+          results.push({
+            id: h.id,
+            collection: chapter.collection,
+            bookNumber: String(chapter.book),
+            hadithNumber: h.hadithNumber,
+            text: h.text,
+            grade: h.grade,
+            narratedBy: h.narratedBy,
+            reference: h.reference ?? null,
+            inBookReference: h.inBookReference ?? null,
+            bookName: chapter.bookName,
+          });
+          if (needed.size === 0) break;
+        }
+        if (needed.size === 0) break;
+      }
+    }
+
+    return results;
   }
 }
