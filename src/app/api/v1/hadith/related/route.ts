@@ -1,5 +1,6 @@
 import { ok, badRequest, serverError, toResponse } from "@/lib/api-helpers";
 import { getHadithAdapter, getOntologyAdapter } from "@/lib/services";
+import { enrichHadithTopics } from "@/lib/enrich-hadith-topics";
 import { createLogger } from "@/infrastructure/logging";
 import type { NextRequest } from "next/server";
 
@@ -20,7 +21,8 @@ export async function GET(request: NextRequest) {
     }
 
     const hadiths = await getHadithAdapter().getHadithsByOntologyIds(ontologyIds);
-    return toResponse(ok(hadiths, { total: hadiths.length }));
+    const enriched = await enrichHadithTopics(hadiths);
+    return toResponse(ok(enriched, { total: enriched.length }));
   } catch (error) {
     log.error({ error }, "Related hadith lookup failed");
     return toResponse(serverError());
