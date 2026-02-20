@@ -12,10 +12,11 @@ import {
   Hash,
   Heading,
   Sparkles,
+  AlignJustify,
 } from "lucide-react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
-import type { ArabicFontSize, TranslationLayout, ReadingDensity } from "@/core/types";
+import type { ArabicFontSize, TranslationLayout, ReadingDensity, ReadingFlow } from "@/core/types";
 
 const ARABIC_SIZES: ArabicFontSize[] = ["sm", "md", "lg", "xl", "2xl"];
 const LAYOUTS: { value: TranslationLayout; label: string }[] = [
@@ -27,6 +28,11 @@ const DENSITIES: { value: ReadingDensity; label: string }[] = [
   { value: "comfortable", label: "Comfortable" },
   { value: "compact", label: "Compact" },
   { value: "dense", label: "Dense" },
+];
+
+const FLOWS: { value: ReadingFlow; label: string }[] = [
+  { value: "blocks", label: "Blocks" },
+  { value: "prose", label: "Prose" },
 ];
 
 export function ReadingToolbar() {
@@ -128,6 +134,30 @@ export function ReadingToolbar() {
                     )}
                   >
                     {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Reading flow */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                <AlignJustify className="h-3.5 w-3.5" />
+                Reading Flow
+              </label>
+              <div className="flex gap-1">
+                {FLOWS.map((f) => (
+                  <button
+                    key={f.value}
+                    onClick={() => updatePreferences({ readingFlow: f.value })}
+                    className={cn(
+                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      (preferences.readingFlow ?? "blocks") === f.value
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-surface-hover",
+                    )}
+                  >
+                    {f.label}
                   </button>
                 ))}
               </div>

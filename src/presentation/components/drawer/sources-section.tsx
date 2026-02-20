@@ -3,6 +3,7 @@
 import { ExternalLink, BookOpen, Youtube, FileText, ChevronRight } from "lucide-react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { cn } from "@/lib/utils";
+import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
 
 /** Dummy cross-references keyed by surah:verse prefix */
 const CROSS_REFS: Record<string, { verse: string; text: string; theme: string }[]> = {
@@ -44,6 +45,12 @@ export function SourcesSection() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
+      {/* Breadcrumb */}
+      <PanelBreadcrumb items={[
+        { label: `Verse ${focusedVerseKey}` },
+        { label: "Sources" },
+      ]} />
+
       {/* Cross-references */}
       <div>
         <div className="flex items-center gap-1.5 mb-2">

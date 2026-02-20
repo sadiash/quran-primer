@@ -1,0 +1,13 @@
+{
+  "name": "The Primer — Quran Study Companion",
+  "short_name": "The Primer",
+  "description": "A personal knowledge system for Quran study",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF5F0",
+  "theme_color": "#C9A227",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

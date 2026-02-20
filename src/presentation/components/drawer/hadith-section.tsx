@@ -24,6 +24,7 @@ import { db } from "@/infrastructure/db/client";
 import type { Hadith, HadithBook } from "@/core/types";
 import type { LinkedResource } from "@/core/types/study";
 import { cn } from "@/lib/utils";
+import { PanelBreadcrumb, type BreadcrumbItem } from "@/presentation/components/panels/panel-breadcrumb";
 
 function sanitize(html: string): string {
   if (typeof window === "undefined") return html;
@@ -546,6 +547,21 @@ function BrowseMode({
     [books, selectedBook],
   );
 
+  const collectionLabel = COLLECTIONS.find((c) => c.id === browseCollection)?.label ?? browseCollection;
+
+  const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
+    const items: BreadcrumbItem[] = [
+      { label: "Browse", onClick: selectedBook !== null ? () => setSelectedBook(null) : undefined },
+      { label: collectionLabel },
+    ];
+    if (selectedBook !== null && selectedBookData) {
+      // Make collection clickable when we're in a book
+      items[1] = { label: collectionLabel, onClick: () => setSelectedBook(null) };
+      items.push({ label: `Book ${selectedBookData.bookNumber}: ${selectedBookData.bookName}` });
+    }
+    return items;
+  }, [collectionLabel, selectedBook, selectedBookData]);
+
   return (
     <>
       {/* Collection selector */}
@@ -576,16 +592,8 @@ function BrowseMode({
         </div>
       </div>
 
-      {/* Back button when viewing a book */}
-      {selectedBook !== null && (
-        <button
-          onClick={() => setSelectedBook(null)}
-          className="flex shrink-0 items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
-        >
-          <ArrowLeft className="h-3 w-3" />
-          Back to books
-        </button>
-      )}
+      {/* Breadcrumb navigation */}
+      <PanelBreadcrumb items={breadcrumbItems} />
 
       {/* Book list or hadiths */}
       {selectedBook === null ? (

@@ -1142,3 +1142,35 @@ body {
   opacity: 1;
   transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
 }
+
+/* ─── Audio Dock ─── */
+.audio-dock {
+  animation: slide-up-dock 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-up-dock {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ─── Prose Reading Mode ─── */
+.prose-container {
+  direction: rtl;
+  text-align: right;
+}
+
+.prose-container-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+.verse-prose {
+  display: inline;
+}
+
+.verse-focused-prose {
+  background: hsl(var(--primary) / 0.08);
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

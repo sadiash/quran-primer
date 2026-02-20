@@ -13,12 +13,13 @@ import {
   Settings2,
   Library,
   LayoutDashboard,
+  AlignJustify,
 } from "lucide-react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
-import type { ReadingDensity } from "@/core/types";
+import type { ReadingDensity, ReadingFlow } from "@/core/types";
 
 const SURAH_NAMES = [
   "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -196,6 +197,16 @@ export function CommandPalette() {
                   <LayoutDashboard className="h-4 w-4" />
                   Density: {d.charAt(0).toUpperCase() + d.slice(1)}
                   {preferences.readingDensity === d ? " (active)" : ""}
+                </CommandItem>
+              ))}
+              {(["prose", "blocks"] as ReadingFlow[]).map((f) => (
+                <CommandItem
+                  key={f}
+                  onSelect={() => runCommand(`flow:${f}`, () => updatePreferences({ readingFlow: f }))}
+                >
+                  <AlignJustify className="h-4 w-4" />
+                  Reading Flow: {f.charAt(0).toUpperCase() + f.slice(1)}
+                  {(preferences.readingFlow ?? "blocks") === f ? " (active)" : ""}
                 </CommandItem>
               ))}
             </Command.Group>

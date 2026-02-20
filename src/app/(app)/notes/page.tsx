@@ -338,36 +338,6 @@ export default function NotesPage() {
           icon={StickyNote}
         />
         <div className="flex items-center gap-2">
-          {/* Tab toggle */}
-          <div className="flex items-center rounded-lg border border-border bg-surface p-0.5">
-            <button
-              type="button"
-              onClick={() => setActiveTab("notes")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-fast",
-                activeTab === "notes"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <StickyNote className="h-3.5 w-3.5" />
-              Notes
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("mindmap")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-fast",
-                activeTab === "mindmap"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Network className="h-3.5 w-3.5" />
-              Mind Map
-            </button>
-          </div>
-
           {/* Import button */}
           {activeTab === "notes" && !editorMode && (
             <>
@@ -440,6 +410,44 @@ export default function NotesPage() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="mt-4 flex items-center gap-6 border-b border-border">
+        <button
+          type="button"
+          onClick={() => setActiveTab("notes")}
+          className={cn(
+            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-fast",
+            activeTab === "notes"
+              ? "border-primary text-foreground"
+              : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
+          )}
+        >
+          <StickyNote className="h-4 w-4" />
+          Notes
+          {notes.length > 0 && (
+            <span className={cn(
+              "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+              activeTab === "notes" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
+            )}>
+              {notes.length}
+            </span>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("mindmap")}
+          className={cn(
+            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-fast",
+            activeTab === "mindmap"
+              ? "border-primary text-foreground"
+              : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
+          )}
+        >
+          <Network className="h-4 w-4" />
+          Mind Map
+        </button>
       </div>
 
       {/* Mind Map Tab */}
