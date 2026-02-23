@@ -41,14 +41,14 @@ function ToolbarButton({
       disabled={disabled}
       aria-label={label}
       className={cn(
-        "flex h-7 w-7 items-center justify-center rounded-md transition-fast",
+        "flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-fast",
         active
           ? "bg-primary/15 text-primary"
           : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
         disabled && "pointer-events-none opacity-40",
       )}
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3 w-3" />
     </button>
   );
 }
@@ -77,7 +77,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-0.5 border-b border-border px-2 py-1.5">
+    <div className="flex flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-border px-2 py-1.5">
       <ToolbarButton
         icon={Bold}
         label="Bold"
@@ -129,7 +129,6 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
         active={editor.isActive("link")}
         onClick={handleLink}
       />
-      <Divider />
       <ToolbarButton
         icon={Undo2}
         label="Undo"

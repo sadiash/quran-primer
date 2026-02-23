@@ -80,7 +80,7 @@ export function NoteEditor({
       },
       editorProps: {
         attributes: {
-          class: "tiptap outline-none px-3 py-2 min-h-[300px] text-sm text-foreground",
+          class: "tiptap outline-none px-3 py-2 min-h-[180px] text-sm text-foreground",
         },
         handleKeyDown: (_view, event) => {
           if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
@@ -122,7 +122,7 @@ export function NoteEditor({
   saveRef.current = handleSave;
 
   return (
-    <div className="flex flex-col rounded-lg border border-border bg-card">
+    <div className="flex flex-1 min-h-0 flex-col rounded-lg border border-border bg-card">
       {/* Title input */}
       <div className="border-b border-border">
         <input
