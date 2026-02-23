@@ -38,7 +38,7 @@ export function VerseActionBar({
   return (
     <div
       className={cn(
-        "verse-action-bar absolute -top-1 right-1 z-10 flex items-center gap-0.5 rounded-lg px-1.5 py-1 glass",
+        "verse-action-bar absolute -top-2 right-2 z-10 flex items-center gap-0.5 rounded-full px-2 py-1 glass",
         isFocused && "is-visible",
       )}
     >
@@ -129,10 +129,10 @@ function ActionButton({
     <button
       onClick={onClick}
       className={cn(
-        "rounded-md p-1 transition-fast",
+        "rounded-full p-1.5 transition-all hover:bg-surface-hover",
         active
           ? activeClass
-          : "text-muted-foreground/60 hover:text-foreground",
+          : "text-muted-foreground/50 hover:text-foreground",
       )}
       aria-label={label}
     >

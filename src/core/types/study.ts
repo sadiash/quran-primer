@@ -53,7 +53,7 @@ export interface TranslationConfig {
 }
 export type TranslationLayout = "stacked" | "columnar";
 export type ReadingDensity = "comfortable" | "compact" | "dense";
-export type ReadingFlow = "prose" | "blocks";
+export type ReadingFlow = "prose" | "blocks" | "theater" | "mushaf" | "focus";
 
 export type ThemeName =
   | "library"

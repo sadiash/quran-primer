@@ -12,9 +12,13 @@ import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useNotes } from "@/presentation/hooks/use-notes";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
+import { useFocusSpotlight } from "@/presentation/hooks/use-focus-spotlight";
 import { SurahHeader } from "./surah-header";
 import { VerseBlock } from "./verse-block";
 import { ReadingToolbar } from "./reading-toolbar";
+import { ReadingProgressBar } from "./reading-progress-bar";
+import { TheaterSurface } from "./theater-surface";
+import { MushafSurface } from "./mushaf-surface";
 
 interface ReadingSurfaceProps {
   surah: Surah;
@@ -38,6 +42,36 @@ export function ReadingSurface({
   const audio = useAudioPlayer();
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const readingFlow = preferences.readingFlow ?? "blocks";
+
+  // Focus spotlight hook (active for all modes but only applied to "focus" flow)
+  const { getFocusClass } = useFocusSpotlight(containerRef);
+
+  // Verse keys list for focus mode distance calculation
+  const verseKeys = useMemo(() => verses.map((v) => v.verseKey), [verses]);
+
+  // ── Route to Theater Mode ──
+  if (readingFlow === "theater") {
+    return (
+      <TheaterSurface
+        surah={surah}
+        verses={verses}
+        translations={translations}
+      />
+    );
+  }
+
+  // ── Route to Mushaf Mode ──
+  if (readingFlow === "mushaf") {
+    return (
+      <MushafSurface
+        surah={surah}
+        verses={verses}
+        translations={translations}
+      />
+    );
+  }
 
   // Manual focus — used for clicks, keyboard nav, and verse action menus.
   // The scroll-based poll only saves progress and never overrides this.
@@ -239,23 +273,19 @@ export function ReadingSurface({
   }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
 
   const density = preferences.readingDensity;
-  const readingFlow = preferences.readingFlow ?? "blocks";
   const isProse = readingFlow === "prose";
-  const dividerClass = isProse
-    ? ""
-    : density === "dense"
-      ? ""
-      : density === "compact"
-        ? "divide-y divide-border/10"
-        : "divide-y divide-border/20";
+  const isFocus = readingFlow === "focus";
 
   return (
     <div className="relative h-full">
+      {/* Reading progress bar */}
+      <ReadingProgressBar containerRef={containerRef} />
+
       <div
         ref={containerRef}
         className="h-full overflow-y-auto scroll-smooth"
       >
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl px-6 py-8 sm:px-8 lg:px-12">
           {preferences.showSurahHeaders && (
             <SurahHeader surah={surah} showBismillah={preferences.showBismillah} />
           )}
@@ -270,49 +300,55 @@ export function ReadingSurface({
 
           <div className={cn(
             "mt-4 space-y-0",
-            dividerClass,
             isProse && (preferences.showArabic ? "prose-container" : "prose-container-ltr"),
           )}>
-            {verses.map((verse) => (
-              <VerseBlock
-                key={verse.verseKey}
-                verse={verse}
-                translations={translationsByVerse.get(verse.verseKey) ?? []}
-                showArabic={preferences.showArabic}
-                showTranslation={preferences.showTranslation}
-                showVerseNumbers={preferences.showVerseNumbers}
-                arabicSizeClass={arabicSizeClass}
-                translationConfigs={resolvedConfigs}
-                translationLayout={preferences.translationLayout}
-                density={density}
-                readingFlow={readingFlow}
-                isFocused={focusedVerseKey === verse.verseKey}
-                isBookmarked={isBookmarked(verse.verseKey)}
-                isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
-                hasNotes={noteVerseKeys.has(verse.verseKey)}
-                onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
-                onTogglePlay={() => {
-                  if (audio.currentVerseKey === verse.verseKey && audio.isPlaying) {
-                    audio.pause();
-                  } else if (audio.currentVerseKey === verse.verseKey && !audio.isPlaying) {
-                    audio.resume();
-                  } else {
-                    audio.play(verse.verseKey, surah.id);
-                  }
-                }}
-                onFocus={() => focusVerseManually(verse.verseKey)}
-                onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
-                onOpenStudy={() => { focusVerseManually(verse.verseKey); openPanel("tafsir"); }}
-                onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
-                concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
-                conceptMaxVisible={preferences.conceptMaxVisible}
-                conceptColorSlot={preferences.conceptColorSlot}
-              />
-            ))}
+            {verses.map((verse) => {
+              const focusClass = isFocus ? getFocusClass(verse.verseKey, verseKeys) : undefined;
+              return (
+                <div
+                  key={verse.verseKey}
+                  className={focusClass}
+                >
+                  <VerseBlock
+                    verse={verse}
+                    translations={translationsByVerse.get(verse.verseKey) ?? []}
+                    showArabic={preferences.showArabic}
+                    showTranslation={preferences.showTranslation}
+                    showVerseNumbers={preferences.showVerseNumbers}
+                    arabicSizeClass={arabicSizeClass}
+                    translationConfigs={resolvedConfigs}
+                    translationLayout={preferences.translationLayout}
+                    density={density}
+                    readingFlow={readingFlow}
+                    isFocused={focusedVerseKey === verse.verseKey}
+                    isBookmarked={isBookmarked(verse.verseKey)}
+                    isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
+                    hasNotes={noteVerseKeys.has(verse.verseKey)}
+                    onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
+                    onTogglePlay={() => {
+                      if (audio.currentVerseKey === verse.verseKey && audio.isPlaying) {
+                        audio.pause();
+                      } else if (audio.currentVerseKey === verse.verseKey && !audio.isPlaying) {
+                        audio.resume();
+                      } else {
+                        audio.play(verse.verseKey, surah.id);
+                      }
+                    }}
+                    onFocus={() => focusVerseManually(verse.verseKey)}
+                    onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
+                    onOpenStudy={() => { focusVerseManually(verse.verseKey); openPanel("tafsir"); }}
+                    onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
+                    concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
+                    conceptMaxVisible={preferences.conceptMaxVisible}
+                    conceptColorSlot={preferences.conceptColorSlot}
+                  />
+                </div>
+              );
+            })}
           </div>
 
-          {/* End spacer */}
-          <div className="h-32" />
+          {/* End spacer — extra room for floating mobile nav + audio dock */}
+          <div className="h-32 md:h-24" />
         </div>
       </div>
 
@@ -346,28 +382,28 @@ function TranslationLegend({
   }, [translations]);
 
   return (
-    <div className="mt-4">
+    <div className="mt-6">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70 hover:text-muted-foreground transition-fast"
+        className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50 hover:text-muted-foreground/70 transition-all tracking-wide uppercase"
       >
         <ChevronDown
           className={cn(
-            "h-3 w-3 transition-transform",
+            "h-2.5 w-2.5 transition-transform",
             !open && "-rotate-90",
           )}
         />
-        {open ? "Hide" : "Show"} translation key
+        Translation key
       </button>
       {open && (
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5">
           {configs.map((c) => (
-            <span key={c.translationId} className="flex items-center gap-1.5 text-[11px]">
+            <span key={c.translationId} className="flex items-center gap-2 text-[10px]">
               <span
-                className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
+                className="inline-block h-2 w-2 rounded-full shrink-0"
                 style={{ backgroundColor: `hsl(var(--translation-${c.colorSlot}))` }}
               />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground/60">
                 {nameMap.get(c.translationId) ?? `Translation ${c.translationId}`}
               </span>
             </span>

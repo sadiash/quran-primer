@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="77" fill="#FAF5F0"/>
+  <circle cx="256" cy="215.04" r="112.64" fill="none" stroke="#C9A227" stroke-width="12.8"/>
+  <text x="256" y="240.64" font-family="serif" font-size="112.64" fill="#C9A227" text-anchor="middle" dominant-baseline="middle">P</text>
+  <text x="256" y="399.36" font-family="sans-serif" font-weight="600" font-size="40.96" fill="#3D2B1F" text-anchor="middle">THE PRIMER</text>
+</svg>

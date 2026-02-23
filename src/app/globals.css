@@ -695,12 +695,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.011em;
 }
 
-/* ─── Scrollbar ─── */
+/* ─── Scrollbar — Whisper-thin, nearly invisible ─── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -708,43 +709,45 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: hsl(var(--muted-foreground) / 0.15);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: hsl(var(--muted-foreground) / 0.35);
 }
 
-/* ─── Selection ─── */
+/* ─── Selection — Gold leaf highlight ─── */
 ::selection {
-  background-color: hsl(var(--primary) / 0.2);
+  background-color: hsl(var(--primary) / 0.18);
   color: hsl(var(--foreground));
 }
 
-/* ─── Focus Ring ─── */
+/* ─── Focus Ring — Subtle, refined ─── */
 :focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: 1.5px solid hsl(var(--ring) / 0.6);
   outline-offset: 2px;
 }
 
-/* ─── Arabic Text Defaults ─── */
+/* ─── Arabic Text Defaults — The Hero ─── */
 [lang="ar"],
 [dir="rtl"] {
   font-family: var(--font-arabic-reading);
-  line-height: 2.4;
+  line-height: 2.6;
   direction: rtl;
   text-align: right;
 }
 
 .arabic-display {
   font-family: var(--font-arabic-display);
-  line-height: 2.8;
+  line-height: 2.4;
+  letter-spacing: 0.01em;
 }
 
 .arabic-reading {
   font-family: var(--font-arabic-reading);
-  line-height: 2.4;
+  line-height: 2.6;
+  text-rendering: optimizeLegibility;
 }
 
 /* ─── Reduced Motion ─── */
@@ -865,7 +868,7 @@ body {
   text-shadow: 0 0 8px hsl(var(--glow-primary) / 0.3);
 }
 
-/* ─── Verse Selection Indicator ─── */
+/* ─── Verse Selection Indicator — Luminous left edge ─── */
 .verse-focused-indicator {
   position: relative;
 }
@@ -874,17 +877,12 @@ body {
   content: "";
   position: absolute;
   left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
   border-radius: 9999px;
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--accent) / 0) 0%,
-    hsl(var(--accent)) 30%,
-    hsl(var(--accent)) 70%,
-    hsl(var(--accent) / 0) 100%
-  );
+  background: hsl(var(--primary) / 0.7);
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.3);
 }
 
 /* ─── Resize Handle Polish ─── */
@@ -1003,26 +1001,26 @@ body {
   background: hsl(42 80% 55% / 0.7);
 }
 
-/* ─── Enhanced Verse Focus Indicator ─── */
+/* ─── Enhanced Verse Focus Indicator — Soft radiance ─── */
 .verse-focused-indicator::after {
   content: "";
   position: absolute;
-  left: -2px;
+  left: -4px;
   top: 0;
   bottom: 0;
-  width: 40px;
+  width: 60px;
   pointer-events: none;
   background: radial-gradient(
     ellipse at 0% 50%,
-    hsl(var(--primary) / 0.06) 0%,
-    transparent 70%
+    hsl(var(--primary) / 0.04) 0%,
+    transparent 80%
   );
 }
 
-/* ─── Bismillah Ornament ─── */
+/* ─── Bismillah Ornament — Refined gold flourish ─── */
 .bismillah-ornament {
   position: relative;
-  padding: 0.75rem 0;
+  padding: 1.5rem 0;
 }
 
 .bismillah-ornament::before,
@@ -1031,32 +1029,32 @@ body {
   display: block;
   height: 1px;
   margin: 0 auto;
-  max-width: 200px;
+  max-width: 160px;
   background: linear-gradient(
     to right,
     transparent 0%,
-    hsl(var(--primary) / 0.3) 30%,
-    hsl(var(--primary) / 0.5) 50%,
-    hsl(var(--primary) / 0.3) 70%,
+    hsl(var(--primary) / 0.15) 20%,
+    hsl(var(--primary) / 0.4) 50%,
+    hsl(var(--primary) / 0.15) 80%,
     transparent 100%
   );
 }
 
 .bismillah-ornament::before {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .bismillah-ornament::after {
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
-/* ─── Surah Divider (gradient line with star glyph) ─── */
+/* ─── Surah Divider — Elegant symmetrical ornament ─── */
 .surah-divider {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
 }
 
 .surah-divider::before,
@@ -1064,11 +1062,11 @@ body {
   content: "";
   flex: 1;
   height: 1px;
+  max-width: 120px;
   background: linear-gradient(
     to right,
     transparent 0%,
-    hsl(var(--border) / 0.6) 50%,
-    transparent 100%
+    hsl(var(--primary) / 0.25) 100%
   );
 }
 
@@ -1076,42 +1074,44 @@ body {
   background: linear-gradient(
     to left,
     transparent 0%,
-    hsl(var(--border) / 0.6) 50%,
-    transparent 100%
+    hsl(var(--primary) / 0.25) 100%
   );
 }
 
 /* ─── Arabic Density Classes ─── */
 .arabic-reading-comfortable {
-  line-height: 2.4;
+  line-height: 2.6;
 }
 
 .arabic-reading-compact {
-  line-height: 2.0;
+  line-height: 2.2;
 }
 
 .arabic-reading-dense {
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
-/* ─── Arabic Typography Improvements ─── */
+/* ─── Arabic Typography — Refined calligraphic rendering ─── */
 .arabic-reading {
-  letter-spacing: 0.02em;
-  word-spacing: 0.08em;
+  letter-spacing: 0.015em;
+  word-spacing: 0.06em;
   font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+  -webkit-text-stroke: 0.2px transparent;
 }
 
-/* ─── Verse Action Bar ─── */
+/* ─── Verse Action Bar — Floating glass toolbar ─── */
 .verse-action-bar {
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  transform: translateY(2px);
 }
 
 .group:hover .verse-action-bar,
 .verse-action-bar.is-visible {
   opacity: 1;
   pointer-events: auto;
+  transform: translateY(0);
 }
 
 /* ─── Zen Mode ─── */
@@ -1126,21 +1126,20 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Top Nav Auto-Hide ─── */
+/* ─── Top Nav Auto-Hide — Graceful float ─── */
 .nav-hidden {
-  max-height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: hidden;
   opacity: 0;
-  border-bottom-width: 0;
-  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+  transform: translateY(-100%);
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-visible {
-  max-height: 3rem;
   opacity: 1;
-  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+  transform: translateY(0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ─── Audio Dock ─── */
@@ -1169,8 +1168,525 @@ body {
 }
 
 .verse-focused-prose {
-  background: hsl(var(--primary) / 0.08);
-  border-radius: 2px;
+  background: hsl(var(--primary) / 0.06);
+  border-radius: 3px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   The Illuminated Manuscript — Revamp Additions
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Verse Enter Animation ─── */
+@keyframes verse-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.verse-enter {
+  animation: verse-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Surah Header Entrance ─── */
+@keyframes header-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.header-reveal {
+  animation: header-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── Floating Nav Bar ─── */
+.floating-nav {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 50;
+  border-radius: 1rem;
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.4);
+  box-shadow:
+    0 1px 3px hsl(var(--foreground) / 0.03),
+    0 8px 24px hsl(var(--foreground) / 0.04);
+}
+
+@media (min-width: 768px) {
+  .floating-nav {
+    left: 1rem;
+    right: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .floating-nav {
+    left: 2rem;
+    right: 2rem;
+  }
+}
+
+/* ─── Floating Mobile Nav ─── */
+.floating-mobile-nav {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  border-radius: 1.5rem;
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow:
+    0 4px 16px hsl(var(--foreground) / 0.06),
+    0 1px 3px hsl(var(--foreground) / 0.04);
+  padding: 0.375rem 0.5rem;
+}
+
+/* ─── Floating Audio Dock ─── */
+.audio-dock-floating {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  border-radius: 1rem;
+  width: calc(100% - 1.5rem);
+  max-width: 480px;
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow:
+    0 4px 20px hsl(var(--foreground) / 0.08),
+    0 1px 3px hsl(var(--foreground) / 0.04);
+  animation: slide-up-dock 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Push floating mobile nav up when audio dock is visible */
+.has-audio .floating-mobile-nav {
+  bottom: 5rem;
+  transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Verse Number Ornament ─── */
+.verse-number-ornament {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: 9999px;
+  border: 1.5px solid hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary) / 0.5);
+  font-size: 0.45em;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  letter-spacing: 0;
+  vertical-align: middle;
+  margin-right: 0.3em;
+  margin-left: 0.15em;
+  user-select: none;
+  line-height: 1;
+}
+
+/* ─── Reading Surface Spacer for floating nav ─── */
+.reading-surface-offset {
+  padding-top: 4rem;
+}
+
+@media (max-width: 767px) {
+  .reading-surface-offset {
+    padding-top: 3.5rem;
+  }
+}
+
+/* ─── Elegant Verse Hover ─── */
+.verse-hover-glow {
+  transition: background var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+.verse-hover-glow:hover {
+  background: hsl(var(--primary) / 0.02);
+}
+
+/* ─── Surah Header Typography ─── */
+.surah-title-arabic {
+  font-size: 2.5rem;
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 640px) {
+  .surah-title-arabic {
+    font-size: 3.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .surah-title-arabic {
+    font-size: 3.75rem;
+  }
+}
+
+/* ─── Reading Toolbar Float ─── */
+.reading-toolbar-float {
+  border-radius: 0.875rem;
+  border: 1px solid hsl(var(--border) / 0.4);
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 4px 16px hsl(var(--foreground) / 0.06),
+    0 1px 3px hsl(var(--foreground) / 0.03);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Theater Mode — Full-viewport verse-by-verse presentation
+   ═══════════════════════════════════════════════════════════ */
+
+.theater-container {
+  height: 100dvh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.theater-slide {
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.theater-arabic {
+  font-family: var(--font-arabic-reading);
+  font-size: clamp(1.75rem, 7vw, 4.5rem);
+  line-height: 2.2;
+  text-align: center;
+  direction: rtl;
+  color: hsl(var(--foreground));
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+  max-width: 90vw;
+}
+
+@keyframes theater-arabic-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes theater-translation-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+}
+
+.theater-arabic-enter {
+  animation: theater-arabic-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.theater-translation-enter {
+  animation: theater-translation-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.theater-translation {
+  font-size: clamp(0.875rem, 2vw, 1.25rem);
+  line-height: 1.8;
+  text-align: center;
+  color: hsl(var(--muted-foreground) / 0.8);
+  max-width: 42rem;
+  margin-top: 1.5rem;
+}
+
+/* Theater verse counter */
+.theater-counter {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground) / 0.4);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+/* Theater dot navigation */
+.theater-dots {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.theater-dots::-webkit-scrollbar {
+  display: none;
+}
+
+.theater-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: hsl(var(--muted-foreground) / 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.theater-dot-active {
+  background: hsl(var(--primary) / 0.8);
+  height: 16px;
+  box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Focus Flow Mode — Scroll-driven spotlight
+   ═══════════════════════════════════════════════════════════ */
+
+.focus-verse-active {
+  opacity: 1 !important;
+  transform: scale(1);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.focus-verse-near {
+  opacity: 0.55;
+  transform: scale(0.99);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.focus-verse-far {
+  opacity: 0.25;
+  transform: scale(0.98);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* CSS scroll-driven animation (progressive enhancement) */
+@supports (animation-timeline: view()) {
+  .focus-verse-enhanced {
+    animation: focus-spotlight linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 50%;
+  }
+
+  @keyframes focus-spotlight {
+    0% { opacity: 0.2; transform: scale(0.97); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.2; transform: scale(0.97); }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Mushaf Mode — Book spread layout
+   ═══════════════════════════════════════════════════════════ */
+
+.mushaf-spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100dvh - 4rem);
+  gap: 0;
+  position: relative;
+}
+
+/* Book spine shadow between pages */
+.mushaf-spread::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    hsl(var(--foreground) / 0.03) 0%,
+    hsl(var(--foreground) / 0.06) 40%,
+    hsl(var(--foreground) / 0.06) 60%,
+    hsl(var(--foreground) / 0.03) 100%
+  );
+}
+
+.mushaf-page {
+  padding: 2rem 2.5rem;
+  min-height: calc(100dvh - 4rem);
+  position: relative;
+  overflow-y: auto;
+}
+
+.mushaf-page-right {
+  direction: rtl;
+  text-align: right;
+  border-right: 1px solid hsl(var(--border) / 0.3);
+}
+
+.mushaf-page-left {
+  direction: ltr;
+  text-align: left;
+  border-left: 1px solid hsl(var(--border) / 0.3);
+}
+
+.mushaf-page-number {
+  position: absolute;
+  bottom: 1rem;
+  font-size: 0.6875rem;
+  color: hsl(var(--muted-foreground) / 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.mushaf-page-right .mushaf-page-number {
+  left: 1.5rem;
+}
+
+.mushaf-page-left .mushaf-page-number {
+  right: 1.5rem;
+}
+
+/* Page turn animation */
+@keyframes mushaf-page-enter-right {
+  from { opacity: 0; transform: perspective(1200px) rotateY(-8deg); }
+  to { opacity: 1; transform: perspective(1200px) rotateY(0deg); }
+}
+
+@keyframes mushaf-page-enter-left {
+  from { opacity: 0; transform: perspective(1200px) rotateY(8deg); }
+  to { opacity: 1; transform: perspective(1200px) rotateY(0deg); }
+}
+
+.mushaf-page-enter-right {
+  animation: mushaf-page-enter-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.mushaf-page-enter-left {
+  animation: mushaf-page-enter-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Mushaf navigation */
+.mushaf-nav {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06);
+}
+
+/* Mobile: single page */
+@media (max-width: 767px) {
+  .mushaf-spread {
+    grid-template-columns: 1fr;
+  }
+
+  .mushaf-spread::after {
+    display: none;
+  }
+
+  .mushaf-page-right {
+    border-right: none;
+  }
+
+  .mushaf-page-left {
+    border-left: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Reading Progress Bar
+   ═══════════════════════════════════════════════════════════ */
+
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: hsl(var(--primary) / 0.7);
+  z-index: 60;
+  transition: width 150ms linear;
+  border-radius: 0 1px 1px 0;
+}
+
+.reading-progress-bar::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -1px;
+  width: 6px;
+  height: 4px;
+  border-radius: 2px;
+  background: hsl(var(--primary));
+  box-shadow: 0 0 8px hsl(var(--primary) / 0.5);
+}
+
+/* ─── Smooth Theme Transitions ─── */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ─── Page-level Ambient Glow (top gradient) ─── */
+.ambient-glow::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--gradient-glow);
+  opacity: 0.7;
 }

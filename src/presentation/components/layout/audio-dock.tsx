@@ -6,7 +6,6 @@ import {
   Pause,
   SkipBack,
   SkipForward,
-  Square,
   X,
 } from "lucide-react";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
@@ -62,31 +61,31 @@ export function AudioDock() {
   if (!audio.isActive) return null;
 
   return (
-    <div className="audio-dock shrink-0 border-t border-border bg-card/95 backdrop-blur-sm">
+    <div className="audio-dock-floating">
       {/* Progress bar — clickable */}
       <div
-        className="group h-1 w-full cursor-pointer bg-muted/50 transition-all hover:h-1.5"
+        className="group mx-3 mt-2 h-1 cursor-pointer rounded-full bg-muted/40 transition-all hover:h-1.5"
         onClick={handleSeek}
       >
         <div
-          className="h-full bg-primary transition-all"
+          className="h-full rounded-full bg-primary/70 transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="flex h-11 items-center gap-2 px-3 md:gap-3 md:px-4">
+      <div className="flex h-10 items-center gap-2 px-3 md:gap-3">
         {/* Verse label + reciter */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium text-foreground leading-tight">
+          <p className="truncate text-[11px] font-medium text-foreground leading-tight">
             {verseLabel}
           </p>
-          <p className="truncate text-[10px] text-muted-foreground/70 leading-tight">
+          <p className="truncate text-[9px] text-muted-foreground/60 leading-tight">
             {reciterName}
           </p>
         </div>
 
         {/* Time display */}
-        <span className="hidden text-[10px] font-mono text-muted-foreground/60 sm:block">
+        <span className="hidden text-[9px] font-mono text-muted-foreground/50 sm:block tabular-nums">
           {formatTime(audio.currentTime)} / {formatTime(audio.duration)}
         </span>
 
@@ -94,43 +93,43 @@ export function AudioDock() {
         <div className="flex items-center gap-0.5">
           <button
             onClick={audio.previous}
-            className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
+            className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Previous verse"
           >
-            <SkipBack className="h-3.5 w-3.5" />
+            <SkipBack className="h-3 w-3" />
           </button>
 
           <button
             onClick={handlePlayPause}
             className={cn(
-              "rounded-full p-1.5 transition-fast",
-              "bg-primary/10 text-primary hover:bg-primary/20",
+              "rounded-full p-2 transition-all",
+              "bg-primary/10 text-primary hover:bg-primary/15",
             )}
             aria-label={audio.isPlaying ? "Pause" : "Play"}
           >
             {audio.isPlaying ? (
-              <Pause className="h-4 w-4" />
+              <Pause className="h-3.5 w-3.5" />
             ) : (
-              <Play className="h-4 w-4" />
+              <Play className="h-3.5 w-3.5" />
             )}
           </button>
 
           <button
             onClick={audio.next}
-            className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
+            className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Next verse"
           >
-            <SkipForward className="h-3.5 w-3.5" />
+            <SkipForward className="h-3 w-3" />
           </button>
         </div>
 
         {/* Stop / close button */}
         <button
           onClick={audio.stop}
-          className="rounded-md p-1.5 text-muted-foreground/60 transition-fast hover:bg-surface-hover hover:text-foreground"
+          className="rounded-full p-1 text-muted-foreground/40 transition-all hover:text-foreground"
           aria-label="Stop audio"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-3 w-3" />
         </button>
       </div>
     </div>

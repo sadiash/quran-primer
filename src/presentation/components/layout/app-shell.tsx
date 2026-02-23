@@ -9,6 +9,7 @@ import { MobileStudySheet } from "@/presentation/components/drawer/mobile-study-
 import { AudioDock } from "@/presentation/components/layout/audio-dock";
 import { useAutoHideNav } from "@/presentation/hooks/use-auto-hide-nav";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 
 /** Routes where panels should never appear */
 const NO_PANEL_ROUTES = ["/settings", "/onboarding", "/browse", "/bookmarks", "/notes", "/knowledge"];
@@ -21,10 +22,14 @@ export function AppShell({ children }: AppShellProps) {
   const navHidden = useAutoHideNav();
   const pathname = usePathname();
   const { preferences } = usePreferences();
+  const audio = useAudioPlayer();
   const zenMode = preferences.zenMode;
+  const readingFlow = preferences.readingFlow ?? "blocks";
+  const isImmersive = readingFlow === "theater" || readingFlow === "mushaf";
   const hidePanels = NO_PANEL_ROUTES.some((r) => pathname.startsWith(r));
 
-  if (zenMode) {
+  // Immersive modes (theater/mushaf) strip all chrome like zen mode
+  if (zenMode || isImmersive) {
     return (
       <div className="zen-mode flex h-dvh flex-col overflow-hidden">
         <main id="main-content" className="h-full flex-1 overflow-y-auto">
@@ -36,11 +41,11 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
+    <div className={`ambient-glow flex h-dvh flex-col overflow-hidden ${audio.isActive ? "has-audio" : ""}`}>
       <TopNav hidden={navHidden} />
 
       {/* Main area: multi-panel docking layout (desktop), skipped on non-reading routes */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden reading-surface-offset">
         {hidePanels ? (
           <main id="main-content" className="h-full flex-1 overflow-y-auto">
             {children}
