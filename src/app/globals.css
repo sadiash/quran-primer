@@ -896,6 +896,124 @@ body > * {
   --texture-wash-opacity: 1;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Paper Texture Presets — Independent of theme, override
+   texture variables when user selects a specific texture.
+   "auto" = use theme defaults (no override needed).
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── None — Clean, no texture at all ── */
+html[data-paper="none"] {
+  --texture-noise-opacity: 0 !important;
+  --texture-wash-opacity: 0 !important;
+}
+
+/* ── Parchment — Aged, warm paper with visible grain ── */
+html[data-paper="parchment"] {
+  --texture-noise-opacity: 0.09 !important;
+  --texture-blend: multiply !important;
+  --texture-wash: radial-gradient(
+    ellipse at 25% 20%, hsl(35 55% 70% / 0.18) 0%,
+    transparent 55%
+  ), radial-gradient(
+    ellipse at 75% 75%, hsl(30 45% 65% / 0.12) 0%,
+    transparent 50%
+  ), radial-gradient(
+    ellipse at 50% 50%, hsl(40 40% 75% / 0.06) 0%,
+    transparent 70%
+  ) !important;
+  --texture-wash-opacity: 1 !important;
+}
+
+/* ── Silk — Smooth, luminous sheen with fine grain ── */
+html[data-paper="silk"] {
+  --texture-noise-opacity: 0.018 !important;
+  --texture-blend: overlay !important;
+  --texture-wash: radial-gradient(
+    ellipse at 30% 25%, hsl(210 30% 90% / 0.12) 0%,
+    transparent 50%
+  ), radial-gradient(
+    ellipse at 70% 65%, hsl(280 20% 85% / 0.08) 0%,
+    transparent 45%
+  ), linear-gradient(
+    135deg,
+    hsl(0 0% 100% / 0.03) 0%,
+    transparent 50%,
+    hsl(0 0% 100% / 0.02) 100%
+  ) !important;
+  --texture-wash-opacity: 1 !important;
+}
+
+/* ── Canvas — Rough, visible woven texture ── */
+html[data-paper="canvas"] {
+  --texture-noise-opacity: 0.14 !important;
+  --texture-blend: multiply !important;
+  --texture-wash: radial-gradient(
+    ellipse at 40% 30%, hsl(45 25% 78% / 0.08) 0%,
+    transparent 55%
+  ), radial-gradient(
+    ellipse at 60% 70%, hsl(30 20% 72% / 0.06) 0%,
+    transparent 50%
+  ) !important;
+  --texture-wash-opacity: 1 !important;
+}
+
+/* ── Watercolor — Bold, painterly washes ── */
+html[data-paper="watercolor"] {
+  --texture-noise-opacity: 0.05 !important;
+  --texture-blend: overlay !important;
+  --texture-wash: radial-gradient(
+    ellipse at 15% 20%, hsl(200 60% 75% / 0.15) 0%,
+    transparent 40%
+  ), radial-gradient(
+    ellipse at 85% 30%, hsl(340 50% 75% / 0.1) 0%,
+    transparent 35%
+  ), radial-gradient(
+    ellipse at 50% 80%, hsl(45 65% 70% / 0.12) 0%,
+    transparent 45%
+  ), radial-gradient(
+    ellipse at 30% 60%, hsl(145 40% 70% / 0.08) 0%,
+    transparent 35%
+  ) !important;
+  --texture-wash-opacity: 1 !important;
+}
+
+/* Dark-mode adjustments — paper textures should feel less warm in dark */
+.dark[data-paper="parchment"],
+[data-theme][data-paper="parchment"] {
+  --texture-noise-opacity: 0.07 !important;
+  --texture-blend: soft-light !important;
+  --texture-wash: radial-gradient(
+    ellipse at 25% 20%, hsl(35 40% 40% / 0.08) 0%,
+    transparent 55%
+  ), radial-gradient(
+    ellipse at 75% 75%, hsl(30 35% 35% / 0.05) 0%,
+    transparent 50%
+  ) !important;
+}
+
+.dark[data-paper="canvas"],
+[data-theme][data-paper="canvas"] {
+  --texture-noise-opacity: 0.10 !important;
+  --texture-blend: soft-light !important;
+}
+
+.dark[data-paper="watercolor"],
+[data-theme][data-paper="watercolor"] {
+  --texture-noise-opacity: 0.04 !important;
+  --texture-blend: soft-light !important;
+  --texture-wash: radial-gradient(
+    ellipse at 15% 20%, hsl(200 50% 45% / 0.06) 0%,
+    transparent 40%
+  ), radial-gradient(
+    ellipse at 85% 30%, hsl(340 40% 45% / 0.04) 0%,
+    transparent 35%
+  ), radial-gradient(
+    ellipse at 50% 80%, hsl(45 50% 45% / 0.05) 0%,
+    transparent 45%
+  ) !important;
+}
+
 /* ── Serif Display Font Utility ── */
 @utility serif-display {
   font-family: var(--font-serif-display);

@@ -33,5 +33,15 @@ export function ThemeNameSync() {
     }
   }, [preferences.themeName, setTheme]);
 
+  // Sync paper texture attribute
+  useEffect(() => {
+    const paper = preferences.paperTexture ?? "auto";
+    if (paper === "auto") {
+      document.documentElement.removeAttribute("data-paper");
+    } else {
+      document.documentElement.setAttribute("data-paper", paper);
+    }
+  }, [preferences.paperTexture]);
+
   return null;
 }
