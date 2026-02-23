@@ -31,9 +31,9 @@ function toArabicNumerals(n: number): string {
 }
 
 const DENSITY_PADDING: Record<ReadingDensity, string> = {
-  comfortable: "py-3 px-3",
-  compact: "py-1.5 px-2",
-  dense: "py-0.5 px-1.5",
+  comfortable: "py-5 px-4",
+  compact: "py-2.5 px-3",
+  dense: "py-1 px-2",
 };
 
 const DENSITY_ARABIC_LINE_HEIGHT: Record<ReadingDensity, string> = {
@@ -110,12 +110,12 @@ function VerseBlockInner({
     <div
       data-verse-key={verse.verseKey}
       className={cn(
-        "group relative transition-all",
+        "group relative verse-hover-glow",
         isProse
           ? "verse-prose py-0 px-0"
-          : cn("-mx-2 rounded-lg", DENSITY_PADDING[density]),
-        isFocused && (isProse ? "verse-focused-prose" : "bg-primary/5 verse-focused-indicator"),
-        isPlaying && !isProse && "bg-primary/[0.03]",
+          : cn("rounded-xl", DENSITY_PADDING[density]),
+        isFocused && (isProse ? "verse-focused-prose" : "bg-primary/[0.03] verse-focused-indicator"),
+        isPlaying && !isProse && "bg-primary/[0.02]",
         isBookmarked && !isProse && "verse-bookmarked",
         hasNotes && !isProse && "verse-has-notes",
       )}
@@ -149,7 +149,7 @@ function VerseBlockInner({
         />
       )}
 
-      {/* Arabic text with inline verse number */}
+      {/* Arabic text with ornamental verse number */}
       {showArabic && (
         <span
           lang="ar"
@@ -163,7 +163,7 @@ function VerseBlockInner({
         >
           {verse.textUthmani}
           {showVerseNumbers && (
-            <span className="mr-1 text-[0.5em] align-super text-muted-foreground/50 font-sans select-none">
+            <span className="verse-number-ornament">
               {toArabicNumerals(verse.verseNumber)}
             </span>
           )}
@@ -172,7 +172,7 @@ function VerseBlockInner({
 
       {/* Verse number for translation-only mode (blocks only — prose handles it inline) */}
       {!showArabic && showVerseNumbers && showTranslation && !isProse && (
-        <span className="text-[10px] text-muted-foreground/40 font-mono select-none">
+        <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-muted-foreground/15 text-[9px] text-muted-foreground/40 font-medium select-none">
           {verse.verseNumber}
         </span>
       )}
@@ -252,7 +252,7 @@ function TranslationGroup({
     return m;
   }, [configs]);
 
-  const gapClass = density === "dense" ? "mt-1" : density === "compact" ? "mt-1.5" : "mt-2";
+  const gapClass = density === "dense" ? "mt-1.5" : density === "compact" ? "mt-2" : "mt-3";
 
   if (layout === "columnar" && multi) {
     return (
@@ -324,13 +324,13 @@ function TranslationText({
     <div>
       {hasHtml ? (
         <p
-          className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
+          className={cn("leading-[1.8] tracking-[0.01em]", sizeClass, !useColor && "text-muted-foreground/80")}
           style={colorStyle}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
         <p
-          className={cn("leading-relaxed", sizeClass, !useColor && "text-muted-foreground")}
+          className={cn("leading-[1.8] tracking-[0.01em]", sizeClass, !useColor && "text-muted-foreground/80")}
           style={colorStyle}
         >
           {translation.text}

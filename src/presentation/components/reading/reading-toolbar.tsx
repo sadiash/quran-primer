@@ -13,6 +13,9 @@ import {
   Heading,
   Sparkles,
   AlignJustify,
+  Theater,
+  Focus,
+  BookOpen,
 } from "lucide-react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
@@ -30,9 +33,12 @@ const DENSITIES: { value: ReadingDensity; label: string }[] = [
   { value: "dense", label: "Dense" },
 ];
 
-const FLOWS: { value: ReadingFlow; label: string }[] = [
+const FLOWS: { value: ReadingFlow; label: string; icon?: React.ReactNode }[] = [
   { value: "blocks", label: "Blocks" },
   { value: "prose", label: "Prose" },
+  { value: "theater", label: "Theater" },
+  { value: "focus", label: "Focus" },
+  { value: "mushaf", label: "Mushaf" },
 ];
 
 export function ReadingToolbar() {
@@ -47,18 +53,18 @@ export function ReadingToolbar() {
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-full shadow-soft-md transition-all",
-          "bg-card border border-border text-muted-foreground hover:text-foreground hover:shadow-soft-lg",
-          open && "bg-primary text-primary-foreground",
+          "flex h-9 w-9 items-center justify-center rounded-full transition-all",
+          "reading-toolbar-float text-muted-foreground/70 hover:text-foreground",
+          open && "bg-primary text-primary-foreground border-primary/50",
         )}
         aria-label="Reading settings"
       >
-        <Settings2 className="h-4 w-4" />
+        <Settings2 className="h-3.5 w-3.5" />
       </button>
 
       {/* Panel */}
       {open && (
-        <div className="absolute bottom-12 right-0 w-64 rounded-xl border border-border bg-card p-4 shadow-soft-lg animate-scale-in">
+        <div className="absolute bottom-12 right-0 w-64 rounded-xl border border-border/40 bg-card/95 backdrop-blur-xl p-4 shadow-soft-lg animate-scale-in">
           <div className="space-y-4">
             {/* Arabic font size */}
             <div>
@@ -103,10 +109,10 @@ export function ReadingToolbar() {
                     key={l.value}
                     onClick={() => updatePreferences({ translationLayout: l.value })}
                     className={cn(
-                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      "flex-1 rounded-lg px-2 py-1.5 text-[11px] transition-all",
                       preferences.translationLayout === l.value
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-muted-foreground hover:bg-surface-hover",
+                        ? "bg-primary/8 text-primary font-medium"
+                        : "text-muted-foreground/70 hover:bg-surface-hover",
                     )}
                   >
                     {l.label}
@@ -127,10 +133,10 @@ export function ReadingToolbar() {
                     key={d.value}
                     onClick={() => updatePreferences({ readingDensity: d.value })}
                     className={cn(
-                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      "flex-1 rounded-lg px-2 py-1.5 text-[11px] transition-all",
                       preferences.readingDensity === d.value
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-muted-foreground hover:bg-surface-hover",
+                        ? "bg-primary/8 text-primary font-medium"
+                        : "text-muted-foreground/70 hover:bg-surface-hover",
                     )}
                   >
                     {d.label}
@@ -143,18 +149,18 @@ export function ReadingToolbar() {
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
                 <AlignJustify className="h-3.5 w-3.5" />
-                Reading Flow
+                Reading Mode
               </label>
-              <div className="flex gap-1">
+              <div className="grid grid-cols-3 gap-1">
                 {FLOWS.map((f) => (
                   <button
                     key={f.value}
                     onClick={() => updatePreferences({ readingFlow: f.value })}
                     className={cn(
-                      "flex-1 rounded-md px-2 py-1.5 text-xs transition-fast",
+                      "rounded-lg px-2 py-1.5 text-[11px] transition-all",
                       (preferences.readingFlow ?? "blocks") === f.value
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-muted-foreground hover:bg-surface-hover",
+                        ? "bg-primary/8 text-primary font-medium"
+                        : "text-muted-foreground/70 hover:bg-surface-hover",
                     )}
                   >
                     {f.label}
