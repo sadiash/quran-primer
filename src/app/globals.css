@@ -62,6 +62,7 @@
   --radius-2xl: calc(var(--radius) + 10px);
 
   --font-ui: "Inter", system-ui, sans-serif;
+  --font-serif-display: "Cormorant Garamond", "Georgia", serif;
   --font-arabic-display: "Amiri Quran", "Amiri", serif;
   --font-arabic-reading: "Scheherazade New", "Amiri", serif;
 
@@ -748,6 +749,157 @@ body {
   font-family: var(--font-arabic-reading);
   line-height: 2.6;
   text-rendering: optimizeLegibility;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Paper Texture — SVG feTurbulence noise overlay per theme
+   Adds organic, watercolor-like grain. Zero HTTP requests.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Base noise texture layer — applied to body via ::after */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px;
+  opacity: var(--texture-noise-opacity, 0.04);
+  mix-blend-mode: var(--texture-blend, overlay);
+}
+
+/* Watercolor wash layer — body::before gets a subtle radial color wash */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--texture-wash, none);
+  opacity: var(--texture-wash-opacity, 0);
+}
+
+/* Ensure body content sits above the texture layers */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── The Library (Light Default) — warm parchment wash ── */
+:root {
+  --texture-noise-opacity: 0.035;
+  --texture-blend: overlay;
+  --texture-wash: radial-gradient(
+    ellipse at 30% 20%, hsl(36 60% 80% / 0.12) 0%,
+    transparent 50%
+  ), radial-gradient(
+    ellipse at 70% 80%, hsl(168 30% 70% / 0.06) 0%,
+    transparent 45%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── The Observatory (Dark) — deep cosmic nebula ── */
+.dark {
+  --texture-noise-opacity: 0.06;
+  --texture-blend: soft-light;
+  --texture-wash: radial-gradient(
+    ellipse at 25% 15%, hsl(42 80% 50% / 0.04) 0%,
+    transparent 45%
+  ), radial-gradient(
+    ellipse at 75% 70%, hsl(185 50% 40% / 0.03) 0%,
+    transparent 40%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Amethyst — lavender mist ── */
+[data-theme="amethyst"] {
+  --texture-noise-opacity: 0.03;
+  --texture-blend: overlay;
+  --texture-wash: radial-gradient(
+    ellipse at 20% 30%, hsl(265 60% 80% / 0.1) 0%,
+    transparent 50%
+  ), radial-gradient(
+    ellipse at 80% 60%, hsl(200 60% 75% / 0.06) 0%,
+    transparent 40%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Cosmos — nebula glow ── */
+[data-theme="cosmos"] {
+  --texture-noise-opacity: 0.07;
+  --texture-blend: soft-light;
+  --texture-wash: radial-gradient(
+    ellipse at 15% 20%, hsl(200 80% 50% / 0.05) 0%,
+    transparent 40%
+  ), radial-gradient(
+    ellipse at 85% 75%, hsl(270 60% 55% / 0.04) 0%,
+    transparent 35%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Midnight — barely-there glow for OLED ── */
+[data-theme="midnight"] {
+  --texture-noise-opacity: 0.04;
+  --texture-blend: soft-light;
+  --texture-wash: radial-gradient(
+    ellipse at 50% 30%, hsl(200 60% 50% / 0.02) 0%,
+    transparent 40%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Sahara — warm sand watercolor ── */
+[data-theme="sahara"] {
+  --texture-noise-opacity: 0.045;
+  --texture-blend: overlay;
+  --texture-wash: radial-gradient(
+    ellipse at 40% 25%, hsl(25 70% 70% / 0.12) 0%,
+    transparent 50%
+  ), radial-gradient(
+    ellipse at 65% 75%, hsl(35 50% 65% / 0.08) 0%,
+    transparent 45%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Garden — morning dew ── */
+[data-theme="garden"] {
+  --texture-noise-opacity: 0.03;
+  --texture-blend: overlay;
+  --texture-wash: radial-gradient(
+    ellipse at 35% 30%, hsl(145 40% 75% / 0.1) 0%,
+    transparent 45%
+  ), radial-gradient(
+    ellipse at 70% 65%, hsl(280 25% 75% / 0.05) 0%,
+    transparent 35%
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Matrix — CRT scanlines + phosphor glow ── */
+[data-theme="matrix"] {
+  --texture-noise-opacity: 0.08;
+  --texture-blend: screen;
+  --texture-wash: repeating-linear-gradient(
+    0deg,
+    hsl(120 100% 50% / 0.015),
+    hsl(120 100% 50% / 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  --texture-wash-opacity: 1;
+}
+
+/* ── Serif Display Font Utility ── */
+@utility serif-display {
+  font-family: var(--font-serif-display);
+  letter-spacing: 0.01em;
 }
 
 /* ─── Reduced Motion ─── */

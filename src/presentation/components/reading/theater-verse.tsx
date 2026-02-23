@@ -61,9 +61,9 @@ function TheaterVerseInner({
         </div>
       )}
 
-      {/* Translation — fades in after Arabic */}
+      {/* Translation — fades in after Arabic, serif display */}
       {showTranslation && plainTranslations.length > 0 && (
-        <div className={`theater-translation ${isActive ? "theater-translation-enter" : ""}`}>
+        <div className={`theater-translation serif-display ${isActive ? "theater-translation-enter" : ""}`}>
           {plainTranslations.map((t, i) => (
             <p key={t.resourceId}>
               {i > 0 && <span className="text-muted-foreground/20"> · </span>}

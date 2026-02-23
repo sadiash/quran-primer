@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Amiri, Scheherazade_New } from "next/font/google";
+import { Inter, Amiri, Scheherazade_New, Cormorant_Garamond } from "next/font/google";
 import {
   ThemeProvider,
   QueryProvider,
@@ -23,6 +23,12 @@ const scheherazadeNew = Scheherazade_New({
   variable: "--font-arabic-reading",
   subsets: ["arabic"],
   weight: ["400", "700"],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-serif-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 import type { Viewport } from "next";
@@ -51,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${amiri.variable} ${scheherazadeNew.variable} antialiased`}
+        className={`${inter.variable} ${amiri.variable} ${scheherazadeNew.variable} ${cormorantGaramond.variable} antialiased`}
       >
         <a
           href="#main-content"

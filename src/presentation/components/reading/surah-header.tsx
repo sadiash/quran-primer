@@ -66,15 +66,15 @@ export function SurahHeader({ surah, showBismillah = true }: SurahHeaderProps) {
         </Link>
       </div>
 
-      {/* English name — refined typography */}
-      <p className="mt-2 text-sm tracking-wide text-muted-foreground/70 font-light">
+      {/* English name — serif display typography */}
+      <p className="mt-2 text-base tracking-wide text-muted-foreground/70 font-light serif-display">
         {surah.nameSimple}
         <span className="mx-2 text-border/40">—</span>
         <span className="italic">{surah.nameTranslation}</span>
       </p>
 
       {/* Metadata: elegant, spaced */}
-      <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground/50 tracking-wide">
+      <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground/50 tracking-wide serif-display">
         <span className="uppercase">{surah.revelationType === "makkah" ? "Meccan" : "Medinan"}</span>
         <span className="text-primary/20">·</span>
         <span>{surah.versesCount} verses</span>

@@ -51,30 +51,7 @@ export function ReadingSurface({
   // Verse keys list for focus mode distance calculation
   const verseKeys = useMemo(() => verses.map((v) => v.verseKey), [verses]);
 
-  // ── Route to Theater Mode ──
-  if (readingFlow === "theater") {
-    return (
-      <TheaterSurface
-        surah={surah}
-        verses={verses}
-        translations={translations}
-      />
-    );
-  }
-
-  // ── Route to Mushaf Mode ──
-  if (readingFlow === "mushaf") {
-    return (
-      <MushafSurface
-        surah={surah}
-        verses={verses}
-        translations={translations}
-      />
-    );
-  }
-
   // Manual focus — used for clicks, keyboard nav, and verse action menus.
-  // The scroll-based poll only saves progress and never overrides this.
   const focusVerseManually = useCallback(
     (key: string) => {
       focusVerse(key);
@@ -87,11 +64,9 @@ export function ReadingSurface({
     const keys = new Set<string>();
     const prefix = `${surah.id}:`;
     for (const n of notes) {
-      // Verse-level: only verseKeys matching this surah
       for (const vk of n.verseKeys) {
         if (vk.startsWith(prefix)) keys.add(vk);
       }
-      // Surah-level: mark all verses
       if (n.surahIds.includes(surah.id)) {
         for (const v of verses) keys.add(v.verseKey);
       }
@@ -111,8 +86,9 @@ export function ReadingSurface({
   );
 
   // Filter translations to user's active selection
-  const activeTranslations = translations.filter((t) =>
-    preferences.activeTranslationIds.includes(t.resourceId),
+  const activeTranslations = useMemo(
+    () => translations.filter((t) => preferences.activeTranslationIds.includes(t.resourceId)),
+    [translations, preferences.activeTranslationIds],
   );
 
   // Group translations by verse, sorted by config order
@@ -127,7 +103,6 @@ export function ReadingSurface({
       byVerse.set(t.verseKey, existing);
     }
 
-    // Sort each verse's translations by config order
     for (const [key, arr] of byVerse) {
       arr.sort((a, b) => (configOrderMap.get(a.resourceId) ?? 0) - (configOrderMap.get(b.resourceId) ?? 0));
       byVerse.set(key, arr);
@@ -188,7 +163,6 @@ export function ReadingSurface({
     const verseParam = searchParams.get("verse");
     if (!verseParam) return;
 
-    // Small delay to let DOM render
     const timer = setTimeout(() => {
       const el = containerRef.current?.querySelector(
         `[data-verse-key="${verseParam}"]`,
@@ -212,8 +186,10 @@ export function ReadingSurface({
 
   // Keyboard shortcuts: j/k/b/t/n/Z/Escape + arrows
   useEffect(() => {
+    // Theater/mushaf have their own keyboard handlers
+    if (readingFlow === "theater" || readingFlow === "mushaf") return;
+
     function handleKeyDown(e: KeyboardEvent) {
-      // Skip if inside input/textarea/contenteditable or modifier keys held
       const target = e.target as HTMLElement;
       if (
         target.tagName === "INPUT" ||
@@ -270,11 +246,33 @@ export function ReadingSurface({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
+  }, [readingFlow, focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
 
   const density = preferences.readingDensity;
   const isProse = readingFlow === "prose";
   const isFocus = readingFlow === "focus";
+
+  // ── Route to Theater Mode ──
+  if (readingFlow === "theater") {
+    return (
+      <TheaterSurface
+        surah={surah}
+        verses={verses}
+        translations={translations}
+      />
+    );
+  }
+
+  // ── Route to Mushaf Mode ──
+  if (readingFlow === "mushaf") {
+    return (
+      <MushafSurface
+        surah={surah}
+        verses={verses}
+        translations={translations}
+      />
+    );
+  }
 
   return (
     <div className="relative h-full">

@@ -171,7 +171,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
                       return (
                         <p
                           key={t.resourceId}
-                          className="text-sm leading-[1.8] text-muted-foreground/80"
+                          className="text-sm leading-[1.8] text-muted-foreground/80 serif-display"
                         >
                           <span className="text-[0.6em] align-super text-muted-foreground/40 font-mono select-none mr-1">
                             {verse.verseNumber}
@@ -201,7 +201,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
                       return (
                         <p
                           key={t.resourceId}
-                          className="text-sm leading-[1.8] text-muted-foreground/80"
+                          className="text-sm leading-[1.8] text-muted-foreground/80 serif-display"
                         >
                           <span className="text-[0.6em] align-super text-muted-foreground/40 font-mono select-none mr-1">
                             {verse.verseNumber}
