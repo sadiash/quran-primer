@@ -311,6 +311,8 @@ function TranslationText({
 
   const fontSize = config?.fontSize ?? "md";
   const colorSlot = config?.colorSlot ?? 1;
+  const fontFamily = config?.fontFamily ?? "sans";
+  const isBold = config?.bold ?? false;
   const sizeClass = isPrimary
     ? TRANSLATION_SIZE_CLASS["xl"]
     : TRANSLATION_SIZE_CLASS[fontSize];
@@ -320,17 +322,25 @@ function TranslationText({
     ? { color: `hsl(${colorVar})` }
     : undefined;
 
+  const textClass = cn(
+    "leading-[1.8] tracking-[0.01em]",
+    sizeClass,
+    !useColor && "text-muted-foreground/80",
+    fontFamily === "serif" && "serif-display",
+    isBold && "font-semibold",
+  );
+
   return (
     <div>
       {hasHtml ? (
         <p
-          className={cn("leading-[1.8] tracking-[0.01em]", sizeClass, !useColor && "text-muted-foreground/80")}
+          className={textClass}
           style={colorStyle}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
         <p
-          className={cn("leading-[1.8] tracking-[0.01em]", sizeClass, !useColor && "text-muted-foreground/80")}
+          className={textClass}
           style={colorStyle}
         >
           {translation.text}

@@ -29,6 +29,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   zenMode: false,
   readingDensity: "compact",
   readingFlow: "blocks",
+  paperTexture: "auto",
   onboardingComplete: false,
   updatedAt: new Date(0),
 };

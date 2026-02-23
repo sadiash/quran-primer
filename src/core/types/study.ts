@@ -44,12 +44,15 @@ export type ArabicFont = "uthmani" | "simple";
 export type ArabicFontSize = "sm" | "md" | "lg" | "xl" | "2xl";
 export type TranslationFontSize = "sm" | "md" | "lg" | "xl";
 export type TranslationColorSlot = 1 | 2 | 3 | 4 | 5 | 6;
+export type TranslationFontFamily = "sans" | "serif";
 
 export interface TranslationConfig {
   translationId: number;
   order: number;
   fontSize: TranslationFontSize;
   colorSlot: TranslationColorSlot;
+  fontFamily?: TranslationFontFamily;
+  bold?: boolean;
 }
 export type TranslationLayout = "stacked" | "columnar";
 export type ReadingDensity = "comfortable" | "compact" | "dense";
@@ -64,6 +67,8 @@ export type ThemeName =
   | "sahara"
   | "garden"
   | "matrix";
+
+export type PaperTexture = "auto" | "none" | "parchment" | "silk" | "canvas" | "watercolor";
 
 export interface UserPreferences {
   id: string; // "default" for local-only, or userId
@@ -90,6 +95,7 @@ export interface UserPreferences {
   zenMode: boolean;
   readingDensity: ReadingDensity;
   readingFlow: ReadingFlow;
+  paperTexture: PaperTexture;
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -113,13 +119,14 @@ export function toUserPreferences(raw: {
   defaultReciterId: number;
   activeTafsirIds?: number[] | null;
   activeHadithCollections?: string[] | null;
-  translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number }[] | null;
+  translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number; fontFamily?: string | null; bold?: boolean | null }[] | null;
   showConcepts?: boolean | null;
   conceptMaxVisible?: number | null;
   conceptColorSlot?: number | null;
   zenMode?: boolean | null;
   readingDensity?: string | null;
   readingFlow?: string | null;
+  paperTexture?: string | null;
   onboardingComplete?: boolean | null;
   updatedAt: Date;
 }): UserPreferences {
@@ -146,6 +153,8 @@ export function toUserPreferences(raw: {
       order: c.order,
       fontSize: c.fontSize as TranslationFontSize,
       colorSlot: c.colorSlot as TranslationColorSlot,
+      fontFamily: (c.fontFamily as TranslationFontFamily) ?? undefined,
+      bold: c.bold ?? undefined,
     })) ?? undefined,
     showConcepts: raw.showConcepts ?? true,
     conceptMaxVisible: raw.conceptMaxVisible ?? 5,
@@ -153,6 +162,7 @@ export function toUserPreferences(raw: {
     zenMode: raw.zenMode ?? false,
     readingDensity: (raw.readingDensity as ReadingDensity) ?? "compact",
     readingFlow: (raw.readingFlow as ReadingFlow) ?? "blocks",
+    paperTexture: (raw.paperTexture as PaperTexture) ?? "auto",
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };
@@ -182,6 +192,7 @@ export function getResolvedTranslationConfigs(
         order: i,
         fontSize: globalFontSize,
         colorSlot: ((i % 6) + 1) as TranslationColorSlot,
+        fontFamily: "sans" as TranslationFontFamily,
       },
     );
   }

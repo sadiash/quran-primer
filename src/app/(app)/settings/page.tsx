@@ -7,12 +7,14 @@ import type {
   ArabicFont,
   ArabicFontSize,
   TranslationFontSize,
+  TranslationFontFamily,
   TranslationColorSlot,
   TranslationConfig,
   TranslationLayout,
+  PaperTexture,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
-import { ChevronUp, ChevronDown, X, Plus } from "lucide-react";
+import { ChevronUp, ChevronDown, X, Plus, Check } from "lucide-react";
 
 const TRANSLATIONS = [
   { id: 1001, name: "The Clear Quran", author: "Mustafa Khattab" },
@@ -68,6 +70,7 @@ export default function SettingsPage() {
       order: resolvedConfigs.length,
       fontSize: preferences.translationFontSize,
       colorSlot: (((resolvedConfigs.length) % 6) + 1) as TranslationColorSlot,
+      fontFamily: "sans",
     };
     updateConfigs([...resolvedConfigs, newConfig]);
   };
@@ -83,7 +86,7 @@ export default function SettingsPage() {
     updateConfigs(renumbered);
   };
 
-  const updateTranslationConfig = (id: number, patch: Partial<Pick<TranslationConfig, "fontSize" | "colorSlot">>) => {
+  const updateTranslationConfig = (id: number, patch: Partial<Pick<TranslationConfig, "fontSize" | "colorSlot" | "fontFamily" | "bold">>) => {
     const next = resolvedConfigs.map((c) =>
       c.translationId === id ? { ...c, ...patch } : c,
     );
@@ -114,6 +117,28 @@ export default function SettingsPage() {
       />
 
       <div className="mt-8 space-y-10">
+        {/* ── Appearance ── */}
+        <Section title="Appearance">
+          <div>
+            <p className="text-sm font-medium text-foreground mb-3">
+              Paper texture
+            </p>
+            <p className="text-xs text-muted-foreground mb-3">
+              Choose a background texture feel. &ldquo;Auto&rdquo; uses the theme default.
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              {PAPER_TEXTURES.map((pt) => (
+                <PaperTextureCard
+                  key={pt.value}
+                  texture={pt}
+                  isActive={(preferences.paperTexture ?? "auto") === pt.value}
+                  onSelect={() => updatePreferences({ paperTexture: pt.value })}
+                />
+              ))}
+            </div>
+          </div>
+        </Section>
+
         {/* ── Reading ── */}
         <Section title="Reading">
           {/* Arabic toggle */}
@@ -239,6 +264,8 @@ export default function SettingsPage() {
                     onMoveDown={() => moveTranslation(config.translationId, "down")}
                     onRemove={() => deactivateTranslation(config.translationId)}
                     onChangeFontSize={(fs) => updateTranslationConfig(config.translationId, { fontSize: fs })}
+                    onChangeFontFamily={(ff) => updateTranslationConfig(config.translationId, { fontFamily: ff })}
+                    onToggleBold={() => updateTranslationConfig(config.translationId, { bold: !config.bold })}
                     onChangeColor={(cs) => updateTranslationConfig(config.translationId, { colorSlot: cs })}
                   />
                 );
@@ -487,6 +514,8 @@ function TranslationConfigRow({
   onMoveDown,
   onRemove,
   onChangeFontSize,
+  onChangeFontFamily,
+  onToggleBold,
   onChangeColor,
 }: {
   name: string;
@@ -500,6 +529,8 @@ function TranslationConfigRow({
   onMoveDown: () => void;
   onRemove: () => void;
   onChangeFontSize: (fs: TranslationFontSize) => void;
+  onChangeFontFamily: (ff: TranslationFontFamily) => void;
+  onToggleBold: () => void;
   onChangeColor: (cs: TranslationColorSlot) => void;
 }) {
   return (
@@ -571,6 +602,43 @@ function TranslationConfigRow({
           </div>
         </div>
 
+        {/* Font family */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Font</span>
+          <div className="flex rounded-md border border-border">
+            {(["sans", "serif"] as const).map((ff, i) => (
+              <button
+                key={ff}
+                onClick={() => onChangeFontFamily(ff)}
+                className={cn(
+                  "px-2 py-1 text-[11px] font-medium transition-colors",
+                  (config.fontFamily ?? "sans") === ff
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                  i === 0 && "rounded-l-md",
+                  i === 1 && "rounded-r-md",
+                )}
+              >
+                {ff === "sans" ? "Sans" : "Serif"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Bold */}
+        <button
+          onClick={onToggleBold}
+          className={cn(
+            "flex items-center justify-center h-7 w-7 rounded-md border text-[11px] font-bold transition-colors",
+            config.bold
+              ? "bg-primary text-primary-foreground border-primary"
+              : "border-border text-muted-foreground hover:text-foreground",
+          )}
+          aria-label="Toggle bold"
+        >
+          B
+        </button>
+
         {/* Color */}
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Color</span>
@@ -593,5 +661,97 @@ function TranslationConfigRow({
         </div>
       </div>
     </div>
+  );
+}
+
+/* ─── Paper texture data & card ─── */
+
+interface PaperTextureOption {
+  value: PaperTexture;
+  label: string;
+  description: string;
+  preview: React.CSSProperties;
+}
+
+const PAPER_TEXTURES: PaperTextureOption[] = [
+  {
+    value: "auto",
+    label: "Auto",
+    description: "Theme default",
+    preview: {
+      background: "linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--primary) / 0.03))",
+    },
+  },
+  {
+    value: "none",
+    label: "Clean",
+    description: "No texture",
+    preview: {
+      background: "hsl(var(--background))",
+      border: "1px dashed hsl(var(--border))",
+    },
+  },
+  {
+    value: "parchment",
+    label: "Parchment",
+    description: "Aged warm paper",
+    preview: {
+      background: "radial-gradient(ellipse at 30% 30%, hsl(35 55% 70% / 0.35), hsl(30 45% 65% / 0.15), hsl(40 40% 85% / 0.1))",
+    },
+  },
+  {
+    value: "silk",
+    label: "Silk",
+    description: "Smooth sheen",
+    preview: {
+      background: "linear-gradient(135deg, hsl(210 30% 92% / 0.3), hsl(280 20% 90% / 0.2), hsl(210 20% 95% / 0.15))",
+    },
+  },
+  {
+    value: "canvas",
+    label: "Canvas",
+    description: "Rough texture",
+    preview: {
+      background: "radial-gradient(ellipse at 50% 50%, hsl(45 25% 78% / 0.25), hsl(30 20% 72% / 0.15))",
+    },
+  },
+  {
+    value: "watercolor",
+    label: "Watercolor",
+    description: "Painted washes",
+    preview: {
+      background: "radial-gradient(ellipse at 20% 30%, hsl(200 60% 75% / 0.25), transparent 50%), radial-gradient(ellipse at 80% 60%, hsl(340 50% 75% / 0.15), transparent 40%), radial-gradient(ellipse at 50% 80%, hsl(45 65% 70% / 0.2), transparent 50%)",
+    },
+  },
+];
+
+function PaperTextureCard({
+  texture,
+  isActive,
+  onSelect,
+}: {
+  texture: PaperTextureOption;
+  isActive: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className={cn(
+        "group relative flex flex-col items-center gap-1.5 rounded-lg p-2 text-center transition-fast",
+        "hover:bg-surface-hover",
+        isActive && "ring-2 ring-primary/40 bg-surface-active",
+      )}
+    >
+      <div
+        className="h-10 w-full rounded-md border border-border/50"
+        style={texture.preview}
+      />
+      <div className="flex items-center gap-1">
+        <span className="text-[11px] font-medium text-foreground">{texture.label}</span>
+        {isActive && <Check className="h-3 w-3 text-primary" />}
+      </div>
+      <span className="text-[9px] text-muted-foreground leading-tight">{texture.description}</span>
+    </button>
   );
 }

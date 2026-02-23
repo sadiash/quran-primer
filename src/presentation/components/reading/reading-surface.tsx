@@ -13,7 +13,7 @@ import { useNotes } from "@/presentation/hooks/use-notes";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
 import { useFocusSpotlight } from "@/presentation/hooks/use-focus-spotlight";
-import { SurahHeader } from "./surah-header";
+import { SurahHeader, VineBorder } from "./surah-header";
 import { VerseBlock } from "./verse-block";
 import { ReadingToolbar } from "./reading-toolbar";
 import { ReadingProgressBar } from "./reading-progress-bar";
@@ -44,6 +44,10 @@ export function ReadingSurface({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const readingFlow = preferences.readingFlow ?? "blocks";
+
+  // Track scroll position for collapsing surah header
+  const [isHeaderCompact, setIsHeaderCompact] = useState(false);
+  const isHeaderCompactRef = useRef(false);
 
   // Focus spotlight hook (active for all modes but only applied to "focus" flow)
   const { getFocusClass } = useFocusSpotlight(containerRef);
@@ -129,6 +133,21 @@ export function ReadingSurface({
     },
     [updateProgress, surah.id, surah.versesCount],
   );
+
+  // Collapse surah header when scrolled
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const shouldBeCompact = container.scrollTop > 80;
+      if (shouldBeCompact !== isHeaderCompactRef.current) {
+        isHeaderCompactRef.current = shouldBeCompact;
+        setIsHeaderCompact(shouldBeCompact);
+      }
+    };
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Register verse elements with IntersectionObserver
   useEffect(() => {
@@ -275,17 +294,90 @@ export function ReadingSurface({
   }
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full flex flex-col">
+      {/* Decorative vine borders — visible on wide screens */}
+      <VineBorder side="left" />
+      <VineBorder side="right" />
+
       {/* Reading progress bar */}
       <ReadingProgressBar containerRef={containerRef} />
 
+      {/* Sticky surah header — collapses when scrolled */}
+      {preferences.showSurahHeaders && (
+        <div className={cn(
+          "shrink-0 border-b border-border/40 bg-background/95 backdrop-blur-sm transition-all duration-300",
+          isHeaderCompact && "shadow-sm",
+        )}>
+          <div className="mx-auto max-w-3xl px-6 sm:px-8 lg:px-12">
+            <SurahHeader surah={surah} compact={isHeaderCompact} />
+          </div>
+        </div>
+      )}
+
       <div
         ref={containerRef}
-        className="h-full overflow-y-auto scroll-smooth"
+        className="flex-1 min-h-0 overflow-y-auto scroll-smooth"
       >
         <div className="mx-auto max-w-3xl px-6 py-8 sm:px-8 lg:px-12">
-          {preferences.showSurahHeaders && (
-            <SurahHeader surah={surah} showBismillah={preferences.showBismillah} />
+          {/* Bismillah — ornate floral unwan frame */}
+          {preferences.showBismillah && surah.id !== 1 && surah.id !== 9 && (
+            <div className="bismillah-ornament mb-6 text-center">
+              <div className="relative inline-block px-12 py-6">
+                <svg
+                  className="absolute inset-0 w-full h-full text-primary"
+                  viewBox="0 0 400 100"
+                  preserveAspectRatio="none"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  {/* Outer arch */}
+                  <path
+                    d="M35,95 L35,38 Q35,5 200,5 Q365,5 365,38 L365,95"
+                    strokeWidth="1"
+                    opacity="0.3"
+                  />
+                  {/* Inner arch */}
+                  <path
+                    d="M50,95 L50,42 Q50,14 200,14 Q350,14 350,42 L350,95"
+                    strokeWidth="0.5"
+                    opacity="0.18"
+                  />
+
+                  {/* Crown floral — palmette at top center */}
+                  <ellipse cx="200" cy="5" rx="4" ry="7" fill="currentColor" opacity="0.18" />
+                  <ellipse cx="193" cy="8" rx="3" ry="5" fill="currentColor" opacity="0.12" transform="rotate(-20 193 8)" />
+                  <ellipse cx="207" cy="8" rx="3" ry="5" fill="currentColor" opacity="0.12" transform="rotate(20 207 8)" />
+                  <circle cx="200" cy="5" r="2" fill="currentColor" stroke="none" opacity="0.28" />
+
+                  {/* Left corner floral */}
+                  <path d="M35,95 C28,90 25,83 30,78 C33,80 34,86 35,92" fill="currentColor" opacity="0.12" stroke="none" />
+                  <path d="M35,95 C30,92 24,90 22,85" strokeWidth="0.5" opacity="0.22" />
+                  <circle cx="22" cy="85" r="2" fill="currentColor" stroke="none" opacity="0.18" />
+                  {/* Left corner vine tendril */}
+                  <path d="M35,70 C28,65 25,68 28,73 C30,76 33,74 35,71" fill="currentColor" opacity="0.1" stroke="none" />
+                  <path d="M28,73 C24,77 21,74 24,71" strokeWidth="0.4" opacity="0.18" />
+
+                  {/* Right corner floral (mirror) */}
+                  <path d="M365,95 C372,90 375,83 370,78 C367,80 366,86 365,92" fill="currentColor" opacity="0.12" stroke="none" />
+                  <path d="M365,95 C370,92 376,90 378,85" strokeWidth="0.5" opacity="0.22" />
+                  <circle cx="378" cy="85" r="2" fill="currentColor" stroke="none" opacity="0.18" />
+                  {/* Right corner vine tendril */}
+                  <path d="M365,70 C372,65 375,68 372,73 C370,76 367,74 365,71" fill="currentColor" opacity="0.1" stroke="none" />
+                  <path d="M372,73 C376,77 379,74 376,71" strokeWidth="0.4" opacity="0.18" />
+
+                  {/* Side vine accents along arch */}
+                  <path d="M60,60 C54,55 50,58 53,63 C55,66 58,64 60,61" fill="currentColor" opacity="0.1" stroke="none" />
+                  <path d="M340,60 C346,55 350,58 347,63 C345,66 342,64 340,61" fill="currentColor" opacity="0.1" stroke="none" />
+                </svg>
+                <p
+                  lang="ar"
+                  dir="rtl"
+                  className="relative arabic-display text-2xl text-foreground/60 sm:text-3xl"
+                >
+                  بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+                </p>
+              </div>
+            </div>
           )}
 
           {/* Translation color legend — only when multiple translations active */}
