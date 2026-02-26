@@ -15,8 +15,6 @@
 
 Most Quran apps are either beautiful readers with no depth, or powerful study tools with terrible UX. The Primer tries to be both: an immersive reading experience that lets you peel back layers of meaning without ever losing your place.
 
-The name comes from *The Diamond Age* by Neal Stephenson — a book that teaches by meeting you where you are, adapting to your curiosity, and growing with you. That's the aspiration.
-
 The design philosophy is simple: **the luxury of time and peace**. No gamification, no streaks, no rush. Just depth. You have all the time in the world to read, study, reflect, and come back.
 
 ---
@@ -30,6 +28,10 @@ The design philosophy is simple: **the luxury of time and peace**. No gamificati
 - **Arabic text** with Uthmani script, adjustable font size, per-translation font and bold settings
 - **7 workspace presets**: Daily Reading, Deep Study, Translation Comparison, Zen Reading, Theater, Focus Flow, Mushaf
 - **8 themes** (4 light, 4 dark): The Library, Amethyst, Sahara, Garden, The Observatory, Cosmos, Midnight, Matrix
+
+What matters most: everything associated with a verse — commentary, hadith, cross-references — is right there while you read. You can bookmark, take notes, and explore without ever losing your place.
+
+> The name "Primer" is inspired by Neal Stephenson's *The Diamond Age* — a book that teaches by meeting you where you are and growing with you.
 
 ### Study
 
