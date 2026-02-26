@@ -9,6 +9,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   // Allow Turbopack in dev alongside webpack-based PWA plugin
   turbopack: {},
+  devIndicators: false,
 };
 
 export default withPWA(nextConfig);

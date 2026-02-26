@@ -55,9 +55,11 @@ export function TopNav({ hidden = false }: TopNavProps) {
       hidden ? "nav-hidden" : "nav-visible",
     )}>
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 group">
-        <LogoIcon className="h-4 w-4 text-primary transition-transform group-hover:scale-110" />
-        <span className="text-[13px] font-semibold tracking-tight text-foreground hidden sm:inline">
+      <Link href="/" className="flex items-center gap-2.5 group">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/12 transition-colors group-hover:bg-primary/20">
+          <LogoIcon className="h-5 w-5 text-primary" />
+        </div>
+        <span className="text-sm font-bold tracking-tight text-foreground hidden sm:inline">
           The Primer
         </span>
       </Link>
