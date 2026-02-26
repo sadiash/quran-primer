@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import type { Surah } from "@/core/types";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { cn } from "@/lib/utils";
@@ -149,7 +149,7 @@ function NavChevron({
   direction: "prev" | "next";
   small?: boolean;
 }) {
-  const Icon = direction === "prev" ? ChevronLeft : ChevronRight;
+  const Icon = direction === "prev" ? CaretLeftIcon : CaretRightIcon;
   return (
     <Link
       href={href}

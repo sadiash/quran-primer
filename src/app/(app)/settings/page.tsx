@@ -14,7 +14,7 @@ import type {
   PaperTexture,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
-import { ChevronUp, ChevronDown, X, Plus, Check } from "lucide-react";
+import { CaretDownIcon, CaretUpIcon, CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 
 const TRANSLATIONS = [
   { id: 1001, name: "The Clear Quran", author: "Mustafa Khattab" },
@@ -290,7 +290,7 @@ export default function SettingsPage() {
                       onClick={() => activateTranslation(t.id)}
                       className="flex w-full items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:border-muted-foreground/30 hover:bg-surface-hover transition-fast"
                     >
-                      <Plus className="h-3.5 w-3.5 shrink-0" />
+                      <PlusIcon className="h-3.5 w-3.5 shrink-0" />
                       <span>{t.name}</span>
                       <span className="text-xs text-muted-foreground/60 ml-auto">{t.author}</span>
                     </button>
@@ -556,7 +556,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
             aria-label="Move up"
           >
-            <ChevronUp className="h-3.5 w-3.5" />
+            <CaretUpIcon className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={onMoveDown}
@@ -564,7 +564,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
             aria-label="Move down"
           >
-            <ChevronDown className="h-3.5 w-3.5" />
+            <CaretDownIcon className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={onRemove}
@@ -572,7 +572,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-20 transition-fast"
             aria-label="Remove"
           >
-            <X className="h-3.5 w-3.5" />
+            <XIcon className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
@@ -749,7 +749,7 @@ function PaperTextureCard({
       />
       <div className="flex items-center gap-1">
         <span className="text-[11px] font-medium text-foreground">{texture.label}</span>
-        {isActive && <Check className="h-3 w-3 text-primary" />}
+        {isActive && <CheckIcon className="h-3 w-3 text-primary" />}
       </div>
       <span className="text-[9px] text-muted-foreground leading-tight">{texture.description}</span>
     </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, Tag, Type, Zap } from "lucide-react";
+import { ArrowCounterClockwiseIcon, LightningIcon, TagIcon, TextAaIcon } from "@phosphor-icons/react";
 import type { NodeType } from "@/core/types";
 import { NODE_COLORS, NODE_TYPE_LABELS } from "./constants";
 
@@ -30,7 +30,7 @@ interface GraphControlsProps {
   onToggleQuranicConcepts: () => void;
   includeHadithTopics: boolean;
   onToggleHadithTopics: () => void;
-  // Tag filters
+  // TagIcon filters
   allTags: string[];
   activeTag: string | null;
   onTagFilter: (tag: string | null) => void;
@@ -65,7 +65,7 @@ export function GraphControls({
         className="flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors"
         title="Reset view"
       >
-        <RotateCcw className="size-3.5" />
+        <ArrowCounterClockwiseIcon className="size-3.5" />
         Reset
       </button>
 
@@ -78,7 +78,7 @@ export function GraphControls({
           showLabels ? "bg-primary/15 text-primary" : "hover:bg-muted"
         }`}
       >
-        <Type className="size-3.5" />
+        <TextAaIcon className="size-3.5" />
         Labels
       </button>
 
@@ -89,7 +89,7 @@ export function GraphControls({
           showParticles ? "bg-primary/15 text-primary" : "hover:bg-muted"
         }`}
       >
-        <Zap className="size-3.5" />
+        <LightningIcon className="size-3.5" />
         Particles
       </button>
 
@@ -147,11 +147,11 @@ export function GraphControls({
         Topics
       </button>
 
-      {/* Tag filters */}
+      {/* TagIcon filters */}
       {allTags.length > 0 && (
         <>
           <div className="w-px h-4 bg-border" />
-          <Tag className="size-3.5 text-muted-foreground" />
+          <TagIcon className="size-3.5 text-muted-foreground" />
           <button
             onClick={() => onTagFilter(null)}
             className={`px-2 py-1 rounded transition-colors ${

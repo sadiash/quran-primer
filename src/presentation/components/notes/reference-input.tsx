@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, type KeyboardEvent } from "react";
-import { X, BookOpen, MapPin } from "lucide-react";
+import { BookOpenIcon, MapPinIcon, XIcon } from "@phosphor-icons/react";
 import { SURAH_NAMES, getSurahName } from "@/lib/surah-names";
 
 interface ReferenceInputProps {
@@ -142,7 +142,7 @@ export function ReferenceInput({
     <div className="space-y-1">
       {/* Section header */}
       <div className="flex items-center gap-1.5 px-3 pt-2">
-        <MapPin className="h-3 w-3 text-muted-foreground/60" />
+        <MapPinIcon className="h-3 w-3 text-muted-foreground/60" />
         <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
           Linked Passages
         </span>
@@ -158,7 +158,7 @@ export function ReferenceInput({
                 key={`vk-${vk}`}
                 className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-medium text-foreground"
               >
-                <BookOpen className="h-2.5 w-2.5 text-muted-foreground" />
+                <BookOpenIcon className="h-2.5 w-2.5 text-muted-foreground" />
                 {getSurahName(Number(s))} {s}:{v}
                 <button
                   type="button"
@@ -166,7 +166,7 @@ export function ReferenceInput({
                   className="rounded-full p-0.5 hover:bg-accent/30 transition-fast"
                   aria-label={`Remove ${vk}`}
                 >
-                  <X className="h-2.5 w-2.5" />
+                  <XIcon className="h-2.5 w-2.5" />
                 </button>
               </span>
             );
@@ -178,7 +178,7 @@ export function ReferenceInput({
               key={`s-${id}`}
               className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary"
             >
-              <BookOpen className="h-2.5 w-2.5" />
+              <BookOpenIcon className="h-2.5 w-2.5" />
               {getSurahName(id)} (surah)
               <button
                 type="button"
@@ -186,7 +186,7 @@ export function ReferenceInput({
                 className="rounded-full p-0.5 hover:bg-primary/20 transition-fast"
                 aria-label={`Remove surah ${id}`}
               >
-                <X className="h-2.5 w-2.5" />
+                <XIcon className="h-2.5 w-2.5" />
               </button>
             </span>
           ))}
@@ -226,7 +226,7 @@ export function ReferenceInput({
                     : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                 }`}
               >
-                <BookOpen className="h-3 w-3" />
+                <BookOpenIcon className="h-3 w-3" />
                 <span>
                   {s.name}{" "}
                   <span className="text-muted-foreground/60">

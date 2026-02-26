@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Network, BookOpen, StickyNote, Loader2 } from "lucide-react";
+import { BookOpenIcon, CircleNotchIcon, GraphIcon, NoteIcon } from "@phosphor-icons/react";
 import { Skeleton } from "@/presentation/components/ui";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { NetworkGraph } from "@/presentation/components/knowledge";
@@ -48,7 +48,7 @@ function MindMapContent() {
               ? "Loading..."
               : `${stats.totalNodes} nodes, ${stats.totalEdges} connections`
           }
-          icon={Network}
+          icon={GraphIcon}
         />
       </div>
 
@@ -56,13 +56,13 @@ function MindMapContent() {
       <div className="relative flex-1 min-h-0">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <CircleNotchIcon className="h-6 w-6 animate-spin text-primary" />
           </div>
         )}
 
         {isEmpty ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-            <Network className="h-12 w-12 text-muted-foreground/30" />
+            <GraphIcon className="h-12 w-12 text-muted-foreground/30" />
             <div>
               <p className="text-sm font-medium text-foreground">
                 No connections yet
@@ -77,14 +77,14 @@ function MindMapContent() {
                 onClick={() => router.push("/surah/1")}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
               >
-                <BookOpen className="h-4 w-4" />
+                <BookOpenIcon className="h-4 w-4" />
                 Start reading
               </button>
               <button
                 onClick={() => router.push("/notes")}
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast"
               >
-                <StickyNote className="h-4 w-4" />
+                <NoteIcon className="h-4 w-4" />
                 Add notes
               </button>
             </div>

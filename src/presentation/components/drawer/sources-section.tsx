@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, BookOpen, Youtube, FileText, ChevronRight } from "lucide-react";
+import { ArrowSquareOutIcon, BookOpenIcon, CaretRightIcon, FileTextIcon, YoutubeLogoIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { cn } from "@/lib/utils";
 import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
@@ -32,7 +32,7 @@ export function SourcesSection() {
   if (!focusedVerseKey) {
     return (
       <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-        <ExternalLink className="h-6 w-6 text-muted-foreground/20" />
+        <ArrowSquareOutIcon className="h-6 w-6 text-muted-foreground/20" />
         <p className="text-xs text-muted-foreground/60">
           Select a verse to see cross-references and lectures
         </p>
@@ -54,7 +54,7 @@ export function SourcesSection() {
       {/* Cross-references */}
       <div>
         <div className="flex items-center gap-1.5 mb-2">
-          <BookOpen className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <BookOpenIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
             Cross-References
           </h3>
@@ -76,7 +76,7 @@ export function SourcesSection() {
                   {ref.theme}
                 </span>
               </div>
-              <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground/30 mt-1 opacity-0 group-hover:opacity-100 transition-fast" />
+              <CaretRightIcon className="h-3 w-3 shrink-0 text-muted-foreground/30 mt-1 opacity-0 group-hover:opacity-100 transition-fast" />
             </button>
           ))}
         </div>
@@ -88,7 +88,7 @@ export function SourcesSection() {
       {/* Lectures */}
       <div>
         <div className="flex items-center gap-1.5 mb-2">
-          <Youtube className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <YoutubeLogoIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
             Lectures & Talks
           </h3>
@@ -101,7 +101,7 @@ export function SourcesSection() {
             >
               {/* Thumbnail placeholder */}
               <div className="shrink-0 flex h-9 w-14 items-center justify-center rounded bg-muted/60">
-                <Youtube className="h-3.5 w-3.5 text-muted-foreground/40" />
+                <YoutubeLogoIcon className="h-3.5 w-3.5 text-muted-foreground/40" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-foreground/80 leading-snug line-clamp-1">
@@ -115,7 +115,7 @@ export function SourcesSection() {
                   <span className="text-[10px] text-muted-foreground/50">{lecture.source}</span>
                 </div>
               </div>
-              <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/30 mt-1 opacity-0 group-hover:opacity-100 transition-fast" />
+              <ArrowSquareOutIcon className="h-3 w-3 shrink-0 text-muted-foreground/30 mt-1 opacity-0 group-hover:opacity-100 transition-fast" />
             </button>
           ))}
         </div>
@@ -125,7 +125,7 @@ export function SourcesSection() {
       <div className="h-px bg-border/50" />
       <div>
         <div className="flex items-center gap-1.5 mb-2">
-          <FileText className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <FileTextIcon className="h-3.5 w-3.5 text-muted-foreground/60" />
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
             Articles
           </h3>
@@ -146,7 +146,7 @@ function SourceLink({ title, source }: { title: string; source: string }) {
         <p className="text-xs text-foreground/80 leading-snug">{title}</p>
         <p className="text-[10px] text-muted-foreground/50">{source}</p>
       </div>
-      <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-fast" />
+      <ArrowSquareOutIcon className="h-3 w-3 shrink-0 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-fast" />
     </button>
   );
 }

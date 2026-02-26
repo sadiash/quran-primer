@@ -1,13 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  X,
-} from "lucide-react";
+import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon, XIcon } from "@phosphor-icons/react";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { getSurahName } from "@/lib/surah-names";
 import { cn } from "@/lib/utils";
@@ -96,7 +90,7 @@ export function AudioDock() {
             className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Previous verse"
           >
-            <SkipBack className="h-3 w-3" />
+            <SkipBackIcon className="h-3 w-3" />
           </button>
 
           <button
@@ -105,12 +99,12 @@ export function AudioDock() {
               "rounded-full p-2 transition-all",
               "bg-primary/10 text-primary hover:bg-primary/15",
             )}
-            aria-label={audio.isPlaying ? "Pause" : "Play"}
+            aria-label={audio.isPlaying ? "PauseIcon" : "PlayIcon"}
           >
             {audio.isPlaying ? (
-              <Pause className="h-3.5 w-3.5" />
+              <PauseIcon className="h-3.5 w-3.5" />
             ) : (
-              <Play className="h-3.5 w-3.5" />
+              <PlayIcon className="h-3.5 w-3.5" />
             )}
           </button>
 
@@ -119,7 +113,7 @@ export function AudioDock() {
             className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Next verse"
           >
-            <SkipForward className="h-3 w-3" />
+            <SkipForwardIcon className="h-3 w-3" />
           </button>
         </div>
 
@@ -129,7 +123,7 @@ export function AudioDock() {
           className="rounded-full p-1 text-muted-foreground/40 transition-all hover:text-foreground"
           aria-label="Stop audio"
         >
-          <X className="h-3 w-3" />
+          <XIcon className="h-3 w-3" />
         </button>
       </div>
     </div>

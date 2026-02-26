@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import DOMPurify from "dompurify";
 import type { Verse, Translation } from "@/core/types";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { ReadingToolbar } from "./reading-toolbar";
 
 function sanitizeHtml(html: string): string {
@@ -226,7 +226,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
           className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
           aria-label="Previous page"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <CaretLeftIcon className="h-4 w-4" />
         </button>
         <span className="text-xs text-muted-foreground/60 font-mono tabular-nums">
           {currentSpread + 1} / {totalSpreads}
@@ -237,7 +237,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
           className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
           aria-label="Next page"
         >
-          <ChevronRight className="h-4 w-4" />
+          <CaretRightIcon className="h-4 w-4" />
         </button>
       </div>
 

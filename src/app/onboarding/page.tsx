@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, BookOpenText } from "lucide-react";
+import { BookOpenTextIcon, CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
 
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
               : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
           )}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <CaretLeftIcon className="h-4 w-4" />
           Back
         </button>
 
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
             className="flex items-center gap-1 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-fast hover:bg-primary/90"
           >
             Next
-            <ChevronRight className="h-4 w-4" />
+            <CaretRightIcon className="h-4 w-4" />
           </button>
         ) : (
           <button
@@ -144,7 +144,7 @@ export default function OnboardingPage() {
             className="flex items-center gap-1 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-fast hover:bg-primary/90"
           >
             Begin Reading
-            <ChevronRight className="h-4 w-4" />
+            <CaretRightIcon className="h-4 w-4" />
           </button>
         )}
       </div>
@@ -155,7 +155,7 @@ export default function OnboardingPage() {
 function StepWelcome() {
   return (
     <div className="text-center">
-      <BookOpenText className="mx-auto h-12 w-12 text-primary" />
+      <BookOpenTextIcon className="mx-auto h-12 w-12 text-primary" />
       <h1 className="mt-6 text-3xl font-bold text-foreground">Bismillah</h1>
       <p className="mt-3 text-lg text-muted-foreground">
         Let&apos;s set up your reading experience.
@@ -326,7 +326,7 @@ function StepDone() {
   return (
     <div className="text-center">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-        <BookOpenText className="h-8 w-8 text-primary" />
+        <BookOpenTextIcon className="h-8 w-8 text-primary" />
       </div>
       <h2 className="mt-6 text-xl font-semibold text-foreground">You&apos;re all set!</h2>
       <p className="mt-2 text-sm text-muted-foreground">

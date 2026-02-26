@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bot, Send, Sparkles, BookOpen, Languages, Lightbulb, RotateCcw } from "lucide-react";
+import { ArrowCounterClockwiseIcon, BookOpenIcon, LightbulbIcon, PaperPlaneTiltIcon, RobotIcon, SparkleIcon, TranslateIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { cn } from "@/lib/utils";
 
@@ -19,10 +19,10 @@ const DEMO_RESPONSES: Record<string, string> = {
 };
 
 const SUGGESTION_CHIPS = [
-  { icon: Sparkles, label: "Explain this verse" },
-  { icon: Languages, label: "Compare translations" },
-  { icon: Lightbulb, label: "Key themes" },
-  { icon: BookOpen, label: "Related verses" },
+  { icon: SparkleIcon, label: "Explain this verse" },
+  { icon: TranslateIcon, label: "Compare translations" },
+  { icon: LightbulbIcon, label: "Key themes" },
+  { icon: BookOpenIcon, label: "Related verses" },
 ];
 
 export function AiSection() {
@@ -34,7 +34,7 @@ export function AiSection() {
   if (!focusedVerseKey) {
     return (
       <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-        <Bot className="h-6 w-6 text-muted-foreground/20" />
+        <RobotIcon className="h-6 w-6 text-muted-foreground/20" />
         <p className="text-xs text-muted-foreground/60">
           Select a verse to start a contextual conversation
         </p>
@@ -69,7 +69,7 @@ export function AiSection() {
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-border/30">
         <div className="flex items-center gap-1.5">
-          <Bot className="h-3.5 w-3.5 text-primary/60" />
+          <RobotIcon className="h-3.5 w-3.5 text-primary/60" />
           <span className="text-[11px] text-muted-foreground">
             Discussing <span className="font-mono text-foreground">{focusedVerseKey}</span>
           </span>
@@ -80,7 +80,7 @@ export function AiSection() {
             className="rounded-md p-1 text-muted-foreground/50 hover:text-muted-foreground hover:bg-surface-hover transition-fast"
             aria-label="Reset conversation"
           >
-            <RotateCcw className="h-3 w-3" />
+            <ArrowCounterClockwiseIcon className="h-3 w-3" />
           </button>
         )}
       </div>
@@ -90,7 +90,7 @@ export function AiSection() {
         {messages.length === 0 && (
           <div className="flex flex-col items-center gap-3 py-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="h-5 w-5 text-primary/60" />
+              <SparkleIcon className="h-5 w-5 text-primary/60" />
             </div>
             <p className="text-xs text-muted-foreground/60 text-center max-w-[200px]">
               Ask about this verse — meaning, context, themes, or linguistic analysis
@@ -121,7 +121,7 @@ export function AiSection() {
           >
             {msg.role === "assistant" && (
               <div className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 mt-0.5">
-                <Bot className="h-3 w-3 text-primary/70" />
+                <RobotIcon className="h-3 w-3 text-primary/70" />
               </div>
             )}
             <div
@@ -152,7 +152,7 @@ export function AiSection() {
         {isTyping && (
           <div className="flex gap-2">
             <div className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 mt-0.5">
-              <Bot className="h-3 w-3 text-primary/70" />
+              <RobotIcon className="h-3 w-3 text-primary/70" />
             </div>
             <div className="bg-surface rounded-lg px-3 py-2">
               <div className="flex gap-1">
@@ -190,9 +190,9 @@ export function AiSection() {
                 ? "text-primary hover:bg-primary/10"
                 : "text-muted-foreground/30",
             )}
-            aria-label="Send message"
+            aria-label="PaperPlaneTiltIcon message"
           >
-            <Send className="h-3.5 w-3.5" />
+            <PaperPlaneTiltIcon className="h-3.5 w-3.5" />
           </button>
         </div>
 

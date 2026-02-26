@@ -9,7 +9,7 @@ import { AiSection } from "./ai-section";
 import { SourcesSection } from "./sources-section";
 import { NotesSection } from "./notes-section";
 import { SectionHeader } from "./section-header";
-import { BookOpen, BookText, Bot, ExternalLink, StickyNote } from "lucide-react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, NoteIcon, RobotIcon } from "@phosphor-icons/react";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -75,23 +75,23 @@ export function MobileStudySheet() {
           {/* All sections stacked */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div data-section="tafsir">
-              <SectionHeader icon={BookOpen} title="Tafsir" />
+              <SectionHeader icon={BookOpenIcon} title="Tafsir" />
               <TafsirSection />
             </div>
             <div data-section="hadith">
-              <SectionHeader icon={BookText} title="Hadith" />
+              <SectionHeader icon={BookBookmarkIcon} title="Hadith" />
               <HadithSection />
             </div>
             <div data-section="notes">
-              <SectionHeader icon={StickyNote} title="Notes" />
+              <SectionHeader icon={NoteIcon} title="Notes" />
               <NotesSection />
             </div>
             <div data-section="ai">
-              <SectionHeader icon={Bot} title="AI" />
+              <SectionHeader icon={RobotIcon} title="AI" />
               <AiSection />
             </div>
             <div data-section="sources">
-              <SectionHeader icon={ExternalLink} title="Sources" />
+              <SectionHeader icon={ArrowSquareOutIcon} title="Sources" />
               <SourcesSection />
             </div>
           </div>

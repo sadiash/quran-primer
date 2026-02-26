@@ -1,19 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import {
-  MoreHorizontal,
-  BookOpen,
-  BookText,
-  Bookmark,
-  BookmarkCheck,
-  StickyNote,
-  Link2,
-  Copy,
-  Languages,
-  Play,
-  Pause,
-} from "lucide-react";
+import { BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, CopyIcon, DotsThreeIcon, LinkSimpleIcon, NoteIcon, PauseIcon, PlayIcon, TranslateIcon } from "@phosphor-icons/react";
 import type { Translation } from "@/core/types";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { LinkToNoteMenu } from "@/presentation/components/notes/link-to-note-menu";
@@ -80,12 +68,12 @@ export function VerseActions({
             onPlay();
           }}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
-          aria-label={isPlaying ? "Pause" : "Play"}
+          aria-label={isPlaying ? "PauseIcon" : "PlayIcon"}
         >
           {isPlaying ? (
-            <Pause className="h-3.5 w-3.5" />
+            <PauseIcon className="h-3.5 w-3.5" />
           ) : (
-            <Play className="h-3.5 w-3.5" />
+            <PlayIcon className="h-3.5 w-3.5" />
           )}
         </button>
         <button
@@ -102,9 +90,9 @@ export function VerseActions({
           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
         >
           {isBookmarked ? (
-            <BookmarkCheck className="h-3.5 w-3.5" />
+            <BookmarkSimpleIcon className="h-3.5 w-3.5" />
           ) : (
-            <Bookmark className="h-3.5 w-3.5" />
+            <BookmarkSimpleIcon className="h-3.5 w-3.5" />
           )}
         </button>
 
@@ -118,7 +106,7 @@ export function VerseActions({
           className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
           aria-label="More actions"
         >
-          <MoreHorizontal className="h-3.5 w-3.5" />
+          <DotsThreeIcon className="h-3.5 w-3.5" />
         </button>
       </div>
 
@@ -126,7 +114,7 @@ export function VerseActions({
       {open && !showLinkMenu && (
         <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-soft-lg animate-scale-in">
           <MenuItem
-            icon={BookOpen}
+            icon={BookOpenIcon}
             label="Open Tafsir"
             onClick={() =>
               handleAction(() => {
@@ -136,7 +124,7 @@ export function VerseActions({
             }
           />
           <MenuItem
-            icon={BookText}
+            icon={BookBookmarkIcon}
             label="Open Hadith"
             onClick={() =>
               handleAction(() => {
@@ -147,7 +135,7 @@ export function VerseActions({
           />
           <div className="my-1 h-px bg-border" />
           <MenuItem
-            icon={StickyNote}
+            icon={NoteIcon}
             label="Add Note"
             onClick={() => handleAction(() => {
               focusVerse(verseKey);
@@ -155,19 +143,19 @@ export function VerseActions({
             })}
           />
           <MenuItem
-            icon={Link2}
+            icon={LinkSimpleIcon}
             label="Link to Note"
             onClick={() => setShowLinkMenu(true)}
           />
           <div className="my-1 h-px bg-border" />
           <MenuItem
-            icon={Copy}
-            label="Copy Arabic"
+            icon={CopyIcon}
+            label="CopyIcon Arabic"
             onClick={() => copyToClipboard(arabicText)}
           />
           <MenuItem
-            icon={Languages}
-            label="Copy Translation"
+            icon={TranslateIcon}
+            label="CopyIcon Translation"
             onClick={() => {
               const text = translations
                 .map((t) => {

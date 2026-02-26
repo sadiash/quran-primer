@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { Search, Link2 } from "lucide-react";
+import { LinkSimpleIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { useNotes } from "@/presentation/hooks/use-notes";
 import { noteLocationLabel } from "@/core/types/study";
 import { getSurahName } from "@/lib/surah-names";
@@ -50,10 +50,10 @@ export function LinkHadithToNoteMenu({ resource, onLinked }: LinkHadithToNoteMen
   return (
     <div className="w-64">
       <div className="relative border-b border-border px-2 py-1.5">
-        <Search className="absolute left-3.5 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+        <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
-          placeholder="Search notes..."
+          placeholder="MagnifyingGlassIcon notes..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-transparent py-1 pl-6 pr-2 text-xs text-foreground placeholder:text-muted-foreground/50 outline-none"
@@ -73,7 +73,7 @@ export function LinkHadithToNoteMenu({ resource, onLinked }: LinkHadithToNoteMen
               onClick={() => handleLink(note.id)}
               className="flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-fast hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <Link2 className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
+              <LinkSimpleIcon className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-foreground">
                   {note.title || noteLocationLabel(note, getSurahName)}

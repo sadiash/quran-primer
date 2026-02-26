@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { CaretRightIcon } from "@phosphor-icons/react";
 
 export interface BreadcrumbItem {
   label: string;
@@ -27,7 +27,7 @@ export function PanelBreadcrumb({ items }: PanelBreadcrumbProps) {
         return (
           <span key={`${item.label}-${i}`} className="flex items-center gap-0.5 min-w-0">
             {i > 0 && (
-              <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
+              <CaretRightIcon className="h-3 w-3 shrink-0 text-muted-foreground/30" />
             )}
             {isLast || !item.onClick ? (
               <span

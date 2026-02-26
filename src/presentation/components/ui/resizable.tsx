@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVertical } from "lucide-react";
+import { DotsSixVerticalIcon } from "@phosphor-icons/react";
 import {
   Group,
   Panel,
@@ -62,7 +62,7 @@ function ResizableHandle({
             isVertical ? "h-3 w-4 rotate-90" : "h-4 w-3",
           )}
         >
-          <GripVertical className="h-2.5 w-2.5" />
+          <DotsSixVerticalIcon className="h-2.5 w-2.5" />
         </div>
       )}
     </Separator>

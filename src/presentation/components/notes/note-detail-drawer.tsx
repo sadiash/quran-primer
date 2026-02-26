@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { X, Pencil, Trash2, BookOpen, BookText, Tag, Pin, PinOff, ExternalLink } from "lucide-react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, PencilSimpleIcon, PushPinIcon, PushPinSlashIcon, TagIcon, TrashIcon, XIcon } from "@phosphor-icons/react";
 import { NoteContentRenderer } from "./note-content-renderer";
 import { noteLocationLabel } from "@/core/types/study";
 import { getSurahName } from "@/lib/surah-names";
@@ -82,7 +82,7 @@ export function NoteDetailDrawer({
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                 aria-label="Close"
               >
-                <X className="h-4 w-4" />
+                <XIcon className="h-4 w-4" />
               </button>
               <div className="flex items-center gap-1">
                 {onTogglePin && (
@@ -95,13 +95,13 @@ export function NoteDetailDrawer({
                         ? "text-primary hover:bg-primary/10"
                         : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                     )}
-                    aria-label={note.pinned ? "Unpin note" : "Pin note"}
-                    title={note.pinned ? "Unpin note" : "Pin note"}
+                    aria-label={note.pinned ? "Unpin note" : "PushPinIcon note"}
+                    title={note.pinned ? "Unpin note" : "PushPinIcon note"}
                   >
                     {note.pinned ? (
-                      <PinOff className="h-4 w-4" />
+                      <PushPinSlashIcon className="h-4 w-4" />
                     ) : (
-                      <Pin className="h-4 w-4" />
+                      <PushPinIcon className="h-4 w-4" />
                     )}
                   </button>
                 )}
@@ -111,7 +111,7 @@ export function NoteDetailDrawer({
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                   aria-label="Edit note"
                 >
-                  <Pencil className="h-4 w-4" />
+                  <PencilSimpleIcon className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
@@ -119,7 +119,7 @@ export function NoteDetailDrawer({
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-fast"
                   aria-label="Delete note"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <TrashIcon className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -131,7 +131,7 @@ export function NoteDetailDrawer({
               </h2>
               {note.pinned && (
                 <div className="mt-1 flex items-center gap-1">
-                  <Pin className="h-2.5 w-2.5 text-primary/60" />
+                  <PushPinIcon className="h-2.5 w-2.5 text-primary/60" />
                   <span className="text-[9px] font-semibold uppercase tracking-wider text-primary/50">
                     Pinned
                   </span>
@@ -149,7 +149,7 @@ export function NoteDetailDrawer({
                       key={`vk-${vk}`}
                       className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-medium text-foreground"
                     >
-                      <BookOpen className="h-3 w-3 text-muted-foreground" />
+                      <BookOpenIcon className="h-3 w-3 text-muted-foreground" />
                       {getSurahName(Number(s))} {s}:{v}
                     </span>
                   );
@@ -159,7 +159,7 @@ export function NoteDetailDrawer({
                     key={`s-${id}`}
                     className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary"
                   >
-                    <BookOpen className="h-3 w-3" />
+                    <BookOpenIcon className="h-3 w-3" />
                     {getSurahName(id)} (surah)
                   </span>
                 ))}
@@ -191,9 +191,9 @@ export function NoteDetailDrawer({
                     >
                       <div className="flex items-center gap-1.5">
                         {resource.type === "hadith" ? (
-                          <BookText className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                          <BookBookmarkIcon className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                         ) : (
-                          <BookOpen className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                          <BookOpenIcon className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                         )}
                         <span className="text-sm font-medium text-foreground">
                           {resource.label}
@@ -209,7 +209,7 @@ export function NoteDetailDrawer({
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors"
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <ArrowSquareOutIcon className="h-3 w-3" />
                           View on sunnah.com
                         </a>
                       )}
@@ -229,7 +229,7 @@ export function NoteDetailDrawer({
                         key={tag}
                         className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
                       >
-                        <Tag className="h-2.5 w-2.5" />
+                        <TagIcon className="h-2.5 w-2.5" />
                         {tag}
                       </span>
                     ))}
