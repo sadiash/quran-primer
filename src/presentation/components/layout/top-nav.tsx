@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon, PaletteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon } from "@phosphor-icons/react";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon, PaletteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon, SignInIcon } from "@phosphor-icons/react";
 import { LogoIcon } from "./logo";
 import type { IconWeight } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
@@ -13,6 +14,8 @@ import { getSurahName } from "@/lib/surah-names";
 import type { PanelId } from "@/core/types/panel";
 import type { ThemeName } from "@/core/types";
 import { cn } from "@/lib/utils";
+
+const hasClerkKey = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 const THEME_OPTIONS: { name: ThemeName; label: string; mode: "light" | "dark"; swatches: [string, string, string] }[] = [
   { name: "library", label: "Library", mode: "light", swatches: ["hsl(40 33% 96%)", "hsl(36 72% 44%)", "hsl(168 28% 38%)"] },
@@ -93,7 +96,7 @@ export function TopNav({ hidden = false }: TopNavProps) {
         <PanelsDropdown openPanels={openPanels} onToggle={togglePanel} />
       )}
 
-      {/* GearSixIcon */}
+      {/* Settings */}
       <Link
         href="/settings"
         className="rounded-full p-1.5 text-muted-foreground/70 transition-all hover:bg-surface-hover hover:text-foreground"
@@ -101,6 +104,32 @@ export function TopNav({ hidden = false }: TopNavProps) {
       >
         <GearSixIcon weight="duotone" className="h-3.5 w-3.5" />
       </Link>
+
+      {/* User — Clerk components only render when keys are configured */}
+      {hasClerkKey && (
+        <>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button
+                className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground/70 transition-all hover:bg-surface-hover hover:text-foreground"
+              >
+                <SignInIcon weight="duotone" className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Sign in</span>
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton
+              afterSignOutUrl="/sign-in"
+              appearance={{
+                elements: {
+                  avatarBox: "h-6 w-6",
+                },
+              }}
+            />
+          </SignedIn>
+        </>
+      )}
     </header>
   );
 }

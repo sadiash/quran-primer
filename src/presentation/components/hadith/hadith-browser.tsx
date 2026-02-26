@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { BooksIcon, CaretRightIcon, CircleNotchIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith, HadithBook } from "@/core/types";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,11 @@ import {
 import { HadithCard } from "./hadith-card";
 
 export function HadithBrowser() {
+  const { preferences } = usePreferences();
+  const enabledCollections = useMemo(
+    () => COLLECTIONS.filter((c) => preferences.activeHadithCollections.includes(c.id)),
+    [preferences.activeHadithCollections],
+  );
   const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
   const [selectedBook, setSelectedBook] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -95,7 +101,7 @@ export function HadithBrowser() {
       {/* ─── Collections grid ─── */}
       {!selectedCollection && (
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {COLLECTIONS.map((c) => {
+          {enabledCollections.map((c) => {
             const meta = COLLECTION_META[c.id];
             return (
               <button

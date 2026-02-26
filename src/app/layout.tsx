@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Amiri, Scheherazade_New, Cormorant_Garamond } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import {
   ThemeProvider,
   QueryProvider,
@@ -54,7 +55,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+  const content = (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${amiri.variable} ${scheherazadeNew.variable} ${cormorantGaramond.variable} antialiased`}
@@ -76,4 +77,10 @@ export default function RootLayout({
       </body>
     </html>
   );
+
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    return content;
+  }
+
+  return <ClerkProvider>{content}</ClerkProvider>;
 }

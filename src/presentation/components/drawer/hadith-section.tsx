@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { BookBookmarkIcon, CircleNotchIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith } from "@/core/types";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,11 @@ function saveRecentSearch(query: string) {
 
 export function HadithSection() {
   const { focusedVerseKey } = usePanels();
+  const { preferences } = usePreferences();
+  const enabledCollections = useMemo(
+    () => COLLECTIONS.filter((c) => preferences.activeHadithCollections.includes(c.id)),
+    [preferences.activeHadithCollections],
+  );
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState<string | undefined>(undefined);
   const [gradeFilter, setGradeFilter] = useState<GradeFilter>("all");
@@ -79,8 +85,10 @@ export function HadithSection() {
   const isLoading = isRelatedMode ? relatedLoading : searchLoading;
 
   // Client-side collection + grade filtering
+  const enabledIds = useMemo(() => new Set<string>(enabledCollections.map((c) => c.id)), [enabledCollections]);
   const filteredResults = useMemo(() => {
-    let results = allResults;
+    // Only show hadiths from collections enabled in settings
+    let results = allResults.filter((h) => enabledIds.has(h.collection));
     if (collection) {
       results = results.filter((h) => h.collection === collection);
     }
@@ -188,7 +196,7 @@ export function HadithSection() {
           >
             All
           </button>
-          {COLLECTIONS.map((c) => {
+          {enabledCollections.map((c) => {
             const meta = COLLECTION_META[c.id];
             const isActive = c.id === collection;
             return (

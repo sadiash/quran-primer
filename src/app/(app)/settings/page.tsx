@@ -38,6 +38,8 @@ const HADITH_COLLECTIONS = [
   { id: "muslim", name: "Sahih Muslim" },
   { id: "abudawud", name: "Sunan Abu Dawud" },
   { id: "tirmidhi", name: "Jami' at-Tirmidhi" },
+  { id: "nasai", name: "Sunan an-Nasa'i" },
+  { id: "ibnmajah", name: "Sunan Ibn Majah" },
 ];
 
 export default function SettingsPage() {

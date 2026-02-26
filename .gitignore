@@ -60,3 +60,4 @@ public/swe-worker-*.js
 
 #Ignore cursor AI rules
 .cursor/rules/codacy.mdc
+.vercel
