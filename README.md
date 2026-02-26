@@ -84,6 +84,8 @@ src/
 └── app/               # Next.js App Router routes + 16 API routes
 ```
 
+![System Architecture](docs/diagrams/08-system-architecture.svg)
+
 ### Data Strategy: Local-First
 
 All core data ships bundled with the app — **no internet required for reading**:
