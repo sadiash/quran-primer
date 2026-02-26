@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BookOpenIcon, CrosshairIcon, EyeIcon, EyeSlashIcon, GridFourIcon, HashIcon, MinusIcon, MonitorPlayIcon, PlusIcon, SlidersHorizontalIcon, SparkleIcon, TextAaIcon, TextAlignJustifyIcon, TextHIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { getResolvedTranslationConfigs } from "@/core/types";
 import { cn } from "@/lib/utils";
 import type { ArabicFontSize, TranslationLayout, ReadingDensity, ReadingFlow } from "@/core/types";
 
@@ -26,11 +27,38 @@ const FLOWS: { value: ReadingFlow; label: string; icon?: React.ReactNode }[] = [
   { value: "mushaf", label: "Mushaf" },
 ];
 
-export function ReadingToolbar() {
+/** Translation name lookup — maps IDs to short display names */
+const TRANSLATION_NAMES: Record<number, string> = {
+  1001: "Clear Quran",
+  1002: "Yusuf Ali",
+  1003: "Pickthall",
+  1004: "Al-Hilali & Khan",
+  1005: "Abdel Haleem",
+  1006: "Tafhim-ul-Quran",
+};
+
+interface ReadingToolbarProps {
+  visibleTranslationIds?: number[];
+  onToggleTranslation?: (id: number) => void;
+}
+
+export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: ReadingToolbarProps) {
   const { preferences, updatePreferences } = usePreferences();
   const [open, setOpen] = useState(false);
 
   const arabicIdx = ARABIC_SIZES.indexOf(preferences.arabicFontSize);
+
+  const resolvedConfigs = useMemo(
+    () =>
+      getResolvedTranslationConfigs(
+        preferences.activeTranslationIds,
+        preferences.translationConfigs,
+        preferences.translationFontSize,
+      ),
+    [preferences.activeTranslationIds, preferences.translationConfigs, preferences.translationFontSize],
+  );
+
+  const showTranslationPills = resolvedConfigs.length > 1 && visibleTranslationIds && onToggleTranslation;
 
   return (
     <div className="absolute bottom-6 right-6 z-10">
@@ -49,6 +77,8 @@ export function ReadingToolbar() {
 
       {/* Panel */}
       {open && (
+        <>
+        <div className="fixed inset-0 z-[-1]" onClick={() => setOpen(false)} />
         <div className="absolute bottom-12 right-0 w-64 rounded-xl border border-border/40 bg-card/95 backdrop-blur-xl p-4 shadow-soft-lg animate-scale-in">
           <div className="space-y-4">
             {/* Arabic font size */}
@@ -180,6 +210,41 @@ export function ReadingToolbar() {
               {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
             </button>
 
+            {/* Translation toggle pills */}
+            {showTranslationPills && preferences.showTranslation && (
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                  <BookOpenIcon weight="duotone" className="h-3.5 w-3.5" />
+                  Translations
+                </label>
+                <div className="flex flex-wrap gap-1">
+                  {resolvedConfigs.map((c) => {
+                    const isVisible = visibleTranslationIds!.includes(c.translationId);
+                    const color = `hsl(var(--translation-${c.colorSlot}))`;
+                    return (
+                      <button
+                        key={c.translationId}
+                        onClick={() => onToggleTranslation!(c.translationId)}
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium transition-all ring-1",
+                          isVisible
+                            ? "ring-current/20"
+                            : "opacity-40 ring-border/30 hover:opacity-70",
+                        )}
+                        style={isVisible ? { color } : undefined}
+                      >
+                        <span
+                          className="inline-block h-1.5 w-1.5 rounded-full shrink-0"
+                          style={{ backgroundColor: isVisible ? color : undefined }}
+                        />
+                        {TRANSLATION_NAMES[c.translationId] ?? `#${c.translationId}`}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Divider */}
             <div className="h-px bg-border" />
 
@@ -211,6 +276,7 @@ export function ReadingToolbar() {
             </button>
           </div>
         </div>
+        </>
       )}
     </div>
   );

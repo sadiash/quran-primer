@@ -1,0 +1,13 @@
+# Raw ontology source files (only needed for script regeneration)
+data/ontology/semantic-hadith/SemanticHadithKGV2.ttl
+data/ontology/semantic-hadith/SemanticHadith2.0.owl
+
+# Scripts (not needed at runtime)
+scripts/
+
+# Dev/test artifacts
+references/
+coverage/
+*.png
+*.html
+.playwright-mcp/

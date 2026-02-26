@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
-import { join } from "node:path";
 
 /**
  * POST /api/v1/export
- * Writes backup JSON to ~/Desktop and returns the path.
+ * Returns backup JSON as a downloadable file response.
  */
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -19,9 +16,12 @@ export async function POST(req: NextRequest) {
   const json = JSON.stringify(data, null, 2);
   const date = new Date().toISOString().slice(0, 10);
   const filename = `the-primer-backup-${date}.json`;
-  const filepath = join(homedir(), "Desktop", filename);
 
-  await writeFile(filepath, json, "utf-8");
-
-  return NextResponse.json({ ok: true, path: filepath, filename });
+  return new NextResponse(json, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+    },
+  });
 }

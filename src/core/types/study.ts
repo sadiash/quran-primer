@@ -88,6 +88,7 @@ export interface UserPreferences {
   defaultReciterId: number;
   activeTafsirIds: number[];
   activeHadithCollections: string[];
+  visibleTranslationIds?: number[];
   translationConfigs?: TranslationConfig[];
   showConcepts: boolean;
   conceptMaxVisible: number;    // 3 | 5 | 10 | 0 (0 = show all)
@@ -119,6 +120,7 @@ export function toUserPreferences(raw: {
   defaultReciterId: number;
   activeTafsirIds?: number[] | null;
   activeHadithCollections?: string[] | null;
+  visibleTranslationIds?: number[] | null;
   translationConfigs?: { translationId: number; order: number; fontSize: string; colorSlot: number; fontFamily?: string | null; bold?: boolean | null }[] | null;
   showConcepts?: boolean | null;
   conceptMaxVisible?: number | null;
@@ -148,6 +150,7 @@ export function toUserPreferences(raw: {
     defaultReciterId: raw.defaultReciterId,
     activeTafsirIds: raw.activeTafsirIds ?? [74],
     activeHadithCollections: raw.activeHadithCollections ?? ["bukhari", "muslim"],
+    visibleTranslationIds: raw.visibleTranslationIds ?? undefined,
     translationConfigs: raw.translationConfigs?.map((c) => ({
       translationId: c.translationId,
       order: c.order,

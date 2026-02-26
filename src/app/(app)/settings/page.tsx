@@ -354,7 +354,7 @@ const LS_KEYS = ["panels:open", "notes:sort", "hadith:recent-searches", "command
 
 function DataSection() {
   const [exporting, setExporting] = useState(false);
-  const [exportResult, setExportResult] = useState<{ path: string; filename: string } | null>(null);
+  const [exportResult, setExportResult] = useState<{ ok: boolean } | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearing, setClearing] = useState(false);
 
@@ -386,15 +386,20 @@ function DataSection() {
         data: { bookmarks, notes, progress, preferences, graphNodes, graphEdges, localStorage: localStorageData },
       };
 
-      // Write file to Desktop via API
-      const res = await fetch("/api/v1/export", {
-        method: "POST",
-        body: new URLSearchParams({ payload: JSON.stringify(payload) }),
-      });
-      const result = await res.json();
-      if (result.ok) {
-        setExportResult(result);
-      }
+      // Download as file via API
+      const form = new FormData();
+      form.append("payload", JSON.stringify(payload));
+      const res = await fetch("/api/v1/export", { method: "POST", body: form });
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.headers.get("Content-Disposition")?.match(/filename="(.+)"/)?.[1] ?? "the-primer-backup.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setExportResult({ ok: true });
     } finally {
       setExporting(false);
     }
@@ -431,7 +436,7 @@ function DataSection() {
             Export all data
           </p>
           <p className="text-xs text-muted-foreground mb-3">
-            Save your notes, bookmarks, reading progress, and settings as a JSON file to your Desktop.
+            Save your notes, bookmarks, reading progress, and settings as a JSON file.
           </p>
           <button
             onClick={handleExport}
@@ -439,11 +444,11 @@ function DataSection() {
             className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast disabled:opacity-50"
           >
             <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
-            {exporting ? "Exporting..." : "Export to Desktop"}
+            {exporting ? "Exporting..." : "Export Data"}
           </button>
           {exportResult && (
             <p className="mt-2 text-xs text-green-500 font-medium">
-              Saved to {exportResult.path}
+              Download started
             </p>
           )}
         </div>

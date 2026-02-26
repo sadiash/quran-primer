@@ -7,7 +7,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  // Allow Turbopack in dev alongside webpack-based PWA plugin
+  output: "standalone",
   turbopack: {},
   devIndicators: false,
 };
