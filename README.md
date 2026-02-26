@@ -114,7 +114,6 @@ Local adapters read from `data/` at build time. API adapters fall back to quran.
 | Editor | TipTap (rich text notes) |
 | Graphs | D3.js (force-directed knowledge map) |
 | Database | Dexie (IndexedDB) — local-first, no server DB required |
-| Auth | Clerk (optional — app works without it) |
 | Testing | Vitest + React Testing Library + happy-dom |
 | Logging | Pino (structured, JSON) |
 | Deployment | Vercel |
@@ -157,17 +156,6 @@ npm install
 cp .env.example .env.local
 ```
 
-### Environment Variables
-
-The only required secrets are Clerk authentication keys. Get them from [dashboard.clerk.com](https://dashboard.clerk.com/last-active?path=api-keys):
-
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-```
-
-The app works without Clerk keys — auth features simply won't appear.
-
 ### Development
 
 ```bash
@@ -207,11 +195,10 @@ Tests use Vitest with happy-dom, fake-indexeddb for Dexie tests, and explicit `v
 
 ## Deployment
 
-The app deploys to Vercel with zero configuration beyond environment variables:
+The app deploys to Vercel with zero configuration:
 
 1. Connect your GitHub repo to Vercel
-2. Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` as environment variables
-3. Deploy — pushes to `main` trigger auto-deployment
+2. Deploy — pushes to `main` trigger auto-deployment
 
 ---
 
