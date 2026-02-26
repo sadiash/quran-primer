@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 import { BookOpenIcon, CheckIcon, CircleNotchIcon, CopyIcon, NoteIcon } from "@phosphor-icons/react";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import { usePanels } from "@/presentation/providers/panel-provider";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { useToast } from "@/presentation/components/ui/toast";
 import { db } from "@/infrastructure/db/client";
 import type { Tafsir } from "@/core/types";
@@ -15,6 +16,7 @@ import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcru
 const TAFSIR_RESOURCES = [
   { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", accent: "border-l-emerald-400", bg: "bg-emerald-500/5", chip: "bg-emerald-500/15 text-emerald-400 ring-emerald-500/20" },
   { id: 169, name: "Ibn Kathir (Abridged)", authorName: "Ibn Kathir", accent: "border-l-amber-400", bg: "bg-amber-500/5", chip: "bg-amber-500/15 text-amber-400 ring-amber-500/20" },
+  { id: 817, name: "Tazkirul Quran", authorName: "Maulana Wahiduddin Khan", accent: "border-l-sky-400", bg: "bg-sky-500/5", chip: "bg-sky-500/15 text-sky-400 ring-sky-500/20" },
 ] as const;
 
 function sanitize(html: string): string {
@@ -62,7 +64,15 @@ function formatTafsirText(html: string): string {
 
 export function TafsirSection() {
   const { focusedVerseKey } = usePanels();
-  const [activeTafsirIds, setActiveTafsirIds] = useState<number[]>([TAFSIR_RESOURCES[0].id]);
+  const { preferences } = usePreferences();
+  const enabledResources = TAFSIR_RESOURCES.filter((r) => preferences.activeTafsirIds.includes(r.id));
+  const [visibleIds, setVisibleIds] = useState<number[]>(() => enabledResources.length > 0 ? [enabledResources[0].id] : []);
+
+  // Keep visibleIds in sync when settings change
+  const validVisibleIds = visibleIds.filter((id) => enabledResources.some((r) => r.id === id));
+  const displayIds = validVisibleIds.length > 0
+    ? validVisibleIds
+    : enabledResources.length > 0 ? [enabledResources[0].id] : [];
 
   if (!focusedVerseKey) {
     return (
@@ -75,16 +85,18 @@ export function TafsirSection() {
     );
   }
 
-  const toggleTafsir = (id: number) => {
-    setActiveTafsirIds((prev) =>
-      prev.includes(id)
-        ? prev.length > 1 ? prev.filter((x) => x !== id) : prev
-        : [...prev, id],
-    );
+  const toggleVisible = (id: number) => {
+    setVisibleIds((prev) => {
+      const validPrev = prev.filter((x) => enabledResources.some((r) => r.id === x));
+      if (validPrev.includes(id)) {
+        return validPrev.length > 1 ? validPrev.filter((x) => x !== id) : validPrev;
+      }
+      return [...validPrev, id];
+    });
   };
 
-  const activeNames = activeTafsirIds
-    .map((id) => TAFSIR_RESOURCES.find((r) => r.id === id)?.name)
+  const displayNames = displayIds
+    .map((id) => enabledResources.find((r) => r.id === id)?.name)
     .filter(Boolean)
     .join(" + ");
 
@@ -93,37 +105,39 @@ export function TafsirSection() {
       {/* Breadcrumb */}
       <PanelBreadcrumb items={[
         { label: focusedVerseKey },
-        { label: activeNames || "Tafsir" },
+        { label: displayNames || "Tafsir" },
       ]} />
 
-      {/* Scholar selector */}
-      <div className="shrink-0 space-y-2">
-        <div className="flex flex-wrap gap-1.5">
-          {TAFSIR_RESOURCES.map((r) => (
-            <button
-              key={r.id}
-              onClick={() => toggleTafsir(r.id)}
-              className={cn(
-                "rounded-md px-2.5 py-1.5 text-[11px] font-medium transition-fast ring-1",
-                activeTafsirIds.includes(r.id)
-                  ? r.chip
-                  : "text-muted-foreground/60 ring-border/30 hover:bg-surface-hover hover:text-muted-foreground",
-              )}
-            >
-              {r.name}
-            </button>
-          ))}
+      {/* Scholar pills — only show enabled tafsirs from settings */}
+      {enabledResources.length > 1 && (
+        <div className="shrink-0 space-y-2">
+          <div className="flex flex-wrap gap-1.5">
+            {enabledResources.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => toggleVisible(r.id)}
+                className={cn(
+                  "rounded-md px-2.5 py-1.5 text-[11px] font-medium transition-fast ring-1",
+                  displayIds.includes(r.id)
+                    ? r.chip
+                    : "text-muted-foreground/60 ring-border/30 hover:bg-surface-hover hover:text-muted-foreground",
+                )}
+              >
+                {r.name}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Tafsir content */}
       <div className="space-y-4">
-        {activeTafsirIds.map((tafsirId) => (
+        {displayIds.map((tafsirId) => (
           <TafsirContent
             key={tafsirId}
             tafsirId={tafsirId}
             verseKey={focusedVerseKey}
-            showHeader={activeTafsirIds.length > 1}
+            showHeader={displayIds.length > 1}
           />
         ))}
       </div>
