@@ -352,7 +352,7 @@ export default function SettingsPage() {
 
 /* ─── Data management ─── */
 
-const LS_KEYS = ["panels:open", "notes:sort", "hadith:recent-searches", "command-palette:recent"];
+const LS_KEYS = ["panels:open", "notes:sort", "hadith:recent-searches"];
 
 function DataSection() {
   const [exporting, setExporting] = useState(false);
