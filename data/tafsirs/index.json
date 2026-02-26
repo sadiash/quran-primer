@@ -12,5 +12,12 @@
     "authorName": "Hafiz Ibn Kathir",
     "languageCode": "en",
     "slug": "en-tafisr-ibn-kathir"
+  },
+  {
+    "id": 817,
+    "name": "Tazkirul Quran",
+    "authorName": "Maulana Wahiduddin Khan",
+    "languageCode": "en",
+    "slug": "en-tazkirul-quran"
   }
 ]

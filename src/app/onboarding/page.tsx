@@ -20,6 +20,7 @@ const TRANSLATIONS = [
 const TAFSIRS = [
   { id: 74, name: "Al-Jalalayn", author: "Al-Mahalli & as-Suyuti" },
   { id: 169, name: "Ibn Kathir", author: "Ibn Kathir (Abridged)" },
+  { id: 817, name: "Tazkirul Quran", author: "Maulana Wahiduddin Khan" },
 ];
 
 const HADITH_COLLECTIONS = [

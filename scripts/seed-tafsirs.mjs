@@ -50,6 +50,12 @@ const TAFSIRS = [
     authorName: "Hafiz Ibn Kathir",
     languageCode: "en",
   },
+  {
+    slug: "en-tazkirul-quran",
+    name: "Tazkirul Quran",
+    authorName: "Maulana Wahiduddin Khan",
+    languageCode: "en",
+  },
 ];
 
 // ---------------------------------------------------------------------------
