@@ -3,18 +3,7 @@
 import { useState, useMemo } from "react";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
-import {
-  BookOpen,
-  BookText,
-  Bookmark,
-  StickyNote,
-  Search,
-  Brain,
-  Settings2,
-  Library,
-  LayoutDashboard,
-  AlignJustify,
-} from "lucide-react";
+import { BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, BrainIcon, MagnifyingGlassIcon, NoteIcon, SlidersHorizontalIcon, SquaresFourIcon, TextAlignJustifyIcon } from "@phosphor-icons/react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
@@ -82,11 +71,11 @@ export function CommandPalette() {
           shouldFilter={false}
         >
           <div className="flex items-center gap-2 border-b border-border px-4">
-            <Search className="h-4 w-4 text-muted-foreground" />
+            <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
             <Command.Input
               value={search}
               onValueChange={setSearch}
-              placeholder="Search surahs, commands, settings..."
+              placeholder="MagnifyingGlassIcon surahs, commands, settings..."
               className="flex-1 bg-transparent py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               autoFocus
             />
@@ -105,31 +94,31 @@ export function CommandPalette() {
               <CommandItem
                 onSelect={() => runCommand("nav:browse", () => router.push("/browse"))}
               >
-                <Library className="h-4 w-4" />
+                <BooksIcon className="h-4 w-4" />
                 Browse Surahs
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("nav:bookmarks", () => router.push("/bookmarks"))}
               >
-                <Bookmark className="h-4 w-4" />
+                <BookmarkSimpleIcon className="h-4 w-4" />
                 Bookmarks
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("nav:notes", () => router.push("/notes"))}
               >
-                <StickyNote className="h-4 w-4" />
+                <NoteIcon className="h-4 w-4" />
                 Notes
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("nav:knowledge", () => router.push("/knowledge"))}
               >
-                <Brain className="h-4 w-4" />
+                <BrainIcon className="h-4 w-4" />
                 Knowledge Map
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("nav:settings", () => router.push("/settings"))}
               >
-                <Settings2 className="h-4 w-4" />
+                <SlidersHorizontalIcon className="h-4 w-4" />
                 Settings
               </CommandItem>
             </Command.Group>
@@ -144,7 +133,7 @@ export function CommandPalette() {
                       key={surahNum}
                       onSelect={() => runCommand(`surah:${surahNum}`, () => router.push(`/surah/${surahNum}`))}
                     >
-                      <BookText className="h-4 w-4" />
+                      <BookBookmarkIcon className="h-4 w-4" />
                       <span className="font-mono text-muted-foreground text-xs w-6">{surahNum}.</span>
                       {name}
                     </CommandItem>
@@ -158,25 +147,25 @@ export function CommandPalette() {
               <CommandItem
                 onSelect={() => runCommand("panel:tafsir", () => openPanel("tafsir"))}
               >
-                <BookOpen className="h-4 w-4" />
+                <BookOpenIcon className="h-4 w-4" />
                 Open Tafsir
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("panel:hadith", () => openPanel("hadith"))}
               >
-                <BookText className="h-4 w-4" />
+                <BookBookmarkIcon className="h-4 w-4" />
                 Open Hadith
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("panel:notes", () => openPanel("notes"))}
               >
-                <StickyNote className="h-4 w-4" />
+                <NoteIcon className="h-4 w-4" />
                 Open Notes
               </CommandItem>
               <CommandItem
                 onSelect={() => runCommand("panel:ai", () => openPanel("ai"))}
               >
-                <Brain className="h-4 w-4" />
+                <BrainIcon className="h-4 w-4" />
                 Open AI
               </CommandItem>
             </Command.Group>
@@ -186,7 +175,7 @@ export function CommandPalette() {
               <CommandItem
                 onSelect={() => runCommand("toggle:zen", () => updatePreferences({ zenMode: !preferences.zenMode }))}
               >
-                <Settings2 className="h-4 w-4" />
+                <SlidersHorizontalIcon className="h-4 w-4" />
                 {preferences.zenMode ? "Exit Zen Mode" : "Toggle Zen Mode"}
               </CommandItem>
               {(["comfortable", "compact", "dense"] as ReadingDensity[]).map((d) => (
@@ -194,7 +183,7 @@ export function CommandPalette() {
                   key={d}
                   onSelect={() => runCommand(`density:${d}`, () => updatePreferences({ readingDensity: d }))}
                 >
-                  <LayoutDashboard className="h-4 w-4" />
+                  <SquaresFourIcon className="h-4 w-4" />
                   Density: {d.charAt(0).toUpperCase() + d.slice(1)}
                   {preferences.readingDensity === d ? " (active)" : ""}
                 </CommandItem>
@@ -204,7 +193,7 @@ export function CommandPalette() {
                   key={f}
                   onSelect={() => runCommand(`flow:${f}`, () => updatePreferences({ readingFlow: f }))}
                 >
-                  <AlignJustify className="h-4 w-4" />
+                  <TextAlignJustifyIcon className="h-4 w-4" />
                   Reading Flow: {f.charAt(0).toUpperCase() + f.slice(1)}
                   {(preferences.readingFlow ?? "blocks") === f ? " (active)" : ""}
                 </CommandItem>
@@ -218,7 +207,7 @@ export function CommandPalette() {
                   key={preset.id}
                   onSelect={() => runCommand(`preset:${preset.id}`, () => applyPreset(preset))}
                 >
-                  <LayoutDashboard className="h-4 w-4" />
+                  <SquaresFourIcon className="h-4 w-4" />
                   {preset.name}
                 </CommandItem>
               ))}

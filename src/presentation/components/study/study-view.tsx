@@ -1,7 +1,7 @@
 "use client";
 
 import type { Verse, Surah } from "@/core/types";
-import { BookOpen } from "lucide-react";
+import { BookOpenIcon } from "@phosphor-icons/react";
 
 interface StudyViewProps {
   verse: Verse;
@@ -12,7 +12,7 @@ export function StudyView({ verse, surah }: StudyViewProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <BookOpen className="h-5 w-5 text-primary" />
+        <BookOpenIcon className="h-5 w-5 text-primary" />
         <h1 className="text-xl font-bold text-foreground">
           {surah.nameSimple} — Verse {verse.verseNumber}
         </h1>

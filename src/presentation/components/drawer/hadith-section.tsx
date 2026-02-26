@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import {
-  BookText,
-  Search,
-  X,
-  Loader2,
-} from "lucide-react";
+import { BookBookmarkIcon, CircleNotchIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith } from "@/core/types";
@@ -156,10 +151,10 @@ export function HadithSection() {
 
   return (
     <div className="flex flex-col gap-3 p-4">
-      {/* Search bar */}
+      {/* MagnifyingGlassIcon bar */}
       <div className="shrink-0 space-y-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={query}
@@ -167,7 +162,7 @@ export function HadithSection() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSubmitSearch(query);
             }}
-            placeholder="Search hadith..."
+            placeholder="MagnifyingGlassIcon hadith..."
             className="w-full rounded-lg border border-border bg-surface py-1.5 pl-8 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
           {query && (
@@ -175,7 +170,7 @@ export function HadithSection() {
               onClick={() => handleSearch("")}
               className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
-              <X className="h-3.5 w-3.5" />
+              <XIcon className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
@@ -252,7 +247,7 @@ export function HadithSection() {
       {showEmptyState && (
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-2 text-muted-foreground/70">
-            <BookText className="h-4 w-4 shrink-0" />
+            <BookBookmarkIcon className="h-4 w-4 shrink-0" />
             <p className="text-xs">Select a verse or search for related hadith</p>
           </div>
 
@@ -336,7 +331,7 @@ export function HadithSection() {
       <div className="space-y-1.5">
         {isLoading && (
           <div className="flex items-center justify-center gap-2 py-6">
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            <CircleNotchIcon className="h-4 w-4 animate-spin text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Searching...</span>
           </div>
         )}
@@ -395,7 +390,7 @@ export function HadithSection() {
         <>
           {conceptLoading && (
             <div className="flex items-center justify-center gap-2 py-4">
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground/60" />
+              <CircleNotchIcon className="h-3.5 w-3.5 animate-spin text-muted-foreground/60" />
               <span className="text-[11px] text-muted-foreground/60">Finding related by concept...</span>
             </div>
           )}

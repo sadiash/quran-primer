@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import DOMPurify from "dompurify";
-import { Loader2, Copy, Check, BookOpen, StickyNote } from "lucide-react";
+import { BookOpenIcon, CheckIcon, CircleNotchIcon, CopyIcon, NoteIcon } from "@phosphor-icons/react";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useToast } from "@/presentation/components/ui/toast";
@@ -67,7 +67,7 @@ export function TafsirSection() {
   if (!focusedVerseKey) {
     return (
       <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-        <BookOpen className="h-6 w-6 text-muted-foreground/20" />
+        <BookOpenIcon className="h-6 w-6 text-muted-foreground/20" />
         <p className="text-xs text-muted-foreground/60">
           Click a verse to view its tafsir
         </p>
@@ -229,16 +229,16 @@ function TafsirContent({
               aria-label="Save tafsir to notes"
               title="Save to Notes"
             >
-              {saved ? <Check className="h-3.5 w-3.5" /> : <StickyNote className="h-3.5 w-3.5" />}
+              {saved ? <CheckIcon className="h-3.5 w-3.5" /> : <NoteIcon className="h-3.5 w-3.5" />}
             </button>
           )}
           {tafsir && (
             <button
               onClick={handleCopy}
               className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover"
-              aria-label="Copy tafsir text"
+              aria-label="CopyIcon tafsir text"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <CheckIcon className="h-3.5 w-3.5 text-green-500" /> : <CopyIcon className="h-3.5 w-3.5" />}
             </button>
           )}
         </div>
@@ -246,7 +246,7 @@ function TafsirContent({
 
       {isLoading && (
         <div className="flex items-center justify-center py-6">
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          <CircleNotchIcon className="h-4 w-4 animate-spin text-muted-foreground" />
         </div>
       )}
 

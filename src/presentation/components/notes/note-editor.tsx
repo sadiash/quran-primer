@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
-import { BookText, BookOpen, ExternalLink, X } from "lucide-react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, XIcon } from "@phosphor-icons/react";
 import { createNoteEditorExtensions } from "./editor-extensions";
 import { EditorToolbar } from "./editor-toolbar";
 import { TagInput } from "./tag-input";
@@ -169,9 +169,9 @@ export function NoteEditor({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
                   {resource.type === "hadith" ? (
-                    <BookText className="h-3 w-3 shrink-0 text-emerald-500" />
+                    <BookBookmarkIcon className="h-3 w-3 shrink-0 text-emerald-500" />
                   ) : (
-                    <BookOpen className="h-3 w-3 shrink-0 text-amber-500" />
+                    <BookOpenIcon className="h-3 w-3 shrink-0 text-amber-500" />
                   )}
                   <span className="text-xs font-medium text-foreground truncate">
                     {resource.label}
@@ -184,7 +184,7 @@ export function NoteEditor({
                   aria-label="Remove linked resource"
                   title="Remove"
                 >
-                  <X className="h-3 w-3" />
+                  <XIcon className="h-3 w-3" />
                 </button>
               </div>
               <p className="text-[11px] text-muted-foreground/70 line-clamp-2 leading-relaxed">
@@ -197,7 +197,7 @@ export function NoteEditor({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
                 >
-                  <ExternalLink className="h-2.5 w-2.5" />
+                  <ArrowSquareOutIcon className="h-2.5 w-2.5" />
                   View source
                 </a>
               )}

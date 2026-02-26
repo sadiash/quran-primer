@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpenText, Library, Bookmark, StickyNote, Settings } from "lucide-react";
+import { BookOpenTextIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenText, label: "Read" },
-  { href: "/browse", matchPrefix: "/browse", icon: Library, label: "Browse" },
-  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: Bookmark, label: "Saved" },
-  { href: "/notes", matchPrefix: "/notes", icon: StickyNote, label: "Notes" },
-  { href: "/settings", matchPrefix: "/settings", icon: Settings, label: "More" },
+  { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenTextIcon, label: "Read" },
+  { href: "/browse", matchPrefix: "/browse", icon: BooksIcon, label: "Browse" },
+  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: BookmarkSimpleIcon, label: "Saved" },
+  { href: "/notes", matchPrefix: "/notes", icon: NoteIcon, label: "Notes" },
+  { href: "/settings", matchPrefix: "/settings", icon: GearSixIcon, label: "More" },
 ];
 
 interface MobileNavProps {

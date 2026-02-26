@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, type KeyboardEvent } from "react";
-import { X, Tag } from "lucide-react";
+import { TagIcon, XIcon } from "@phosphor-icons/react";
 
 interface TagInputProps {
   tags: string[];
@@ -52,13 +52,13 @@ export function TagInput({ tags, onChange, suggestedTags }: TagInputProps) {
     <div className="space-y-2">
       {/* Section header */}
       <div className="flex items-center gap-1.5 px-3 pt-2">
-        <Tag className="h-3 w-3 text-muted-foreground/60" />
+        <TagIcon className="h-3 w-3 text-muted-foreground/60" />
         <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
           Tags
         </span>
       </div>
 
-      {/* Tag chips + input */}
+      {/* TagIcon chips + input */}
       <div className="flex flex-wrap items-center gap-1.5 px-3 pb-1">
         {tags.map((tag) => (
           <span
@@ -72,7 +72,7 @@ export function TagInput({ tags, onChange, suggestedTags }: TagInputProps) {
               className="rounded-full p-0.5 hover:bg-primary/20 transition-fast"
               aria-label={`Remove tag ${tag}`}
             >
-              <X className="h-2.5 w-2.5" />
+              <XIcon className="h-2.5 w-2.5" />
             </button>
           </span>
         ))}

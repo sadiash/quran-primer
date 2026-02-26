@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import DOMPurify from "dompurify";
-import { Bookmark, Search, Trash2, ChevronDown, Loader2 } from "lucide-react";
+import { BookmarkSimpleIcon, CaretDownIcon, CircleNotchIcon, MagnifyingGlassIcon, TrashIcon } from "@phosphor-icons/react";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { getSurahName } from "@/lib/surah-names";
@@ -99,17 +99,17 @@ export default function BookmarksPage() {
       <PageHeader
         title="Bookmarks"
         subtitle={`${bookmarks.length} bookmarked verse${bookmarks.length !== 1 ? "s" : ""}`}
-        icon={Bookmark}
+        icon={BookmarkSimpleIcon}
       />
 
       {bookmarks.length > 0 && (
         <>
-          {/* Search */}
+          {/* MagnifyingGlassIcon */}
           <div className="relative mt-6">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by surah name, verse key, or note..."
+              placeholder="MagnifyingGlassIcon by surah name, verse key, or note..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -151,7 +151,7 @@ export default function BookmarksPage() {
         </>
       )}
 
-      {/* Bookmark cards */}
+      {/* BookmarkSimpleIcon cards */}
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((bm) => {
           const [surahNum, verseNum] = bm.verseKey.split(":");
@@ -198,7 +198,7 @@ export default function BookmarksPage() {
                   )}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
-                  <ChevronDown
+                  <CaretDownIcon
                     className={cn(
                       "h-4 w-4 text-muted-foreground/50 transition-transform",
                       isExpanded && "rotate-180",
@@ -212,7 +212,7 @@ export default function BookmarksPage() {
                 <div className="border-t border-border px-4 pb-4 pt-3">
                   {isLoading ? (
                     <div className="flex items-center justify-center py-6">
-                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      <CircleNotchIcon className="h-5 w-5 animate-spin text-muted-foreground" />
                     </div>
                   ) : verse ? (
                     <div className="space-y-3">
@@ -270,7 +270,7 @@ export default function BookmarksPage() {
                         className="rounded-md p-1.5 text-muted-foreground/50 hover:bg-destructive/10 hover:text-destructive transition-fast"
                         aria-label="Remove bookmark"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <TrashIcon className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -295,7 +295,7 @@ export default function BookmarksPage() {
                     className="shrink-0 rounded-md p-1.5 text-muted-foreground/50 opacity-0 transition-fast hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
                     aria-label="Remove bookmark"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <TrashIcon className="h-3.5 w-3.5" />
                   </button>
                 </div>
               )}
@@ -306,9 +306,9 @@ export default function BookmarksPage() {
 
       {bookmarks.length === 0 && (
         <div className="mt-16 text-center">
-          <Bookmark className="mx-auto h-10 w-10 text-muted-foreground/30" />
+          <BookmarkSimpleIcon className="mx-auto h-10 w-10 text-muted-foreground/30" />
           <p className="mt-4 text-sm text-muted-foreground">
-            No bookmarks yet. Bookmark verses while reading to see them here.
+            No bookmarks yet. BookmarkSimpleIcon verses while reading to see them here.
           </p>
           <Link
             href="/surah/1"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeftIcon } from "@phosphor-icons/react";
 
 interface PageHeaderProps {
   title: string;
@@ -24,7 +24,7 @@ export function PageHeader({ title, subtitle, icon: Icon }: PageHeaderProps) {
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 transition-all hover:bg-surface-hover hover:text-foreground"
         aria-label="Go back"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeftIcon className="h-4 w-4" />
       </button>
       {Icon && <Icon className="h-5 w-5 text-primary/70" />}
       <div>

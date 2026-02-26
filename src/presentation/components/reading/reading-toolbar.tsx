@@ -1,22 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Type,
-  LayoutGrid,
-  Eye,
-  EyeOff,
-  Minus,
-  Plus,
-  Settings2,
-  Hash,
-  Heading,
-  Sparkles,
-  AlignJustify,
-  Theater,
-  Focus,
-  BookOpen,
-} from "lucide-react";
+import { BookOpenIcon, CrosshairIcon, EyeIcon, EyeSlashIcon, GridFourIcon, HashIcon, MinusIcon, MonitorPlayIcon, PlusIcon, SlidersHorizontalIcon, SparkleIcon, TextAaIcon, TextAlignJustifyIcon, TextHIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
 import type { ArabicFontSize, TranslationLayout, ReadingDensity, ReadingFlow } from "@/core/types";
@@ -36,8 +21,8 @@ const DENSITIES: { value: ReadingDensity; label: string }[] = [
 const FLOWS: { value: ReadingFlow; label: string; icon?: React.ReactNode }[] = [
   { value: "blocks", label: "Blocks" },
   { value: "prose", label: "Prose" },
-  { value: "theater", label: "Theater" },
-  { value: "focus", label: "Focus" },
+  { value: "theater", label: "MonitorPlayIcon" },
+  { value: "focus", label: "CrosshairIcon" },
   { value: "mushaf", label: "Mushaf" },
 ];
 
@@ -59,7 +44,7 @@ export function ReadingToolbar() {
         )}
         aria-label="Reading settings"
       >
-        <Settings2 className="h-3.5 w-3.5" />
+        <SlidersHorizontalIcon className="h-3.5 w-3.5" />
       </button>
 
       {/* Panel */}
@@ -69,7 +54,7 @@ export function ReadingToolbar() {
             {/* Arabic font size */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <Type className="h-3.5 w-3.5" />
+                <TextAaIcon className="h-3.5 w-3.5" />
                 Arabic Size
               </label>
               <div className="flex items-center gap-2">
@@ -80,7 +65,7 @@ export function ReadingToolbar() {
                   disabled={arabicIdx <= 0}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
                 >
-                  <Minus className="h-3.5 w-3.5" />
+                  <MinusIcon className="h-3.5 w-3.5" />
                 </button>
                 <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
                   {preferences.arabicFontSize}
@@ -92,7 +77,7 @@ export function ReadingToolbar() {
                   disabled={arabicIdx >= ARABIC_SIZES.length - 1}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <PlusIcon className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -100,7 +85,7 @@ export function ReadingToolbar() {
             {/* Layout toggle */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <LayoutGrid className="h-3.5 w-3.5" />
+                <GridFourIcon className="h-3.5 w-3.5" />
                 Translation Layout
               </label>
               <div className="flex gap-1">
@@ -124,7 +109,7 @@ export function ReadingToolbar() {
             {/* Reading density */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <LayoutGrid className="h-3.5 w-3.5" />
+                <GridFourIcon className="h-3.5 w-3.5" />
                 Density
               </label>
               <div className="flex gap-1">
@@ -148,7 +133,7 @@ export function ReadingToolbar() {
             {/* Reading flow */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <AlignJustify className="h-3.5 w-3.5" />
+                <TextAlignJustifyIcon className="h-3.5 w-3.5" />
                 Reading Mode
               </label>
               <div className="grid grid-cols-3 gap-1">
@@ -175,9 +160,9 @@ export function ReadingToolbar() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
               {preferences.showArabic ? (
-                <Eye className="h-3.5 w-3.5" />
+                <EyeIcon className="h-3.5 w-3.5" />
               ) : (
-                <EyeOff className="h-3.5 w-3.5" />
+                <EyeSlashIcon className="h-3.5 w-3.5" />
               )}
               {preferences.showArabic ? "Hide Arabic" : "Show Arabic"}
             </button>
@@ -188,9 +173,9 @@ export function ReadingToolbar() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
               {preferences.showTranslation ? (
-                <Eye className="h-3.5 w-3.5" />
+                <EyeIcon className="h-3.5 w-3.5" />
               ) : (
-                <EyeOff className="h-3.5 w-3.5" />
+                <EyeSlashIcon className="h-3.5 w-3.5" />
               )}
               {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
             </button>
@@ -203,7 +188,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showVerseNumbers: !preferences.showVerseNumbers })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <Hash className="h-3.5 w-3.5" />
+              <HashIcon className="h-3.5 w-3.5" />
               {preferences.showVerseNumbers ? "Hide Verse Numbers" : "Show Verse Numbers"}
             </button>
 
@@ -212,7 +197,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showSurahHeaders: !preferences.showSurahHeaders })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <Heading className="h-3.5 w-3.5" />
+              <TextHIcon className="h-3.5 w-3.5" />
               {preferences.showSurahHeaders ? "Hide Surah Header" : "Show Surah Header"}
             </button>
 
@@ -221,7 +206,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showBismillah: !preferences.showBismillah })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <SparkleIcon className="h-3.5 w-3.5" />
               {preferences.showBismillah ? "Hide Bismillah" : "Show Bismillah"}
             </button>
           </div>

@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import {
-  ExternalLink,
-  Copy,
-  Check,
-  ChevronDown,
-  Info,
-  StickyNote,
-  Link2,
-} from "lucide-react";
+import { ArrowSquareOutIcon, CaretDownIcon, CheckIcon, CopyIcon, InfoIcon, LinkSimpleIcon, NoteIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useToast } from "@/presentation/components/ui/toast";
 import { db } from "@/infrastructure/db/client";
@@ -171,7 +163,7 @@ export function HadithCard({
           )}
         </div>
 
-        <ChevronDown
+        <CaretDownIcon
           className={cn(
             "h-3.5 w-3.5 shrink-0 text-muted-foreground/40 mt-1 transition-transform",
             expanded && "rotate-180",
@@ -192,7 +184,7 @@ export function HadithCard({
           <div className="rounded-lg bg-muted/40 px-3 py-2.5 space-y-2">
             {/* Reference line */}
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Info className="h-3 w-3 shrink-0" />
+              <InfoIcon className="h-3 w-3 shrink-0" />
               <span>
                 {hadith.inBookReference ?? `Book ${hadith.bookNumber}, Hadith ${hadith.hadithNumber}`}
               </span>
@@ -220,7 +212,7 @@ export function HadithCard({
                   className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ExternalLink className="h-3 w-3" />
+                  <ArrowSquareOutIcon className="h-3 w-3" />
                   sunnah.com
                 </a>
               )}
@@ -236,12 +228,12 @@ export function HadithCard({
               >
                 {saved ? (
                   <>
-                    <Check className="h-3 w-3" />
+                    <CheckIcon className="h-3 w-3" />
                     Saved
                   </>
                 ) : (
                   <>
-                    <StickyNote className="h-3 w-3" />
+                    <NoteIcon className="h-3 w-3" />
                     Save to Notes
                   </>
                 )}
@@ -254,7 +246,7 @@ export function HadithCard({
                   }}
                   className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
-                  <Link2 className="h-3 w-3" />
+                  <LinkSimpleIcon className="h-3 w-3" />
                   Link to Note
                 </button>
                 {showLinkMenu && (
@@ -310,13 +302,13 @@ function CopyButton({ text }: { text: string }) {
     >
       {copied ? (
         <>
-          <Check className="h-3 w-3" />
+          <CheckIcon className="h-3 w-3" />
           Copied
         </>
       ) : (
         <>
-          <Copy className="h-3 w-3" />
-          Copy
+          <CopyIcon className="h-3 w-3" />
+          CopyIcon
         </>
       )}
     </button>

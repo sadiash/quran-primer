@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BookOpen, Library } from "lucide-react";
+import { BookOpenIcon, BooksIcon } from "@phosphor-icons/react";
 import type { Surah } from "@/core/types";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/presentation/components/layout/page-header";
@@ -11,8 +11,8 @@ import { HadithBrowser } from "@/presentation/components/hadith/hadith-browser";
 type BrowseTab = "quran" | "hadith";
 
 const TABS: { id: BrowseTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: "quran", label: "Quran", icon: BookOpen },
-  { id: "hadith", label: "Hadith", icon: Library },
+  { id: "quran", label: "Quran", icon: BookOpenIcon },
+  { id: "hadith", label: "Hadith", icon: BooksIcon },
 ];
 
 export function BrowsePageClient({ surahs }: { surahs: Surah[] }) {

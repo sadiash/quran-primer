@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { Check } from "lucide-react";
+import { CheckIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
 import type { ThemeName } from "@/core/types";
@@ -179,7 +179,7 @@ function ThemeCard({
         </div>
       </div>
       {isActive && (
-        <Check className="h-3.5 w-3.5 shrink-0 text-primary" />
+        <CheckIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
       )}
     </button>
   );

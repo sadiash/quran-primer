@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, BookText, Bot, ExternalLink, StickyNote } from "lucide-react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, NoteIcon, RobotIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { PANEL_REGISTRY, type DockPosition, type PanelId } from "@/core/types/panel";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/presentation/components/ui/resizable";
@@ -12,11 +12,11 @@ import { SourcesSection } from "@/presentation/components/drawer/sources-section
 import { NotesSection } from "@/presentation/components/drawer/notes-section";
 
 const PANEL_META: Record<PanelId, { title: string; icon: React.ComponentType<{ className?: string }> }> = {
-  tafsir: { title: "Tafsir", icon: BookOpen },
-  hadith: { title: "Hadith", icon: BookText },
-  ai: { title: "AI", icon: Bot },
-  notes: { title: "Notes", icon: StickyNote },
-  sources: { title: "Sources", icon: ExternalLink },
+  tafsir: { title: "Tafsir", icon: BookOpenIcon },
+  hadith: { title: "Hadith", icon: BookBookmarkIcon },
+  ai: { title: "AI", icon: RobotIcon },
+  notes: { title: "Notes", icon: NoteIcon },
+  sources: { title: "Sources", icon: ArrowSquareOutIcon },
 };
 
 const PANEL_CONTENT: Record<PanelId, React.ComponentType> = {

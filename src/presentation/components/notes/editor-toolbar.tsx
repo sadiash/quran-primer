@@ -1,18 +1,7 @@
 "use client";
 
 import type { Editor } from "@tiptap/react";
-import {
-  Bold,
-  Italic,
-  Heading2,
-  Heading3,
-  List,
-  ListOrdered,
-  Quote,
-  Link,
-  Undo2,
-  Redo2,
-} from "lucide-react";
+import { ArrowClockwiseIcon, ArrowCounterClockwiseIcon, LinkIcon, ListBulletsIcon, ListNumbersIcon, QuotesIcon, TextBolderIcon, TextHThreeIcon, TextHTwoIcon, TextItalicIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface EditorToolbarProps {
@@ -79,64 +68,64 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   return (
     <div className="flex flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-border px-2 py-1.5">
       <ToolbarButton
-        icon={Bold}
-        label="Bold"
+        icon={TextBolderIcon}
+        label="TextBolderIcon"
         active={editor.isActive("bold")}
         onClick={() => editor.chain().focus().toggleBold().run()}
       />
       <ToolbarButton
-        icon={Italic}
-        label="Italic"
+        icon={TextItalicIcon}
+        label="TextItalicIcon"
         active={editor.isActive("italic")}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       />
       <Divider />
       <ToolbarButton
-        icon={Heading2}
+        icon={TextHTwoIcon}
         label="Heading 2"
         active={editor.isActive("heading", { level: 2 })}
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       />
       <ToolbarButton
-        icon={Heading3}
+        icon={TextHThreeIcon}
         label="Heading 3"
         active={editor.isActive("heading", { level: 3 })}
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       />
       <Divider />
       <ToolbarButton
-        icon={List}
-        label="Bullet List"
+        icon={ListBulletsIcon}
+        label="Bullet ListBulletsIcon"
         active={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       />
       <ToolbarButton
-        icon={ListOrdered}
-        label="Ordered List"
+        icon={ListNumbersIcon}
+        label="Ordered ListBulletsIcon"
         active={editor.isActive("orderedList")}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       />
       <Divider />
       <ToolbarButton
-        icon={Quote}
+        icon={QuotesIcon}
         label="Blockquote"
         active={editor.isActive("blockquote")}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       />
       <ToolbarButton
-        icon={Link}
-        label="Link"
+        icon={LinkIcon}
+        label="LinkIcon"
         active={editor.isActive("link")}
         onClick={handleLink}
       />
       <ToolbarButton
-        icon={Undo2}
+        icon={ArrowCounterClockwiseIcon}
         label="Undo"
         disabled={!editor.can().undo()}
         onClick={() => editor.chain().focus().undo().run()}
       />
       <ToolbarButton
-        icon={Redo2}
+        icon={ArrowClockwiseIcon}
         label="Redo"
         disabled={!editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}

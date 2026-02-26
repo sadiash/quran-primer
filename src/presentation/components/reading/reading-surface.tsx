@@ -450,7 +450,7 @@ export function ReadingSurface({
 /* ─── Translation color legend ─── */
 
 import type { TranslationConfig } from "@/core/types";
-import { ChevronDown } from "lucide-react";
+import { CaretDownIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 function TranslationLegend({
@@ -477,7 +477,7 @@ function TranslationLegend({
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50 hover:text-muted-foreground/70 transition-all tracking-wide uppercase"
       >
-        <ChevronDown
+        <CaretDownIcon
           className={cn(
             "h-2.5 w-2.5 transition-transform",
             !open && "-rotate-90",

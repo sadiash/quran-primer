@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { XIcon } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ export function PanelShell({ id, title, icon: Icon, children, className }: Panel
           className="rounded-md p-1 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
           aria-label={`Close ${title} panel`}
         >
-          <X className="h-3.5 w-3.5" />
+          <XIcon className="h-3.5 w-3.5" />
         </button>
       </div>
 
