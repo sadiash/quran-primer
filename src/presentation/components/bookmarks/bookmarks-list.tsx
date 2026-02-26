@@ -11,7 +11,7 @@ export function BookmarksList() {
   if (bookmarks.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
-        <BookmarkSimpleIcon className="h-10 w-10 text-muted-foreground/50" />
+        <BookmarkSimpleIcon weight="duotone" className="h-10 w-10 text-muted-foreground/50" />
         <p className="text-sm text-muted-foreground">
           No bookmarks yet. Tap the bookmark icon on any verse to save it.
         </p>
@@ -52,7 +52,7 @@ export function BookmarksList() {
               className="shrink-0 rounded-md p-1.5 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
               aria-label="Remove bookmark"
             >
-              <TrashIcon className="h-3.5 w-3.5" />
+              <TrashIcon weight="bold" className="h-3.5 w-3.5" />
             </button>
           </div>
         );

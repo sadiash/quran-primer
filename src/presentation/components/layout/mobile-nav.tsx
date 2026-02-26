@@ -43,7 +43,7 @@ export function MobileNav({ className }: MobileNavProps) {
             aria-label={item.label}
             aria-current={isActive ? "page" : undefined}
           >
-            <item.icon className={cn("h-[18px] w-[18px] transition-transform", isActive && "scale-110")} />
+            <item.icon className={cn("h-[18px] w-[18px] transition-transform", isActive && "scale-110")} weight={isActive ? "fill" : "duotone"} />
             <span className={cn(
               "text-[9px] font-medium tracking-wide",
               isActive && "font-semibold",

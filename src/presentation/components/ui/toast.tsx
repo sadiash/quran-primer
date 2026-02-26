@@ -82,7 +82,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               onClick={() => removeToast(toast.id)}
               className="shrink-0 rounded p-0.5 hover:bg-muted transition-fast"
             >
-              <XIcon className="h-3.5 w-3.5" />
+              <XIcon weight="bold" className="h-3.5 w-3.5" />
             </button>
           </div>
         ))}

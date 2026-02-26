@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="77" fill="#FAF5F0"/>
-  <circle cx="256" cy="215.04" r="112.64" fill="none" stroke="#C9A227" stroke-width="12.8"/>
-  <text x="256" y="240.64" font-family="serif" font-size="112.64" fill="#C9A227" text-anchor="middle" dominant-baseline="middle">P</text>
-  <text x="256" y="399.36" font-family="sans-serif" font-weight="600" font-size="40.96" fill="#3D2B1F" text-anchor="middle">THE PRIMER</text>
+  <rect width="512" height="512" rx="102" fill="#16161d"/>
+  <!-- 8-pointed star: two overlapping rounded squares -->
+  <rect x="128" y="128" width="256" height="256" rx="12"
+    transform="rotate(45 256 256)" stroke="#C9A227" stroke-width="14" fill="none"/>
+  <rect x="128" y="128" width="256" height="256" rx="12"
+    stroke="#C9A227" stroke-width="14" fill="none"/>
+  <!-- Open book -->
+  <path d="M205 283 L256 251 L307 283" stroke="#C9A227" stroke-width="14"
+    fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="256" y1="251" x2="256" y2="310" stroke="#C9A227" stroke-width="10" opacity="0.5"/>
+  <!-- Dot -->
+  <circle cx="256" cy="219" r="10" fill="#C9A227"/>
 </svg>

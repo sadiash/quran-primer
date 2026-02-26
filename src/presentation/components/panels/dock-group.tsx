@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, NoteIcon, RobotIcon } from "@phosphor-icons/react";
+import type { IconWeight } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { PANEL_REGISTRY, type DockPosition, type PanelId } from "@/core/types/panel";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/presentation/components/ui/resizable";
@@ -11,7 +12,7 @@ import { AiSection } from "@/presentation/components/drawer/ai-section";
 import { SourcesSection } from "@/presentation/components/drawer/sources-section";
 import { NotesSection } from "@/presentation/components/drawer/notes-section";
 
-const PANEL_META: Record<PanelId, { title: string; icon: React.ComponentType<{ className?: string }> }> = {
+const PANEL_META: Record<PanelId, { title: string; icon: React.ComponentType<{ className?: string; weight?: IconWeight }> }> = {
   tafsir: { title: "Tafsir", icon: BookOpenIcon },
   hadith: { title: "Hadith", icon: BookBookmarkIcon },
   ai: { title: "AI", icon: RobotIcon },

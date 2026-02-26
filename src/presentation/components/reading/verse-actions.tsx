@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, CopyIcon, DotsThreeIcon, LinkSimpleIcon, NoteIcon, PauseIcon, PlayIcon, TranslateIcon } from "@phosphor-icons/react";
+import type { IconWeight } from "@phosphor-icons/react";
 import type { Translation } from "@/core/types";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { LinkToNoteMenu } from "@/presentation/components/notes/link-to-note-menu";
@@ -68,12 +69,12 @@ export function VerseActions({
             onPlay();
           }}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
-          aria-label={isPlaying ? "PauseIcon" : "PlayIcon"}
+          aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
-            <PauseIcon className="h-3.5 w-3.5" />
+            <PauseIcon weight="fill" className="h-3.5 w-3.5" />
           ) : (
-            <PlayIcon className="h-3.5 w-3.5" />
+            <PlayIcon weight="fill" className="h-3.5 w-3.5" />
           )}
         </button>
         <button
@@ -90,9 +91,9 @@ export function VerseActions({
           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
         >
           {isBookmarked ? (
-            <BookmarkSimpleIcon className="h-3.5 w-3.5" />
+            <BookmarkSimpleIcon weight="fill" className="h-3.5 w-3.5" />
           ) : (
-            <BookmarkSimpleIcon className="h-3.5 w-3.5" />
+            <BookmarkSimpleIcon weight="duotone" className="h-3.5 w-3.5" />
           )}
         </button>
 
@@ -106,7 +107,7 @@ export function VerseActions({
           className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
           aria-label="More actions"
         >
-          <DotsThreeIcon className="h-3.5 w-3.5" />
+          <DotsThreeIcon weight="bold" className="h-3.5 w-3.5" />
         </button>
       </div>
 
@@ -150,12 +151,12 @@ export function VerseActions({
           <div className="my-1 h-px bg-border" />
           <MenuItem
             icon={CopyIcon}
-            label="CopyIcon Arabic"
+            label="Copy Arabic"
             onClick={() => copyToClipboard(arabicText)}
           />
           <MenuItem
             icon={TranslateIcon}
-            label="CopyIcon Translation"
+            label="Copy Translation"
             onClick={() => {
               const text = translations
                 .map((t) => {
@@ -203,7 +204,7 @@ function MenuItem({
   label,
   onClick,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; weight?: IconWeight }>;
   label: string;
   onClick: () => void;
 }) {
@@ -212,7 +213,7 @@ function MenuItem({
       onClick={onClick}
       className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3.5 w-3.5" weight="duotone" />
       {label}
     </button>
   );

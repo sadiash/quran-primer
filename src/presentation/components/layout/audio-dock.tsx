@@ -90,7 +90,7 @@ export function AudioDock() {
             className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Previous verse"
           >
-            <SkipBackIcon className="h-3 w-3" />
+            <SkipBackIcon weight="bold" className="h-3 w-3" />
           </button>
 
           <button
@@ -99,12 +99,12 @@ export function AudioDock() {
               "rounded-full p-2 transition-all",
               "bg-primary/10 text-primary hover:bg-primary/15",
             )}
-            aria-label={audio.isPlaying ? "PauseIcon" : "PlayIcon"}
+            aria-label={audio.isPlaying ? "Pause" : "Play"}
           >
             {audio.isPlaying ? (
-              <PauseIcon className="h-3.5 w-3.5" />
+              <PauseIcon weight="fill" className="h-3.5 w-3.5" />
             ) : (
-              <PlayIcon className="h-3.5 w-3.5" />
+              <PlayIcon weight="fill" className="h-3.5 w-3.5" />
             )}
           </button>
 
@@ -113,7 +113,7 @@ export function AudioDock() {
             className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
             aria-label="Next verse"
           >
-            <SkipForwardIcon className="h-3 w-3" />
+            <SkipForwardIcon weight="bold" className="h-3 w-3" />
           </button>
         </div>
 
@@ -123,7 +123,7 @@ export function AudioDock() {
           className="rounded-full p-1 text-muted-foreground/40 transition-all hover:text-foreground"
           aria-label="Stop audio"
         >
-          <XIcon className="h-3 w-3" />
+          <XIcon weight="bold" className="h-3 w-3" />
         </button>
       </div>
     </div>

@@ -31,7 +31,7 @@ export function PanelShell({ id, title, icon: Icon, children, className }: Panel
           className="rounded-md p-1 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
           aria-label={`Close ${title} panel`}
         >
-          <XIcon className="h-3.5 w-3.5" />
+          <XIcon weight="bold" className="h-3.5 w-3.5" />
         </button>
       </div>
 

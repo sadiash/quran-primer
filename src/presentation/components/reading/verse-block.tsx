@@ -326,7 +326,7 @@ function TranslationText({
     "leading-[1.8] tracking-[0.01em]",
     sizeClass,
     !useColor && "text-muted-foreground/80",
-    fontFamily === "serif" && "serif-display",
+    fontFamily === "serif" && "font-serif",
     isBold && "font-semibold",
   );
 

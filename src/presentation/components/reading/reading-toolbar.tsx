@@ -21,8 +21,8 @@ const DENSITIES: { value: ReadingDensity; label: string }[] = [
 const FLOWS: { value: ReadingFlow; label: string; icon?: React.ReactNode }[] = [
   { value: "blocks", label: "Blocks" },
   { value: "prose", label: "Prose" },
-  { value: "theater", label: "MonitorPlayIcon" },
-  { value: "focus", label: "CrosshairIcon" },
+  { value: "theater", label: "Theater" },
+  { value: "focus", label: "Focus" },
   { value: "mushaf", label: "Mushaf" },
 ];
 
@@ -44,7 +44,7 @@ export function ReadingToolbar() {
         )}
         aria-label="Reading settings"
       >
-        <SlidersHorizontalIcon className="h-3.5 w-3.5" />
+        <SlidersHorizontalIcon weight="duotone" className="h-3.5 w-3.5" />
       </button>
 
       {/* Panel */}
@@ -54,7 +54,7 @@ export function ReadingToolbar() {
             {/* Arabic font size */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <TextAaIcon className="h-3.5 w-3.5" />
+                <TextAaIcon weight="duotone" className="h-3.5 w-3.5" />
                 Arabic Size
               </label>
               <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export function ReadingToolbar() {
                   disabled={arabicIdx <= 0}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
                 >
-                  <MinusIcon className="h-3.5 w-3.5" />
+                  <MinusIcon weight="bold" className="h-3.5 w-3.5" />
                 </button>
                 <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
                   {preferences.arabicFontSize}
@@ -77,7 +77,7 @@ export function ReadingToolbar() {
                   disabled={arabicIdx >= ARABIC_SIZES.length - 1}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
                 >
-                  <PlusIcon className="h-3.5 w-3.5" />
+                  <PlusIcon weight="bold" className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -85,7 +85,7 @@ export function ReadingToolbar() {
             {/* Layout toggle */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <GridFourIcon className="h-3.5 w-3.5" />
+                <GridFourIcon weight="duotone" className="h-3.5 w-3.5" />
                 Translation Layout
               </label>
               <div className="flex gap-1">
@@ -109,7 +109,7 @@ export function ReadingToolbar() {
             {/* Reading density */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <GridFourIcon className="h-3.5 w-3.5" />
+                <GridFourIcon weight="duotone" className="h-3.5 w-3.5" />
                 Density
               </label>
               <div className="flex gap-1">
@@ -133,7 +133,7 @@ export function ReadingToolbar() {
             {/* Reading flow */}
             <div>
               <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <TextAlignJustifyIcon className="h-3.5 w-3.5" />
+                <TextAlignJustifyIcon weight="duotone" className="h-3.5 w-3.5" />
                 Reading Mode
               </label>
               <div className="grid grid-cols-3 gap-1">
@@ -160,9 +160,9 @@ export function ReadingToolbar() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
               {preferences.showArabic ? (
-                <EyeIcon className="h-3.5 w-3.5" />
+                <EyeIcon weight="duotone" className="h-3.5 w-3.5" />
               ) : (
-                <EyeSlashIcon className="h-3.5 w-3.5" />
+                <EyeSlashIcon weight="duotone" className="h-3.5 w-3.5" />
               )}
               {preferences.showArabic ? "Hide Arabic" : "Show Arabic"}
             </button>
@@ -173,9 +173,9 @@ export function ReadingToolbar() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
               {preferences.showTranslation ? (
-                <EyeIcon className="h-3.5 w-3.5" />
+                <EyeIcon weight="duotone" className="h-3.5 w-3.5" />
               ) : (
-                <EyeSlashIcon className="h-3.5 w-3.5" />
+                <EyeSlashIcon weight="duotone" className="h-3.5 w-3.5" />
               )}
               {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
             </button>
@@ -188,7 +188,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showVerseNumbers: !preferences.showVerseNumbers })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <HashIcon className="h-3.5 w-3.5" />
+              <HashIcon weight="duotone" className="h-3.5 w-3.5" />
               {preferences.showVerseNumbers ? "Hide Verse Numbers" : "Show Verse Numbers"}
             </button>
 
@@ -197,7 +197,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showSurahHeaders: !preferences.showSurahHeaders })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <TextHIcon className="h-3.5 w-3.5" />
+              <TextHIcon weight="duotone" className="h-3.5 w-3.5" />
               {preferences.showSurahHeaders ? "Hide Surah Header" : "Show Surah Header"}
             </button>
 
@@ -206,7 +206,7 @@ export function ReadingToolbar() {
               onClick={() => updatePreferences({ showBismillah: !preferences.showBismillah })}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
             >
-              <SparkleIcon className="h-3.5 w-3.5" />
+              <SparkleIcon weight="duotone" className="h-3.5 w-3.5" />
               {preferences.showBismillah ? "Hide Bismillah" : "Show Bismillah"}
             </button>
           </div>

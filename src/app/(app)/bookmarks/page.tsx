@@ -104,12 +104,12 @@ export default function BookmarksPage() {
 
       {bookmarks.length > 0 && (
         <>
-          {/* MagnifyingGlassIcon */}
+          {/* Search */}
           <div className="relative mt-6">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlassIcon weight="duotone" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="MagnifyingGlassIcon by surah name, verse key, or note..."
+              placeholder="Search by surah name, verse key, or note..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -212,7 +212,7 @@ export default function BookmarksPage() {
                 <div className="border-t border-border px-4 pb-4 pt-3">
                   {isLoading ? (
                     <div className="flex items-center justify-center py-6">
-                      <CircleNotchIcon className="h-5 w-5 animate-spin text-muted-foreground" />
+                      <CircleNotchIcon weight="bold" className="h-5 w-5 animate-spin text-muted-foreground" />
                     </div>
                   ) : verse ? (
                     <div className="space-y-3">
@@ -270,7 +270,7 @@ export default function BookmarksPage() {
                         className="rounded-md p-1.5 text-muted-foreground/50 hover:bg-destructive/10 hover:text-destructive transition-fast"
                         aria-label="Remove bookmark"
                       >
-                        <TrashIcon className="h-3.5 w-3.5" />
+                        <TrashIcon weight="bold" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -295,7 +295,7 @@ export default function BookmarksPage() {
                     className="shrink-0 rounded-md p-1.5 text-muted-foreground/50 opacity-0 transition-fast hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
                     aria-label="Remove bookmark"
                   >
-                    <TrashIcon className="h-3.5 w-3.5" />
+                    <TrashIcon weight="bold" className="h-3.5 w-3.5" />
                   </button>
                 </div>
               )}
@@ -306,7 +306,7 @@ export default function BookmarksPage() {
 
       {bookmarks.length === 0 && (
         <div className="mt-16 text-center">
-          <BookmarkSimpleIcon className="mx-auto h-10 w-10 text-muted-foreground/30" />
+          <BookmarkSimpleIcon weight="duotone" className="mx-auto h-10 w-10 text-muted-foreground/30" />
           <p className="mt-4 text-sm text-muted-foreground">
             No bookmarks yet. BookmarkSimpleIcon verses while reading to see them here.
           </p>

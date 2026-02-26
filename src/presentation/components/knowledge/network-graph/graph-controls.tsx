@@ -65,7 +65,7 @@ export function GraphControls({
         className="flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors"
         title="Reset view"
       >
-        <ArrowCounterClockwiseIcon className="size-3.5" />
+        <ArrowCounterClockwiseIcon weight="bold" className="size-3.5" />
         Reset
       </button>
 
@@ -78,7 +78,7 @@ export function GraphControls({
           showLabels ? "bg-primary/15 text-primary" : "hover:bg-muted"
         }`}
       >
-        <TextAaIcon className="size-3.5" />
+        <TextAaIcon weight="bold" className="size-3.5" />
         Labels
       </button>
 
@@ -89,7 +89,7 @@ export function GraphControls({
           showParticles ? "bg-primary/15 text-primary" : "hover:bg-muted"
         }`}
       >
-        <LightningIcon className="size-3.5" />
+        <LightningIcon weight="bold" className="size-3.5" />
         Particles
       </button>
 
@@ -147,11 +147,11 @@ export function GraphControls({
         Topics
       </button>
 
-      {/* TagIcon filters */}
+      {/* Tag filters */}
       {allTags.length > 0 && (
         <>
           <div className="w-px h-4 bg-border" />
-          <TagIcon className="size-3.5 text-muted-foreground" />
+          <TagIcon weight="bold" className="size-3.5 text-muted-foreground" />
           <button
             onClick={() => onTagFilter(null)}
             className={`px-2 py-1 rounded transition-colors ${

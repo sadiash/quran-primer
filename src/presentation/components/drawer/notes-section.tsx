@@ -65,12 +65,12 @@ function filterNotes(notes: Note[], query: string): Note[] {
 function NoteSearchInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="relative">
-      <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/40" />
+      <MagnifyingGlassIcon weight="duotone" className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/40" />
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="MagnifyingGlassIcon by content, surah, verse, or tag..."
+        placeholder="Search by content, surah, verse, or tag..."
         className="w-full rounded-lg border border-border bg-card py-2 pl-8 pr-8 text-xs text-foreground placeholder:text-muted-foreground/40 focus:border-primary/40 focus:outline-none transition-fast"
       />
       {value && (
@@ -80,7 +80,7 @@ function NoteSearchInput({ value, onChange }: { value: string; onChange: (v: str
           className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-muted-foreground/40 hover:text-foreground transition-fast"
           aria-label="Clear search"
         >
-          <XIcon className="h-3.5 w-3.5" />
+          <XIcon weight="bold" className="h-3.5 w-3.5" />
         </button>
       )}
     </div>
@@ -99,7 +99,7 @@ function SortDropdown({ sortOption, onSort }: { sortOption: NoteSortOption; onSo
         className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
         aria-label="Sort notes"
       >
-        <ArrowsDownUpIcon className="h-3.5 w-3.5" />
+        <ArrowsDownUpIcon weight="bold" className="h-3.5 w-3.5" />
       </button>
       {open && (
         <>
@@ -267,7 +267,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
             className="rounded-md p-1 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Back to list"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
           </button>
           <span className="flex-1 truncate text-xs font-medium text-foreground">{viewTitle}</span>
         </div>
@@ -285,7 +285,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
                   {sourceStyle.label}
                 </span>
               )}
-              {editingNote.pinned && <PushPinIcon className="h-3 w-3 text-primary/60" />}
+              {editingNote.pinned && <PushPinIcon weight="fill" className="h-3 w-3 text-primary/60" />}
             </div>
           )}
           {editingNote.title && (
@@ -343,7 +343,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
             onClick={() => togglePin(editingNote.id)}
             className="rounded-md border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
           >
-            {editingNote.pinned ? "Unpin" : "PushPinIcon"}
+            {editingNote.pinned ? "Unpin" : "Pin"}
           </button>
           <button
             type="button"
@@ -374,7 +374,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
             className="rounded-md p-1 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Back"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
           </button>
           <span className="text-xs font-medium text-foreground">
             {editingNote ? "Edit Note" : "New Note"}
@@ -415,7 +415,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
             onClick={handleNewNote}
             className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary/20 transition-fast"
           >
-            <PlusIcon className="h-3 w-3" />
+            <PlusIcon weight="bold" className="h-3 w-3" />
             New
           </button>
           {notes.length > 1 && (
@@ -424,7 +424,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
         </div>
       </div>
 
-      {/* MagnifyingGlassIcon — visible only with notes */}
+      {/* Search — visible only with notes */}
       {notes.length > 0 && (
         <NoteSearchInput value={searchQuery} onChange={setSearchQuery} />
       )}
@@ -433,7 +433,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
       {notes.length === 0 && (
         <div className="flex flex-col items-center gap-3 px-2 py-8 text-center">
           <div className="rounded-full bg-primary/5 p-3">
-            <NoteIcon className="h-6 w-6 text-primary/30" />
+            <NoteIcon weight="duotone" className="h-6 w-6 text-primary/30" />
           </div>
           <div className="space-y-1">
             <p className="text-xs font-medium text-muted-foreground/70">
@@ -450,7 +450,7 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
             onClick={handleNewNote}
             className="mt-1 flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary transition-all hover:bg-primary/20"
           >
-            <PlusIcon className="h-3.5 w-3.5" />
+            <PlusIcon weight="bold" className="h-3.5 w-3.5" />
             Write a note
           </button>
         </div>
@@ -721,7 +721,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
             className="rounded-md p-1 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Back to list"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
           </button>
           <span className="flex-1 truncate text-xs font-medium text-foreground">{viewTitle}</span>
         </div>
@@ -739,7 +739,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
                   {sourceStyle.label}
                 </span>
               )}
-              {editingNote.pinned && <PushPinIcon className="h-3 w-3 text-primary/60" />}
+              {editingNote.pinned && <PushPinIcon weight="fill" className="h-3 w-3 text-primary/60" />}
             </div>
           )}
           {editingNote.title && (
@@ -797,7 +797,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
             onClick={() => togglePin(editingNote.id)}
             className="rounded-md border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
           >
-            {editingNote.pinned ? "Unpin" : "PushPinIcon"}
+            {editingNote.pinned ? "Unpin" : "Pin"}
           </button>
           <button
             type="button"
@@ -830,7 +830,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
             className="rounded-md p-1 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Back"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
           </button>
           <span className="text-xs font-medium text-foreground">
             {editingNote ? "Edit Note" : "New Note"}
@@ -878,7 +878,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
         </div>
       </div>
 
-      {/* MagnifyingGlassIcon — visible only with notes */}
+      {/* Search — visible only with notes */}
       {notes.length > 0 && (
         <NoteSearchInput value={searchQuery} onChange={setSearchQuery} />
       )}
@@ -890,7 +890,7 @@ function NotesContent({ verseKey }: NotesContentProps) {
         className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-3.5 py-3 text-left transition-all hover:border-primary/40 hover:bg-primary/5"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <PlusIcon className="h-4 w-4 text-primary" />
+          <PlusIcon weight="bold" className="h-4 w-4 text-primary" />
         </div>
         <div>
           <p className="text-xs font-semibold text-foreground">Write a note</p>
@@ -979,7 +979,7 @@ interface NoteCardProps {
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
   onToggleSurahLink: (note: Note) => void;
-  /** When provided, shows "LinkIcon/Unlink verse" in the menu instead of surah link */
+  /** When provided, shows "Link/Unlink verse" in the menu instead of surah link */
   verseKey?: string;
   onToggleVerseLink?: (note: Note) => void;
 }
@@ -1048,24 +1048,24 @@ function NoteCard({ note, surahId, surahName, onView, onDelete, onTogglePin, onT
               {sourceStyle.label}
             </span>
           )}
-          {note.pinned && <PushPinIcon className="h-3 w-3 shrink-0 text-primary/60" />}
+          {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-primary/60" />}
         </div>
         {/* Menu — stops click from propagating to card */}
         <div className="relative shrink-0" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
           <button type="button" onClick={() => setShowMenu(!showMenu)} className="rounded-md p-1 text-muted-foreground/60 hover:bg-surface-hover hover:text-foreground transition-fast" aria-label="Note actions">
-            <DotsThreeIcon className="h-4 w-4" />
+            <DotsThreeIcon weight="bold" className="h-4 w-4" />
           </button>
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
-                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">{note.pinned ? <><PushPinSlashIcon className="h-3 w-3" />Unpin</> : <><PushPinIcon className="h-3 w-3" />PushPinIcon</>}</button>
+                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">{note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />PushPinIcon</>}</button>
                 {verseKey && onToggleVerseLink ? (
-                  <button type="button" onClick={() => { setShowMenu(false); onToggleVerseLink(note); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"><LinkSimpleIcon className="h-3 w-3" />{note.verseKeys.includes(verseKey) ? `Unlink ${verseKey}` : `LinkIcon to ${verseKey}`}</button>
+                  <button type="button" onClick={() => { setShowMenu(false); onToggleVerseLink(note); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"><LinkSimpleIcon weight="bold" className="h-3 w-3" />{note.verseKeys.includes(verseKey) ? `Unlink ${verseKey}` : `LinkIcon to ${verseKey}`}</button>
                 ) : (
-                  <button type="button" onClick={() => { setShowMenu(false); onToggleSurahLink(note); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"><LinkSimpleIcon className="h-3 w-3" />{isLinkedToSurah ? "Unlink surah" : "LinkIcon surah"}</button>
+                  <button type="button" onClick={() => { setShowMenu(false); onToggleSurahLink(note); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"><LinkSimpleIcon weight="bold" className="h-3 w-3" />{isLinkedToSurah ? "Unlink surah" : "Link surah"}</button>
                 )}
-                <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-fast"><TrashIcon className="h-3 w-3" />Delete</button>
+                <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-fast"><TrashIcon weight="bold" className="h-3 w-3" />Delete</button>
               </div>
             </>
           )}
