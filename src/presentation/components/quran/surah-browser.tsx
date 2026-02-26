@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { GridFourIcon, ListBulletsIcon, MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react";
+import { ArrowRightIcon, GridFourIcon, ListBulletsIcon, MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react";
 import type { Surah } from "@/core/types";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,18 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
   const [view, setView] = useState<ViewMode>("grid");
   const [filter, setFilter] = useState<Filter>("all");
 
+  const verseMatch = useMemo(() => {
+    const m = search.match(/^(\d{1,3}):(\d{1,3})$/);
+    if (!m) return null;
+    const surahId = Number(m[1]);
+    const verse = Number(m[2]);
+    const surah = surahs.find((s) => s.id === surahId);
+    if (!surah || verse < 1 || verse > surah.versesCount) return null;
+    return { surah, verse, key: `${surahId}:${verse}` };
+  }, [search, surahs]);
+
   const filtered = useMemo(() => {
+    if (verseMatch) return [];
     let result = surahs;
     if (filter === "meccan") result = result.filter((s) => s.revelationType === "makkah");
     if (filter === "medinan") result = result.filter((s) => s.revelationType === "madinah");
@@ -32,7 +43,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
       );
     }
     return result;
-  }, [surahs, search, filter]);
+  }, [surahs, search, filter, verseMatch]);
 
   return (
     <div className="space-y-4">
@@ -43,7 +54,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
           <MagnifyingGlassIcon weight="duotone" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search by name, translation, or number..."
+            placeholder="Search by name, number, or verse (2:255)..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -97,10 +108,35 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
         </div>
       </div>
 
+      {/* Verse jump */}
+      {verseMatch && (
+        <Link
+          href={`/surah/${verseMatch.surah.id}?verse=${verseMatch.key}`}
+          className="flex items-center gap-4 rounded-xl border border-primary/30 bg-primary/5 p-4 transition-all hover:bg-primary/10 hover:shadow-soft-sm"
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <ArrowRightIcon weight="bold" className="h-5 w-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground">
+              Go to {verseMatch.surah.nameSimple}, Verse {verseMatch.verse}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Surah {verseMatch.surah.id} — {verseMatch.surah.nameTranslation}
+            </p>
+          </div>
+          <p className="shrink-0 font-[family-name:var(--font-arabic-reading)] text-base text-foreground">
+            {verseMatch.surah.nameArabic}
+          </p>
+        </Link>
+      )}
+
       {/* Count */}
-      <p className="text-xs text-muted-foreground">
-        {filtered.length} of {surahs.length} surahs
-      </p>
+      {!verseMatch && (
+        <p className="text-xs text-muted-foreground">
+          {filtered.length} of {surahs.length} surahs
+        </p>
+      )}
 
       {/* Grid view */}
       {view === "grid" ? (
@@ -176,7 +212,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
         </div>
       )}
 
-      {filtered.length === 0 && (
+      {filtered.length === 0 && !verseMatch && search && (
         <p className="py-12 text-center text-sm text-muted-foreground">
           No surahs match &ldquo;{search}&rdquo;
         </p>
