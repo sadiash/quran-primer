@@ -62,7 +62,7 @@ The design philosophy is simple: **the luxury of time and peace**. No gamificati
 
 Clean Architecture with dependency injection — no framework coupling in the domain layer:
 
-```
+```text
 src/
 ├── core/              # Domain types, port interfaces, services (zero React imports)
 │   ├── types/         # Surah, Verse, Hadith, Note, Bookmark, etc.
@@ -87,7 +87,7 @@ src/
 All core data ships bundled with the app — **no internet required for reading**:
 
 | Data | Files | Size |
-|------|-------|------|
+| ---- | ----- | ---- |
 | Arabic text (Uthmani) | 114 surahs | 3.5 MB |
 | Translations | 6 translations x 114 files | 6.4 MB |
 | Tafsirs | 3 tafsirs x 114 files | 41 MB |
@@ -98,7 +98,7 @@ Local adapters read from `data/` at build time. API adapters fall back to quran.
 ### Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+| ----- | ---------- |
 | Framework | Next.js 16 (App Router), React 19 |
 | Language | TypeScript (strict, noUncheckedIndexedAccess) |
 | Styling | Tailwind CSS v4 with HSL design tokens |
@@ -171,7 +171,7 @@ Open [http://localhost:5555](http://localhost:5555).
 ### Scripts
 
 | Command | Description |
-|---------|-------------|
+| ------- | ----------- |
 | `npm run dev` | Start dev server (Turbopack) |
 | `npm run build` | Production build (Webpack) |
 | `npm run lint` | ESLint |
@@ -209,7 +209,7 @@ The app deploys to Vercel with zero configuration beyond environment variables:
 
 ## Project Structure
 
-```
+```text
 quran-primer/
 ├── data/                    # Bundled Islamic text data (JSON)
 │   ├── quran/surahs/        # 114 Arabic text files
