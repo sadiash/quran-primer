@@ -89,16 +89,37 @@ export function ReadingSurface({
     [preferences.activeTranslationIds, preferences.translationConfigs, preferences.translationFontSize],
   );
 
-  // Filter translations to user's active selection
+  // Visible translations — persisted subset of activeTranslationIds
+  const visibleTranslationIds = useMemo(() => {
+    const saved = preferences.visibleTranslationIds;
+    if (!saved) return preferences.activeTranslationIds;
+    // Filter to only IDs still active in settings
+    const valid = saved.filter((id) => preferences.activeTranslationIds.includes(id));
+    return valid.length > 0 ? valid : preferences.activeTranslationIds;
+  }, [preferences.visibleTranslationIds, preferences.activeTranslationIds]);
+
+  const toggleVisibleTranslation = useCallback((id: number) => {
+    const next = visibleTranslationIds.includes(id)
+      ? visibleTranslationIds.length > 1 ? visibleTranslationIds.filter((x) => x !== id) : visibleTranslationIds
+      : [...visibleTranslationIds, id];
+    updatePreferences({ visibleTranslationIds: next });
+  }, [visibleTranslationIds, updatePreferences]);
+
+  // Filter translations to visible selection (subset of active)
   const activeTranslations = useMemo(
-    () => translations.filter((t) => preferences.activeTranslationIds.includes(t.resourceId)),
-    [translations, preferences.activeTranslationIds],
+    () => translations.filter((t) => visibleTranslationIds.includes(t.resourceId)),
+    [translations, visibleTranslationIds],
+  );
+
+  const visibleConfigs = useMemo(
+    () => resolvedConfigs.filter((c) => visibleTranslationIds.includes(c.translationId)),
+    [resolvedConfigs, visibleTranslationIds],
   );
 
   // Group translations by verse, sorted by config order
   const translationsByVerse = useMemo(() => {
     const configOrderMap = new Map<number, number>();
-    for (const c of resolvedConfigs) configOrderMap.set(c.translationId, c.order);
+    for (const c of visibleConfigs) configOrderMap.set(c.translationId, c.order);
 
     const byVerse = new Map<string, Translation[]>();
     for (const t of activeTranslations) {
@@ -113,7 +134,7 @@ export function ReadingSurface({
     }
 
     return byVerse;
-  }, [activeTranslations, resolvedConfigs]);
+  }, [activeTranslations, visibleConfigs]);
 
   // Track reading progress (scroll-based — does NOT override manual verse focus)
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -380,12 +401,24 @@ export function ReadingSurface({
             </div>
           )}
 
-          {/* Translation color legend — only when multiple translations active */}
-          {resolvedConfigs.length > 1 && preferences.showTranslation && (
-            <TranslationLegend
-              configs={resolvedConfigs}
-              translations={activeTranslations}
-            />
+          {/* Translation color legend — inline pills when multiple active */}
+          {visibleConfigs.length > 1 && preferences.showTranslation && (
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+              {visibleConfigs.map((c) => {
+                const name = translations.find((t) => t.resourceId === c.translationId)?.resourceName;
+                return (
+                  <span key={c.translationId} className="flex items-center gap-2 text-[10px]">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full shrink-0"
+                      style={{ backgroundColor: `hsl(var(--translation-${c.colorSlot}))` }}
+                    />
+                    <span className="text-muted-foreground/60">
+                      {name ?? `Translation ${c.translationId}`}
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
           )}
 
           <div className={cn(
@@ -406,7 +439,7 @@ export function ReadingSurface({
                     showTranslation={preferences.showTranslation}
                     showVerseNumbers={preferences.showVerseNumbers}
                     arabicSizeClass={arabicSizeClass}
-                    translationConfigs={resolvedConfigs}
+                    translationConfigs={visibleConfigs}
                     translationLayout={preferences.translationLayout}
                     density={density}
                     readingFlow={readingFlow}
@@ -442,64 +475,13 @@ export function ReadingSurface({
         </div>
       </div>
 
-      <ReadingToolbar />
+      <ReadingToolbar
+        visibleTranslationIds={visibleTranslationIds}
+        onToggleTranslation={toggleVisibleTranslation}
+      />
     </div>
   );
 }
-
-/* ─── Translation color legend ─── */
 
 import type { TranslationConfig } from "@/core/types";
-import { CaretDownIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-
-function TranslationLegend({
-  configs,
-  translations,
-}: {
-  configs: TranslationConfig[];
-  translations: Translation[];
-}) {
-  const [open, setOpen] = useState(true);
-
-  // Build a name lookup from the translations we received
-  const nameMap = useMemo(() => {
-    const m = new Map<number, string>();
-    for (const t of translations) {
-      if (!m.has(t.resourceId)) m.set(t.resourceId, t.resourceName);
-    }
-    return m;
-  }, [translations]);
-
-  return (
-    <div className="mt-6">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50 hover:text-muted-foreground/70 transition-all tracking-wide uppercase"
-      >
-        <CaretDownIcon
-          className={cn(
-            "h-2.5 w-2.5 transition-transform",
-            !open && "-rotate-90",
-          )}
-        />
-        Translation key
-      </button>
-      {open && (
-        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5">
-          {configs.map((c) => (
-            <span key={c.translationId} className="flex items-center gap-2 text-[10px]">
-              <span
-                className="inline-block h-2 w-2 rounded-full shrink-0"
-                style={{ backgroundColor: `hsl(var(--translation-${c.colorSlot}))` }}
-              />
-              <span className="text-muted-foreground/60">
-                {nameMap.get(c.translationId) ?? `Translation ${c.translationId}`}
-              </span>
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
