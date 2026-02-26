@@ -1,6 +1,6 @@
 # The Primer
 
-> A personal knowledge system disguised as a reading app — for the Quran.
+> A deeply personal, infinitely patient, contextually aware companion that meets you where you are and goes as deep as you want to go.
 
 ![Status](https://img.shields.io/badge/status-v1.0-green)
 ![License](https://img.shields.io/badge/license-AGPL--3.0-blue)
@@ -13,9 +13,15 @@
 
 ## Why
 
-Most Quran apps are either beautiful readers with no depth, or powerful study tools with terrible UX. The Primer tries to be both: an immersive reading experience that lets you peel back layers of meaning without ever losing your place.
+A place where you can peacefully read the Quran and never lose context — no matter how deep you dive. Every verse is a doorway into translations, commentary, hadith, cross-scripture references, and your own evolving understanding. The app remembers everything, connects everything, and meets you exactly where you left off.
 
-The design philosophy is simple: **the luxury of time and peace**. No gamification, no streaks, no rush. Just depth. You have all the time in the world to read, study, reflect, and come back.
+This is not a reading app. This is a **personal knowledge system** built around the Quran.
+
+**The luxury of time and peace.** No gamification, no streaks, no rush. Just depth. You have all the time in the world to study, understand, ask questions, go back.
+
+The Quran belongs to everyone. A study tool for the Quran should not be locked behind proprietary walls — the core experience is open source, the data is always local, and your notes are always yours.
+
+> The name comes from Neal Stephenson's *The Diamond Age* — a book that teaches by meeting you where you are, adapting to your curiosity, and growing with you.
 
 ---
 
@@ -29,9 +35,7 @@ The design philosophy is simple: **the luxury of time and peace**. No gamificati
 - **7 workspace presets**: Daily Reading, Deep Study, Translation Comparison, Zen Reading, Theater, Focus Flow, Mushaf
 - **8 themes** (4 light, 4 dark): The Library, Amethyst, Sahara, Garden, The Observatory, Cosmos, Midnight, Matrix
 
-What matters most: everything associated with a verse — commentary, hadith, cross-references — is right there while you read. You can bookmark, take notes, and explore without ever losing your place.
-
-> The name "Primer" is inspired by Neal Stephenson's *The Diamond Age* — a book that teaches by meeting you where you are and growing with you.
+From any verse, open layers of understanding — tafsir, hadith, cross-references, your own notes — all in context, without ever leaving the page. Go three levels deep into a commentary chain and one tap collapses everything back to the exact verse you started from. **The breadcrumb trail never breaks. The reading position never moves.**
 
 ### Study
 
