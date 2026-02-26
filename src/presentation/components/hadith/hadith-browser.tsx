@@ -67,7 +67,7 @@ export function HadithBrowser() {
         </button>
         {selectedCollection && (
           <>
-            <CaretRightIcon className="h-3.5 w-3.5" />
+            <CaretRightIcon weight="bold" className="h-3.5 w-3.5" />
             <button
               onClick={() => { setSelectedBook(null); setSearch(""); }}
               className={cn(
@@ -84,7 +84,7 @@ export function HadithBrowser() {
         )}
         {selectedBook !== null && selectedBookData && (
           <>
-            <CaretRightIcon className="h-3.5 w-3.5" />
+            <CaretRightIcon weight="bold" className="h-3.5 w-3.5" />
             <span className="text-foreground font-medium truncate">
               Book {selectedBookData.bookNumber}: {selectedBookData.bookName}
             </span>
@@ -111,7 +111,7 @@ export function HadithBrowser() {
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm"
                   style={{ backgroundColor: `${meta?.accentColor ?? "#666"}20`, color: meta?.accentColor ?? "#666" }}
                 >
-                  <BooksIcon className="h-5 w-5" />
+                  <BooksIcon weight="duotone" className="h-5 w-5" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-foreground">
@@ -121,7 +121,7 @@ export function HadithBrowser() {
                     {meta?.name ?? c.label}
                   </p>
                 </div>
-                <CaretRightIcon className="h-4 w-4 shrink-0 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors" />
+                <CaretRightIcon weight="bold" className="h-4 w-4 shrink-0 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors" />
               </button>
             );
           })}
@@ -131,12 +131,12 @@ export function HadithBrowser() {
       {/* ─── Book list ─── */}
       {selectedCollection && selectedBook === null && (
         <>
-          {/* MagnifyingGlassIcon within books */}
+          {/* Search within books */}
           <div className="relative max-w-md">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlassIcon weight="duotone" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="MagnifyingGlassIcon books..."
+              placeholder="Search books..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -145,7 +145,7 @@ export function HadithBrowser() {
 
           {booksLoading && (
             <div className="flex items-center justify-center gap-2 py-12">
-              <CircleNotchIcon className="h-5 w-5 animate-spin text-muted-foreground" />
+              <CircleNotchIcon weight="bold" className="h-5 w-5 animate-spin text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Loading books...</span>
             </div>
           )}
@@ -185,7 +185,7 @@ export function HadithBrowser() {
                         {book.hadithCount} hadith{book.hadithCount !== 1 ? "s" : ""}
                       </p>
                     </div>
-                    <CaretRightIcon className="h-4 w-4 shrink-0 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors" />
+                    <CaretRightIcon weight="bold" className="h-4 w-4 shrink-0 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -214,7 +214,7 @@ export function HadithBrowser() {
 
           {hadithsLoading && (
             <div className="flex items-center justify-center gap-2 py-12">
-              <CircleNotchIcon className="h-5 w-5 animate-spin text-muted-foreground" />
+              <CircleNotchIcon weight="bold" className="h-5 w-5 animate-spin text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Loading hadiths...</span>
             </div>
           )}

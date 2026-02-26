@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookOpenTextIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon, PaletteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon } from "@phosphor-icons/react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon, PaletteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon } from "@phosphor-icons/react";
+import { LogoIcon } from "./logo";
+import type { IconWeight } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useProgress } from "@/presentation/hooks/use-progress";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
@@ -13,7 +15,7 @@ import type { ThemeName } from "@/core/types";
 import { cn } from "@/lib/utils";
 
 const THEME_OPTIONS: { name: ThemeName; label: string; mode: "light" | "dark"; swatches: [string, string, string] }[] = [
-  { name: "library", label: "BooksIcon", mode: "light", swatches: ["hsl(40 33% 96%)", "hsl(36 72% 44%)", "hsl(168 28% 38%)"] },
+  { name: "library", label: "Library", mode: "light", swatches: ["hsl(40 33% 96%)", "hsl(36 72% 44%)", "hsl(168 28% 38%)"] },
   { name: "amethyst", label: "Amethyst", mode: "light", swatches: ["hsl(210 40% 98%)", "hsl(265 90% 55%)", "hsl(200 85% 60%)"] },
   { name: "sahara", label: "Sahara", mode: "light", swatches: ["hsl(35 40% 95%)", "hsl(25 80% 50%)", "hsl(168 40% 42%)"] },
   { name: "garden", label: "Garden", mode: "light", swatches: ["hsl(140 30% 97%)", "hsl(145 45% 55%)", "hsl(280 35% 70%)"] },
@@ -23,7 +25,7 @@ const THEME_OPTIONS: { name: ThemeName; label: string; mode: "light" | "dark"; s
   { name: "matrix", label: "Matrix", mode: "dark", swatches: ["hsl(120 15% 6%)", "hsl(120 100% 50%)", "hsl(120 80% 35%)"] },
 ];
 
-const PANEL_ITEMS: { id: PanelId; icon: React.ComponentType<{ className?: string }>; label: string }[] = [
+const PANEL_ITEMS: { id: PanelId; icon: React.ComponentType<{ className?: string; weight?: IconWeight }>; label: string }[] = [
   { id: "tafsir", icon: BookOpenIcon, label: "Tafsir" },
   { id: "hadith", icon: BookBookmarkIcon, label: "Hadith" },
   { id: "notes", icon: NoteIcon, label: "Notes" },
@@ -54,8 +56,8 @@ export function TopNav({ hidden = false }: TopNavProps) {
     )}>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 group">
-        <BookOpenTextIcon className="h-4 w-4 text-primary transition-transform group-hover:scale-110" />
-        <span className="text-[13px] font-semibold tracking-tight text-foreground hidden sm:inline serif-display">
+        <LogoIcon className="h-4 w-4 text-primary transition-transform group-hover:scale-110" />
+        <span className="text-[13px] font-semibold tracking-tight text-foreground hidden sm:inline">
           The Primer
         </span>
       </Link>
@@ -73,7 +75,7 @@ export function TopNav({ hidden = false }: TopNavProps) {
           href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
           className="hidden md:flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium text-primary bg-primary/8 hover:bg-primary/12 transition-all"
         >
-          <PlayCircleIcon className="h-3 w-3" />
+          <PlayCircleIcon weight="bold" className="h-3 w-3" />
           Continue {getSurahName(latest.surahId)} : {latest.lastVerseKey.split(":")[1]}
         </Link>
       )}
@@ -93,9 +95,9 @@ export function TopNav({ hidden = false }: TopNavProps) {
       <Link
         href="/settings"
         className="rounded-full p-1.5 text-muted-foreground/70 transition-all hover:bg-surface-hover hover:text-foreground"
-        aria-label="GearSixIcon"
+        aria-label="Settings"
       >
-        <GearSixIcon className="h-3.5 w-3.5" />
+        <GearSixIcon weight="duotone" className="h-3.5 w-3.5" />
       </Link>
     </header>
   );
@@ -116,7 +118,7 @@ function PanelsDropdown({
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground/70 transition-all hover:bg-surface-hover hover:text-foreground"
       >
-        <SidebarSimpleIcon className="h-3.5 w-3.5" />
+        <SidebarSimpleIcon weight="duotone" className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Panels</span>
       </button>
       {open && (
@@ -137,7 +139,7 @@ function PanelsDropdown({
                       : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                   )}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3.5 w-3.5" weight={isOpen ? "fill" : "duotone"} />
                   {label}
                   {isOpen && (
                     <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
@@ -163,7 +165,7 @@ function ThemeDropdown() {
         className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground/70 transition-all hover:bg-surface-hover hover:text-foreground"
         aria-label="Change theme"
       >
-        <PaletteIcon className="h-3.5 w-3.5" />
+        <PaletteIcon weight="duotone" className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Theme</span>
       </button>
       {open && (
@@ -247,7 +249,7 @@ function NavLink({
   pathname,
 }: {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; weight?: IconWeight }>;
   label: string;
   pathname: string;
 }) {
@@ -262,7 +264,7 @@ function NavLink({
           : "text-muted-foreground/70 hover:bg-surface-hover hover:text-foreground",
       )}
     >
-      <Icon className="h-3 w-3" />
+      <Icon className="h-3 w-3" weight={isActive ? "fill" : "duotone"} />
       {label}
     </Link>
   );

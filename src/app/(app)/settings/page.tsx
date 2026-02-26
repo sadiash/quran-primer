@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,8 @@ import type {
   PaperTexture,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
-import { CaretDownIcon, CaretUpIcon, CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, CaretUpIcon, CheckIcon, DownloadSimpleIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
+import { db } from "@/infrastructure/db/client/schema";
 
 const TRANSLATIONS = [
   { id: 1001, name: "The Clear Quran", author: "Mustafa Khattab" },
@@ -290,7 +292,7 @@ export default function SettingsPage() {
                       onClick={() => activateTranslation(t.id)}
                       className="flex w-full items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:border-muted-foreground/30 hover:bg-surface-hover transition-fast"
                     >
-                      <PlusIcon className="h-3.5 w-3.5 shrink-0" />
+                      <PlusIcon weight="bold" className="h-3.5 w-3.5 shrink-0" />
                       <span>{t.name}</span>
                       <span className="text-xs text-muted-foreground/60 ml-auto">{t.author}</span>
                     </button>
@@ -337,8 +339,166 @@ export default function SettingsPage() {
           </div>
         </Section>
 
+        {/* ── Data ── */}
+        <DataSection />
+
       </div>
     </div>
+  );
+}
+
+/* ─── Data management ─── */
+
+const LS_KEYS = ["panels:open", "notes:sort", "hadith:recent-searches", "command-palette:recent"];
+
+function DataSection() {
+  const [exporting, setExporting] = useState(false);
+  const [exportResult, setExportResult] = useState<{ path: string; filename: string } | null>(null);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearing, setClearing] = useState(false);
+
+  const handleExport = useCallback(async () => {
+    setExporting(true);
+    setExportResult(null);
+    try {
+      const [bookmarks, notes, progress, preferences, graphNodes, graphEdges] =
+        await Promise.all([
+          db.bookmarks.toArray(),
+          db.notes.toArray(),
+          db.progress.toArray(),
+          db.preferences.toArray(),
+          db.graphNodes.toArray(),
+          db.graphEdges.toArray(),
+        ]);
+
+      const localStorageData: Record<string, unknown> = {};
+      for (const key of LS_KEYS) {
+        try {
+          const val = localStorage.getItem(key);
+          if (val !== null) localStorageData[key] = JSON.parse(val);
+        } catch { /* skip */ }
+      }
+
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        version: 1,
+        data: { bookmarks, notes, progress, preferences, graphNodes, graphEdges, localStorage: localStorageData },
+      };
+
+      // Write file to Desktop via API
+      const res = await fetch("/api/v1/export", {
+        method: "POST",
+        body: new URLSearchParams({ payload: JSON.stringify(payload) }),
+      });
+      const result = await res.json();
+      if (result.ok) {
+        setExportResult(result);
+      }
+    } finally {
+      setExporting(false);
+    }
+  }, []);
+
+  const handleClear = useCallback(async () => {
+    setClearing(true);
+    try {
+      await Promise.all([
+        db.bookmarks.clear(),
+        db.notes.clear(),
+        db.progress.clear(),
+        db.preferences.clear(),
+        db.crossReferences.clear(),
+        db.graphNodes.clear(),
+        db.graphEdges.clear(),
+      ]);
+      for (const key of LS_KEYS) {
+        try { localStorage.removeItem(key); } catch { /* skip */ }
+      }
+      setConfirmClear(false);
+      window.location.reload();
+    } finally {
+      setClearing(false);
+    }
+  }, []);
+
+  return (
+    <Section title="Data">
+      <div className="space-y-4">
+        {/* Export */}
+        <div>
+          <p className="text-sm font-medium text-foreground mb-1">
+            Export all data
+          </p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Save your notes, bookmarks, reading progress, and settings as a JSON file to your Desktop.
+          </p>
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast disabled:opacity-50"
+          >
+            <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
+            {exporting ? "Exporting..." : "Export to Desktop"}
+          </button>
+          {exportResult && (
+            <p className="mt-2 text-xs text-green-500 font-medium">
+              Saved to {exportResult.path}
+            </p>
+          )}
+        </div>
+
+        {/* Clear */}
+        <div>
+          <p className="text-sm font-medium text-foreground mb-1">
+            Clear all data
+          </p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Permanently delete all your notes, bookmarks, reading progress, and settings.
+            This cannot be undone.
+          </p>
+          {!confirmClear ? (
+            <button
+              onClick={() => setConfirmClear(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-fast"
+            >
+              <TrashIcon weight="bold" className="h-4 w-4" />
+              Clear all data
+            </button>
+          ) : (
+            <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 space-y-3">
+              <div className="flex items-start gap-2">
+                <WarningIcon weight="fill" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-destructive">
+                    Are you sure?
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    This will permanently delete all your notes, bookmarks, reading progress,
+                    knowledge graph, and settings. Consider exporting a backup first.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleClear}
+                  disabled={clearing}
+                  className="inline-flex items-center gap-2 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 transition-fast disabled:opacity-50"
+                >
+                  <TrashIcon weight="bold" className="h-4 w-4" />
+                  {clearing ? "Clearing..." : "Yes, delete everything"}
+                </button>
+                <button
+                  onClick={() => setConfirmClear(false)}
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Section>
   );
 }
 
@@ -556,7 +716,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
             aria-label="Move up"
           >
-            <CaretUpIcon className="h-3.5 w-3.5" />
+            <CaretUpIcon weight="bold" className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={onMoveDown}
@@ -564,7 +724,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
             aria-label="Move down"
           >
-            <CaretDownIcon className="h-3.5 w-3.5" />
+            <CaretDownIcon weight="bold" className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={onRemove}
@@ -572,7 +732,7 @@ function TranslationConfigRow({
             className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-20 transition-fast"
             aria-label="Remove"
           >
-            <XIcon className="h-3.5 w-3.5" />
+            <XIcon weight="bold" className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
@@ -749,7 +909,7 @@ function PaperTextureCard({
       />
       <div className="flex items-center gap-1">
         <span className="text-[11px] font-medium text-foreground">{texture.label}</span>
-        {isActive && <CheckIcon className="h-3 w-3 text-primary" />}
+        {isActive && <CheckIcon weight="fill" className="h-3 w-3 text-primary" />}
       </div>
       <span className="text-[9px] text-muted-foreground leading-tight">{texture.description}</span>
     </button>

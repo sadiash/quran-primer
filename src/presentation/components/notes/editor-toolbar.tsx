@@ -2,6 +2,7 @@
 
 import type { Editor } from "@tiptap/react";
 import { ArrowClockwiseIcon, ArrowCounterClockwiseIcon, LinkIcon, ListBulletsIcon, ListNumbersIcon, QuotesIcon, TextBolderIcon, TextHThreeIcon, TextHTwoIcon, TextItalicIcon } from "@phosphor-icons/react";
+import type { IconWeight } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface EditorToolbarProps {
@@ -9,7 +10,7 @@ interface EditorToolbarProps {
 }
 
 interface ToolbarButtonProps {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; weight?: IconWeight }>;
   label: string;
   active?: boolean;
   disabled?: boolean;
@@ -37,7 +38,7 @@ function ToolbarButton({
         disabled && "pointer-events-none opacity-40",
       )}
     >
-      <Icon className="h-3 w-3" />
+      <Icon className="h-3 w-3" weight={active ? "fill" : "bold"} />
     </button>
   );
 }
@@ -69,13 +70,13 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
     <div className="flex flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-border px-2 py-1.5">
       <ToolbarButton
         icon={TextBolderIcon}
-        label="TextBolderIcon"
+        label="Bold"
         active={editor.isActive("bold")}
         onClick={() => editor.chain().focus().toggleBold().run()}
       />
       <ToolbarButton
         icon={TextItalicIcon}
-        label="TextItalicIcon"
+        label="Italic"
         active={editor.isActive("italic")}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       />
@@ -95,13 +96,13 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       <Divider />
       <ToolbarButton
         icon={ListBulletsIcon}
-        label="Bullet ListBulletsIcon"
+        label="Bullet List"
         active={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       />
       <ToolbarButton
         icon={ListNumbersIcon}
-        label="Ordered ListBulletsIcon"
+        label="Ordered List"
         active={editor.isActive("orderedList")}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       />
@@ -114,7 +115,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       />
       <ToolbarButton
         icon={LinkIcon}
-        label="LinkIcon"
+        label="Link"
         active={editor.isActive("link")}
         onClick={handleLink}
       />

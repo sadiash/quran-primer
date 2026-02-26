@@ -334,7 +334,7 @@ export default function NotesPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
               >
-                <UploadSimpleIcon className="h-4 w-4" />
+                <UploadSimpleIcon weight="bold" className="h-4 w-4" />
                 Import
               </button>
             </>
@@ -348,7 +348,7 @@ export default function NotesPage() {
                 onClick={() => setShowExportMenu(!showExportMenu)}
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
               >
-                <DownloadSimpleIcon className="h-4 w-4" />
+                <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
                 Export
               </button>
               {showExportMenu && (
@@ -363,7 +363,7 @@ export default function NotesPage() {
                       onClick={handleExportJSON}
                       className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                     >
-                      <FileJsIcon className="h-3.5 w-3.5" />
+                      <FileJsIcon weight="bold" className="h-3.5 w-3.5" />
                       As JSON (backup)
                     </button>
                     <button
@@ -371,7 +371,7 @@ export default function NotesPage() {
                       onClick={handleExportMarkdown}
                       className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                     >
-                      <FileTextIcon className="h-3.5 w-3.5" />
+                      <FileTextIcon weight="bold" className="h-3.5 w-3.5" />
                       As Markdown
                     </button>
                   </div>
@@ -386,7 +386,7 @@ export default function NotesPage() {
               onClick={() => setEditorMode("new")}
               className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
             >
-              <PlusIcon className="h-4 w-4" />
+              <PlusIcon weight="bold" className="h-4 w-4" />
               New Note
             </button>
           )}
@@ -405,7 +405,7 @@ export default function NotesPage() {
               : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
           )}
         >
-          <NoteIcon className="h-4 w-4" />
+          <NoteIcon weight="duotone" className="h-4 w-4" />
           Notes
           {notes.length > 0 && (
             <span className={cn(
@@ -426,7 +426,7 @@ export default function NotesPage() {
               : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
           )}
         >
-          <GraphIcon className="h-4 w-4" />
+          <GraphIcon weight="duotone" className="h-4 w-4" />
           Mind Map
         </button>
       </div>
@@ -467,13 +467,13 @@ export default function NotesPage() {
 
       {activeTab === "notes" && notes.length > 0 && !editorMode && (
         <>
-          {/* MagnifyingGlassIcon + Sort row */}
+          {/* Search + Sort row */}
           <div className="mt-6 flex items-center gap-2">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlassIcon weight="duotone" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="MagnifyingGlassIcon notes by content, surah, verse, or tag..."
+                placeholder="Search notes by content, surah, verse, or tag..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -487,7 +487,7 @@ export default function NotesPage() {
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                 aria-label="Sort notes"
               >
-                <ArrowsDownUpIcon className="h-4 w-4" />
+                <ArrowsDownUpIcon weight="bold" className="h-4 w-4" />
                 <span className="hidden sm:inline text-xs">
                   {SORT_OPTIONS.find((o) => o.value === sortOption)?.label}
                 </span>
@@ -520,7 +520,7 @@ export default function NotesPage() {
             </div>
           </div>
 
-          {/* TagIcon filter chips with counts */}
+          {/* Tag filter chips with counts */}
           {tagData.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-1.5">
               <button
@@ -553,7 +553,7 @@ export default function NotesPage() {
                       : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                   )}
                 >
-                  <TagIcon className="h-3 w-3" />
+                  <TagIcon weight="bold" className="h-3 w-3" />
                   {tag}
                   <span className={cn(
                     "ml-0.5 text-[10px]",
@@ -593,7 +593,7 @@ export default function NotesPage() {
       {activeTab === "notes" && notes.length === 0 && !editorMode && (
         <div className="mt-20 flex flex-col items-center text-center">
           <div className="rounded-full bg-primary/5 p-4">
-            <LightbulbIcon className="h-8 w-8 text-primary/30" />
+            <LightbulbIcon weight="duotone" className="h-8 w-8 text-primary/30" />
           </div>
           <h2 className="mt-5 text-lg font-semibold text-foreground">
             Your notes will appear here
@@ -691,12 +691,12 @@ function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSele
       <div className="relative min-h-0 flex-1 rounded-xl border border-border overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <CircleNotchIcon className="h-6 w-6 animate-spin text-primary" />
+            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-primary" />
           </div>
         )}
         {isEmpty ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-            <GraphIcon className="h-12 w-12 text-muted-foreground/30" />
+            <GraphIcon weight="duotone" className="h-12 w-12 text-muted-foreground/30" />
             <div>
               <p className="text-sm font-medium text-foreground">No connections yet</p>
               <p className="mt-1 max-w-sm text-xs text-muted-foreground">
@@ -776,7 +776,7 @@ function PageNoteCard({
         <div className="min-w-0 flex-1">
           {/* Title row with pin + color dot */}
           <div className="flex items-center gap-1.5">
-            {note.pinned && <PushPinIcon className="h-3 w-3 shrink-0 text-primary/60" />}
+            {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-primary/60" />}
             {cardStyle.dotColor && <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cardStyle.dotColor }} title={cardStyle.label} />}
             <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
               {displayTitle}
@@ -792,12 +792,12 @@ function PageNoteCard({
           )}
           {/* Compact metadata row */}
           <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
-            <MapPinIcon className="h-2.5 w-2.5" />
+            <MapPinIcon weight="bold" className="h-2.5 w-2.5" />
             <span>{locationLabel}</span>
             {note.tags.length > 0 && (
               <>
                 <span className="text-muted-foreground/30">&middot;</span>
-                <TagIcon className="h-2.5 w-2.5" />
+                <TagIcon weight="bold" className="h-2.5 w-2.5" />
                 <span>{note.tags.length === 1 ? note.tags[0] : `${note.tags[0]} +${note.tags.length - 1}`}</span>
               </>
             )}
@@ -813,20 +813,20 @@ function PageNoteCard({
             className="rounded-md p-1.5 text-muted-foreground/50 hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Note actions"
           >
-            <DotsThreeIcon className="h-4 w-4" />
+            <DotsThreeIcon weight="bold" className="h-4 w-4" />
           </button>
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
                 <button type="button" onClick={() => { setShowMenu(false); onEdit(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">
-                  <PencilSimpleIcon className="h-3 w-3" />Edit
+                  <PencilSimpleIcon weight="bold" className="h-3 w-3" />Edit
                 </button>
                 <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">
-                  {note.pinned ? <><PushPinSlashIcon className="h-3 w-3" />Unpin</> : <><PushPinIcon className="h-3 w-3" />PushPinIcon</>}
+                  {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />PushPinIcon</>}
                 </button>
                 <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-fast">
-                  <TrashIcon className="h-3 w-3" />Delete
+                  <TrashIcon weight="bold" className="h-3 w-3" />Delete
                 </button>
               </div>
             </>

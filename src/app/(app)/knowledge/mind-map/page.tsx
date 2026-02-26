@@ -56,13 +56,13 @@ function MindMapContent() {
       <div className="relative flex-1 min-h-0">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <CircleNotchIcon className="h-6 w-6 animate-spin text-primary" />
+            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-primary" />
           </div>
         )}
 
         {isEmpty ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-            <GraphIcon className="h-12 w-12 text-muted-foreground/30" />
+            <GraphIcon weight="duotone" className="h-12 w-12 text-muted-foreground/30" />
             <div>
               <p className="text-sm font-medium text-foreground">
                 No connections yet
@@ -77,14 +77,14 @@ function MindMapContent() {
                 onClick={() => router.push("/surah/1")}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
               >
-                <BookOpenIcon className="h-4 w-4" />
+                <BookOpenIcon weight="duotone" className="h-4 w-4" />
                 Start reading
               </button>
               <button
                 onClick={() => router.push("/notes")}
                 className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast"
               >
-                <NoteIcon className="h-4 w-4" />
+                <NoteIcon weight="duotone" className="h-4 w-4" />
                 Add notes
               </button>
             </div>

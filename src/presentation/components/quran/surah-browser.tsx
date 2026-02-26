@@ -38,12 +38,12 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
     <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        {/* MagnifyingGlassIcon */}
+        {/* Search */}
         <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <MagnifyingGlassIcon weight="duotone" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="MagnifyingGlassIcon by name, translation, or number..."
+            placeholder="Search by name, translation, or number..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -81,7 +81,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
               )}
               aria-label="Grid view"
             >
-              <GridFourIcon className="h-4 w-4" />
+              <GridFourIcon weight={view === "grid" ? "fill" : "duotone"} className="h-4 w-4" />
             </button>
             <button
               onClick={() => setView("list")}
@@ -89,9 +89,9 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
                 "rounded-r-lg p-1.5 transition-colors",
                 view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
               )}
-              aria-label="ListBulletsIcon view"
+              aria-label="List view"
             >
-              <ListBulletsIcon className="h-4 w-4" />
+              <ListBulletsIcon weight={view === "list" ? "fill" : "duotone"} className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -130,7 +130,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
                   <span>{surah.nameTranslation}</span>
                   <span className="text-border">|</span>
                   <span className="flex items-center gap-1">
-                    <MapPinIcon className="h-3 w-3" />
+                    <MapPinIcon weight="bold" className="h-3 w-3" />
                     {surah.revelationType === "makkah" ? "Meccan" : "Medinan"}
                   </span>
                   <span className="text-border">|</span>
@@ -141,7 +141,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
           ))}
         </div>
       ) : (
-        /* ListBulletsIcon view */
+        /* List view */
         <div className="divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
           {filtered.map((surah) => (
             <Link
@@ -165,7 +165,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
                 {surah.nameArabic}
               </span>
               <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                <MapPinIcon className="h-3 w-3" />
+                <MapPinIcon weight="bold" className="h-3 w-3" />
                 {surah.revelationType === "makkah" ? "Meccan" : "Medinan"}
               </span>
               <span className="shrink-0 text-xs text-muted-foreground">

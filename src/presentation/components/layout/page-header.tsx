@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
+import type { IconWeight } from "@phosphor-icons/react";
 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: React.ComponentType<{ className?: string; weight?: IconWeight }>;
 }
 
 /**
@@ -24,9 +25,9 @@ export function PageHeader({ title, subtitle, icon: Icon }: PageHeaderProps) {
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 transition-all hover:bg-surface-hover hover:text-foreground"
         aria-label="Go back"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeftIcon weight="bold" className="h-4 w-4" />
       </button>
-      {Icon && <Icon className="h-5 w-5 text-primary/70" />}
+      {Icon && <Icon weight="duotone" className="h-5 w-5 text-primary/70" />}
       <div>
         <h1 className="text-lg font-semibold tracking-tight text-foreground">{title}</h1>
         {subtitle && (

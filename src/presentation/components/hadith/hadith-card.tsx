@@ -184,7 +184,7 @@ export function HadithCard({
           <div className="rounded-lg bg-muted/40 px-3 py-2.5 space-y-2">
             {/* Reference line */}
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <InfoIcon className="h-3 w-3 shrink-0" />
+              <InfoIcon weight="bold" className="h-3 w-3 shrink-0" />
               <span>
                 {hadith.inBookReference ?? `Book ${hadith.bookNumber}, Hadith ${hadith.hadithNumber}`}
               </span>
@@ -212,7 +212,7 @@ export function HadithCard({
                   className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ArrowSquareOutIcon className="h-3 w-3" />
+                  <ArrowSquareOutIcon weight="bold" className="h-3 w-3" />
                   sunnah.com
                 </a>
               )}
@@ -228,12 +228,12 @@ export function HadithCard({
               >
                 {saved ? (
                   <>
-                    <CheckIcon className="h-3 w-3" />
+                    <CheckIcon weight="fill" className="h-3 w-3" />
                     Saved
                   </>
                 ) : (
                   <>
-                    <NoteIcon className="h-3 w-3" />
+                    <NoteIcon weight="bold" className="h-3 w-3" />
                     Save to Notes
                   </>
                 )}
@@ -246,7 +246,7 @@ export function HadithCard({
                   }}
                   className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
-                  <LinkSimpleIcon className="h-3 w-3" />
+                  <LinkSimpleIcon weight="bold" className="h-3 w-3" />
                   Link to Note
                 </button>
                 {showLinkMenu && (
@@ -302,12 +302,12 @@ function CopyButton({ text }: { text: string }) {
     >
       {copied ? (
         <>
-          <CheckIcon className="h-3 w-3" />
+          <CheckIcon weight="fill" className="h-3 w-3" />
           Copied
         </>
       ) : (
         <>
-          <CopyIcon className="h-3 w-3" />
+          <CopyIcon weight="bold" className="h-3 w-3" />
           CopyIcon
         </>
       )}

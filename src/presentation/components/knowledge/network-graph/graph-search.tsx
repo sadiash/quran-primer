@@ -44,12 +44,12 @@ export function GraphSearch({ nodes, onSearchResults }: GraphSearchProps) {
 
   return (
     <div className="relative flex items-center">
-      <MagnifyingGlassIcon className="absolute left-2 size-3.5 text-muted-foreground pointer-events-none" />
+      <MagnifyingGlassIcon weight="duotone" className="absolute left-2 size-3.5 text-muted-foreground pointer-events-none" />
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="MagnifyingGlassIcon nodes..."
+        placeholder="Search nodes..."
         className="w-44 pl-7 pr-7 py-1 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary"
       />
       {query && (
@@ -61,7 +61,7 @@ export function GraphSearch({ nodes, onSearchResults }: GraphSearchProps) {
           }}
           className="absolute right-2 text-muted-foreground hover:text-foreground"
         >
-          <XIcon className="size-3" />
+          <XIcon weight="bold" className="size-3" />
         </button>
       )}
       {matchCount !== null && (

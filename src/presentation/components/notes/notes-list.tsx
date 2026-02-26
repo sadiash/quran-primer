@@ -39,7 +39,7 @@ export function NotesList() {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
         <div className="rounded-full bg-primary/5 p-3">
-          <LightbulbIcon className="h-8 w-8 text-primary/30" />
+          <LightbulbIcon weight="duotone" className="h-8 w-8 text-primary/30" />
         </div>
         <p className="text-sm font-medium text-muted-foreground/70">
           No notes yet
@@ -100,7 +100,7 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
       <div className="flex items-start gap-2">
         <Link href={href} className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            {note.pinned && <PushPinIcon className="h-3 w-3 shrink-0 text-primary/60" />}
+            {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-primary/60" />}
             <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
               {displayTitle}
             </span>
@@ -116,17 +116,17 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
             className="rounded-md p-1 text-muted-foreground/60 hover:bg-surface-hover hover:text-foreground transition-fast"
             aria-label="Note actions"
           >
-            <DotsThreeIcon className="h-4 w-4" />
+            <DotsThreeIcon weight="bold" className="h-4 w-4" />
           </button>
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
                 <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">
-                  {note.pinned ? <><PushPinSlashIcon className="h-3 w-3" />Unpin</> : <><PushPinIcon className="h-3 w-3" />PushPinIcon</>}
+                  {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />PushPinIcon</>}
                 </button>
                 <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-fast">
-                  <TrashIcon className="h-3 w-3" />Delete
+                  <TrashIcon weight="bold" className="h-3 w-3" />Delete
                 </button>
               </div>
             </>
@@ -135,12 +135,12 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
       </div>
       {/* Compact metadata row */}
       <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
-        <MapPinIcon className="h-2.5 w-2.5" />
+        <MapPinIcon weight="bold" className="h-2.5 w-2.5" />
         <span>{location}</span>
         {note.tags.length > 0 && (
           <>
             <span className="text-muted-foreground/30">&middot;</span>
-            <TagIcon className="h-2.5 w-2.5" />
+            <TagIcon weight="bold" className="h-2.5 w-2.5" />
             <span>{note.tags.length === 1 ? note.tags[0] : `${note.tags[0]} +${note.tags.length - 1}`}</span>
           </>
         )}

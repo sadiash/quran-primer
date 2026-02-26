@@ -1599,21 +1599,21 @@ html[data-paper="watercolor"] {
 
 /* ─── Surah Header Typography ─── */
 .surah-title-arabic {
-  font-size: 2.5rem;
-  line-height: 1.6;
+  font-size: 2.25rem;
+  line-height: 1.4;
   color: hsl(var(--foreground));
   letter-spacing: 0.02em;
 }
 
 @media (min-width: 640px) {
   .surah-title-arabic {
-    font-size: 3.25rem;
+    font-size: 2.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .surah-title-arabic {
-    font-size: 3.75rem;
+    font-size: 3rem;
   }
 }
 

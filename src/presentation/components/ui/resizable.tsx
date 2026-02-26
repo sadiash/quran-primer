@@ -62,7 +62,7 @@ function ResizableHandle({
             isVertical ? "h-3 w-4 rotate-90" : "h-4 w-3",
           )}
         >
-          <DotsSixVerticalIcon className="h-2.5 w-2.5" />
+          <DotsSixVerticalIcon weight="bold" className="h-2.5 w-2.5" />
         </div>
       )}
     </Separator>

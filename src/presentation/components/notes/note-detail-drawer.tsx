@@ -82,7 +82,7 @@ export function NoteDetailDrawer({
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                 aria-label="Close"
               >
-                <XIcon className="h-4 w-4" />
+                <XIcon weight="bold" className="h-4 w-4" />
               </button>
               <div className="flex items-center gap-1">
                 {onTogglePin && (
@@ -95,13 +95,13 @@ export function NoteDetailDrawer({
                         ? "text-primary hover:bg-primary/10"
                         : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                     )}
-                    aria-label={note.pinned ? "Unpin note" : "PushPinIcon note"}
-                    title={note.pinned ? "Unpin note" : "PushPinIcon note"}
+                    aria-label={note.pinned ? "Unpin note" : "Pin note"}
+                    title={note.pinned ? "Unpin note" : "Pin note"}
                   >
                     {note.pinned ? (
-                      <PushPinSlashIcon className="h-4 w-4" />
+                      <PushPinSlashIcon weight="bold" className="h-4 w-4" />
                     ) : (
-                      <PushPinIcon className="h-4 w-4" />
+                      <PushPinIcon weight="fill" className="h-4 w-4" />
                     )}
                   </button>
                 )}
@@ -111,7 +111,7 @@ export function NoteDetailDrawer({
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
                   aria-label="Edit note"
                 >
-                  <PencilSimpleIcon className="h-4 w-4" />
+                  <PencilSimpleIcon weight="bold" className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
@@ -119,7 +119,7 @@ export function NoteDetailDrawer({
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-fast"
                   aria-label="Delete note"
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon weight="bold" className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -131,7 +131,7 @@ export function NoteDetailDrawer({
               </h2>
               {note.pinned && (
                 <div className="mt-1 flex items-center gap-1">
-                  <PushPinIcon className="h-2.5 w-2.5 text-primary/60" />
+                  <PushPinIcon weight="fill" className="h-2.5 w-2.5 text-primary/60" />
                   <span className="text-[9px] font-semibold uppercase tracking-wider text-primary/50">
                     Pinned
                   </span>
@@ -149,7 +149,7 @@ export function NoteDetailDrawer({
                       key={`vk-${vk}`}
                       className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-medium text-foreground"
                     >
-                      <BookOpenIcon className="h-3 w-3 text-muted-foreground" />
+                      <BookOpenIcon weight="duotone" className="h-3 w-3 text-muted-foreground" />
                       {getSurahName(Number(s))} {s}:{v}
                     </span>
                   );
@@ -159,7 +159,7 @@ export function NoteDetailDrawer({
                     key={`s-${id}`}
                     className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary"
                   >
-                    <BookOpenIcon className="h-3 w-3" />
+                    <BookOpenIcon weight="duotone" className="h-3 w-3" />
                     {getSurahName(id)} (surah)
                   </span>
                 ))}
@@ -191,9 +191,9 @@ export function NoteDetailDrawer({
                     >
                       <div className="flex items-center gap-1.5">
                         {resource.type === "hadith" ? (
-                          <BookBookmarkIcon className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                          <BookBookmarkIcon weight="duotone" className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                         ) : (
-                          <BookOpenIcon className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                          <BookOpenIcon weight="duotone" className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                         )}
                         <span className="text-sm font-medium text-foreground">
                           {resource.label}
@@ -209,7 +209,7 @@ export function NoteDetailDrawer({
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors"
                         >
-                          <ArrowSquareOutIcon className="h-3 w-3" />
+                          <ArrowSquareOutIcon weight="bold" className="h-3 w-3" />
                           View on sunnah.com
                         </a>
                       )}
@@ -229,7 +229,7 @@ export function NoteDetailDrawer({
                         key={tag}
                         className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
                       >
-                        <TagIcon className="h-2.5 w-2.5" />
+                        <TagIcon weight="bold" className="h-2.5 w-2.5" />
                         {tag}
                       </span>
                     ))}

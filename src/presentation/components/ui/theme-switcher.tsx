@@ -179,7 +179,7 @@ function ThemeCard({
         </div>
       </div>
       {isActive && (
-        <CheckIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
+        <CheckIcon weight="fill" className="h-3.5 w-3.5 shrink-0 text-primary" />
       )}
     </button>
   );

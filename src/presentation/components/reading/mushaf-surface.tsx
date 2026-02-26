@@ -171,7 +171,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
                       return (
                         <p
                           key={t.resourceId}
-                          className="text-sm leading-[1.8] text-muted-foreground/80 serif-display"
+                          className="text-sm leading-[1.8] text-muted-foreground/80"
                         >
                           <span className="text-[0.6em] align-super text-muted-foreground/40 font-mono select-none mr-1">
                             {verse.verseNumber}
@@ -201,7 +201,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
                       return (
                         <p
                           key={t.resourceId}
-                          className="text-sm leading-[1.8] text-muted-foreground/80 serif-display"
+                          className="text-sm leading-[1.8] text-muted-foreground/80"
                         >
                           <span className="text-[0.6em] align-super text-muted-foreground/40 font-mono select-none mr-1">
                             {verse.verseNumber}
@@ -226,7 +226,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
           className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
           aria-label="Previous page"
         >
-          <CaretLeftIcon className="h-4 w-4" />
+          <CaretLeftIcon weight="bold" className="h-4 w-4" />
         </button>
         <span className="text-xs text-muted-foreground/60 font-mono tabular-nums">
           {currentSpread + 1} / {totalSpreads}
@@ -237,7 +237,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
           className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
           aria-label="Next page"
         >
-          <CaretRightIcon className="h-4 w-4" />
+          <CaretRightIcon weight="bold" className="h-4 w-4" />
         </button>
       </div>
 
