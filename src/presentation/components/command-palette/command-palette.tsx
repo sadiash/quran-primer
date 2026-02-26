@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
-import { BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, BrainIcon, MagnifyingGlassIcon, NoteIcon, SlidersHorizontalIcon, SquaresFourIcon, TextAlignJustifyIcon } from "@phosphor-icons/react";
+import { ArrowRightIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, BrainIcon, MagnifyingGlassIcon, NoteIcon, SlidersHorizontalIcon, SquaresFourIcon, TextAlignJustifyIcon } from "@phosphor-icons/react";
 import { useCommandPalette } from "@/presentation/hooks/use-command-palette";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import { useWorkspacePresets } from "@/presentation/hooks/use-workspace-presets";
@@ -33,15 +33,25 @@ export function CommandPalette() {
   const { preferences, updatePreferences } = usePreferences();
   const [search, setSearch] = useState("");
 
+  const verseMatch = useMemo(() => {
+    const m = search.match(/^(\d{1,3}):(\d{1,3})$/);
+    if (!m) return null;
+    const surah = Number(m[1]);
+    const verse = Number(m[2]);
+    if (surah < 1 || surah > 114 || verse < 1) return null;
+    return { surah, verse, key: `${surah}:${verse}`, name: SURAH_NAMES[surah - 1] };
+  }, [search]);
+
   const filteredSurahs = useMemo(() => {
     if (!search) return SURAH_NAMES.slice(0, 10);
+    if (verseMatch) return [];
     const lower = search.toLowerCase();
     return SURAH_NAMES.filter(
       (name, i) =>
         name.toLowerCase().includes(lower) ||
         String(i + 1).includes(lower),
     ).slice(0, 10);
-  }, [search]);
+  }, [search, verseMatch]);
 
   const close = () => {
     setOpen(false);
@@ -75,7 +85,7 @@ export function CommandPalette() {
             <Command.Input
               value={search}
               onValueChange={setSearch}
-              placeholder="Search surahs, commands, settings..."
+              placeholder="Search surahs, go to verse (2:255)..."
               className="flex-1 bg-transparent py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               autoFocus
             />
@@ -122,6 +132,18 @@ export function CommandPalette() {
                 Settings
               </CommandItem>
             </Command.Group>
+
+            {/* Verse jump */}
+            {verseMatch && (
+              <Command.Group heading="Go to Verse" className="px-1 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                <CommandItem
+                  onSelect={() => runCommand(`verse:${verseMatch.key}`, () => router.push(`/surah/${verseMatch.surah}?verse=${verseMatch.key}`))}
+                >
+                  <ArrowRightIcon weight="bold" className="h-4 w-4" />
+                  Go to {verseMatch.name} ({verseMatch.surah}), Verse {verseMatch.verse}
+                </CommandItem>
+              </Command.Group>
+            )}
 
             {/* Surahs */}
             {filteredSurahs.length > 0 && (

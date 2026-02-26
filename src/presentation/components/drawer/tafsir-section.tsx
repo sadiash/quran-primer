@@ -66,13 +66,17 @@ export function TafsirSection() {
   const { focusedVerseKey } = usePanels();
   const { preferences } = usePreferences();
   const enabledResources = TAFSIR_RESOURCES.filter((r) => preferences.activeTafsirIds.includes(r.id));
-  const [visibleIds, setVisibleIds] = useState<number[]>(() => enabledResources.length > 0 ? [enabledResources[0].id] : []);
+  const [visibleIds, setVisibleIds] = useState<number[]>(() => {
+    const first = enabledResources[0];
+    return first ? [first.id] : [];
+  });
 
   // Keep visibleIds in sync when settings change
   const validVisibleIds = visibleIds.filter((id) => enabledResources.some((r) => r.id === id));
+  const firstEnabled = enabledResources[0];
   const displayIds = validVisibleIds.length > 0
     ? validVisibleIds
-    : enabledResources.length > 0 ? [enabledResources[0].id] : [];
+    : firstEnabled ? [firstEnabled.id] : [];
 
   if (!focusedVerseKey) {
     return (
