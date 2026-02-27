@@ -43,7 +43,7 @@ export interface ProgressRecord {
 
 export interface PreferencesRecord {
   id: string;
-  theme: string;
+  theme?: string;
   arabicFont: string;
   arabicFontSize: string;
   translationFontSize: string;

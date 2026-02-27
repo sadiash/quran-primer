@@ -5,13 +5,11 @@ import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { cn } from "@/lib/utils";
 import type {
-  ArabicFont,
   ArabicFontSize,
-  TranslationFontSize,
-  TranslationFontFamily,
-  TranslationColorSlot,
   TranslationConfig,
+  TranslationFontSize,
   TranslationLayout,
+  TranslationColorSlot,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
 import { CaretDownIcon, CaretUpIcon, DownloadSimpleIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
@@ -59,9 +57,8 @@ export default function SettingsPage() {
   };
 
   const deactivateTranslation = (id: number) => {
-    if (resolvedConfigs.length <= 1) return; // keep at least one
+    if (resolvedConfigs.length <= 1) return;
     const next = resolvedConfigs.filter((c) => c.translationId !== id);
-    // Re-normalize order
     const renumbered = next.map((c, i) => ({ ...c, order: i }));
     updateConfigs(renumbered);
   };
@@ -90,13 +87,6 @@ export default function SettingsPage() {
     updateConfigs(renumbered);
   };
 
-  const updateTranslationConfig = (id: number, patch: Partial<Pick<TranslationConfig, "fontSize" | "colorSlot" | "fontFamily" | "bold">>) => {
-    const next = resolvedConfigs.map((c) =>
-      c.translationId === id ? { ...c, ...patch } : c,
-    );
-    updateConfigs(next);
-  };
-
   const toggleTafsir = (id: number) => {
     const current = preferences.activeTafsirIds;
     const next = current.includes(id)
@@ -114,16 +104,15 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto px-4 py-6 sm:px-6 sm:py-8">
+    <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         title="Settings"
-        subtitle="Customize your reading and study experience."
+        subtitle="Configure your reading and study tools."
       />
 
       <div className="mt-8 space-y-10">
         {/* ── Reading ── */}
         <Section title="Reading">
-          {/* Progress tracking */}
           <SettingRow label="Track reading progress" subtitle="Mark surahs as you read them">
             <ToggleSwitch
               checked={preferences.trackProgress}
@@ -131,7 +120,6 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
-          {/* Arabic toggle */}
           <SettingRow label="Show Arabic text">
             <ToggleSwitch
               checked={preferences.showArabic}
@@ -139,19 +127,6 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
-          {/* Arabic font */}
-          <SettingRow label="Arabic script style" disabled={!preferences.showArabic}>
-            <SegmentedControl
-              value={preferences.arabicFont}
-              options={[
-                { value: "uthmani" as ArabicFont, label: "Uthmani" },
-                { value: "simple" as ArabicFont, label: "Simple" },
-              ]}
-              onChange={(v) => updatePreferences({ arabicFont: v })}
-            />
-          </SettingRow>
-
-          {/* Arabic font size */}
           <SettingRow label="Arabic font size" disabled={!preferences.showArabic}>
             <SegmentedControl
               value={preferences.arabicFontSize}
@@ -166,60 +141,33 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
-          {/* Concept tags */}
-          <SettingRow label="Show concept tags">
+          <SettingRow label="Show translation">
             <ToggleSwitch
-              checked={preferences.showConcepts}
-              onChange={(v) => updatePreferences({ showConcepts: v })}
+              checked={preferences.showTranslation}
+              onChange={(v) => updatePreferences({ showTranslation: v })}
             />
           </SettingRow>
 
-          {/* Concept tag sub-settings */}
-          <SettingRow label="Max visible per verse" disabled={!preferences.showConcepts}>
+          <SettingRow label="Translation font size" disabled={!preferences.showTranslation}>
             <SegmentedControl
-              value={String(preferences.conceptMaxVisible)}
+              value={preferences.translationFontSize}
               options={[
-                { value: "3", label: "3" },
-                { value: "5", label: "5" },
-                { value: "10", label: "10" },
-                { value: "0", label: "All" },
+                { value: "sm" as TranslationFontSize, label: "S" },
+                { value: "md" as TranslationFontSize, label: "M" },
+                { value: "lg" as TranslationFontSize, label: "L" },
+                { value: "xl" as TranslationFontSize, label: "XL" },
               ]}
-              onChange={(v) => updatePreferences({ conceptMaxVisible: Number(v) })}
+              onChange={(v) => {
+                // Update global + all per-translation configs
+                const updatedConfigs = resolvedConfigs.map((c) => ({ ...c, fontSize: v }));
+                updatePreferences({
+                  translationFontSize: v,
+                  translationConfigs: updatedConfigs,
+                });
+              }}
             />
           </SettingRow>
 
-          <SettingRow label="Pill color" disabled={!preferences.showConcepts}>
-            <div className="flex gap-1.5">
-              {/* Slot 0: muted default */}
-              <button
-                onClick={() => updatePreferences({ conceptColorSlot: 0 })}
-                className={cn(
-                  "h-5 w-5 rounded-full bg-muted transition-all",
-                  preferences.conceptColorSlot === 0
-                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                    : "hover:scale-105",
-                )}
-                aria-label="Default muted color"
-              />
-              {/* Slots 1-6: translation color palette */}
-              {([1, 2, 3, 4, 5, 6] as const).map((slot) => (
-                <button
-                  key={slot}
-                  onClick={() => updatePreferences({ conceptColorSlot: slot })}
-                  className={cn(
-                    "h-5 w-5 rounded-full transition-all",
-                    preferences.conceptColorSlot === slot
-                      ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                      : "hover:scale-105",
-                  )}
-                  style={{ backgroundColor: `hsl(var(--translation-${slot}))` }}
-                  aria-label={`Color ${slot}`}
-                />
-              ))}
-            </div>
-          </SettingRow>
-
-          {/* Translation layout */}
           <SettingRow label="Translation layout">
             <SegmentedControl
               value={preferences.translationLayout}
@@ -231,54 +179,87 @@ export default function SettingsPage() {
             />
           </SettingRow>
 
-          {/* Active translations — reorderable with per-translation controls */}
-          <div className="pt-2">
-            <p className="text-sm font-medium text-foreground mb-3">
-              Active translations
-            </p>
-            <div className="space-y-2">
-              {resolvedConfigs.map((config, idx) => {
-                const info = TRANSLATIONS.find((t) => t.id === config.translationId);
-                if (!info) return null;
-                return (
-                  <TranslationConfigRow
-                    key={config.translationId}
-                    name={info.name}
-                    author={info.author}
-                    config={config}
-                    isPrimary={idx === 0}
-                    isFirst={idx === 0}
-                    isLast={idx === resolvedConfigs.length - 1}
-                    canRemove={resolvedConfigs.length > 1}
-                    onMoveUp={() => moveTranslation(config.translationId, "up")}
-                    onMoveDown={() => moveTranslation(config.translationId, "down")}
-                    onRemove={() => deactivateTranslation(config.translationId)}
-                    onChangeFontSize={(fs) => updateTranslationConfig(config.translationId, { fontSize: fs })}
-                    onChangeFontFamily={(ff) => updateTranslationConfig(config.translationId, { fontFamily: ff })}
-                    onToggleBold={() => updateTranslationConfig(config.translationId, { bold: !config.bold })}
-                    onChangeColor={(cs) => updateTranslationConfig(config.translationId, { colorSlot: cs })}
-                  />
-                );
-              })}
-            </div>
+          <SettingRow label="Show concept tags">
+            <ToggleSwitch
+              checked={preferences.showConcepts}
+              onChange={(v) => updatePreferences({ showConcepts: v })}
+            />
+          </SettingRow>
+        </Section>
+
+        {/* ── Translations ── */}
+        <Section title="Translations">
+          <div className="space-y-2">
+            {resolvedConfigs.map((config, idx) => {
+              const info = TRANSLATIONS.find((t) => t.id === config.translationId);
+              if (!info) return null;
+              return (
+                <div
+                  key={config.translationId}
+                  className="flex items-center gap-3 border border-border p-3"
+                  style={{ borderLeft: `3px solid var(--translation-${config.colorSlot}-border)` }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-foreground truncate">{info.name}</p>
+                      {idx === 0 && (
+                        <span
+                          className="shrink-0 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
+                          style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
+                        >
+                          Primary
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{info.author}</p>
+                  </div>
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button
+                      onClick={() => moveTranslation(config.translationId, "up")}
+                      disabled={idx === 0}
+                      className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-20 transition-colors"
+                      aria-label="Move up"
+                    >
+                      <CaretUpIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => moveTranslation(config.translationId, "down")}
+                      disabled={idx === resolvedConfigs.length - 1}
+                      className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-20 transition-colors"
+                      aria-label="Move down"
+                    >
+                      <CaretDownIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => deactivateTranslation(config.translationId)}
+                      disabled={resolvedConfigs.length <= 1}
+                      className="p-1 text-muted-foreground hover:text-destructive disabled:opacity-20 transition-colors"
+                      aria-label="Remove"
+                    >
+                      <XIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Inactive translations — add buttons */}
+          {/* Available translations */}
           {(() => {
             const activeIds = new Set(resolvedConfigs.map((c) => c.translationId));
             const inactive = TRANSLATIONS.filter((t) => !activeIds.has(t.id));
             if (inactive.length === 0) return null;
             return (
               <div className="pt-2">
-                <p className="text-sm font-medium text-muted-foreground mb-2">
-                  Available translations
+                <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  Available
                 </p>
                 <div className="space-y-1">
                   {inactive.map((t) => (
                     <button
                       key={t.id}
                       onClick={() => activateTranslation(t.id)}
-                      className="flex w-full items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:border-muted-foreground/30 hover:bg-surface-hover transition-fast"
+                      className="flex w-full items-center gap-2 border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:bg-[#fefce8] transition-colors"
                     >
                       <PlusIcon weight="bold" className="h-3.5 w-3.5 shrink-0" />
                       <span>{t.name}</span>
@@ -292,9 +273,9 @@ export default function SettingsPage() {
         </Section>
 
         {/* ── Study ── */}
-        <Section title="Study">
+        <Section title="Study Tools">
           <div>
-            <p className="text-sm font-medium text-foreground mb-3">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground mb-3">
               Tafsir (Commentary)
             </p>
             <div className="space-y-1.5">
@@ -311,8 +292,8 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <p className="text-sm font-medium text-foreground mb-3">
-              Hadith collections
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground mb-3">
+              Hadith Collections
             </p>
             <div className="space-y-1.5">
               {HADITH_COLLECTIONS.map((h) => (
@@ -329,7 +310,6 @@ export default function SettingsPage() {
 
         {/* ── Data ── */}
         <DataSection />
-
       </div>
     </div>
   );
@@ -373,7 +353,6 @@ function DataSection() {
         data: { bookmarks, notes, progress, preferences, graphNodes, graphEdges, localStorage: localStorageData },
       };
 
-      // Download as file via API
       const form = new FormData();
       form.append("payload", JSON.stringify(payload));
       const res = await fetch("/api/v1/export", { method: "POST", body: form });
@@ -417,34 +396,28 @@ function DataSection() {
   return (
     <Section title="Data">
       <div className="space-y-4">
-        {/* Export */}
         <div>
-          <p className="text-sm font-medium text-foreground mb-1">
-            Export all data
-          </p>
+          <p className="text-sm font-medium text-foreground mb-1">Export all data</p>
           <p className="text-xs text-muted-foreground mb-3">
             Save your notes, bookmarks, reading progress, and settings as a JSON file.
           </p>
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast disabled:opacity-50"
+            className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-[#fefce8] transition-colors disabled:opacity-50"
           >
             <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
             {exporting ? "Exporting..." : "Export Data"}
           </button>
           {exportResult && (
-            <p className="mt-2 text-xs text-green-500 font-medium">
+            <p className="mt-2 text-xs font-mono font-bold uppercase tracking-wider" style={{ color: '#3ba892' }}>
               Download started
             </p>
           )}
         </div>
 
-        {/* Clear */}
         <div>
-          <p className="text-sm font-medium text-foreground mb-1">
-            Clear all data
-          </p>
+          <p className="text-sm font-medium text-foreground mb-1">Clear all data</p>
           <p className="text-xs text-muted-foreground mb-3">
             Permanently delete all your notes, bookmarks, reading progress, and settings.
             This cannot be undone.
@@ -452,19 +425,17 @@ function DataSection() {
           {!confirmClear ? (
             <button
               onClick={() => setConfirmClear(true)}
-              className="inline-flex items-center gap-2 rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-fast"
+              className="inline-flex items-center gap-2 border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
             >
               <TrashIcon weight="bold" className="h-4 w-4" />
               Clear all data
             </button>
           ) : (
-            <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 space-y-3">
+            <div className="border border-destructive/40 bg-destructive/5 p-4 space-y-3">
               <div className="flex items-start gap-2">
                 <WarningIcon weight="fill" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-destructive">
-                    Are you sure?
-                  </p>
+                  <p className="text-sm font-semibold text-destructive">Are you sure?</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     This will permanently delete all your notes, bookmarks, reading progress,
                     knowledge graph, and settings. Consider exporting a backup first.
@@ -475,14 +446,14 @@ function DataSection() {
                 <button
                   onClick={handleClear}
                   disabled={clearing}
-                  className="inline-flex items-center gap-2 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 transition-fast disabled:opacity-50"
+                  className="inline-flex items-center gap-2 bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 transition-colors disabled:opacity-50"
                 >
                   <TrashIcon weight="bold" className="h-4 w-4" />
                   {clearing ? "Clearing..." : "Yes, delete everything"}
                 </button>
                 <button
                   onClick={() => setConfirmClear(false)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Cancel
                 </button>
@@ -497,29 +468,18 @@ function DataSection() {
 
 /* ─── Shared sub-components ─── */
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-lg font-semibold text-foreground border-b border-border pb-2 mb-4">
-        {title}
+      <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-foreground border-b border-border pb-2 mb-4">
+        [ {title} ]
       </h2>
       <div className="space-y-4">{children}</div>
     </section>
   );
 }
 
-function SettingRow({
-  label,
-  subtitle,
-  children,
-  disabled,
-}: {
+function SettingRow({ label, subtitle, children, disabled }: {
   label: string;
   subtitle?: string;
   children: React.ReactNode;
@@ -536,26 +496,20 @@ function SettingRow({
   );
 }
 
-function ToggleSwitch({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) {
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={cn(
-        "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
-        checked ? "bg-primary" : "bg-muted",
+        "relative inline-flex h-6 w-11 shrink-0 items-center transition-colors",
+        checked ? "bg-foreground" : "bg-border",
       )}
     >
       <span
         className={cn(
-          "inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
+          "inline-block h-4 w-4 bg-background shadow-sm transition-transform",
           checked ? "translate-x-6" : "translate-x-1",
         )}
       />
@@ -563,28 +517,22 @@ function ToggleSwitch({
   );
 }
 
-function SegmentedControl<T extends string>({
-  value,
-  options,
-  onChange,
-}: {
+function SegmentedControl<T extends string>({ value, options, onChange }: {
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="flex rounded-lg border border-border">
-      {options.map((opt, i) => (
+    <div className="flex border border-border">
+      {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={cn(
-            "px-3 py-1.5 text-xs font-medium transition-colors",
+            "px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors",
             value === opt.value
-              ? "bg-primary text-primary-foreground"
+              ? "bg-foreground text-background"
               : "text-muted-foreground hover:text-foreground",
-            i === 0 && "rounded-l-lg",
-            i === options.length - 1 && "rounded-r-lg",
           )}
         >
           {opt.label}
@@ -594,12 +542,7 @@ function SegmentedControl<T extends string>({
   );
 }
 
-function CheckRow({
-  label,
-  description,
-  checked,
-  onToggle,
-}: {
+function CheckRow({ label, description, checked, onToggle }: {
   label: string;
   description?: string;
   checked: boolean;
@@ -609,216 +552,30 @@ function CheckRow({
     <button
       onClick={onToggle}
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-fast",
+        "flex w-full items-center gap-3 border px-3 py-2.5 text-left transition-colors",
         checked
-          ? "border-primary/30 bg-primary/5"
-          : "border-border hover:border-muted-foreground/30 hover:bg-surface-hover",
+          ? "border-border bg-[#fefce8]"
+          : "border-border hover:bg-[#fafafa]",
       )}
     >
       <div
         className={cn(
-          "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-fast",
+          "flex h-4 w-4 shrink-0 items-center justify-center border transition-colors",
           checked
-            ? "border-primary bg-primary text-primary-foreground"
+            ? "border-foreground bg-foreground text-background"
             : "border-muted-foreground/30",
         )}
       >
         {checked && (
-          <svg
-            className="h-2.5 w-2.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={3}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
+          <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         )}
       </div>
       <div>
         <p className="text-sm font-medium text-foreground">{label}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
     </button>
   );
 }
-
-/* ─── Per-translation config row ─── */
-
-const FONT_SIZES: { value: TranslationFontSize; label: string }[] = [
-  { value: "sm", label: "S" },
-  { value: "md", label: "M" },
-  { value: "lg", label: "L" },
-  { value: "xl", label: "XL" },
-];
-
-const COLOR_SLOTS: TranslationColorSlot[] = [1, 2, 3, 4, 5, 6];
-
-function TranslationConfigRow({
-  name,
-  author,
-  config,
-  isPrimary,
-  isFirst,
-  isLast,
-  canRemove,
-  onMoveUp,
-  onMoveDown,
-  onRemove,
-  onChangeFontSize,
-  onChangeFontFamily,
-  onToggleBold,
-  onChangeColor,
-}: {
-  name: string;
-  author: string;
-  config: TranslationConfig;
-  isPrimary: boolean;
-  isFirst: boolean;
-  isLast: boolean;
-  canRemove: boolean;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  onRemove: () => void;
-  onChangeFontSize: (fs: TranslationFontSize) => void;
-  onChangeFontFamily: (ff: TranslationFontFamily) => void;
-  onToggleBold: () => void;
-  onChangeColor: (cs: TranslationColorSlot) => void;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-3 space-y-2.5">
-      {/* Header row: name, primary badge, reorder, remove */}
-      <div className="flex items-center gap-2">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-medium text-foreground truncate">{name}</p>
-            {isPrimary && (
-              <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                Primary
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground truncate">{author}</p>
-        </div>
-
-        <div className="flex items-center gap-0.5 shrink-0">
-          <button
-            onClick={onMoveUp}
-            disabled={isFirst}
-            className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
-            aria-label="Move up"
-          >
-            <CaretUpIcon weight="bold" className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={onMoveDown}
-            disabled={isLast}
-            className="rounded p-1 text-muted-foreground hover:bg-surface-hover disabled:opacity-20 transition-fast"
-            aria-label="Move down"
-          >
-            <CaretDownIcon weight="bold" className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={onRemove}
-            disabled={!canRemove}
-            className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-20 transition-fast"
-            aria-label="Remove"
-          >
-            <XIcon weight="bold" className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Controls row: font size + color */}
-      <div className="flex items-center gap-4">
-        {/* Font size */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Size</span>
-          <div className="flex rounded-md border border-border">
-            {FONT_SIZES.map((fs, i) => (
-              <button
-                key={fs.value}
-                onClick={() => onChangeFontSize(fs.value)}
-                className={cn(
-                  "px-2 py-1 text-[11px] font-medium transition-colors",
-                  config.fontSize === fs.value
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                  i === 0 && "rounded-l-md",
-                  i === FONT_SIZES.length - 1 && "rounded-r-md",
-                )}
-              >
-                {fs.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Font family */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Font</span>
-          <div className="flex rounded-md border border-border">
-            {(["sans", "serif"] as const).map((ff, i) => (
-              <button
-                key={ff}
-                onClick={() => onChangeFontFamily(ff)}
-                className={cn(
-                  "px-2 py-1 text-[11px] font-medium transition-colors",
-                  (config.fontFamily ?? "sans") === ff
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                  i === 0 && "rounded-l-md",
-                  i === 1 && "rounded-r-md",
-                )}
-              >
-                {ff === "sans" ? "Sans" : "Serif"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Bold */}
-        <button
-          onClick={onToggleBold}
-          className={cn(
-            "flex items-center justify-center h-7 w-7 rounded-md border text-[11px] font-bold transition-colors",
-            config.bold
-              ? "bg-primary text-primary-foreground border-primary"
-              : "border-border text-muted-foreground hover:text-foreground",
-          )}
-          aria-label="Toggle bold"
-        >
-          B
-        </button>
-
-        {/* Color */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Color</span>
-          <div className="flex gap-1.5">
-            {COLOR_SLOTS.map((slot) => (
-              <button
-                key={slot}
-                onClick={() => onChangeColor(slot)}
-                className={cn(
-                  "h-5 w-5 rounded-full transition-all",
-                  config.colorSlot === slot
-                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                    : "hover:scale-105",
-                )}
-                style={{ backgroundColor: `hsl(var(--translation-${slot}))` }}
-                aria-label={`Color ${slot}`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-

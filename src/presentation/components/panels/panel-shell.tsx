@@ -17,18 +17,18 @@ export function PanelShell({ id, title, icon: Icon, children, className }: Panel
   const { closePanel } = usePanels();
 
   return (
-    <div className={cn("flex h-full flex-col overflow-hidden bg-card", className)}>
+    <div className={cn("flex h-full flex-col overflow-hidden bg-background", className)}>
       {/* Sticky header */}
-      <div className="flex shrink-0 items-center justify-between border-b border-border px-3 py-1.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-border px-3 py-2">
         <div className="flex items-center gap-2">
-          <Icon className="h-3.5 w-3.5 text-primary" />
-          <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
-            {title}
+          <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="font-mono text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+            [ {title} ]
           </span>
         </div>
         <button
           onClick={() => closePanel(id)}
-          className="rounded-md p-1 text-muted-foreground transition-fast hover:bg-surface-hover hover:text-foreground"
+          className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={`Close ${title} panel`}
         >
           <XIcon weight="bold" className="h-3.5 w-3.5" />

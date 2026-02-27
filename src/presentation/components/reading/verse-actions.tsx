@@ -68,7 +68,7 @@ export function VerseActions({
             e.stopPropagation();
             onPlay();
           }}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+          className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
@@ -83,10 +83,10 @@ export function VerseActions({
             onToggleBookmark();
           }}
           className={cn(
-            "rounded-md p-1.5 transition-fast",
+            "p-1.5 transition-colors",
             isBookmarked
-              ? "text-primary"
-              : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+              ? "text-foreground"
+              : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
           )}
           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
         >
@@ -104,7 +104,7 @@ export function VerseActions({
             setOpen(!open);
             setShowLinkMenu(false);
           }}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+          className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
           aria-label="More actions"
         >
           <DotsThreeIcon weight="bold" className="h-3.5 w-3.5" />
@@ -113,7 +113,7 @@ export function VerseActions({
 
       {/* Dropdown menu */}
       {open && !showLinkMenu && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-soft-lg animate-scale-in">
+        <div className="absolute right-0 top-full z-50 mt-1 w-48 border border-border bg-background p-1 shadow-md animate-scale-in">
           <MenuItem
             icon={BookOpenIcon}
             label="Open Tafsir"
@@ -173,12 +173,12 @@ export function VerseActions({
 
       {/* Link to note submenu */}
       {open && showLinkMenu && (
-        <div className="absolute right-0 top-full z-50 mt-1 rounded-lg border border-border bg-card shadow-soft-lg animate-scale-in">
+        <div className="absolute right-0 top-full z-50 mt-1 border border-border bg-background shadow-md animate-scale-in">
           <div className="flex items-center gap-1.5 border-b border-border px-3 py-2">
             <button
               type="button"
               onClick={() => setShowLinkMenu(false)}
-              className="text-xs text-muted-foreground hover:text-foreground transition-fast"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               Back
             </button>
@@ -211,7 +211,7 @@ function MenuItem({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+      className="flex w-full items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
     >
       <Icon className="h-3.5 w-3.5" weight="duotone" />
       {label}

@@ -9,14 +9,14 @@ export const COLLECTIONS = [
   { id: "ibnmajah", label: "Ibn Majah" },
 ] as const;
 
-/** Display-friendly collection names + colors (inline styles for border to avoid Tailwind purge) */
-export const COLLECTION_META: Record<string, { name: string; accentColor: string; badge: string }> = {
-  bukhari: { name: "Sahih al-Bukhari", accentColor: "#34d399", badge: "bg-emerald-500/15 text-emerald-400" },
-  muslim: { name: "Sahih Muslim", accentColor: "#2dd4bf", badge: "bg-teal-500/15 text-teal-400" },
-  abudawud: { name: "Sunan Abu Dawud", accentColor: "#38bdf8", badge: "bg-sky-500/15 text-sky-400" },
-  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "#a78bfa", badge: "bg-violet-500/15 text-violet-400" },
-  nasai: { name: "Sunan an-Nasa'i", accentColor: "#fb7185", badge: "bg-rose-500/15 text-rose-400" },
-  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "#fbbf24", badge: "bg-amber-500/15 text-amber-400" },
+/** Display-friendly collection names + colors (inline styles to avoid Tailwind purge) */
+export const COLLECTION_META: Record<string, { name: string; accentColor: string; bg: string; labelColor: string }> = {
+  bukhari: { name: "Sahih al-Bukhari", accentColor: "#78d5c4", bg: "#f0fdf9", labelColor: "#3ba892" },
+  muslim: { name: "Sahih Muslim", accentColor: "#78d5c4", bg: "#f0fdf9", labelColor: "#3ba892" },
+  abudawud: { name: "Sunan Abu Dawud", accentColor: "#e8e337", bg: "#fefce8", labelColor: "#b5a600" },
+  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "#c4b5e0", bg: "#f5f3ff", labelColor: "#8b6fc0" },
+  nasai: { name: "Sunan an-Nasa'i", accentColor: "#f5a0c0", bg: "#fdf2f8", labelColor: "#d4608a" },
+  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "#e8e337", bg: "#fefce8", labelColor: "#b5a600" },
 };
 
 /* ─── Grade helpers ─── */
@@ -47,10 +47,10 @@ export function categorizeGrade(label: string): GradeCategory {
 }
 
 export const GRADE_STYLES: Record<GradeCategory, string> = {
-  sahih: "text-emerald-700 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-500/10",
-  hasan: "text-amber-700 bg-amber-500/10 dark:text-amber-400 dark:bg-amber-500/10",
-  daif: "text-orange-700 bg-orange-500/10 dark:text-orange-400 dark:bg-orange-500/10",
-  fabricated: "text-red-700 bg-red-500/10 dark:text-red-400 dark:bg-red-500/10",
+  sahih: "text-[#3ba892] bg-[#f0fdf9]",
+  hasan: "text-[#b5a600] bg-[#fefce8]",
+  daif: "text-[#d4608a] bg-[#fdf2f8]",
+  fabricated: "text-[#c4425a] bg-[#fdf2f8]",
   unknown: "text-muted-foreground bg-muted",
 };
 

@@ -4,7 +4,6 @@ import { useCallback, useMemo } from "react";
 import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon, XIcon } from "@phosphor-icons/react";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { getSurahName } from "@/lib/surah-names";
-import { cn } from "@/lib/utils";
 
 function formatTime(seconds: number): string {
   if (!seconds || !isFinite(seconds)) return "0:00";
@@ -56,30 +55,30 @@ export function AudioDock() {
 
   return (
     <div className="audio-dock-floating">
-      {/* Progress bar — clickable */}
+      {/* Progress bar */}
       <div
-        className="group mx-3 mt-2 h-1 cursor-pointer rounded-full bg-muted/40 transition-all hover:h-1.5"
+        className="mx-4 mt-2 h-0.5 cursor-pointer bg-muted"
         onClick={handleSeek}
       >
         <div
-          className="h-full rounded-full bg-primary/70 transition-all"
+          className="h-full bg-foreground transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="flex h-10 items-center gap-2 px-3 md:gap-3">
+      <div className="flex h-10 items-center gap-2 px-4 md:gap-3">
         {/* Verse label + reciter */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[11px] font-medium text-foreground leading-tight">
+          <p className="truncate font-mono text-[11px] font-bold text-foreground leading-tight uppercase tracking-wider">
             {verseLabel}
           </p>
-          <p className="truncate text-[9px] text-muted-foreground/60 leading-tight">
+          <p className="truncate font-mono text-[9px] text-muted-foreground leading-tight">
             {reciterName}
           </p>
         </div>
 
         {/* Time display */}
-        <span className="hidden text-[9px] font-mono text-muted-foreground/50 sm:block tabular-nums">
+        <span className="hidden font-mono text-[9px] text-muted-foreground sm:block tabular-nums">
           {formatTime(audio.currentTime)} / {formatTime(audio.duration)}
         </span>
 
@@ -87,7 +86,7 @@ export function AudioDock() {
         <div className="flex items-center gap-0.5">
           <button
             onClick={audio.previous}
-            className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
+            className="p-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label="Previous verse"
           >
             <SkipBackIcon weight="bold" className="h-3 w-3" />
@@ -95,10 +94,7 @@ export function AudioDock() {
 
           <button
             onClick={handlePlayPause}
-            className={cn(
-              "rounded-full p-2 transition-all",
-              "bg-primary/10 text-primary hover:bg-primary/15",
-            )}
+            className="p-2 border border-border text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label={audio.isPlaying ? "Pause" : "Play"}
           >
             {audio.isPlaying ? (
@@ -110,7 +106,7 @@ export function AudioDock() {
 
           <button
             onClick={audio.next}
-            className="rounded-full p-1.5 text-muted-foreground/60 transition-all hover:text-foreground"
+            className="p-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label="Next verse"
           >
             <SkipForwardIcon weight="bold" className="h-3 w-3" />
@@ -120,7 +116,7 @@ export function AudioDock() {
         {/* Stop / close button */}
         <button
           onClick={audio.stop}
-          className="rounded-full p-1 text-muted-foreground/40 transition-all hover:text-foreground"
+          className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Stop audio"
         >
           <XIcon weight="bold" className="h-3 w-3" />

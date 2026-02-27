@@ -67,7 +67,7 @@ export function LinkToNoteMenu({ verseKey, onLinked }: LinkToNoteMenuProps) {
               type="button"
               disabled={alreadyLinked}
               onClick={() => handleLink(note.id)}
-              className="flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-fast hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex w-full items-start gap-2 px-2 py-1.5 text-left text-xs transition-colors hover:bg-[#fafafa] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <LinkSimpleIcon weight="bold" className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -78,7 +78,7 @@ export function LinkToNoteMenu({ verseKey, onLinked }: LinkToNoteMenuProps) {
                   {note.content}
                 </p>
                 {alreadyLinked && (
-                  <p className="mt-0.5 text-[10px] text-primary">
+                  <p className="mt-0.5 text-[10px] text-muted-foreground/60">
                     Already linked
                   </p>
                 )}

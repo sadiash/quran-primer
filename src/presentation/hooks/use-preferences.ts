@@ -7,8 +7,6 @@ import { toUserPreferences } from "@/core/types";
 
 const DEFAULT_PREFERENCES: UserPreferences = {
   id: "default",
-  theme: "system",
-  themeName: "library",
   arabicFont: "uthmani",
   arabicFontSize: "lg",
   translationFontSize: "md",
@@ -28,9 +26,6 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   conceptColorSlot: 0,
   zenMode: false,
   trackProgress: true,
-  readingDensity: "compact",
-  readingFlow: "blocks",
-  paperTexture: "auto",
   onboardingComplete: false,
   updatedAt: new Date(0),
 };

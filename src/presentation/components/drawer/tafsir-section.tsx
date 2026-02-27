@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
 
 const TAFSIR_RESOURCES = [
-  { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", accent: "border-l-emerald-400", bg: "bg-emerald-500/5", chip: "bg-emerald-500/15 text-emerald-400 ring-emerald-500/20" },
-  { id: 169, name: "Ibn Kathir (Abridged)", authorName: "Ibn Kathir", accent: "border-l-amber-400", bg: "bg-amber-500/5", chip: "bg-amber-500/15 text-amber-400 ring-amber-500/20" },
-  { id: 817, name: "Tazkirul Quran", authorName: "Maulana Wahiduddin Khan", accent: "border-l-sky-400", bg: "bg-sky-500/5", chip: "bg-sky-500/15 text-sky-400 ring-sky-500/20" },
+  { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", border: "#78d5c4", bg: "#f0fdf9", label: "#3ba892" },
+  { id: 169, name: "Ibn Kathir (Abridged)", authorName: "Ibn Kathir", border: "#e8e337", bg: "#fefce8", label: "#b5a600" },
+  { id: 817, name: "Tazkirul Quran", authorName: "Maulana Wahiduddin Khan", border: "#c4b5e0", bg: "#f5f3ff", label: "#8b6fc0" },
 ] as const;
 
 function sanitize(html: string): string {
@@ -82,7 +82,7 @@ export function TafsirSection() {
     return (
       <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
         <BookOpenIcon weight="duotone" className="h-6 w-6 text-muted-foreground/20" />
-        <p className="text-xs text-muted-foreground/60">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
           Click a verse to view its tafsir
         </p>
       </div>
@@ -116,20 +116,26 @@ export function TafsirSection() {
       {enabledResources.length > 1 && (
         <div className="shrink-0 space-y-2">
           <div className="flex flex-wrap gap-1.5">
-            {enabledResources.map((r) => (
-              <button
-                key={r.id}
-                onClick={() => toggleVisible(r.id)}
-                className={cn(
-                  "rounded-md px-2.5 py-1.5 text-[11px] font-medium transition-fast ring-1",
-                  displayIds.includes(r.id)
-                    ? r.chip
-                    : "text-muted-foreground/60 ring-border/30 hover:bg-surface-hover hover:text-muted-foreground",
-                )}
-              >
-                {r.name}
-              </button>
-            ))}
+            {enabledResources.map((r) => {
+              const isActive = displayIds.includes(r.id);
+              return (
+                <button
+                  key={r.id}
+                  onClick={() => toggleVisible(r.id)}
+                  className="px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                  style={isActive ? {
+                    backgroundColor: r.bg,
+                    borderLeft: `3px solid ${r.border}`,
+                    color: r.label,
+                  } : {
+                    border: '1px solid hsl(var(--border))',
+                    color: 'hsl(var(--muted-foreground))',
+                  }}
+                >
+                  {r.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -217,32 +223,26 @@ function TafsirContent({
     setTimeout(() => setSaved(false), 2000);
   }, [tafsir, tafsirName, verseKey, tafsirId, openPanel, addToast]);
 
-  const accentClass = resource?.accent ?? "border-l-primary/30";
-  const bgClass = resource?.bg ?? "";
-
   return (
     <div
-      className={cn(
-        "rounded-lg border-l-[3px] p-4",
-        accentClass,
-        bgClass,
-      )}
+      className="border border-border p-4"
+      style={{ borderLeft: `3px solid ${resource?.border ?? '#78d5c4'}` }}
     >
-      {/* Always show scholar header */}
+      {/* Scholar header with colored accent */}
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-sm font-semibold text-foreground">{resource?.name}</p>
-          <p className="text-[11px] text-muted-foreground/70">{resource?.authorName}</p>
+          <p className="font-mono text-[11px] font-bold uppercase tracking-wider" style={{ color: resource?.label }}>{resource?.name}</p>
+          <p className="font-mono text-[10px] text-muted-foreground">{resource?.authorName}</p>
         </div>
         <div className="flex items-center gap-1">
           {tafsir && (
             <button
               onClick={handleSaveToNotes}
               className={cn(
-                "rounded-md p-1.5 transition-fast",
+                "p-1.5 transition-colors",
                 saved
                   ? "text-emerald-500"
-                  : "text-muted-foreground hover:bg-surface-hover",
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Save tafsir to notes"
               title="Save to Notes"
@@ -253,10 +253,10 @@ function TafsirContent({
           {tafsir && (
             <button
               onClick={handleCopy}
-              className="rounded-md p-1.5 text-muted-foreground transition-fast hover:bg-surface-hover"
+              className="p-1.5 text-muted-foreground transition-colors hover:text-foreground"
               aria-label="Copy tafsir text"
             >
-              {copied ? <CheckIcon weight="fill" className="h-3.5 w-3.5 text-green-500" /> : <CopyIcon weight="bold" className="h-3.5 w-3.5" />}
+              {copied ? <CheckIcon weight="fill" className="h-3.5 w-3.5 text-emerald-500" /> : <CopyIcon weight="bold" className="h-3.5 w-3.5" />}
             </button>
           )}
         </div>
@@ -269,7 +269,7 @@ function TafsirContent({
       )}
 
       {error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-xs text-destructive">
+        <div className="border-2 border-destructive bg-destructive/5 p-3 text-xs text-destructive">
           {error}
         </div>
       )}
@@ -283,7 +283,7 @@ function TafsirContent({
             "[&_strong]:text-foreground [&_strong]:font-medium",
             "[&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:text-sm [&_h3]:mt-3 [&_h3]:mb-1",
             "[&_h4]:text-foreground [&_h4]:font-medium [&_h4]:text-[13px] [&_h4]:mt-2 [&_h4]:mb-1",
-            "[&_blockquote]:border-l-2 [&_blockquote]:border-primary/20 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-muted-foreground/80",
+            "[&_blockquote]:border-l-2 [&_blockquote]:border-foreground/20 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-muted-foreground/80",
             "[&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4",
             "[&_li]:mb-1",
           )}
@@ -292,7 +292,7 @@ function TafsirContent({
       )}
 
       {!isLoading && !error && !tafsir && (
-        <p className="text-xs text-muted-foreground/70 italic">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           No tafsir available for this verse.
         </p>
       )}

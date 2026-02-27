@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BookmarkSimpleIcon, TrashIcon } from "@phosphor-icons/react";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
+import { getSurahColor } from "@/lib/surah-colors";
 import { cn } from "@/lib/utils";
 
 export function BookmarksList() {
@@ -23,13 +24,15 @@ export function BookmarksList() {
     <div className="space-y-2">
       {bookmarks.map((bm) => {
         const [surahId] = bm.verseKey.split(":");
+        const surahColor = getSurahColor(Number(surahId));
         return (
           <div
             key={bm.id}
             className={cn(
-              "group flex items-center gap-3 rounded-lg border border-border bg-card p-3",
-              "transition-all hover:shadow-soft-sm hover:border-primary/30",
+              "group flex items-center gap-3 border border-border bg-background p-3",
+              "transition-colors hover:bg-[#fafafa]",
             )}
+            style={{ borderLeft: `3px solid ${surahColor.accent}` }}
           >
             <Link
               href={`/surahs/${surahId}`}
@@ -49,7 +52,7 @@ export function BookmarksList() {
             </Link>
             <button
               onClick={() => removeBookmark(bm.id)}
-              className="shrink-0 rounded-md p-1.5 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+              className="shrink-0 p-1.5 text-muted-foreground opacity-0 transition-colors group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
               aria-label="Remove bookmark"
             >
               <TrashIcon weight="bold" className="h-3.5 w-3.5" />

@@ -56,7 +56,7 @@ function MindMapContent() {
       <div className="relative flex-1 min-h-0">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-primary" />
+            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-foreground" />
           </div>
         )}
 
@@ -75,14 +75,14 @@ function MindMapContent() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => router.push("/surah/1")}
-                className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
+                className="flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
               >
                 <BookOpenIcon weight="duotone" className="h-4 w-4" />
                 Start reading
               </button>
               <button
                 onClick={() => router.push("/notes")}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast"
+                className="flex items-center gap-1.5 border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-[#fafafa] transition-colors"
               >
                 <NoteIcon weight="duotone" className="h-4 w-4" />
                 Add notes

@@ -112,7 +112,7 @@ export default function BookmarksPage() {
               placeholder="Search by surah name, verse key, or note..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground"
             />
           </div>
 
@@ -121,12 +121,15 @@ export default function BookmarksPage() {
             <div className="mt-4 flex flex-wrap gap-1.5">
               <button
                 onClick={() => setSurahFilter(null)}
-                className={cn(
-                  "rounded-full px-3 py-1 text-xs font-medium transition-fast",
-                  surahFilter === null
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-                )}
+                className="px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                style={surahFilter === null ? {
+                  backgroundColor: '#fefce8',
+                  borderLeft: '3px solid #e8e337',
+                  color: '#b5a600',
+                } : {
+                  border: '1px solid hsl(var(--border))',
+                  color: 'hsl(var(--muted-foreground))',
+                }}
               >
                 All
               </button>
@@ -136,12 +139,15 @@ export default function BookmarksPage() {
                   onClick={() =>
                     setSurahFilter(surahFilter === id ? null : id)
                   }
-                  className={cn(
-                    "rounded-full px-3 py-1 text-xs font-medium transition-fast",
-                    surahFilter === id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-                  )}
+                  className="px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                  style={surahFilter === id ? {
+                    backgroundColor: '#f0fdf9',
+                    borderLeft: '3px solid #78d5c4',
+                    color: '#3ba892',
+                  } : {
+                    border: '1px solid hsl(var(--border))',
+                    color: 'hsl(var(--muted-foreground))',
+                  }}
                 >
                   {id}. {getSurahName(id)}
                 </button>
@@ -169,10 +175,10 @@ export default function BookmarksPage() {
             <div
               key={bm.id}
               className={cn(
-                "group relative rounded-xl border bg-card transition-all",
+                "group relative border bg-background transition-all",
                 isExpanded
-                  ? "border-primary/30 shadow-soft-sm col-span-1 sm:col-span-2 lg:col-span-3"
-                  : "border-border hover:border-primary/30 hover:shadow-soft-sm",
+                  ? "border-border shadow-sm col-span-1 sm:col-span-2 lg:col-span-3"
+                  : "border-border hover:bg-[#fafafa]",
               )}
             >
               {/* Card header — clickable to expand */}
@@ -181,7 +187,10 @@ export default function BookmarksPage() {
                 onClick={() => toggleExpand(bm.id, bm.surahId)}
                 className="flex w-full items-start gap-3 p-4 text-left"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center font-mono text-sm font-bold"
+                  style={{ backgroundColor: '#f0fdf9', color: '#3ba892' }}
+                >
                   {verseNum}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -257,7 +266,7 @@ export default function BookmarksPage() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/surah/${surahNum}?verse=${bm.verseKey}`}
-                        className="rounded-md px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/10 transition-fast"
+                        className="px-2.5 py-1 text-xs font-medium text-foreground hover:bg-[#fefce8] transition-colors border border-border"
                       >
                         Read in context
                       </Link>
@@ -267,7 +276,7 @@ export default function BookmarksPage() {
                           removeBookmark(bm.id);
                           setExpandedId(null);
                         }}
-                        className="rounded-md p-1.5 text-muted-foreground/50 hover:bg-destructive/10 hover:text-destructive transition-fast"
+                        className="p-1.5 text-muted-foreground/50 hover:text-destructive transition-colors"
                         aria-label="Remove bookmark"
                       >
                         <TrashIcon weight="bold" className="h-3.5 w-3.5" />
@@ -292,7 +301,7 @@ export default function BookmarksPage() {
                       e.stopPropagation();
                       removeBookmark(bm.id);
                     }}
-                    className="shrink-0 rounded-md p-1.5 text-muted-foreground/50 opacity-0 transition-fast hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                    className="shrink-0 p-1.5 text-muted-foreground/50 opacity-0 transition-colors hover:text-destructive group-hover:opacity-100"
                     aria-label="Remove bookmark"
                   >
                     <TrashIcon weight="bold" className="h-3.5 w-3.5" />
@@ -306,13 +315,14 @@ export default function BookmarksPage() {
 
       {bookmarks.length === 0 && (
         <div className="mt-16 text-center">
-          <BookmarkSimpleIcon weight="duotone" className="mx-auto h-10 w-10 text-muted-foreground/30" />
-          <p className="mt-4 text-sm text-muted-foreground">
-            No bookmarks yet. BookmarkSimpleIcon verses while reading to see them here.
+          <BookmarkSimpleIcon weight="duotone" className="mx-auto h-10 w-10 text-muted-foreground/20" />
+          <p className="mt-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+            No bookmarks yet. Bookmark verses while reading to see them here.
           </p>
           <Link
             href="/surah/1"
-            className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
+            className="mt-4 inline-block px-6 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] transition-colors hover:opacity-80"
+            style={{ backgroundColor: '#e8e337' }}
           >
             Start reading
           </Link>

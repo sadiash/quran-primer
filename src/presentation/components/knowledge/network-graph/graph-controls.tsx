@@ -58,7 +58,7 @@ export function GraphControls({
   activeNodeTypes,
 }: GraphControlsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2 px-3 py-2 bg-card/80 backdrop-blur-sm border-b border-border text-xs">
+    <div className="flex flex-wrap items-center gap-2 px-3 py-2 bg-background border-b border-border text-xs">
       {/* Reset */}
       <button
         onClick={onResetView}

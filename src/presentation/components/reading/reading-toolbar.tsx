@@ -1,33 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BookOpenIcon, CrosshairIcon, EyeIcon, EyeSlashIcon, GridFourIcon, HashIcon, MinusIcon, MonitorPlayIcon, PlusIcon, SlidersHorizontalIcon, SparkleIcon, TextAaIcon, TextAlignJustifyIcon, TextHIcon } from "@phosphor-icons/react";
+import { BookOpenIcon, EyeIcon, EyeSlashIcon, MinusIcon, PlusIcon, SlidersHorizontalIcon, TextAaIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { getResolvedTranslationConfigs } from "@/core/types";
 import { cn } from "@/lib/utils";
-import type { ArabicFontSize, TranslationLayout, ReadingDensity, ReadingFlow } from "@/core/types";
+import type { ArabicFontSize, TranslationFontSize } from "@/core/types";
 
 const ARABIC_SIZES: ArabicFontSize[] = ["sm", "md", "lg", "xl", "2xl"];
-const LAYOUTS: { value: TranslationLayout; label: string }[] = [
-  { value: "stacked", label: "Stacked" },
-  { value: "columnar", label: "Side by side" },
-];
+const TRANSLATION_SIZES: TranslationFontSize[] = ["sm", "md", "lg", "xl"];
 
-const DENSITIES: { value: ReadingDensity; label: string }[] = [
-  { value: "comfortable", label: "Comfortable" },
-  { value: "compact", label: "Compact" },
-  { value: "dense", label: "Dense" },
-];
-
-const FLOWS: { value: ReadingFlow; label: string; icon?: React.ReactNode }[] = [
-  { value: "blocks", label: "Blocks" },
-  { value: "prose", label: "Prose" },
-  { value: "theater", label: "Theater" },
-  { value: "focus", label: "Focus" },
-  { value: "mushaf", label: "Mushaf" },
-];
-
-/** Translation name lookup — maps IDs to short display names */
+/** Translation name lookup */
 const TRANSLATION_NAMES: Record<number, string> = {
   1001: "Clear Quran",
   1002: "Yusuf Ali",
@@ -47,6 +30,7 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
   const [open, setOpen] = useState(false);
 
   const arabicIdx = ARABIC_SIZES.indexOf(preferences.arabicFontSize);
+  const translationIdx = TRANSLATION_SIZES.indexOf(preferences.translationFontSize);
 
   const resolvedConfigs = useMemo(
     () =>
@@ -58,6 +42,15 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
     [preferences.activeTranslationIds, preferences.translationConfigs, preferences.translationFontSize],
   );
 
+  const updateTranslationSize = (size: TranslationFontSize) => {
+    // Update global + all per-translation configs so the change takes effect everywhere
+    const updatedConfigs = resolvedConfigs.map((c) => ({ ...c, fontSize: size }));
+    updatePreferences({
+      translationFontSize: size,
+      translationConfigs: updatedConfigs,
+    });
+  };
+
   const showTranslationPills = resolvedConfigs.length > 1 && visibleTranslationIds && onToggleTranslation;
 
   return (
@@ -66,216 +59,142 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full transition-all",
-          "reading-toolbar-float text-muted-foreground/70 hover:text-foreground",
-          open && "bg-primary text-primary-foreground border-primary/50",
+          "flex h-9 w-9 items-center justify-center border border-border transition-colors shadow-sm",
+          open
+            ? "bg-foreground text-background"
+            : "bg-background text-muted-foreground hover:text-foreground hover:border-foreground",
         )}
         aria-label="Reading settings"
       >
-        <SlidersHorizontalIcon weight="duotone" className="h-3.5 w-3.5" />
+        <SlidersHorizontalIcon weight="bold" className="h-4 w-4" />
       </button>
 
       {/* Panel */}
       {open && (
         <>
-        <div className="fixed inset-0 z-[-1]" onClick={() => setOpen(false)} />
-        <div className="absolute bottom-12 right-0 w-64 rounded-xl border border-border/40 bg-card/95 backdrop-blur-xl p-4 shadow-soft-lg animate-scale-in">
-          <div className="space-y-4">
-            {/* Arabic font size */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <TextAaIcon weight="duotone" className="h-3.5 w-3.5" />
-                Arabic Size
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    if (arabicIdx > 0) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx - 1] });
-                  }}
-                  disabled={arabicIdx <= 0}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
-                >
-                  <MinusIcon weight="bold" className="h-3.5 w-3.5" />
-                </button>
-                <span className="flex-1 text-center text-xs font-medium text-foreground uppercase">
-                  {preferences.arabicFontSize}
-                </span>
-                <button
-                  onClick={() => {
-                    if (arabicIdx < ARABIC_SIZES.length - 1) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx + 1] });
-                  }}
-                  disabled={arabicIdx >= ARABIC_SIZES.length - 1}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover disabled:opacity-30"
-                >
-                  <PlusIcon weight="bold" className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Layout toggle */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <GridFourIcon weight="duotone" className="h-3.5 w-3.5" />
-                Translation Layout
-              </label>
-              <div className="flex gap-1">
-                {LAYOUTS.map((l) => (
-                  <button
-                    key={l.value}
-                    onClick={() => updatePreferences({ translationLayout: l.value })}
-                    className={cn(
-                      "flex-1 rounded-lg px-2 py-1.5 text-[11px] transition-all",
-                      preferences.translationLayout === l.value
-                        ? "bg-primary/8 text-primary font-medium"
-                        : "text-muted-foreground/70 hover:bg-surface-hover",
-                    )}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Reading density */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <GridFourIcon weight="duotone" className="h-3.5 w-3.5" />
-                Density
-              </label>
-              <div className="flex gap-1">
-                {DENSITIES.map((d) => (
-                  <button
-                    key={d.value}
-                    onClick={() => updatePreferences({ readingDensity: d.value })}
-                    className={cn(
-                      "flex-1 rounded-lg px-2 py-1.5 text-[11px] transition-all",
-                      preferences.readingDensity === d.value
-                        ? "bg-primary/8 text-primary font-medium"
-                        : "text-muted-foreground/70 hover:bg-surface-hover",
-                    )}
-                  >
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Reading flow */}
-            <div>
-              <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                <TextAlignJustifyIcon weight="duotone" className="h-3.5 w-3.5" />
-                Reading Mode
-              </label>
-              <div className="grid grid-cols-3 gap-1">
-                {FLOWS.map((f) => (
-                  <button
-                    key={f.value}
-                    onClick={() => updatePreferences({ readingFlow: f.value })}
-                    className={cn(
-                      "rounded-lg px-2 py-1.5 text-[11px] transition-all",
-                      (preferences.readingFlow ?? "blocks") === f.value
-                        ? "bg-primary/8 text-primary font-medium"
-                        : "text-muted-foreground/70 hover:bg-surface-hover",
-                    )}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Toggle Arabic */}
-            <button
-              onClick={() => updatePreferences({ showArabic: !preferences.showArabic })}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
-            >
-              {preferences.showArabic ? (
-                <EyeIcon weight="duotone" className="h-3.5 w-3.5" />
-              ) : (
-                <EyeSlashIcon weight="duotone" className="h-3.5 w-3.5" />
-              )}
-              {preferences.showArabic ? "Hide Arabic" : "Show Arabic"}
-            </button>
-
-            {/* Toggle Translation */}
-            <button
-              onClick={() => updatePreferences({ showTranslation: !preferences.showTranslation })}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
-            >
-              {preferences.showTranslation ? (
-                <EyeIcon weight="duotone" className="h-3.5 w-3.5" />
-              ) : (
-                <EyeSlashIcon weight="duotone" className="h-3.5 w-3.5" />
-              )}
-              {preferences.showTranslation ? "Hide Translation" : "Show Translation"}
-            </button>
-
-            {/* Translation toggle pills */}
-            {showTranslationPills && preferences.showTranslation && (
+          <div className="fixed inset-0 z-[-1]" onClick={() => setOpen(false)} />
+          <div className="absolute bottom-12 right-0 w-64 border border-border bg-background p-4 animate-scale-in shadow-sm">
+            <div className="space-y-4">
+              {/* Arabic font size */}
               <div>
-                <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                  <BookOpenIcon weight="duotone" className="h-3.5 w-3.5" />
-                  Translations
+                <label className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  <TextAaIcon weight="bold" className="h-3.5 w-3.5" />
+                  [ ARABIC SIZE ]
                 </label>
-                <div className="flex flex-wrap gap-1">
-                  {resolvedConfigs.map((c) => {
-                    const isVisible = visibleTranslationIds!.includes(c.translationId);
-                    const color = `hsl(var(--translation-${c.colorSlot}))`;
-                    return (
-                      <button
-                        key={c.translationId}
-                        onClick={() => onToggleTranslation!(c.translationId)}
-                        className={cn(
-                          "flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium transition-all ring-1",
-                          isVisible
-                            ? "ring-current/20"
-                            : "opacity-40 ring-border/30 hover:opacity-70",
-                        )}
-                        style={isVisible ? { color } : undefined}
-                      >
-                        <span
-                          className="inline-block h-1.5 w-1.5 rounded-full shrink-0"
-                          style={{ backgroundColor: isVisible ? color : undefined }}
-                        />
-                        {TRANSLATION_NAMES[c.translationId] ?? `#${c.translationId}`}
-                      </button>
-                    );
-                  })}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (arabicIdx > 0) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx - 1] });
+                    }}
+                    disabled={arabicIdx <= 0}
+                    className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground disabled:opacity-30 transition-colors"
+                  >
+                    <MinusIcon weight="bold" className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="flex-1 text-center font-mono text-xs font-bold text-foreground uppercase">
+                    {preferences.arabicFontSize}
+                  </span>
+                  <button
+                    onClick={() => {
+                      if (arabicIdx < ARABIC_SIZES.length - 1) updatePreferences({ arabicFontSize: ARABIC_SIZES[arabicIdx + 1] });
+                    }}
+                    disabled={arabicIdx >= ARABIC_SIZES.length - 1}
+                    className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground disabled:opacity-30 transition-colors"
+                  >
+                    <PlusIcon weight="bold" className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </div>
-            )}
 
-            {/* Divider */}
-            <div className="h-px bg-border" />
+              {/* Translation font size */}
+              {preferences.showTranslation && (
+                <div>
+                  <label className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <BookOpenIcon weight="bold" className="h-3.5 w-3.5" />
+                    [ TRANSLATION SIZE ]
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        if (translationIdx > 0) updateTranslationSize(TRANSLATION_SIZES[translationIdx - 1]!);
+                      }}
+                      disabled={translationIdx <= 0}
+                      className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground disabled:opacity-30 transition-colors"
+                    >
+                      <MinusIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="flex-1 text-center font-mono text-xs font-bold text-foreground uppercase">
+                      {preferences.translationFontSize}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (translationIdx < TRANSLATION_SIZES.length - 1) updateTranslationSize(TRANSLATION_SIZES[translationIdx + 1]!);
+                      }}
+                      disabled={translationIdx >= TRANSLATION_SIZES.length - 1}
+                      className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground disabled:opacity-30 transition-colors"
+                    >
+                      <PlusIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
-            {/* Toggle Verse Numbers */}
-            <button
-              onClick={() => updatePreferences({ showVerseNumbers: !preferences.showVerseNumbers })}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
-            >
-              <HashIcon weight="duotone" className="h-3.5 w-3.5" />
-              {preferences.showVerseNumbers ? "Hide Verse Numbers" : "Show Verse Numbers"}
-            </button>
+              {/* Toggle Arabic */}
+              <button
+                onClick={() => updatePreferences({ showArabic: !preferences.showArabic })}
+                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface transition-colors"
+              >
+                {preferences.showArabic ? (
+                  <EyeIcon weight="bold" className="h-3.5 w-3.5" />
+                ) : (
+                  <EyeSlashIcon weight="bold" className="h-3.5 w-3.5" />
+                )}
+                {preferences.showArabic ? "HIDE ARABIC" : "SHOW ARABIC"}
+              </button>
 
-            {/* Toggle Surah Headers */}
-            <button
-              onClick={() => updatePreferences({ showSurahHeaders: !preferences.showSurahHeaders })}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
-            >
-              <TextHIcon weight="duotone" className="h-3.5 w-3.5" />
-              {preferences.showSurahHeaders ? "Hide Surah Header" : "Show Surah Header"}
-            </button>
+              {/* Toggle Translation */}
+              <button
+                onClick={() => updatePreferences({ showTranslation: !preferences.showTranslation })}
+                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface transition-colors"
+              >
+                {preferences.showTranslation ? (
+                  <EyeIcon weight="bold" className="h-3.5 w-3.5" />
+                ) : (
+                  <EyeSlashIcon weight="bold" className="h-3.5 w-3.5" />
+                )}
+                {preferences.showTranslation ? "HIDE TRANSLATION" : "SHOW TRANSLATION"}
+              </button>
 
-            {/* Toggle Bismillah */}
-            <button
-              onClick={() => updatePreferences({ showBismillah: !preferences.showBismillah })}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover transition-fast"
-            >
-              <SparkleIcon weight="duotone" className="h-3.5 w-3.5" />
-              {preferences.showBismillah ? "Hide Bismillah" : "Show Bismillah"}
-            </button>
+              {/* Translation toggle pills */}
+              {showTranslationPills && preferences.showTranslation && (
+                <div>
+                  <label className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <BookOpenIcon weight="bold" className="h-3.5 w-3.5" />
+                    [ TRANSLATIONS ]
+                  </label>
+                  <div className="flex flex-wrap gap-1">
+                    {resolvedConfigs.map((c) => {
+                      const isVisible = visibleTranslationIds!.includes(c.translationId);
+                      return (
+                        <button
+                          key={c.translationId}
+                          onClick={() => onToggleTranslation!(c.translationId)}
+                          className={cn(
+                            "font-mono text-[9px] font-bold uppercase tracking-wider px-2 py-1 border transition-colors",
+                            isVisible
+                              ? "border-border text-foreground bg-[#fefce8]"
+                              : "border-border text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          {TRANSLATION_NAMES[c.translationId] ?? `#${c.translationId}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </>
       )}
     </div>

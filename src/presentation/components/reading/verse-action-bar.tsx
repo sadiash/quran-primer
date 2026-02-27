@@ -38,7 +38,7 @@ export function VerseActionBar({
   return (
     <div
       className={cn(
-        "verse-action-bar absolute -top-2 right-2 z-10 flex items-center gap-0.5 rounded-full px-2 py-1 glass",
+        "verse-action-bar absolute -top-2 right-2 z-10 flex items-center gap-0 border border-border bg-background shadow-sm",
         isFocused && "is-visible",
       )}
     >
@@ -55,7 +55,6 @@ export function VerseActionBar({
       <ActionButton
         onClick={(e) => { e.stopPropagation(); onOpenNotes(); }}
         active={hasNotes}
-        activeClass="text-amber-500/80"
         label={hasNotes ? "View notes" : "Add note"}
       >
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill={hasNotes ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +76,6 @@ export function VerseActionBar({
       <ActionButton
         onClick={handleCopy}
         active={copied}
-        activeClass="text-green-500"
         label="Copy"
       >
         {copied ? (
@@ -86,7 +84,7 @@ export function VerseActionBar({
           </svg>
         ) : (
           <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <rect x="9" y="9" width="13" height="13" rx="0" ry="0" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
         )}
@@ -98,7 +96,7 @@ export function VerseActionBar({
         label={isPlaying ? "Pause" : "Play"}
       >
         {isPlaying ? (
-          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2}>
             <rect x="6" y="4" width="4" height="16" />
             <rect x="14" y="4" width="4" height="16" />
           </svg>
@@ -116,23 +114,21 @@ function ActionButton({
   children,
   onClick,
   active = false,
-  activeClass = "text-primary",
   label,
 }: {
   children: React.ReactNode;
   onClick: (e: React.MouseEvent) => void;
   active?: boolean;
-  activeClass?: string;
   label: string;
 }) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        "rounded-full p-1.5 transition-all hover:bg-surface-hover",
+        "p-1.5 transition-colors",
         active
-          ? activeClass
-          : "text-muted-foreground/50 hover:text-foreground",
+          ? "text-foreground bg-[#fefce8]"
+          : "text-muted-foreground hover:text-foreground hover:bg-surface",
       )}
       aria-label={label}
     >

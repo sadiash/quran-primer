@@ -18,7 +18,7 @@ export function GraphTooltip({ node, x, y, connectionCount }: GraphTooltipProps)
 
   return (
     <div
-      className="absolute z-50 pointer-events-none bg-popover text-popover-foreground border border-border rounded-lg shadow-lg px-3 py-2 text-xs max-w-64"
+      className="absolute z-50 pointer-events-none bg-background text-foreground border border-border shadow-md px-3 py-2 text-xs max-w-64"
       style={{
         left: x + 12,
         top: y - 8,

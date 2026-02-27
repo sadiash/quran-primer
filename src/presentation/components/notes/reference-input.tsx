@@ -156,14 +156,15 @@ export function ReferenceInput({
             return (
               <span
                 key={`vk-${vk}`}
-                className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-medium text-foreground"
+                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-foreground"
+                style={{ backgroundColor: '#f0fdf9' }}
               >
                 <BookOpenIcon weight="duotone" className="h-2.5 w-2.5 text-muted-foreground" />
                 {getSurahName(Number(s))} {s}:{v}
                 <button
                   type="button"
                   onClick={() => removeVerseKey(vk)}
-                  className="rounded-full p-0.5 hover:bg-accent/30 transition-fast"
+                  className="p-0.5 hover:bg-[#f0fdf9] transition-colors"
                   aria-label={`Remove ${vk}`}
                 >
                   <XIcon weight="bold" className="h-2.5 w-2.5" />
@@ -176,14 +177,15 @@ export function ReferenceInput({
           {surahIds.map((id) => (
             <span
               key={`s-${id}`}
-              className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary"
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium"
+              style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
             >
               <BookOpenIcon weight="duotone" className="h-2.5 w-2.5" />
               {getSurahName(id)} (surah)
               <button
                 type="button"
                 onClick={() => removeSurahId(id)}
-                className="rounded-full p-0.5 hover:bg-primary/20 transition-fast"
+                className="p-0.5 hover:bg-[#fefce8] transition-colors"
                 aria-label={`Remove surah ${id}`}
               >
                 <XIcon weight="bold" className="h-2.5 w-2.5" />
@@ -211,7 +213,7 @@ export function ReferenceInput({
 
         {/* Surah suggestions dropdown */}
         {suggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
+          <div className="absolute left-0 right-0 top-full z-50 mt-1 border border-border bg-background p-1 shadow-md">
             {suggestions.map((s, i) => (
               <button
                 key={s.id}
@@ -220,10 +222,10 @@ export function ReferenceInput({
                   e.preventDefault();
                   addSurahId(s.id);
                 }}
-                className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-fast ${
+                className={`flex w-full items-center gap-2 px-2 py-1.5 text-xs transition-colors ${
                   i === selectedIdx
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                    ? "bg-[#fefce8] text-foreground"
+                    : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
                 }`}
               >
                 <BookOpenIcon weight="duotone" className="h-3 w-3" />

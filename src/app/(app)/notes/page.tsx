@@ -332,7 +332,7 @@ export default function NotesPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
               >
                 <UploadSimpleIcon weight="bold" className="h-4 w-4" />
                 Import
@@ -346,7 +346,7 @@ export default function NotesPage() {
               <button
                 type="button"
                 onClick={() => setShowExportMenu(!showExportMenu)}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
               >
                 <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
                 Export
@@ -357,11 +357,11 @@ export default function NotesPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowExportMenu(false)}
                   />
-                  <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
+                  <div className="absolute right-0 top-full z-50 mt-1 w-48 border border-border bg-background p-1 shadow-md">
                     <button
                       type="button"
                       onClick={handleExportJSON}
-                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
                     >
                       <FileJsIcon weight="bold" className="h-3.5 w-3.5" />
                       As JSON (backup)
@@ -369,7 +369,7 @@ export default function NotesPage() {
                     <button
                       type="button"
                       onClick={handleExportMarkdown}
-                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
                     >
                       <FileTextIcon weight="bold" className="h-3.5 w-3.5" />
                       As Markdown
@@ -384,7 +384,7 @@ export default function NotesPage() {
             <button
               type="button"
               onClick={() => setEditorMode("new")}
-              className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] hover:opacity-80 transition-colors" style={{ backgroundColor: '#e8e337' }}
             >
               <PlusIcon weight="bold" className="h-4 w-4" />
               New Note
@@ -399,9 +399,9 @@ export default function NotesPage() {
           type="button"
           onClick={() => setActiveTab("notes")}
           className={cn(
-            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-fast",
+            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-colors",
             activeTab === "notes"
-              ? "border-primary text-foreground"
+              ? "border-foreground text-foreground"
               : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
           )}
         >
@@ -410,7 +410,7 @@ export default function NotesPage() {
           {notes.length > 0 && (
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-              activeTab === "notes" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
+              activeTab === "notes" ? "bg-[#fefce8] text-foreground" : "bg-muted text-muted-foreground",
             )}>
               {notes.length}
             </span>
@@ -420,9 +420,9 @@ export default function NotesPage() {
           type="button"
           onClick={() => setActiveTab("mindmap")}
           className={cn(
-            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-fast",
+            "flex items-center gap-2 border-b-2 pb-2.5 text-sm font-medium transition-colors",
             activeTab === "mindmap"
-              ? "border-primary text-foreground"
+              ? "border-foreground text-foreground"
               : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
           )}
         >
@@ -438,7 +438,7 @@ export default function NotesPage() {
 
       {/* Notes Tab */}
       {activeTab === "notes" && editorMode && (
-        <div className="mt-6 rounded-xl border border-primary/30 bg-card p-4 shadow-soft-lg">
+        <div className="mt-6 border border-border bg-background p-4">
           <div className="mb-3">
             <h3 className="text-sm font-semibold text-foreground">
               {editorMode === "new" ? "New Note" : "Edit Note"}
@@ -476,7 +476,7 @@ export default function NotesPage() {
                 placeholder="Search notes by content, surah, verse, or tag..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground"
               />
             </div>
             {/* Sort dropdown */}
@@ -484,7 +484,7 @@ export default function NotesPage() {
               <button
                 type="button"
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2.5 text-sm text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
                 aria-label="Sort notes"
               >
                 <ArrowsDownUpIcon weight="bold" className="h-4 w-4" />
@@ -498,17 +498,17 @@ export default function NotesPage() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowSortMenu(false)}
                   />
-                  <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
+                  <div className="absolute right-0 top-full z-50 mt-1 w-48 border border-border bg-background p-1 shadow-md">
                     {SORT_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => handleSortChange(opt.value)}
                         className={cn(
-                          "flex w-full items-center rounded-md px-3 py-2 text-xs transition-fast",
+                          "flex w-full items-center px-3 py-2 text-xs transition-colors",
                           sortOption === opt.value
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                            ? "bg-[#fefce8] text-foreground font-medium"
+                            : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
                         )}
                       >
                         {opt.label}
@@ -526,16 +526,16 @@ export default function NotesPage() {
               <button
                 onClick={() => setTagFilter(null)}
                 className={cn(
-                  "flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-fast",
+                  "flex items-center gap-1 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors",
                   tagFilter === null
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                    ? "bg-[#fefce8] text-foreground"
+                    : "border border-border text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
                 )}
               >
                 All
                 <span className={cn(
                   "ml-0.5 text-[10px]",
-                  tagFilter === null ? "text-primary-foreground/70" : "text-muted-foreground/50",
+                  tagFilter === null ? "text-foreground/70" : "text-muted-foreground/50",
                 )}>
                   {notes.length}
                 </span>
@@ -547,17 +547,17 @@ export default function NotesPage() {
                     setTagFilter(tagFilter === tag ? null : tag)
                   }
                   className={cn(
-                    "flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-fast",
+                    "flex items-center gap-1 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors",
                     tagFilter === tag
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-surface text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                      ? "bg-[#fefce8] text-foreground"
+                      : "border border-border text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
                   )}
                 >
                   <TagIcon weight="bold" className="h-3 w-3" />
                   {tag}
                   <span className={cn(
                     "ml-0.5 text-[10px]",
-                    tagFilter === tag ? "text-primary-foreground/70" : "text-muted-foreground/50",
+                    tagFilter === tag ? "text-foreground/70" : "text-muted-foreground/50",
                   )}>
                     {count}
                   </span>
@@ -592,8 +592,8 @@ export default function NotesPage() {
 
       {activeTab === "notes" && notes.length === 0 && !editorMode && (
         <div className="mt-20 flex flex-col items-center text-center">
-          <div className="rounded-full bg-primary/5 p-4">
-            <LightbulbIcon weight="duotone" className="h-8 w-8 text-primary/30" />
+          <div className="p-4" style={{ backgroundColor: '#fefce8' }}>
+            <LightbulbIcon weight="duotone" className="h-8 w-8 text-muted-foreground/30" />
           </div>
           <h2 className="mt-5 text-lg font-semibold text-foreground">
             Your notes will appear here
@@ -605,14 +605,14 @@ export default function NotesPage() {
           <div className="mt-6 flex items-center gap-3">
             <Link
               href="/surah/1"
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-fast"
+              className="px-4 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] hover:opacity-80 transition-colors" style={{ backgroundColor: '#e8e337' }}
             >
               Start reading
             </Link>
             <button
               type="button"
               onClick={() => setEditorMode("new")}
-              className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-hover transition-fast"
+              className="border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-[#fafafa] transition-colors"
             >
               Create note
             </button>
@@ -622,7 +622,7 @@ export default function NotesPage() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-xs text-muted-foreground/60 underline underline-offset-2 hover:text-muted-foreground transition-fast"
+              className="text-xs text-muted-foreground/60 underline underline-offset-2 hover:text-muted-foreground transition-colors"
             >
               Or import notes from a backup
             </button>
@@ -688,10 +688,10 @@ function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSele
 
   return (
     <div className="mt-4 flex flex-col" style={{ height: "calc(100vh - 12rem)" }}>
-      <div className="relative min-h-0 flex-1 rounded-xl border border-border overflow-hidden">
+      <div className="relative min-h-0 flex-1 border border-border overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-primary" />
+            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-foreground" />
           </div>
         )}
         {isEmpty ? (
@@ -766,8 +766,8 @@ function PageNoteCard({
   return (
     <div
       className={cn(
-        "relative rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-soft-sm cursor-pointer",
-        note.pinned && "border-primary/20 bg-primary/[0.02]",
+        "relative border border-border bg-background p-4 transition-all hover:bg-[#fafafa] cursor-pointer",
+        note.pinned && "border-border bg-[#fefce8]/30",
       )}
       style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
       onClick={() => onSelect(note)}
@@ -776,7 +776,7 @@ function PageNoteCard({
         <div className="min-w-0 flex-1">
           {/* Title row with pin + color dot */}
           <div className="flex items-center gap-1.5">
-            {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-primary/60" />}
+            {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-foreground/60" />}
             {cardStyle.dotColor && <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cardStyle.dotColor }} title={cardStyle.label} />}
             <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
               {displayTitle}
@@ -810,7 +810,7 @@ function PageNoteCard({
           <button
             type="button"
             onClick={() => setShowMenu(!showMenu)}
-            className="rounded-md p-1.5 text-muted-foreground/50 hover:bg-surface-hover hover:text-foreground transition-fast"
+            className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
             aria-label="Note actions"
           >
             <DotsThreeIcon weight="bold" className="h-4 w-4" />
@@ -818,14 +818,14 @@ function PageNoteCard({
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-border bg-card p-1 shadow-soft-lg">
-                <button type="button" onClick={() => { setShowMenu(false); onEdit(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">
+              <div className="absolute right-0 top-full z-50 mt-1 w-36 border border-border bg-background p-1 shadow-md">
+                <button type="button" onClick={() => { setShowMenu(false); onEdit(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors">
                   <PencilSimpleIcon weight="bold" className="h-3 w-3" />Edit
                 </button>
-                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast">
-                  {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />PushPinIcon</>}
+                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors">
+                  {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />Pin</>}
                 </button>
-                <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-fast">
+                <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors">
                   <TrashIcon weight="bold" className="h-3 w-3" />Delete
                 </button>
               </div>

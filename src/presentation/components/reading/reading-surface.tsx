@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import type { Surah, Verse, Translation } from "@/core/types";
+import type { Surah, Verse, Translation, TranslationConfig } from "@/core/types";
 import type { ConceptTag } from "@/presentation/components/quran/reading-page";
 import { getResolvedTranslationConfigs } from "@/core/types";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
@@ -12,13 +12,11 @@ import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { useNotes } from "@/presentation/hooks/use-notes";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { useVerseVisibility } from "@/presentation/hooks/use-verse-visibility";
-import { useFocusSpotlight } from "@/presentation/hooks/use-focus-spotlight";
-import { SurahHeader, VineBorder } from "./surah-header";
+import { SurahHeader } from "./surah-header";
 import { VerseBlock } from "./verse-block";
 import { ReadingToolbar } from "./reading-toolbar";
 import { ReadingProgressBar } from "./reading-progress-bar";
-import { TheaterSurface } from "./theater-surface";
-import { MushafSurface } from "./mushaf-surface";
+import { cn } from "@/lib/utils";
 
 interface ReadingSurfaceProps {
   surah: Surah;
@@ -36,26 +34,18 @@ export function ReadingSurface({
   const searchParams = useSearchParams();
   const { preferences, updatePreferences } = usePreferences();
   const { focusVerse, focusedVerseKey, openPanel } = usePanels();
-  const { updateProgress } = useProgress(surah.id);
+  const { progress, updateProgress } = useProgress(surah.id);
   const { isBookmarked, toggleBookmark } = useBookmarks(surah.id);
   const { notes } = useNotes({ forSurahReading: surah.id });
   const audio = useAudioPlayer();
   const { observerRef, getCurrentVerseKey } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const readingFlow = preferences.readingFlow ?? "blocks";
-
   // Track scroll position for collapsing surah header
   const [isHeaderCompact, setIsHeaderCompact] = useState(false);
   const isHeaderCompactRef = useRef(false);
 
-  // Focus spotlight hook (active for all modes but only applied to "focus" flow)
-  const { getFocusClass } = useFocusSpotlight(containerRef);
-
-  // Verse keys list for focus mode distance calculation
-  const verseKeys = useMemo(() => verses.map((v) => v.verseKey), [verses]);
-
-  // Manual focus — used for clicks, keyboard nav, and verse action menus.
+  // Manual focus
   const focusVerseManually = useCallback(
     (key: string) => {
       focusVerse(key);
@@ -78,7 +68,7 @@ export function ReadingSurface({
     return keys;
   }, [notes, surah.id, verses]);
 
-  // Resolve per-translation configs (order, font size, color)
+  // Resolve per-translation configs
   const resolvedConfigs = useMemo(
     () =>
       getResolvedTranslationConfigs(
@@ -89,11 +79,10 @@ export function ReadingSurface({
     [preferences.activeTranslationIds, preferences.translationConfigs, preferences.translationFontSize],
   );
 
-  // Visible translations — persisted subset of activeTranslationIds
+  // Visible translations
   const visibleTranslationIds = useMemo(() => {
     const saved = preferences.visibleTranslationIds;
     if (!saved) return preferences.activeTranslationIds;
-    // Filter to only IDs still active in settings
     const valid = saved.filter((id) => preferences.activeTranslationIds.includes(id));
     return valid.length > 0 ? valid : preferences.activeTranslationIds;
   }, [preferences.visibleTranslationIds, preferences.activeTranslationIds]);
@@ -105,7 +94,7 @@ export function ReadingSurface({
     updatePreferences({ visibleTranslationIds: next });
   }, [visibleTranslationIds, updatePreferences]);
 
-  // Filter translations to visible selection (subset of active)
+  // Filter translations to visible selection
   const activeTranslations = useMemo(
     () => translations.filter((t) => visibleTranslationIds.includes(t.resourceId)),
     [translations, visibleTranslationIds],
@@ -116,7 +105,7 @@ export function ReadingSurface({
     [resolvedConfigs, visibleTranslationIds],
   );
 
-  // Group translations by verse, sorted by config order
+  // Group translations by verse
   const translationsByVerse = useMemo(() => {
     const configOrderMap = new Map<number, number>();
     for (const c of visibleConfigs) configOrderMap.set(c.translationId, c.order);
@@ -136,18 +125,25 @@ export function ReadingSurface({
     return byVerse;
   }, [activeTranslations, visibleConfigs]);
 
-  // Track reading progress (scroll-based — does NOT override manual verse focus)
+  // Track reading progress — only ever increase completedVerses
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const maxVerseRef = useRef(progress?.completedVerses ?? 0);
+  if (progress && progress.completedVerses > maxVerseRef.current) {
+    maxVerseRef.current = progress.completedVerses;
+  }
   const saveProgress = useCallback(
     (verseKey: string, verseNumber: number) => {
       if (!preferences.trackProgress) return;
+      if (verseNumber > maxVerseRef.current) {
+        maxVerseRef.current = verseNumber;
+      }
       clearTimeout(saveProgressTimer.current);
       saveProgressTimer.current = setTimeout(() => {
         updateProgress({
           surahId: surah.id,
           lastVerseKey: verseKey,
           lastVerseNumber: verseNumber,
-          completedVerses: verseNumber,
+          completedVerses: maxVerseRef.current,
           totalVerses: surah.versesCount,
           updatedAt: new Date(),
         });
@@ -185,7 +181,7 @@ export function ReadingSurface({
     };
   }, [observerRef, verses]);
 
-  // Poll observer for current visible verse — only updates reading progress, never steals focus
+  // Poll observer for current visible verse
   useEffect(() => {
     const interval = setInterval(() => {
       const key = getCurrentVerseKey();
@@ -225,11 +221,8 @@ export function ReadingSurface({
     "2xl": "text-5xl",
   }[preferences.arabicFontSize];
 
-  // Keyboard shortcuts: j/k/b/t/n/Z/Escape + arrows
+  // Keyboard shortcuts
   useEffect(() => {
-    // Theater/mushaf have their own keyboard handlers
-    if (readingFlow === "theater" || readingFlow === "mushaf") return;
-
     function handleKeyDown(e: KeyboardEvent) {
       const target = e.target as HTMLElement;
       if (
@@ -276,59 +269,22 @@ export function ReadingSurface({
       } else if (e.key === "n") {
         e.preventDefault();
         openPanel("notes");
-      } else if (e.key === "Z") {
-        e.preventDefault();
-        updatePreferences({ zenMode: !preferences.zenMode });
-      } else if (e.key === "Escape" && preferences.zenMode) {
-        e.preventDefault();
-        updatePreferences({ zenMode: false });
       }
     }
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [readingFlow, focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, preferences.zenMode, updatePreferences]);
-
-  const density = preferences.readingDensity;
-  const isProse = readingFlow === "prose";
-  const isFocus = readingFlow === "focus";
-
-  // ── Route to Theater Mode ──
-  if (readingFlow === "theater") {
-    return (
-      <TheaterSurface
-        surah={surah}
-        verses={verses}
-        translations={translations}
-      />
-    );
-  }
-
-  // ── Route to Mushaf Mode ──
-  if (readingFlow === "mushaf") {
-    return (
-      <MushafSurface
-        surah={surah}
-        verses={verses}
-        translations={translations}
-      />
-    );
-  }
+  }, [focusedVerseKey, verses, focusVerseManually, toggleBookmark, surah.id, openPanel, updatePreferences]);
 
   return (
     <div className="relative h-full flex flex-col">
-      {/* Decorative vine borders — visible on wide screens */}
-      <VineBorder side="left" />
-      <VineBorder side="right" />
-
       {/* Reading progress bar */}
       <ReadingProgressBar containerRef={containerRef} />
 
-      {/* Sticky surah header — collapses when scrolled */}
+      {/* Sticky surah header */}
       {preferences.showSurahHeaders && (
         <div className={cn(
-          "shrink-0 border-b border-border/40 bg-background/95 backdrop-blur-sm transition-all duration-300",
-          isHeaderCompact && "shadow-sm",
+          "shrink-0 border-b border-border bg-background transition-all duration-200",
         )}>
           <div className="mx-auto max-w-3xl px-6 sm:px-8 lg:px-12">
             <SurahHeader surah={surah} compact={isHeaderCompact} />
@@ -341,137 +297,84 @@ export function ReadingSurface({
         className="flex-1 min-h-0 overflow-y-auto scroll-smooth"
       >
         <div className="mx-auto max-w-3xl px-6 py-8 sm:px-8 lg:px-12">
-          {/* Bismillah — ornate floral unwan frame */}
+          {/* Bismillah — colored editorial strip */}
           {preferences.showBismillah && surah.id !== 1 && surah.id !== 9 && (
-            <div className="bismillah-ornament mb-6 text-center">
-              <div className="relative inline-block px-12 py-6">
-                <svg
-                  className="absolute inset-0 w-full h-full text-primary"
-                  viewBox="0 0 400 100"
-                  preserveAspectRatio="none"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  {/* Outer arch */}
-                  <path
-                    d="M35,95 L35,38 Q35,5 200,5 Q365,5 365,38 L365,95"
-                    strokeWidth="1"
-                    opacity="0.3"
-                  />
-                  {/* Inner arch */}
-                  <path
-                    d="M50,95 L50,42 Q50,14 200,14 Q350,14 350,42 L350,95"
-                    strokeWidth="0.5"
-                    opacity="0.18"
-                  />
-
-                  {/* Crown floral — palmette at top center */}
-                  <ellipse cx="200" cy="5" rx="4" ry="7" fill="currentColor" opacity="0.18" />
-                  <ellipse cx="193" cy="8" rx="3" ry="5" fill="currentColor" opacity="0.12" transform="rotate(-20 193 8)" />
-                  <ellipse cx="207" cy="8" rx="3" ry="5" fill="currentColor" opacity="0.12" transform="rotate(20 207 8)" />
-                  <circle cx="200" cy="5" r="2" fill="currentColor" stroke="none" opacity="0.28" />
-
-                  {/* Left corner floral */}
-                  <path d="M35,95 C28,90 25,83 30,78 C33,80 34,86 35,92" fill="currentColor" opacity="0.12" stroke="none" />
-                  <path d="M35,95 C30,92 24,90 22,85" strokeWidth="0.5" opacity="0.22" />
-                  <circle cx="22" cy="85" r="2" fill="currentColor" stroke="none" opacity="0.18" />
-                  {/* Left corner vine tendril */}
-                  <path d="M35,70 C28,65 25,68 28,73 C30,76 33,74 35,71" fill="currentColor" opacity="0.1" stroke="none" />
-                  <path d="M28,73 C24,77 21,74 24,71" strokeWidth="0.4" opacity="0.18" />
-
-                  {/* Right corner floral (mirror) */}
-                  <path d="M365,95 C372,90 375,83 370,78 C367,80 366,86 365,92" fill="currentColor" opacity="0.12" stroke="none" />
-                  <path d="M365,95 C370,92 376,90 378,85" strokeWidth="0.5" opacity="0.22" />
-                  <circle cx="378" cy="85" r="2" fill="currentColor" stroke="none" opacity="0.18" />
-                  {/* Right corner vine tendril */}
-                  <path d="M365,70 C372,65 375,68 372,73 C370,76 367,74 365,71" fill="currentColor" opacity="0.1" stroke="none" />
-                  <path d="M372,73 C376,77 379,74 376,71" strokeWidth="0.4" opacity="0.18" />
-
-                  {/* Side vine accents along arch */}
-                  <path d="M60,60 C54,55 50,58 53,63 C55,66 58,64 60,61" fill="currentColor" opacity="0.1" stroke="none" />
-                  <path d="M340,60 C346,55 350,58 347,63 C345,66 342,64 340,61" fill="currentColor" opacity="0.1" stroke="none" />
-                </svg>
-                <p
-                  lang="ar"
-                  dir="rtl"
-                  className="relative arabic-display text-2xl text-foreground/60 sm:text-3xl"
-                >
-                  بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                </p>
-              </div>
+            <div className="mb-8 -mx-6 sm:-mx-8 lg:-mx-12 px-6 sm:px-8 lg:px-12 py-6 text-center" style={{ backgroundColor: "var(--br-accent-yellow)", color: "#0a0a0a" }}>
+              <p
+                lang="ar"
+                dir="rtl"
+                className="arabic-display text-2xl sm:text-3xl"
+              >
+                بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+              </p>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] mt-2 block opacity-50">
+                In the name of God, the Most Gracious, the Most Merciful
+              </span>
             </div>
           )}
 
-          {/* Translation color legend — inline pills when multiple active */}
+          {/* Translation legend — color swatches */}
           {visibleConfigs.length > 1 && preferences.showTranslation && (
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+            <div className="mt-5 flex flex-wrap items-center gap-2">
               {visibleConfigs.map((c) => {
                 const name = translations.find((t) => t.resourceId === c.translationId)?.resourceName;
                 return (
-                  <span key={c.translationId} className="flex items-center gap-2 text-[10px]">
-                    <span
-                      className="inline-block h-2 w-2 rounded-full shrink-0"
-                      style={{ backgroundColor: `hsl(var(--translation-${c.colorSlot}))` }}
-                    />
-                    <span className="text-muted-foreground/60">
-                      {name ?? `Translation ${c.translationId}`}
-                    </span>
+                  <span
+                    key={c.translationId}
+                    className="inline-flex items-center gap-2 border-l-3 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-wider"
+                    style={{
+                      borderLeftWidth: "3px",
+                      borderLeftStyle: "solid",
+                      borderLeftColor: `var(--translation-${c.colorSlot}-border)`,
+                      backgroundColor: `var(--translation-${c.colorSlot}-bg)`,
+                      color: `var(--translation-${c.colorSlot}-label)`,
+                    }}
+                  >
+                    {name ?? `Translation ${c.translationId}`}
                   </span>
                 );
               })}
             </div>
           )}
 
-          <div className={cn(
-            "mt-4 space-y-0",
-            isProse && (preferences.showArabic ? "prose-container" : "prose-container-ltr"),
-          )}>
-            {verses.map((verse) => {
-              const focusClass = isFocus ? getFocusClass(verse.verseKey, verseKeys) : undefined;
-              return (
-                <div
-                  key={verse.verseKey}
-                  className={focusClass}
-                >
-                  <VerseBlock
-                    verse={verse}
-                    translations={translationsByVerse.get(verse.verseKey) ?? []}
-                    showArabic={preferences.showArabic}
-                    showTranslation={preferences.showTranslation}
-                    showVerseNumbers={preferences.showVerseNumbers}
-                    arabicSizeClass={arabicSizeClass}
-                    translationConfigs={visibleConfigs}
-                    translationLayout={preferences.translationLayout}
-                    density={density}
-                    readingFlow={readingFlow}
-                    isFocused={focusedVerseKey === verse.verseKey}
-                    isBookmarked={isBookmarked(verse.verseKey)}
-                    isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
-                    hasNotes={noteVerseKeys.has(verse.verseKey)}
-                    onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
-                    onTogglePlay={() => {
-                      if (audio.currentVerseKey === verse.verseKey && audio.isPlaying) {
-                        audio.pause();
-                      } else if (audio.currentVerseKey === verse.verseKey && !audio.isPlaying) {
-                        audio.resume();
-                      } else {
-                        audio.play(verse.verseKey, surah.id);
-                      }
-                    }}
-                    onFocus={() => focusVerseManually(verse.verseKey)}
-                    onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
-                    onOpenStudy={() => { focusVerseManually(verse.verseKey); openPanel("tafsir"); }}
-                    onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
-                    concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
-                    conceptMaxVisible={preferences.conceptMaxVisible}
-                    conceptColorSlot={preferences.conceptColorSlot}
-                  />
-                </div>
-              );
-            })}
+          <div className="mt-4 space-y-0">
+            {verses.map((verse) => (
+              <VerseBlock
+                key={verse.verseKey}
+                verse={verse}
+                translations={translationsByVerse.get(verse.verseKey) ?? []}
+                showArabic={preferences.showArabic}
+                showTranslation={preferences.showTranslation}
+                showVerseNumbers={preferences.showVerseNumbers}
+                arabicSizeClass={arabicSizeClass}
+                translationConfigs={visibleConfigs}
+                translationLayout={preferences.translationLayout}
+                isFocused={focusedVerseKey === verse.verseKey}
+                isBookmarked={isBookmarked(verse.verseKey)}
+                isPlaying={audio.currentVerseKey === verse.verseKey && audio.isPlaying}
+                hasNotes={noteVerseKeys.has(verse.verseKey)}
+                onToggleBookmark={() => toggleBookmark(verse.verseKey, surah.id)}
+                onTogglePlay={() => {
+                  if (audio.currentVerseKey === verse.verseKey && audio.isPlaying) {
+                    audio.pause();
+                  } else if (audio.currentVerseKey === verse.verseKey && !audio.isPlaying) {
+                    audio.resume();
+                  } else {
+                    audio.play(verse.verseKey, surah.id);
+                  }
+                }}
+                onFocus={() => focusVerseManually(verse.verseKey)}
+                onOpenNotes={() => { focusVerseManually(verse.verseKey); openPanel("notes"); }}
+                onOpenStudy={() => { focusVerseManually(verse.verseKey); openPanel("tafsir"); }}
+                onSwipeRight={() => toggleBookmark(verse.verseKey, surah.id)}
+                concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
+                conceptMaxVisible={preferences.conceptMaxVisible}
+                conceptColorSlot={preferences.conceptColorSlot}
+              />
+            ))}
           </div>
 
-          {/* End spacer — extra room for floating mobile nav + audio dock */}
+          {/* End spacer */}
           <div className="h-32 md:h-24" />
         </div>
       </div>
@@ -483,6 +386,3 @@ export function ReadingSurface({
     </div>
   );
 }
-
-import type { TranslationConfig } from "@/core/types";
-import { cn } from "@/lib/utils";

@@ -1,15 +1,9 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════
-   THE PRIMER — Design System
-
-   Light: "The Library" — Warm ivory, espresso ink, gold accents,
-          paper-like depth. A private reading room with afternoon sun.
-
-   Dark:  "The Observatory" — Deep cosmic navy, amber glow,
-          glass panels, cyan sparks. A scholar's command center.
-
-   Connected by gold/amber — the shared thread.
+   THE PRIMER — Brutalist / Editorial Typography System
+   Inspired by type.vibe — Swiss grid, bold contrasts,
+   monospace labels, hard borders, no rounded corners.
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── Tailwind v4 Theme Extension ─── */
@@ -55,24 +49,23 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 10px);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
 
-  --font-ui: "Inter", system-ui, sans-serif;
-  --font-serif-display: "Cormorant Garamond", "Georgia", serif;
+  --font-display: var(--font-brutalist-display), "Space Grotesk", system-ui, sans-serif;
+  --font-mono: var(--font-brutalist-mono), "Space Mono", ui-monospace, monospace;
   --font-arabic-display: "Amiri Quran", "Amiri", serif;
   --font-arabic-reading: "Scheherazade New", "Amiri", serif;
 
-  --animate-fade-in: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-fade-out: fade-out 0.2s cubic-bezier(0.7, 0, 0.84, 0);
-  --animate-scale-in: scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-scale-out: scale-out 0.2s cubic-bezier(0.7, 0, 0.84, 0);
-  --animate-slide-in-bottom: slide-in-bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-out-bottom: slide-out-bottom 0.2s cubic-bezier(0.7, 0, 0.84, 0);
-  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-fade-out: fade-out 0.15s ease-in;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-scale-out: scale-out 0.15s ease-in;
+  --animate-slide-in-bottom: slide-in-bottom 0.25s ease-out;
+  --animate-slide-out-bottom: slide-out-bottom 0.15s ease-in;
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -98,587 +91,97 @@
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(8px); }
   }
-  @keyframes pulse-glow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
 }
 
-/* ─── The Library (Light Mode) — Default ─── */
+/* ─── Brutalist Light Mode — The Only Mode ─── */
 :root {
-  --background: 40 33% 96%;
-  --foreground: 30 18% 14%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 4%;
 
-  --card: 38 30% 97%;
-  --card-foreground: 30 18% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 4%;
 
-  --popover: 38 30% 97%;
-  --popover-foreground: 30 18% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 4%;
 
-  --primary: 36 72% 44%;
-  --primary-foreground: 40 33% 97%;
-
-  --secondary: 38 18% 91%;
-  --secondary-foreground: 30 18% 20%;
-
-  --muted: 35 14% 90%;
-  --muted-foreground: 30 8% 46%;
-
-  --accent: 168 28% 38%;
-  --accent-foreground: 40 33% 97%;
-
-  --destructive: 0 65% 51%;
-  --destructive-foreground: 40 33% 97%;
-
-  --border: 35 18% 86%;
-  --input: 35 18% 86%;
-  --ring: 36 72% 44%;
-  --radius: 0.625rem;
-
-  --surface: 40 28% 98%;
-  --surface-hover: 38 22% 94%;
-  --surface-active: 36 20% 91%;
-
-  --glow-primary: 36 80% 50%;
-  --glow-accent: 168 40% 45%;
-  --glow-strength: 0.08;
-
-  --glass-bg: 38 30% 97% / 0.7;
-  --glass-border: 35 18% 86% / 0.5;
-  --glass-blur: 16px;
-
-  --sidebar-background: 38 25% 94%;
-  --sidebar-foreground: 30 14% 24%;
-  --sidebar-primary: 36 72% 44%;
-  --sidebar-primary-foreground: 40 33% 97%;
-  --sidebar-accent: 38 18% 91%;
-  --sidebar-accent-foreground: 30 14% 24%;
-  --sidebar-border: 35 18% 86%;
-  --sidebar-ring: 36 72% 44%;
-
-  --shadow-sm: 0 1px 3px hsl(30 18% 14% / 0.04);
-  --shadow-md: 0 4px 12px hsl(30 18% 14% / 0.06);
-  --shadow-lg: 0 10px 30px hsl(30 18% 14% / 0.08);
-  --shadow-glow: 0 0 20px hsl(36 80% 50% / 0.1);
-  --shadow-card: 0 2px 8px hsl(30 18% 14% / 0.04), 0 0 1px hsl(30 18% 14% / 0.06);
-
-  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-base: 250ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
-
-  --gradient-surface: linear-gradient(135deg, hsl(40 33% 96%) 0%, hsl(38 28% 94%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(36 72% 44%) 0%, hsl(32 78% 50%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(36 80% 50% / 0.06) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(38 30% 98%) 0%, hsl(36 26% 95%) 100%);
-
-  /* Translation accent colors — warm library tones */
-  --translation-1: 30 12% 38%;
-  --translation-2: 168 20% 34%;
-  --translation-3: 20 18% 40%;
-  --translation-4: 340 12% 40%;
-  --translation-5: 260 10% 40%;
-  --translation-6: 200 14% 36%;
-}
-
-/* ─── The Observatory (Dark Mode) ─── */
-.dark {
-  --background: 225 35% 7%;
-  --foreground: 220 15% 85%;
-
-  --card: 225 30% 10%;
-  --card-foreground: 220 15% 85%;
-
-  --popover: 225 30% 10%;
-  --popover-foreground: 220 15% 85%;
-
-  --primary: 42 88% 56%;
-  --primary-foreground: 225 35% 7%;
-
-  --secondary: 225 22% 14%;
-  --secondary-foreground: 220 15% 80%;
-
-  --muted: 225 18% 16%;
-  --muted-foreground: 220 10% 55%;
-
-  --accent: 185 55% 48%;
-  --accent-foreground: 225 35% 7%;
-
-  --destructive: 0 60% 45%;
-  --destructive-foreground: 220 15% 90%;
-
-  --border: 225 18% 18%;
-  --input: 225 18% 18%;
-  --ring: 42 88% 56%;
-
-  --surface: 225 28% 9%;
-  --surface-hover: 225 24% 13%;
-  --surface-active: 225 22% 16%;
-
-  --glow-primary: 42 90% 58%;
-  --glow-accent: 185 60% 52%;
-  --glow-strength: 0.15;
-
-  --glass-bg: 225 30% 12% / 0.6;
-  --glass-border: 225 20% 22% / 0.4;
-  --glass-blur: 20px;
-
-  --sidebar-background: 225 32% 9%;
-  --sidebar-foreground: 220 12% 75%;
-  --sidebar-primary: 42 88% 56%;
-  --sidebar-primary-foreground: 225 35% 7%;
-  --sidebar-accent: 225 22% 14%;
-  --sidebar-accent-foreground: 220 12% 75%;
-  --sidebar-border: 225 18% 18%;
-  --sidebar-ring: 42 88% 56%;
-
-  --shadow-sm: 0 1px 3px hsl(225 40% 3% / 0.3);
-  --shadow-md: 0 4px 12px hsl(225 40% 3% / 0.4);
-  --shadow-lg: 0 10px 30px hsl(225 40% 3% / 0.5);
-  --shadow-glow: 0 0 30px hsl(42 90% 58% / 0.12);
-  --shadow-card: 0 2px 8px hsl(225 40% 3% / 0.3), 0 0 1px hsl(225 20% 22% / 0.5);
-
-  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-base: 250ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
-
-  --gradient-surface: linear-gradient(135deg, hsl(225 35% 7%) 0%, hsl(225 30% 10%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(42 88% 56%) 0%, hsl(36 90% 62%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(42 90% 58% / 0.08) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(225 30% 11%) 0%, hsl(225 28% 9%) 100%);
-
-  /* Translation accent colors — cool observatory tones */
-  --translation-1: 220 18% 62%;
-  --translation-2: 185 30% 58%;
-  --translation-3: 42 30% 60%;
-  --translation-4: 340 18% 62%;
-  --translation-5: 270 18% 64%;
-  --translation-6: 160 22% 58%;
-}
-
-/* ─── Amethyst (Light — purple theme) ─── */
-[data-theme="amethyst"] {
-  --background: 210 40% 98%;
-  --foreground: 240 20% 16%;
-
-  --card: 220 35% 97%;
-  --card-foreground: 240 20% 16%;
-
-  --popover: 220 35% 97%;
-  --popover-foreground: 240 20% 16%;
-
-  --primary: 265 90% 55%;
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 250 20% 93%;
-  --secondary-foreground: 240 20% 20%;
-
-  --muted: 240 15% 92%;
-  --muted-foreground: 240 8% 46%;
-
-  --accent: 200 85% 60%;
-  --accent-foreground: 0 0% 100%;
-
-  --destructive: 0 65% 51%;
-  --destructive-foreground: 0 0% 100%;
-
-  --border: 240 15% 88%;
-  --input: 240 15% 88%;
-  --ring: 265 90% 55%;
-
-  --surface: 220 35% 99%;
-  --surface-hover: 230 25% 95%;
-  --surface-active: 240 20% 92%;
-
-  --glow-primary: 265 90% 55%;
-  --glow-accent: 200 85% 60%;
-  --glow-strength: 0.12;
-
-  --glass-bg: 220 35% 97% / 0.7;
-  --glass-border: 240 15% 88% / 0.5;
-  --glass-blur: 16px;
-
-  --sidebar-background: 230 30% 95%;
-  --sidebar-foreground: 240 14% 24%;
-  --sidebar-primary: 265 90% 55%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 250 20% 93%;
-  --sidebar-accent-foreground: 240 14% 24%;
-  --sidebar-border: 240 15% 88%;
-  --sidebar-ring: 265 90% 55%;
-
-  --shadow-sm: 0 1px 3px hsl(240 20% 14% / 0.04);
-  --shadow-md: 0 4px 12px hsl(240 20% 14% / 0.06);
-  --shadow-lg: 0 10px 30px hsl(240 20% 14% / 0.08);
-  --shadow-glow: 0 0 20px hsl(265 90% 55% / 0.12);
-  --shadow-card: 0 2px 8px hsl(240 20% 14% / 0.04), 0 0 1px hsl(240 20% 14% / 0.06);
-
-  --gradient-surface: linear-gradient(135deg, hsl(210 40% 98%) 0%, hsl(230 30% 95%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(265 90% 55%) 0%, hsl(280 85% 60%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(265 90% 55% / 0.06) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(220 35% 98%) 0%, hsl(230 30% 96%) 100%);
-
-  /* Translation accent colors — amethyst tones */
-  --translation-1: 265 18% 38%;
-  --translation-2: 200 22% 36%;
-  --translation-3: 240 14% 42%;
-  --translation-4: 330 16% 40%;
-  --translation-5: 290 14% 38%;
-  --translation-6: 180 18% 36%;
-}
-
-/* ─── Cosmos (Dark — cosmic luxury) ─── */
-[data-theme="cosmos"] {
-  --background: 220 25% 8%;
-  --foreground: 220 15% 85%;
-
-  --card: 220 22% 11%;
-  --card-foreground: 220 15% 85%;
-
-  --popover: 220 22% 11%;
-  --popover-foreground: 220 15% 85%;
-
-  --primary: 200 95% 65%;
-  --primary-foreground: 220 25% 8%;
-
-  --secondary: 220 20% 15%;
-  --secondary-foreground: 220 15% 80%;
-
-  --muted: 220 18% 17%;
-  --muted-foreground: 220 10% 50%;
-
-  --accent: 270 85% 70%;
-  --accent-foreground: 220 25% 8%;
-
-  --destructive: 0 60% 45%;
-  --destructive-foreground: 220 15% 90%;
-
-  --border: 220 18% 18%;
-  --input: 220 18% 18%;
-  --ring: 200 95% 65%;
-
-  --surface: 220 24% 10%;
-  --surface-hover: 220 22% 14%;
-  --surface-active: 220 20% 17%;
-
-  --glow-primary: 200 95% 65%;
-  --glow-accent: 270 85% 70%;
-  --glow-strength: 0.25;
-
-  --glass-bg: 220 22% 12% / 0.6;
-  --glass-border: 220 18% 22% / 0.4;
-  --glass-blur: 20px;
-
-  --sidebar-background: 220 24% 9%;
-  --sidebar-foreground: 220 12% 75%;
-  --sidebar-primary: 200 95% 65%;
-  --sidebar-primary-foreground: 220 25% 8%;
-  --sidebar-accent: 220 20% 15%;
-  --sidebar-accent-foreground: 220 12% 75%;
-  --sidebar-border: 220 18% 18%;
-  --sidebar-ring: 200 95% 65%;
-
-  --shadow-sm: 0 1px 3px hsl(220 30% 3% / 0.3);
-  --shadow-md: 0 4px 12px hsl(220 30% 3% / 0.4);
-  --shadow-lg: 0 10px 30px hsl(220 30% 3% / 0.5);
-  --shadow-glow: 0 0 30px hsl(200 95% 65% / 0.15);
-  --shadow-card: 0 2px 8px hsl(220 30% 3% / 0.3), 0 0 1px hsl(220 18% 22% / 0.5);
-
-  --gradient-surface: linear-gradient(135deg, hsl(220 25% 8%) 0%, hsl(220 22% 11%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(270 85% 70%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.1) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(220 22% 12%) 0%, hsl(220 24% 10%) 100%);
-
-  /* Translation accent colors — cosmic tones */
-  --translation-1: 200 35% 62%;
-  --translation-2: 270 30% 66%;
-  --translation-3: 45 28% 60%;
-  --translation-4: 340 25% 62%;
-  --translation-5: 170 28% 58%;
-  --translation-6: 230 22% 64%;
-}
-
-/* ─── Midnight (Dark — true black OLED) ─── */
-[data-theme="midnight"] {
-  --background: 0 0% 4%;
-  --foreground: 200 10% 85%;
-
-  --card: 0 0% 7%;
-  --card-foreground: 200 10% 85%;
-
-  --popover: 0 0% 7%;
-  --popover-foreground: 200 10% 85%;
-
-  --primary: 200 95% 65%;
+  --primary: 58 82% 56%;
   --primary-foreground: 0 0% 4%;
 
-  --secondary: 0 0% 12%;
-  --secondary-foreground: 200 10% 80%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 4%;
 
-  --muted: 0 0% 14%;
-  --muted-foreground: 200 5% 50%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 42%;
 
-  --accent: 160 90% 50%;
+  --accent: 168 48% 66%;
   --accent-foreground: 0 0% 4%;
 
-  --destructive: 0 60% 45%;
-  --destructive-foreground: 200 10% 90%;
-
-  --border: 0 0% 16%;
-  --input: 0 0% 16%;
-  --ring: 200 95% 65%;
-
-  --surface: 0 0% 6%;
-  --surface-hover: 0 0% 10%;
-  --surface-active: 0 0% 14%;
-
-  --glow-primary: 200 95% 65%;
-  --glow-accent: 160 90% 50%;
-  --glow-strength: 0.08;
-
-  --glass-bg: 0 0% 8% / 0.7;
-  --glass-border: 0 0% 18% / 0.4;
-  --glass-blur: 16px;
-
-  --sidebar-background: 0 0% 5%;
-  --sidebar-foreground: 200 8% 70%;
-  --sidebar-primary: 200 95% 65%;
-  --sidebar-primary-foreground: 0 0% 4%;
-  --sidebar-accent: 0 0% 12%;
-  --sidebar-accent-foreground: 200 8% 70%;
-  --sidebar-border: 0 0% 16%;
-  --sidebar-ring: 200 95% 65%;
-
-  --shadow-sm: 0 1px 3px hsl(0 0% 0% / 0.4);
-  --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.5);
-  --shadow-lg: 0 10px 30px hsl(0 0% 0% / 0.6);
-  --shadow-glow: 0 0 20px hsl(200 95% 65% / 0.06);
-  --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.4), 0 0 1px hsl(0 0% 18% / 0.5);
-
-  --gradient-surface: linear-gradient(135deg, hsl(0 0% 4%) 0%, hsl(0 0% 7%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(200 95% 65%) 0%, hsl(160 90% 50%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(200 95% 65% / 0.04) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(0 0% 8%) 0%, hsl(0 0% 5%) 100%);
-
-  /* Translation accent colors — midnight tones */
-  --translation-1: 200 25% 60%;
-  --translation-2: 160 28% 55%;
-  --translation-3: 40 20% 58%;
-  --translation-4: 340 18% 60%;
-  --translation-5: 270 18% 62%;
-  --translation-6: 180 22% 56%;
-}
-
-/* ─── Sahara (Light — warm earthy) ─── */
-[data-theme="sahara"] {
-  --background: 35 40% 95%;
-  --foreground: 25 25% 14%;
-
-  --card: 35 35% 96%;
-  --card-foreground: 25 25% 14%;
-
-  --popover: 35 35% 96%;
-  --popover-foreground: 25 25% 14%;
-
-  --primary: 25 80% 50%;
-  --primary-foreground: 35 40% 97%;
-
-  --secondary: 35 20% 90%;
-  --secondary-foreground: 25 25% 20%;
-
-  --muted: 30 15% 88%;
-  --muted-foreground: 25 10% 45%;
-
-  --accent: 168 40% 42%;
-  --accent-foreground: 35 40% 97%;
-
-  --destructive: 0 65% 51%;
-  --destructive-foreground: 35 40% 97%;
-
-  --border: 30 20% 85%;
-  --input: 30 20% 85%;
-  --ring: 25 80% 50%;
-
-  --surface: 35 35% 97%;
-  --surface-hover: 33 28% 93%;
-  --surface-active: 30 22% 90%;
-
-  --glow-primary: 25 80% 50%;
-  --glow-accent: 168 40% 42%;
-  --glow-strength: 0;
-
-  --glass-bg: 35 35% 96% / 0.8;
-  --glass-border: 30 20% 85% / 0.5;
-  --glass-blur: 12px;
-
-  --sidebar-background: 33 30% 93%;
-  --sidebar-foreground: 25 18% 24%;
-  --sidebar-primary: 25 80% 50%;
-  --sidebar-primary-foreground: 35 40% 97%;
-  --sidebar-accent: 35 20% 90%;
-  --sidebar-accent-foreground: 25 18% 24%;
-  --sidebar-border: 30 20% 85%;
-  --sidebar-ring: 25 80% 50%;
-
-  --shadow-sm: 0 1px 3px hsl(25 25% 14% / 0.04);
-  --shadow-md: 0 4px 12px hsl(25 25% 14% / 0.06);
-  --shadow-lg: 0 10px 30px hsl(25 25% 14% / 0.08);
-  --shadow-glow: none;
-  --shadow-card: 0 2px 8px hsl(25 25% 14% / 0.04), 0 0 1px hsl(25 25% 14% / 0.06);
-
-  --gradient-surface: linear-gradient(135deg, hsl(35 40% 95%) 0%, hsl(33 30% 93%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(25 80% 50%) 0%, hsl(20 85% 55%) 100%);
-  --gradient-glow: none;
-  --gradient-card: linear-gradient(160deg, hsl(35 35% 97%) 0%, hsl(33 30% 94%) 100%);
-
-  /* Translation accent colors — warm earth tones */
-  --translation-1: 25 16% 38%;
-  --translation-2: 168 18% 34%;
-  --translation-3: 10 20% 40%;
-  --translation-4: 340 14% 40%;
-  --translation-5: 45 14% 36%;
-  --translation-6: 200 12% 38%;
-}
-
-/* ─── Garden (Light — pastel green) ─── */
-[data-theme="garden"] {
-  --background: 140 30% 97%;
-  --foreground: 150 20% 14%;
-
-  --card: 145 25% 96%;
-  --card-foreground: 150 20% 14%;
-
-  --popover: 145 25% 96%;
-  --popover-foreground: 150 20% 14%;
-
-  --primary: 145 45% 55%;
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 145 18% 92%;
-  --secondary-foreground: 150 20% 20%;
-
-  --muted: 140 12% 90%;
-  --muted-foreground: 150 8% 45%;
-
-  --accent: 280 35% 70%;
-  --accent-foreground: 0 0% 100%;
-
-  --destructive: 0 65% 51%;
+  --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 145 15% 87%;
-  --input: 145 15% 87%;
-  --ring: 145 45% 55%;
+  --border: 0 0% 85%;
+  --input: 0 0% 80%;
+  --ring: 0 0% 4%;
+  --radius: 0px;
 
-  --surface: 140 28% 98%;
-  --surface-hover: 142 22% 94%;
-  --surface-active: 145 18% 91%;
+  --surface: 0 0% 96%;
+  --surface-hover: 0 0% 93%;
+  --surface-active: 0 0% 90%;
 
-  --glow-primary: 145 45% 55%;
-  --glow-accent: 280 35% 70%;
-  --glow-strength: 0.06;
+  --sidebar-background: 0 0% 96%;
+  --sidebar-foreground: 0 0% 4%;
+  --sidebar-primary: 58 82% 56%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 0 0% 93%;
+  --sidebar-accent-foreground: 0 0% 4%;
+  --sidebar-border: 0 0% 85%;
+  --sidebar-ring: 0 0% 4%;
 
-  --glass-bg: 145 25% 96% / 0.7;
-  --glass-border: 145 15% 87% / 0.5;
-  --glass-blur: 16px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-button: 0 2px 0 rgba(0, 0, 0, 0.08);
 
-  --sidebar-background: 142 25% 94%;
-  --sidebar-foreground: 150 14% 24%;
-  --sidebar-primary: 145 45% 55%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 145 18% 92%;
-  --sidebar-accent-foreground: 150 14% 24%;
-  --sidebar-border: 145 15% 87%;
-  --sidebar-ring: 145 45% 55%;
+  /* Brutalist accent palette */
+  --br-accent-yellow: #e8e337;
+  --br-accent-pink: #f5a0c0;
+  --br-accent-teal: #78d5c4;
+  --br-accent-lavender: #c4b5e0;
 
-  --shadow-sm: 0 1px 3px hsl(150 20% 14% / 0.04);
-  --shadow-md: 0 4px 12px hsl(150 20% 14% / 0.06);
-  --shadow-lg: 0 10px 30px hsl(150 20% 14% / 0.08);
-  --shadow-glow: 0 0 20px hsl(145 45% 55% / 0.08);
-  --shadow-card: 0 2px 8px hsl(150 20% 14% / 0.04), 0 0 1px hsl(150 20% 14% / 0.06);
+  /* Translation color system — editorial strips
+     bg = light tint, border = accent, label = accent, text = foreground */
+  --translation-1-bg: #fefce8;
+  --translation-1-border: #e8e337;
+  --translation-1-label: #b5a600;
+  --translation-1-text: var(--foreground);
+  --translation-2-bg: #fdf2f8;
+  --translation-2-border: #f5a0c0;
+  --translation-2-label: #d4608a;
+  --translation-2-text: var(--foreground);
+  --translation-3-bg: #f0fdf9;
+  --translation-3-border: #78d5c4;
+  --translation-3-label: #3ba892;
+  --translation-3-text: var(--foreground);
+  --translation-4-bg: #f5f3ff;
+  --translation-4-border: #c4b5e0;
+  --translation-4-label: #8b6fc0;
+  --translation-4-text: var(--foreground);
+  --translation-5-bg: #fff7ed;
+  --translation-5-border: #f5a0c0;
+  --translation-5-label: #d4608a;
+  --translation-5-text: var(--foreground);
+  --translation-6-bg: #f0fdf9;
+  --translation-6-border: #78d5c4;
+  --translation-6-label: #3ba892;
+  --translation-6-text: var(--foreground);
 
-  --gradient-surface: linear-gradient(135deg, hsl(140 30% 97%) 0%, hsl(142 25% 94%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(145 45% 55%) 0%, hsl(155 50% 50%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(145 45% 55% / 0.04) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(145 25% 97%) 0%, hsl(142 22% 95%) 100%);
-
-  /* Translation accent colors — garden tones */
-  --translation-1: 150 14% 36%;
-  --translation-2: 280 12% 40%;
-  --translation-3: 120 16% 38%;
-  --translation-4: 340 12% 40%;
-  --translation-5: 200 14% 36%;
-  --translation-6: 40 14% 38%;
-}
-
-/* ─── Matrix (Dark — terminal green) ─── */
-[data-theme="matrix"] {
-  --background: 120 15% 6%;
-  --foreground: 120 40% 80%;
-
-  --card: 120 12% 9%;
-  --card-foreground: 120 40% 80%;
-
-  --popover: 120 12% 9%;
-  --popover-foreground: 120 40% 80%;
-
-  --primary: 120 100% 50%;
-  --primary-foreground: 120 15% 6%;
-
-  --secondary: 120 12% 14%;
-  --secondary-foreground: 120 30% 70%;
-
-  --muted: 120 10% 16%;
-  --muted-foreground: 120 15% 45%;
-
-  --accent: 120 80% 35%;
-  --accent-foreground: 120 15% 6%;
-
-  --destructive: 0 60% 45%;
-  --destructive-foreground: 120 40% 90%;
-
-  --border: 120 10% 18%;
-  --input: 120 10% 18%;
-  --ring: 120 100% 50%;
-
-  --surface: 120 13% 8%;
-  --surface-hover: 120 12% 12%;
-  --surface-active: 120 10% 16%;
-
-  --glow-primary: 120 100% 50%;
-  --glow-accent: 120 80% 35%;
-  --glow-strength: 0.3;
-
-  --glass-bg: 120 12% 10% / 0.6;
-  --glass-border: 120 10% 20% / 0.4;
-  --glass-blur: 16px;
-
-  --sidebar-background: 120 14% 7%;
-  --sidebar-foreground: 120 25% 65%;
-  --sidebar-primary: 120 100% 50%;
-  --sidebar-primary-foreground: 120 15% 6%;
-  --sidebar-accent: 120 12% 14%;
-  --sidebar-accent-foreground: 120 25% 65%;
-  --sidebar-border: 120 10% 18%;
-  --sidebar-ring: 120 100% 50%;
-
-  --shadow-sm: 0 1px 3px hsl(120 20% 2% / 0.4);
-  --shadow-md: 0 4px 12px hsl(120 20% 2% / 0.5);
-  --shadow-lg: 0 10px 30px hsl(120 20% 2% / 0.6);
-  --shadow-glow: 0 0 30px hsl(120 100% 50% / 0.15);
-  --shadow-card: 0 2px 8px hsl(120 20% 2% / 0.4), 0 0 1px hsl(120 10% 20% / 0.5);
-
-  --gradient-surface: linear-gradient(135deg, hsl(120 15% 6%) 0%, hsl(120 12% 9%) 100%);
-  --gradient-primary: linear-gradient(135deg, hsl(120 100% 50%) 0%, hsl(120 80% 35%) 100%);
-  --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(120 100% 50% / 0.08) 0%, transparent 70%);
-  --gradient-card: linear-gradient(160deg, hsl(120 12% 10%) 0%, hsl(120 14% 7%) 100%);
-
-  /* Translation accent colors — matrix tones */
-  --translation-1: 120 35% 55%;
-  --translation-2: 80 30% 52%;
-  --translation-3: 150 28% 50%;
-  --translation-4: 60 25% 52%;
-  --translation-5: 100 30% 48%;
-  --translation-6: 160 25% 52%;
+  /* Legacy HSL compat */
+  --translation-1: 55 82% 45%;
+  --translation-2: 340 75% 62%;
+  --translation-3: 168 52% 53%;
+  --translation-4: 263 48% 60%;
+  --translation-5: 340 75% 62%;
+  --translation-6: 168 52% 53%;
 }
 
 /* ─── Base Styles ─── */
@@ -687,19 +190,21 @@
 }
 
 html {
-  font-family: var(--font-ui);
+  font-family: var(--font-display);
 }
 
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  background-image:
+    linear-gradient(90deg, hsl(var(--foreground) / 0.018) 1px, transparent 1px),
+    linear-gradient(hsl(var(--foreground) / 0.018) 1px, transparent 1px);
+  background-size: 24px 24px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv11", "ss01";
-  letter-spacing: -0.011em;
 }
 
-/* ─── Scrollbar — Whisper-thin, nearly invisible ─── */
+/* ─── Scrollbar — Thin, black ─── */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -710,27 +215,26 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.15);
-  border-radius: 9999px;
+  background: hsl(var(--foreground) / 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.35);
+  background: hsl(var(--foreground) / 0.4);
 }
 
-/* ─── Selection — Gold leaf highlight ─── */
+/* ─── Selection — Yellow highlight ─── */
 ::selection {
-  background-color: hsl(var(--primary) / 0.18);
+  background-color: var(--br-accent-yellow);
   color: hsl(var(--foreground));
 }
 
-/* ─── Focus Ring — Subtle, refined ─── */
+/* ─── Focus Ring — Hard, black ─── */
 :focus-visible {
-  outline: 1.5px solid hsl(var(--ring) / 0.6);
+  outline: 2px solid hsl(var(--foreground));
   outline-offset: 2px;
 }
 
-/* ─── Arabic Text Defaults — The Hero ─── */
+/* ─── Arabic Text Defaults ─── */
 [lang="ar"],
 [dir="rtl"] {
   font-family: var(--font-arabic-reading);
@@ -751,275 +255,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Paper Texture — SVG feTurbulence noise overlay per theme
-   Adds organic, watercolor-like grain. Zero HTTP requests.
-   ═══════════════════════════════════════════════════════════ */
-
-/* Base noise texture layer — applied to body via ::after */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 180px;
-  opacity: var(--texture-noise-opacity, 0.04);
-  mix-blend-mode: var(--texture-blend, overlay);
-}
-
-/* Watercolor wash layer — body::before gets a subtle radial color wash */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: var(--texture-wash, none);
-  opacity: var(--texture-wash-opacity, 0);
-}
-
-/* Ensure body content sits above the texture layers */
-body > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── The Library (Light Default) — warm parchment wash ── */
-:root {
-  --texture-noise-opacity: 0.035;
-  --texture-blend: overlay;
-  --texture-wash: radial-gradient(
-    ellipse at 30% 20%, hsl(36 60% 80% / 0.12) 0%,
-    transparent 50%
-  ), radial-gradient(
-    ellipse at 70% 80%, hsl(168 30% 70% / 0.06) 0%,
-    transparent 45%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── The Observatory (Dark) — deep cosmic nebula ── */
-.dark {
-  --texture-noise-opacity: 0.06;
-  --texture-blend: soft-light;
-  --texture-wash: radial-gradient(
-    ellipse at 25% 15%, hsl(42 80% 50% / 0.04) 0%,
-    transparent 45%
-  ), radial-gradient(
-    ellipse at 75% 70%, hsl(185 50% 40% / 0.03) 0%,
-    transparent 40%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Amethyst — lavender mist ── */
-[data-theme="amethyst"] {
-  --texture-noise-opacity: 0.03;
-  --texture-blend: overlay;
-  --texture-wash: radial-gradient(
-    ellipse at 20% 30%, hsl(265 60% 80% / 0.1) 0%,
-    transparent 50%
-  ), radial-gradient(
-    ellipse at 80% 60%, hsl(200 60% 75% / 0.06) 0%,
-    transparent 40%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Cosmos — nebula glow ── */
-[data-theme="cosmos"] {
-  --texture-noise-opacity: 0.07;
-  --texture-blend: soft-light;
-  --texture-wash: radial-gradient(
-    ellipse at 15% 20%, hsl(200 80% 50% / 0.05) 0%,
-    transparent 40%
-  ), radial-gradient(
-    ellipse at 85% 75%, hsl(270 60% 55% / 0.04) 0%,
-    transparent 35%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Midnight — barely-there glow for OLED ── */
-[data-theme="midnight"] {
-  --texture-noise-opacity: 0.04;
-  --texture-blend: soft-light;
-  --texture-wash: radial-gradient(
-    ellipse at 50% 30%, hsl(200 60% 50% / 0.02) 0%,
-    transparent 40%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Sahara — warm sand watercolor ── */
-[data-theme="sahara"] {
-  --texture-noise-opacity: 0.045;
-  --texture-blend: overlay;
-  --texture-wash: radial-gradient(
-    ellipse at 40% 25%, hsl(25 70% 70% / 0.12) 0%,
-    transparent 50%
-  ), radial-gradient(
-    ellipse at 65% 75%, hsl(35 50% 65% / 0.08) 0%,
-    transparent 45%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Garden — morning dew ── */
-[data-theme="garden"] {
-  --texture-noise-opacity: 0.03;
-  --texture-blend: overlay;
-  --texture-wash: radial-gradient(
-    ellipse at 35% 30%, hsl(145 40% 75% / 0.1) 0%,
-    transparent 45%
-  ), radial-gradient(
-    ellipse at 70% 65%, hsl(280 25% 75% / 0.05) 0%,
-    transparent 35%
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ── Matrix — CRT scanlines + phosphor glow ── */
-[data-theme="matrix"] {
-  --texture-noise-opacity: 0.08;
-  --texture-blend: screen;
-  --texture-wash: repeating-linear-gradient(
-    0deg,
-    hsl(120 100% 50% / 0.015),
-    hsl(120 100% 50% / 0.015) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  --texture-wash-opacity: 1;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Paper Texture Presets — Independent of theme, override
-   texture variables when user selects a specific texture.
-   "auto" = use theme defaults (no override needed).
-   ═══════════════════════════════════════════════════════════ */
-
-/* ── None — Clean, no texture at all ── */
-html[data-paper="none"] {
-  --texture-noise-opacity: 0 !important;
-  --texture-wash-opacity: 0 !important;
-}
-
-/* ── Parchment — Aged, warm paper with visible grain ── */
-html[data-paper="parchment"] {
-  --texture-noise-opacity: 0.09 !important;
-  --texture-blend: multiply !important;
-  --texture-wash: radial-gradient(
-    ellipse at 25% 20%, hsl(35 55% 70% / 0.18) 0%,
-    transparent 55%
-  ), radial-gradient(
-    ellipse at 75% 75%, hsl(30 45% 65% / 0.12) 0%,
-    transparent 50%
-  ), radial-gradient(
-    ellipse at 50% 50%, hsl(40 40% 75% / 0.06) 0%,
-    transparent 70%
-  ) !important;
-  --texture-wash-opacity: 1 !important;
-}
-
-/* ── Silk — Smooth, luminous sheen with fine grain ── */
-html[data-paper="silk"] {
-  --texture-noise-opacity: 0.018 !important;
-  --texture-blend: overlay !important;
-  --texture-wash: radial-gradient(
-    ellipse at 30% 25%, hsl(210 30% 90% / 0.12) 0%,
-    transparent 50%
-  ), radial-gradient(
-    ellipse at 70% 65%, hsl(280 20% 85% / 0.08) 0%,
-    transparent 45%
-  ), linear-gradient(
-    135deg,
-    hsl(0 0% 100% / 0.03) 0%,
-    transparent 50%,
-    hsl(0 0% 100% / 0.02) 100%
-  ) !important;
-  --texture-wash-opacity: 1 !important;
-}
-
-/* ── Canvas — Rough, visible woven texture ── */
-html[data-paper="canvas"] {
-  --texture-noise-opacity: 0.14 !important;
-  --texture-blend: multiply !important;
-  --texture-wash: radial-gradient(
-    ellipse at 40% 30%, hsl(45 25% 78% / 0.08) 0%,
-    transparent 55%
-  ), radial-gradient(
-    ellipse at 60% 70%, hsl(30 20% 72% / 0.06) 0%,
-    transparent 50%
-  ) !important;
-  --texture-wash-opacity: 1 !important;
-}
-
-/* ── Watercolor — Bold, painterly washes ── */
-html[data-paper="watercolor"] {
-  --texture-noise-opacity: 0.05 !important;
-  --texture-blend: overlay !important;
-  --texture-wash: radial-gradient(
-    ellipse at 15% 20%, hsl(200 60% 75% / 0.15) 0%,
-    transparent 40%
-  ), radial-gradient(
-    ellipse at 85% 30%, hsl(340 50% 75% / 0.1) 0%,
-    transparent 35%
-  ), radial-gradient(
-    ellipse at 50% 80%, hsl(45 65% 70% / 0.12) 0%,
-    transparent 45%
-  ), radial-gradient(
-    ellipse at 30% 60%, hsl(145 40% 70% / 0.08) 0%,
-    transparent 35%
-  ) !important;
-  --texture-wash-opacity: 1 !important;
-}
-
-/* Dark-mode adjustments — paper textures should feel less warm in dark */
-.dark[data-paper="parchment"],
-[data-theme][data-paper="parchment"] {
-  --texture-noise-opacity: 0.07 !important;
-  --texture-blend: soft-light !important;
-  --texture-wash: radial-gradient(
-    ellipse at 25% 20%, hsl(35 40% 40% / 0.08) 0%,
-    transparent 55%
-  ), radial-gradient(
-    ellipse at 75% 75%, hsl(30 35% 35% / 0.05) 0%,
-    transparent 50%
-  ) !important;
-}
-
-.dark[data-paper="canvas"],
-[data-theme][data-paper="canvas"] {
-  --texture-noise-opacity: 0.10 !important;
-  --texture-blend: soft-light !important;
-}
-
-.dark[data-paper="watercolor"],
-[data-theme][data-paper="watercolor"] {
-  --texture-noise-opacity: 0.04 !important;
-  --texture-blend: soft-light !important;
-  --texture-wash: radial-gradient(
-    ellipse at 15% 20%, hsl(200 50% 45% / 0.06) 0%,
-    transparent 40%
-  ), radial-gradient(
-    ellipse at 85% 30%, hsl(340 40% 45% / 0.04) 0%,
-    transparent 35%
-  ), radial-gradient(
-    ellipse at 50% 80%, hsl(45 50% 45% / 0.05) 0%,
-    transparent 45%
-  ) !important;
-}
-
-/* ── Serif Display Font Utility ── */
-@utility serif-display {
-  font-family: var(--font-serif-display);
-  letter-spacing: 0.01em;
-}
-
 /* ─── Reduced Motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1031,114 +266,18 @@ html[data-paper="watercolor"] {
   }
 }
 
-/* ─── Utility Classes ─── */
+/* ─── Utility Classes (brutalist replacements) ─── */
 @utility glass {
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid hsl(var(--glass-border));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
 }
 
-@utility glow-primary {
-  box-shadow: 0 0 24px hsl(var(--glow-primary) / var(--glow-strength));
-}
-
-@utility glow-accent {
-  box-shadow: 0 0 24px hsl(var(--glow-accent) / var(--glow-strength));
-}
-
-@utility gradient-surface {
-  background: var(--gradient-surface);
-}
-
-@utility gradient-glow {
-  background: var(--gradient-glow);
-}
-
-@utility gradient-primary {
-  background: var(--gradient-primary);
-}
-
-@utility shadow-card {
-  box-shadow: var(--shadow-card);
-}
-
-@utility shadow-glow {
-  box-shadow: var(--shadow-glow);
-}
-
-@utility shadow-soft-sm {
-  box-shadow: var(--shadow-sm);
-}
-
-@utility shadow-soft-md {
-  box-shadow: var(--shadow-md);
-}
-
-@utility shadow-soft-lg {
-  box-shadow: var(--shadow-lg);
-}
-
-@utility text-display {
-  font-family: var(--font-ui);
-  font-weight: 700;
-}
-
-@utility text-body {
-  font-family: var(--font-ui);
-  font-weight: 400;
-}
-
-@utility transition-smooth {
-  transition: all var(--transition-base);
-}
-
-@utility transition-fast {
-  transition: all var(--transition-fast);
-}
-
-@utility transition-slow {
-  transition: all var(--transition-slow);
-}
 
 /* ═══════════════════════════════════════════════════════════
-   Stream 6: Visual Polish — Panel glow, scan lines, animations
+   Verse & Reading Surface Styles (Brutalist)
    ═══════════════════════════════════════════════════════════ */
 
-/* ─── Panel Focus Glow ─── */
-.panel-focused {
-  box-shadow:
-    inset 0 0 30px hsl(var(--glow-primary) / calc(var(--glow-strength) * 0.3)),
-    0 0 20px hsl(var(--glow-primary) / calc(var(--glow-strength) * 0.5));
-}
-
-/* ─── Sci-fi Scan Lines on Panel Headers (dark themes only) ─── */
-.dark .panel-header::before,
-[data-theme="cosmos"] .panel-header::before,
-[data-theme="midnight"] .panel-header::before,
-[data-theme="matrix"] .panel-header::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    hsl(var(--glow-accent) / 0.02) 2px,
-    hsl(var(--glow-accent) / 0.02) 4px
-  );
-}
-
-/* ─── Active Tab Text Glow (dark themes only) ─── */
-.dark .panel-tab-active,
-[data-theme="cosmos"] .panel-tab-active,
-[data-theme="midnight"] .panel-tab-active,
-[data-theme="matrix"] .panel-tab-active {
-  text-shadow: 0 0 8px hsl(var(--glow-primary) / 0.3);
-}
-
-/* ─── Verse Selection Indicator — Luminous left edge ─── */
+/* ─── Verse Focus Indicator — Accent left border ─── */
 .verse-focused-indicator {
   position: relative;
 }
@@ -1147,25 +286,45 @@ html[data-paper="watercolor"] {
   content: "";
   position: absolute;
   left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  border-radius: 9999px;
-  background: hsl(var(--primary) / 0.7);
-  box-shadow: 0 0 12px hsl(var(--primary) / 0.3);
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--br-accent-yellow);
 }
 
-/* ─── Resize Handle Polish ─── */
+/* ─── Verse Bookmark Indicator ─── */
+.verse-bookmarked::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--br-accent-yellow);
+}
+
+/* ─── Verse Notes Indicator ─── */
+.verse-has-notes::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  background: var(--br-accent-yellow);
+}
+
+/* ─── Resize Handle ─── */
 [data-resize-handle-id] {
-  transition: background var(--transition-fast), width var(--transition-fast);
+  transition: background 100ms ease;
 }
 
 [data-resize-handle-id]:hover {
-  background: hsl(var(--primary) / 0.15);
+  background: hsl(var(--foreground) / 0.1);
 }
 
 [data-resize-handle-active] {
-  background: hsl(var(--primary) / 0.25) !important;
+  background: hsl(var(--foreground) / 0.2) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1182,20 +341,22 @@ html[data-paper="watercolor"] {
 
 .tiptap h2 {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.4;
   margin-top: 1rem;
   margin-bottom: 0.25rem;
   color: hsl(var(--foreground));
+  font-family: var(--font-display);
 }
 
 .tiptap h3 {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.4;
   margin-top: 0.75rem;
   margin-bottom: 0.25rem;
   color: hsl(var(--foreground));
+  font-family: var(--font-display);
 }
 
 .tiptap ul {
@@ -1215,22 +376,21 @@ html[data-paper="watercolor"] {
 }
 
 .tiptap blockquote {
-  border-left: 3px solid hsl(var(--primary) / 0.4);
+  border-left: 2px solid hsl(var(--border));
   padding-left: 0.75rem;
   margin: 0.5rem 0;
   color: hsl(var(--muted-foreground));
-  font-style: italic;
 }
 
 .tiptap a {
-  color: hsl(var(--primary));
+  color: hsl(var(--foreground));
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
 }
 
 .tiptap a:hover {
-  color: hsl(var(--primary) / 0.8);
+  color: hsl(var(--foreground) / 0.7);
 }
 
 .tiptap hr {
@@ -1243,51 +403,216 @@ html[data-paper="watercolor"] {
   margin: 0.125rem 0;
 }
 
+/* ─── Arabic Typography ─── */
+.arabic-reading {
+  letter-spacing: 0.015em;
+  word-spacing: 0.06em;
+  font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+}
+
+/* ─── Verse Action Bar ─── */
+.verse-action-bar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+.group:hover .verse-action-bar,
+.verse-action-bar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─── Tafsir Prose Typography ─── */
+.tafsir-prose {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Top Nav ─── */
+.nav-hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.nav-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* ─── Audio Dock ─── */
+.audio-dock {
+  animation: slide-up-dock 0.2s ease-out;
+}
+
+@keyframes slide-up-dock {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ─── Floating Nav Bar ─── */
+.floating-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Floating Mobile Nav ─── */
+.floating-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: hsl(var(--background));
+  border-top: 1px solid hsl(var(--border));
+  padding: 0.375rem 0.5rem;
+}
+
+/* ─── Audio Dock ─── */
+.audio-dock-floating {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  background: hsl(var(--background));
+  border-top: 1px solid hsl(var(--border));
+  animation: slide-up-dock 0.2s ease-out;
+}
+
+/* Push floating mobile nav up when audio dock is visible */
+.has-audio .floating-mobile-nav {
+  bottom: 4rem;
+  transition: bottom 0.2s ease;
+}
+
+/* ─── Verse Number — Colored inline badge ─── */
+.verse-number-ornament {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.4em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  margin-right: 0.4em;
+  margin-left: 0.2em;
+  user-select: none;
+  line-height: 1;
+  color: hsl(var(--foreground));
+  background: hsl(var(--surface));
+  padding: 0.25em 0.5em;
+}
+
+/* ─── Reading Surface Spacer ─── */
+.reading-surface-offset {
+  padding-top: 3.5rem;
+}
+
+@media (max-width: 767px) {
+  .reading-surface-offset {
+    padding-top: 3rem;
+  }
+}
+
+/* ─── Verse Hover ─── */
+.verse-hover-glow {
+  transition: background 150ms ease;
+}
+
+.verse-hover-glow:hover {
+  background: hsl(var(--foreground) / 0.03);
+}
+
+/* ─── Surah Header Typography ─── */
+.surah-title-arabic {
+  font-size: 2.5rem;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 640px) {
+  .surah-title-arabic {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .surah-title-arabic {
+    font-size: 3.5rem;
+  }
+}
+
+/* ─── Reading Toolbar ─── */
+.reading-toolbar-float {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+}
+
 /* ═══════════════════════════════════════════════════════════
-   Sacred Reading Surface — Density, Indicators, Ornaments
+   Reading Progress Bar — Thin black line with yellow fill
    ═══════════════════════════════════════════════════════════ */
 
-/* ─── Verse Bookmark Indicator (thin gold left-edge line) ─── */
-.verse-bookmarked::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 2px;
-  border-radius: 9999px;
-  background: hsl(var(--primary) / 0.5);
-}
-
-/* ─── Verse Notes Indicator (tiny amber dot, top-right) ─── */
-.verse-has-notes::before {
-  content: "";
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 5px;
-  height: 5px;
-  border-radius: 9999px;
-  background: hsl(42 80% 55% / 0.7);
-}
-
-/* ─── Enhanced Verse Focus Indicator — Soft radiance ─── */
-.verse-focused-indicator::after {
-  content: "";
-  position: absolute;
-  left: -4px;
+.reading-progress-bar {
+  position: fixed;
   top: 0;
-  bottom: 0;
-  width: 60px;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at 0% 50%,
-    hsl(var(--primary) / 0.04) 0%,
-    transparent 80%
-  );
+  left: 0;
+  height: 2px;
+  background: var(--br-accent-yellow);
+  z-index: 60;
+  transition: width 150ms linear;
 }
 
-/* ─── Bismillah Ornament — Refined gold flourish ─── */
+/* ─── Page-level Ambient Glow — Disabled in brutalist ─── */
+.ambient-glow::before {
+  display: none;
+}
+
+/* ─── Verse Enter Animation ─── */
+@keyframes verse-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.verse-enter {
+  animation: verse-enter 0.3s ease-out both;
+}
+
+/* ─── Surah Header Entrance ─── */
+@keyframes header-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-reveal {
+  animation: header-reveal 0.4s ease-out both;
+}
+
+/* ─── Bismillah ─── */
 .bismillah-ornament {
   position: relative;
   padding: 1.5rem 0;
@@ -1299,15 +624,8 @@ html[data-paper="watercolor"] {
   display: block;
   height: 1px;
   margin: 0 auto;
-  max-width: 160px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    hsl(var(--primary) / 0.15) 20%,
-    hsl(var(--primary) / 0.4) 50%,
-    hsl(var(--primary) / 0.15) 80%,
-    transparent 100%
-  );
+  max-width: 200px;
+  background: hsl(var(--border));
 }
 
 .bismillah-ornament::before {
@@ -1318,7 +636,7 @@ html[data-paper="watercolor"] {
   margin-top: 1rem;
 }
 
-/* ─── Surah Divider — Elegant symmetrical ornament ─── */
+/* ─── Surah Divider ─── */
 .surah-divider {
   position: relative;
   display: flex;
@@ -1333,96 +651,10 @@ html[data-paper="watercolor"] {
   flex: 1;
   height: 1px;
   max-width: 120px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    hsl(var(--primary) / 0.25) 100%
-  );
+  background: hsl(var(--border));
 }
 
-.surah-divider::after {
-  background: linear-gradient(
-    to left,
-    transparent 0%,
-    hsl(var(--primary) / 0.25) 100%
-  );
-}
-
-/* ─── Arabic Density Classes ─── */
-.arabic-reading-comfortable {
-  line-height: 2.6;
-}
-
-.arabic-reading-compact {
-  line-height: 2.2;
-}
-
-.arabic-reading-dense {
-  line-height: 1.9;
-}
-
-/* ─── Arabic Typography — Refined calligraphic rendering ─── */
-.arabic-reading {
-  letter-spacing: 0.015em;
-  word-spacing: 0.06em;
-  font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
-  -webkit-text-stroke: 0.2px transparent;
-}
-
-/* ─── Verse Action Bar — Floating glass toolbar ─── */
-.verse-action-bar {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-base), transform var(--transition-base);
-  transform: translateY(2px);
-}
-
-.group:hover .verse-action-bar,
-.verse-action-bar.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-/* ─── Zen Mode ─── */
-.zen-mode #main-content {
-  max-width: 100%;
-}
-
-/* ─── Tafsir Prose Typography ─── */
-.tafsir-prose {
-  font-feature-settings: "kern" 1, "liga" 1;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ─── Top Nav Auto-Hide — Graceful float ─── */
-.nav-hidden {
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nav-visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ─── Audio Dock ─── */
-.audio-dock {
-  animation: slide-up-dock 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slide-up-dock {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* ─── Prose Reading Mode ─── */
+/* ─── Prose Mode (kept minimal for compat) ─── */
 .prose-container {
   direction: rtl;
   text-align: right;
@@ -1438,525 +670,7 @@ html[data-paper="watercolor"] {
 }
 
 .verse-focused-prose {
-  background: hsl(var(--primary) / 0.06);
-  border-radius: 3px;
+  background: var(--br-accent-yellow);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   The Illuminated Manuscript — Revamp Additions
-   ═══════════════════════════════════════════════════════════ */
-
-/* ─── Verse Enter Animation ─── */
-@keyframes verse-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.verse-enter {
-  animation: verse-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* ─── Surah Header Entrance ─── */
-@keyframes header-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.header-reveal {
-  animation: header-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* ─── Floating Nav Bar ─── */
-.floating-nav {
-  position: fixed;
-  top: 0.5rem;
-  left: 0.75rem;
-  right: 0.75rem;
-  z-index: 50;
-  border-radius: 1rem;
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(var(--border) / 0.4);
-  box-shadow:
-    0 1px 3px hsl(var(--foreground) / 0.03),
-    0 8px 24px hsl(var(--foreground) / 0.04);
-}
-
-@media (min-width: 768px) {
-  .floating-nav {
-    left: 1rem;
-    right: 1rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .floating-nav {
-    left: 2rem;
-    right: 2rem;
-  }
-}
-
-/* ─── Floating Mobile Nav ─── */
-.floating-mobile-nav {
-  position: fixed;
-  bottom: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  border-radius: 1.5rem;
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid hsl(var(--border) / 0.3);
-  box-shadow:
-    0 4px 16px hsl(var(--foreground) / 0.06),
-    0 1px 3px hsl(var(--foreground) / 0.04);
-  padding: 0.375rem 0.5rem;
-}
-
-/* ─── Floating Audio Dock ─── */
-.audio-dock-floating {
-  position: fixed;
-  bottom: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 45;
-  border-radius: 1rem;
-  width: calc(100% - 1.5rem);
-  max-width: 480px;
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid hsl(var(--border) / 0.3);
-  box-shadow:
-    0 4px 20px hsl(var(--foreground) / 0.08),
-    0 1px 3px hsl(var(--foreground) / 0.04);
-  animation: slide-up-dock 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Push floating mobile nav up when audio dock is visible */
-.has-audio .floating-mobile-nav {
-  bottom: 5rem;
-  transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ─── Verse Number Ornament ─── */
-.verse-number-ornament {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75em;
-  height: 1.75em;
-  border-radius: 9999px;
-  border: 1.5px solid hsl(var(--primary) / 0.2);
-  color: hsl(var(--primary) / 0.5);
-  font-size: 0.45em;
-  font-family: var(--font-ui);
-  font-weight: 500;
-  letter-spacing: 0;
-  vertical-align: middle;
-  margin-right: 0.3em;
-  margin-left: 0.15em;
-  user-select: none;
-  line-height: 1;
-}
-
-/* ─── Reading Surface Spacer for floating nav ─── */
-.reading-surface-offset {
-  padding-top: 4rem;
-}
-
-@media (max-width: 767px) {
-  .reading-surface-offset {
-    padding-top: 3.5rem;
-  }
-}
-
-/* ─── Elegant Verse Hover ─── */
-.verse-hover-glow {
-  transition: background var(--transition-base),
-              box-shadow var(--transition-base);
-}
-
-.verse-hover-glow:hover {
-  background: hsl(var(--primary) / 0.02);
-}
-
-/* ─── Surah Header Typography ─── */
-.surah-title-arabic {
-  font-size: 2.25rem;
-  line-height: 1.4;
-  color: hsl(var(--foreground));
-  letter-spacing: 0.02em;
-}
-
-@media (min-width: 640px) {
-  .surah-title-arabic {
-    font-size: 2.75rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .surah-title-arabic {
-    font-size: 3rem;
-  }
-}
-
-/* ─── Reading Toolbar Float ─── */
-.reading-toolbar-float {
-  border-radius: 0.875rem;
-  border: 1px solid hsl(var(--border) / 0.4);
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 4px 16px hsl(var(--foreground) / 0.06),
-    0 1px 3px hsl(var(--foreground) / 0.03);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Theater Mode — Full-viewport verse-by-verse presentation
-   ═══════════════════════════════════════════════════════════ */
-
-.theater-container {
-  height: 100dvh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-.theater-slide {
-  height: 100dvh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  position: relative;
-}
-
-.theater-arabic {
-  font-family: var(--font-arabic-reading);
-  font-size: clamp(1.75rem, 7vw, 4.5rem);
-  line-height: 2.2;
-  text-align: center;
-  direction: rtl;
-  color: hsl(var(--foreground));
-  letter-spacing: 0.02em;
-  word-spacing: 0.08em;
-  max-width: 90vw;
-}
-
-@keyframes theater-arabic-enter {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes theater-translation-enter {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 0.8;
-    transform: translateY(0);
-  }
-}
-
-.theater-arabic-enter {
-  animation: theater-arabic-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.theater-translation-enter {
-  animation: theater-translation-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-}
-
-.theater-translation {
-  font-size: clamp(0.875rem, 2vw, 1.25rem);
-  line-height: 1.8;
-  text-align: center;
-  color: hsl(var(--muted-foreground) / 0.8);
-  max-width: 42rem;
-  margin-top: 1.5rem;
-}
-
-/* Theater verse counter */
-.theater-counter {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  font-size: 0.75rem;
-  color: hsl(var(--muted-foreground) / 0.4);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
-}
-
-/* Theater dot navigation */
-.theater-dots {
-  position: fixed;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-height: 60vh;
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-
-.theater-dots::-webkit-scrollbar {
-  display: none;
-}
-
-.theater-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  background: hsl(var(--muted-foreground) / 0.15);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.theater-dot-active {
-  background: hsl(var(--primary) / 0.8);
-  height: 16px;
-  box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Focus Flow Mode — Scroll-driven spotlight
-   ═══════════════════════════════════════════════════════════ */
-
-.focus-verse-active {
-  opacity: 1 !important;
-  transform: scale(1);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.focus-verse-near {
-  opacity: 0.55;
-  transform: scale(0.99);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.focus-verse-far {
-  opacity: 0.25;
-  transform: scale(0.98);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* CSS scroll-driven animation (progressive enhancement) */
-@supports (animation-timeline: view()) {
-  .focus-verse-enhanced {
-    animation: focus-spotlight linear both;
-    animation-timeline: view();
-    animation-range: entry 0% cover 50%;
-  }
-
-  @keyframes focus-spotlight {
-    0% { opacity: 0.2; transform: scale(0.97); }
-    50% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0.2; transform: scale(0.97); }
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Mushaf Mode — Book spread layout
-   ═══════════════════════════════════════════════════════════ */
-
-.mushaf-spread {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100dvh - 4rem);
-  gap: 0;
-  position: relative;
-}
-
-/* Book spine shadow between pages */
-.mushaf-spread::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 40px;
-  transform: translateX(-50%);
-  pointer-events: none;
-  background: linear-gradient(
-    to right,
-    hsl(var(--foreground) / 0.03) 0%,
-    hsl(var(--foreground) / 0.06) 40%,
-    hsl(var(--foreground) / 0.06) 60%,
-    hsl(var(--foreground) / 0.03) 100%
-  );
-}
-
-.mushaf-page {
-  padding: 2rem 2.5rem;
-  min-height: calc(100dvh - 4rem);
-  position: relative;
-  overflow-y: auto;
-}
-
-.mushaf-page-right {
-  direction: rtl;
-  text-align: right;
-  border-right: 1px solid hsl(var(--border) / 0.3);
-}
-
-.mushaf-page-left {
-  direction: ltr;
-  text-align: left;
-  border-left: 1px solid hsl(var(--border) / 0.3);
-}
-
-.mushaf-page-number {
-  position: absolute;
-  bottom: 1rem;
-  font-size: 0.6875rem;
-  color: hsl(var(--muted-foreground) / 0.35);
-  font-variant-numeric: tabular-nums;
-}
-
-.mushaf-page-right .mushaf-page-number {
-  left: 1.5rem;
-}
-
-.mushaf-page-left .mushaf-page-number {
-  right: 1.5rem;
-}
-
-/* Page turn animation */
-@keyframes mushaf-page-enter-right {
-  from { opacity: 0; transform: perspective(1200px) rotateY(-8deg); }
-  to { opacity: 1; transform: perspective(1200px) rotateY(0deg); }
-}
-
-@keyframes mushaf-page-enter-left {
-  from { opacity: 0; transform: perspective(1200px) rotateY(8deg); }
-  to { opacity: 1; transform: perspective(1200px) rotateY(0deg); }
-}
-
-.mushaf-page-enter-right {
-  animation: mushaf-page-enter-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.mushaf-page-enter-left {
-  animation: mushaf-page-enter-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Mushaf navigation */
-.mushaf-nav {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 1.5rem;
-  background: hsl(var(--glass-bg));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(var(--border) / 0.3);
-  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06);
-}
-
-/* Mobile: single page */
-@media (max-width: 767px) {
-  .mushaf-spread {
-    grid-template-columns: 1fr;
-  }
-
-  .mushaf-spread::after {
-    display: none;
-  }
-
-  .mushaf-page-right {
-    border-right: none;
-  }
-
-  .mushaf-page-left {
-    border-left: none;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Reading Progress Bar
-   ═══════════════════════════════════════════════════════════ */
-
-.reading-progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: hsl(var(--primary) / 0.7);
-  z-index: 60;
-  transition: width 150ms linear;
-  border-radius: 0 1px 1px 0;
-}
-
-.reading-progress-bar::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -1px;
-  width: 6px;
-  height: 4px;
-  border-radius: 2px;
-  background: hsl(var(--primary));
-  box-shadow: 0 0 8px hsl(var(--primary) / 0.5);
-}
-
-/* ─── Smooth Theme Transitions ─── */
-html {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* ─── Page-level Ambient Glow (top gradient) ─── */
-.ambient-glow::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  pointer-events: none;
-  z-index: 0;
-  background: var(--gradient-glow);
-  opacity: 0.7;
 }

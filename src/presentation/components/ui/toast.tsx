@@ -58,12 +58,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-4 py-3 shadow-soft-md animate-fade-in",
+              "flex items-center gap-3 px-4 py-3 shadow-md animate-fade-in",
               "border text-sm font-medium",
-              toast.variant === "default" && "bg-card text-card-foreground border-border",
-              toast.variant === "success" && "bg-accent/10 text-accent border-accent/30",
+              toast.variant === "default" && "bg-background text-foreground border-border",
+              toast.variant === "success" && "bg-[#f0fdf9] text-[#3ba892] border-[#78d5c4]",
               toast.variant === "error" && "bg-destructive/10 text-destructive border-destructive/30",
-              toast.variant === "warning" && "bg-primary/10 text-primary border-primary/30",
+              toast.variant === "warning" && "bg-[#fefce8] text-[#b5a600] border-[#e8e337]",
             )}
           >
             <span className="flex-1">{toast.message}</span>
@@ -73,14 +73,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   toast.action!.onClick();
                   removeToast(toast.id);
                 }}
-                className="shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold underline underline-offset-2 hover:bg-muted transition-fast"
+                className="shrink-0 px-2 py-0.5 text-xs font-semibold underline underline-offset-2 hover:bg-[#fafafa] transition-colors"
               >
                 {toast.action.label}
               </button>
             )}
             <button
               onClick={() => removeToast(toast.id)}
-              className="shrink-0 rounded p-0.5 hover:bg-muted transition-fast"
+              className="shrink-0 p-0.5 hover:bg-[#fafafa] transition-colors"
             >
               <XIcon weight="bold" className="h-3.5 w-3.5" />
             </button>

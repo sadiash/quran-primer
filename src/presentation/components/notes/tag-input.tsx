@@ -63,13 +63,14 @@ export function TagInput({ tags, onChange, suggestedTags }: TagInputProps) {
         {tags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
+            className="inline-flex items-center gap-1 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
+            style={{ backgroundColor: '#f5f3ff', color: '#8b6fc0' }}
           >
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              className="rounded-full p-0.5 hover:bg-primary/20 transition-fast"
+              className="p-0.5 hover:bg-[#f5f3ff] transition-colors"
               aria-label={`Remove tag ${tag}`}
             >
               <XIcon weight="bold" className="h-2.5 w-2.5" />
@@ -96,7 +97,7 @@ export function TagInput({ tags, onChange, suggestedTags }: TagInputProps) {
               key={tag}
               type="button"
               onClick={() => addTag(tag)}
-              className="rounded-full border border-border/60 bg-surface/40 px-2 py-0.5 text-[10px] text-muted-foreground hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-fast"
+              className="border border-border px-2 py-0.5 text-[10px] text-muted-foreground hover:border-foreground/30 hover:bg-[#fafafa] hover:text-foreground transition-colors"
             >
               {tag}
             </button>

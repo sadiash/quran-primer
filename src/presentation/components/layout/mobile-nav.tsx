@@ -6,11 +6,11 @@ import { BookOpenTextIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon 
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenTextIcon, label: "Read" },
-  { href: "/browse", matchPrefix: "/browse", icon: BooksIcon, label: "Browse" },
-  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: BookmarkSimpleIcon, label: "Saved" },
-  { href: "/notes", matchPrefix: "/notes", icon: NoteIcon, label: "Notes" },
-  { href: "/settings", matchPrefix: "/settings", icon: GearSixIcon, label: "More" },
+  { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenTextIcon, label: "READ" },
+  { href: "/browse", matchPrefix: "/browse", icon: BooksIcon, label: "BROWSE" },
+  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: BookmarkSimpleIcon, label: "SAVED" },
+  { href: "/notes", matchPrefix: "/notes", icon: NoteIcon, label: "NOTES" },
+  { href: "/settings", matchPrefix: "/settings", icon: GearSixIcon, label: "MORE" },
 ];
 
 interface MobileNavProps {
@@ -23,7 +23,7 @@ export function MobileNav({ className }: MobileNavProps) {
   return (
     <nav
       className={cn(
-        "floating-mobile-nav flex items-center gap-1",
+        "floating-mobile-nav flex items-center justify-around",
         className,
       )}
       aria-label="Mobile navigation"
@@ -35,23 +35,20 @@ export function MobileNav({ className }: MobileNavProps) {
             key={item.href}
             href={item.href}
             className={cn(
-              "relative flex flex-col items-center gap-0.5 rounded-xl px-3.5 py-1.5 transition-all",
+              "flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors",
               isActive
-                ? "text-primary"
-                : "text-muted-foreground/60 active:scale-95",
+                ? "text-foreground"
+                : "text-muted-foreground",
             )}
             aria-label={item.label}
             aria-current={isActive ? "page" : undefined}
           >
-            <item.icon className={cn("h-[18px] w-[18px] transition-transform", isActive && "scale-110")} weight={isActive ? "fill" : "duotone"} />
-            <span className={cn(
-              "text-[9px] font-medium tracking-wide",
-              isActive && "font-semibold",
-            )}>
+            <item.icon className="h-[18px] w-[18px]" weight={isActive ? "fill" : "bold"} />
+            <span className="font-mono text-[8px] font-bold tracking-widest">
               {item.label}
             </span>
             {isActive && (
-              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-4 rounded-full bg-primary/60" />
+              <span className="h-0.5 w-4" style={{ backgroundColor: "#e8e337" }} />
             )}
           </Link>
         );

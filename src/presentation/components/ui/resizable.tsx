@@ -47,7 +47,7 @@ function ResizableHandle({
   return (
     <Separator
       className={cn(
-        "relative flex shrink-0 items-center justify-center bg-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+        "relative flex shrink-0 items-center justify-center bg-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground",
         isVertical
           ? "h-px w-full cursor-row-resize after:absolute after:inset-x-0 after:top-1/2 after:h-2 after:-translate-y-1/2"
           : "h-full w-px cursor-col-resize after:absolute after:inset-y-0 after:left-1/2 after:w-2 after:-translate-x-1/2",
@@ -58,7 +58,7 @@ function ResizableHandle({
       {withHandle && (
         <div
           className={cn(
-            "z-10 flex items-center justify-center rounded-sm border bg-border",
+            "z-10 flex items-center justify-center border border-border bg-background",
             isVertical ? "h-3 w-4 rotate-90" : "h-4 w-3",
           )}
         >

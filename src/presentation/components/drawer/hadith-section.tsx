@@ -171,12 +171,12 @@ export function HadithSection() {
               if (e.key === "Enter") handleSubmitSearch(query);
             }}
             placeholder="Search hadith..."
-            className="w-full rounded-lg border border-border bg-surface py-1.5 pl-8 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full border-2 border-foreground/20 bg-background py-1.5 pl-8 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
           />
           {query && (
             <button
               onClick={() => handleSearch("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground/60 hover:text-foreground transition-colors"
             >
               <XIcon weight="bold" className="h-3.5 w-3.5" />
             </button>
@@ -187,12 +187,15 @@ export function HadithSection() {
         <div className="flex flex-wrap gap-1">
           <button
             onClick={() => { setCollection(undefined); setVisibleCount(10); }}
-            className={cn(
-              "rounded-md px-2 py-1 text-[10px] font-medium transition-fast",
-              !collection
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:bg-surface-hover",
-            )}
+            className="px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+            style={!collection ? {
+              backgroundColor: '#fefce8',
+              borderLeft: '3px solid #e8e337',
+              color: '#b5a600',
+            } : {
+              border: '1px solid hsl(var(--border))',
+              color: 'hsl(var(--muted-foreground))',
+            }}
           >
             All
           </button>
@@ -203,13 +206,15 @@ export function HadithSection() {
               <button
                 key={c.id}
                 onClick={() => { setCollection(c.id === collection ? undefined : c.id); setVisibleCount(10); }}
-                className={cn(
-                  "rounded-md px-2 py-1 text-[10px] font-medium transition-fast",
-                  isActive
-                    ? meta?.badge ?? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-surface-hover",
-                )}
-                style={isActive && meta ? { borderLeft: `2px solid ${meta.accentColor}` } : undefined}
+                className="px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                style={isActive && meta ? {
+                  backgroundColor: meta.bg,
+                  borderLeft: `3px solid ${meta.accentColor}`,
+                  color: meta.labelColor,
+                } : {
+                  border: '1px solid hsl(var(--border))',
+                  color: 'hsl(var(--muted-foreground))',
+                }}
               >
                 {c.label}
               </button>
@@ -223,24 +228,30 @@ export function HadithSection() {
             {GRADE_FILTERS.map((g) => {
               const count = gradeCounts[g.id];
               const isActive = gradeFilter === g.id;
+              const gradeColors: Record<string, { bg: string; border: string; label: string }> = {
+                all: { bg: '#fefce8', border: '#e8e337', label: '#b5a600' },
+                sahih: { bg: '#f0fdf9', border: '#78d5c4', label: '#3ba892' },
+                hasan: { bg: '#fefce8', border: '#e8e337', label: '#b5a600' },
+                daif: { bg: '#fdf2f8', border: '#f5a0c0', label: '#d4608a' },
+              };
+              const colors = gradeColors[g.id] ?? gradeColors.all!;
               return (
                 <button
                   key={g.id}
                   onClick={() => { setGradeFilter(g.id === gradeFilter ? "all" : g.id); setVisibleCount(10); }}
-                  className={cn(
-                    "rounded-md px-2 py-1 text-[10px] font-medium transition-fast inline-flex items-center gap-1",
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-surface-hover",
-                    isActive && g.id !== "all" && g.style,
-                  )}
+                  className="px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1"
+                  style={isActive ? {
+                    backgroundColor: colors.bg,
+                    borderLeft: `3px solid ${colors.border}`,
+                    color: colors.label,
+                  } : {
+                    border: '1px solid hsl(var(--border))',
+                    color: 'hsl(var(--muted-foreground))',
+                  }}
                 >
                   {g.label}
                   {g.id !== "all" && count > 0 && (
-                    <span className={cn(
-                      "text-[9px] opacity-70",
-                      isActive ? "" : "text-muted-foreground/50",
-                    )}>
+                    <span className="text-[9px] opacity-70">
                       {count}
                     </span>
                   )}
@@ -256,13 +267,13 @@ export function HadithSection() {
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-2 text-muted-foreground/70">
             <BookBookmarkIcon weight="duotone" className="h-4 w-4 shrink-0" />
-            <p className="text-xs">Select a verse or search for related hadith</p>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider">Select a verse or search for related hadith</p>
           </div>
 
           {/* Recent searches */}
           {recentSearches.length > 0 && (
             <div className="space-y-1.5">
-              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">
                 Recent searches
               </p>
               <div className="flex flex-wrap gap-1">
@@ -270,7 +281,7 @@ export function HadithSection() {
                   <button
                     key={s}
                     onClick={() => { handleSearch(s); handleSubmitSearch(s); }}
-                    className="rounded-md bg-muted/60 px-2.5 py-1 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    className="border-2 border-foreground/20 bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground hover:border-foreground hover:bg-foreground hover:text-background transition-colors"
                   >
                     {s}
                   </button>
@@ -281,7 +292,7 @@ export function HadithSection() {
 
           {/* Example searches */}
           <div className="space-y-1.5">
-            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">
               Try searching for
             </p>
             <div className="flex flex-wrap gap-1">
@@ -289,7 +300,7 @@ export function HadithSection() {
                 <button
                   key={s}
                   onClick={() => { handleSearch(s); handleSubmitSearch(s); }}
-                  className="rounded-md border border-border/50 px-2.5 py-1 text-[11px] text-muted-foreground/70 hover:bg-surface-hover hover:text-foreground transition-colors"
+                  className="border-2 border-border px-2.5 py-1 font-mono text-[10px] text-muted-foreground/70 hover:border-foreground hover:bg-foreground hover:text-background transition-colors"
                 >
                   {s}
                 </button>
@@ -315,23 +326,23 @@ export function HadithSection() {
         </div>
       )}
 
-      {/* Linked to verse header (pill style) */}
+      {/* Linked to verse header */}
       {!showEmptyState && isRelatedMode && !isLoading && collectionFiltered.length > 0 && (
         <div className="flex items-center gap-2">
-          <div className="h-px flex-1 bg-border/40" />
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50 shrink-0">
+          <div className="h-px flex-1 bg-foreground/20" />
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 shrink-0">
             Linked to verse
           </p>
           <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-mono font-medium leading-none"
-            style={{ backgroundColor: "rgba(52,211,153,0.12)", color: "rgb(52,211,153)" }}
+            className="inline-flex items-center px-2 py-0.5 font-mono text-[10px] font-bold leading-none"
+            style={{ backgroundColor: "#f0fdf9", color: "#3ba892" }}
           >
             {focusedVerseKey}
           </span>
-          <span className="text-[10px] text-muted-foreground/40">
+          <span className="font-mono text-[10px] text-muted-foreground/40">
             {gradeFilter !== "all" ? `${filteredResults.length}/${collectionFiltered.length}` : collectionFiltered.length}
           </span>
-          <div className="h-px flex-1 bg-border/40" />
+          <div className="h-px flex-1 bg-foreground/20" />
         </div>
       )}
 
@@ -340,25 +351,25 @@ export function HadithSection() {
         {isLoading && (
           <div className="flex items-center justify-center gap-2 py-6">
             <CircleNotchIcon weight="bold" className="h-4 w-4 animate-spin text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Searching...</span>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Searching...</span>
           </div>
         )}
 
         {error && (
-          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-xs text-destructive">
+          <div className="border-2 border-destructive bg-destructive/5 p-3 text-xs text-destructive">
             {error}
           </div>
         )}
 
         {!isLoading && !error && !showEmptyState && visibleResults.length === 0 && (query || isRelatedMode) && (
           <div className="py-4 text-center space-y-2">
-            <p className="text-xs text-muted-foreground/70 italic">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
               {isRelatedMode
                 ? `No linked hadiths for verse ${focusedVerseKey}`
                 : "No hadiths found."}
             </p>
             {isRelatedMode && (
-              <p className="text-[11px] text-muted-foreground/50">
+              <p className="font-mono text-[10px] text-muted-foreground/50">
                 Try searching by keyword instead
               </p>
             )}
@@ -367,7 +378,7 @@ export function HadithSection() {
 
         {visibleResults.map((h, i) => (
           <div key={`${h.collection}-${h.hadithNumber}`}>
-            {i > 0 && <div className="mx-3 border-t border-border/30" />}
+            {i > 0 && <div className="mx-3 border-t-2 border-foreground/10" />}
             <HadithCard
               hadith={h}
               expanded={expandedId === `${h.collection}-${h.hadithNumber}`}
@@ -386,7 +397,7 @@ export function HadithSection() {
         {hasMore && (
           <button
             onClick={() => setVisibleCount((c) => c + 10)}
-            className="w-full rounded-lg border border-border/50 py-2 text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-colors"
+            className="w-full border border-border py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-[#fefce8] transition-colors"
           >
             Show more ({filteredResults.length - visibleResults.length} remaining)
           </button>
@@ -399,18 +410,18 @@ export function HadithSection() {
           {conceptLoading && (
             <div className="flex items-center justify-center gap-2 py-4">
               <CircleNotchIcon weight="bold" className="h-3.5 w-3.5 animate-spin text-muted-foreground/60" />
-              <span className="text-[11px] text-muted-foreground/60">Finding related by concept...</span>
+              <span className="font-mono text-[10px] text-muted-foreground/60">Finding related by concept...</span>
             </div>
           )}
 
           {conceptData && conceptData.hadiths.length > 0 && (
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 pt-2">
-                <div className="h-px flex-1 bg-border/40" />
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50 shrink-0">
+                <div className="h-px flex-1 bg-foreground/20" />
+                <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 shrink-0">
                   Related by concept
                 </p>
-                <div className="h-px flex-1 bg-border/40" />
+                <div className="h-px flex-1 bg-foreground/20" />
               </div>
 
               {conceptData.concepts.length > 0 && (
@@ -418,8 +429,8 @@ export function HadithSection() {
                   {conceptData.concepts.map((c) => (
                     <span
                       key={c}
-                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
-                      style={{ backgroundColor: "rgba(99,102,241,0.12)", color: "rgb(129,140,248)" }}
+                      className="inline-flex items-center px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider leading-none"
+                      style={{ backgroundColor: "#f5f3ff", color: "#8b6fc0" }}
                     >
                       {c}
                     </span>
@@ -429,7 +440,7 @@ export function HadithSection() {
 
               {conceptData.hadiths.map((h, i) => (
                 <div key={`${h.collection}-${h.hadithNumber}`}>
-                  {i > 0 && <div className="mx-3 border-t border-border/30" />}
+                  {i > 0 && <div className="mx-3 border-t-2 border-foreground/10" />}
                   <HadithCard
                     hadith={h}
                     expanded={expandedId === `${h.collection}-${h.hadithNumber}`}

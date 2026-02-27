@@ -22,16 +22,16 @@ export function PageHeader({ title, subtitle, icon: Icon }: PageHeaderProps) {
     <div className="flex items-center gap-3">
       <button
         onClick={() => router.back()}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 transition-all hover:bg-surface-hover hover:text-foreground"
+        className="flex h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
         aria-label="Go back"
       >
         <ArrowLeftIcon weight="bold" className="h-4 w-4" />
       </button>
-      {Icon && <Icon weight="duotone" className="h-5 w-5 text-primary/70" />}
+      {Icon && <Icon weight="duotone" className="h-5 w-5 text-muted-foreground" />}
       <div>
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">{title}</h1>
+        <h1 className="text-lg font-bold uppercase tracking-tight text-foreground">{title}</h1>
         {subtitle && (
-          <p className="text-[13px] text-muted-foreground/60">{subtitle}</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">{subtitle}</p>
         )}
       </div>
     </div>

@@ -55,25 +55,19 @@ export interface TranslationConfig {
   bold?: boolean;
 }
 export type TranslationLayout = "stacked" | "columnar";
-export type ReadingDensity = "comfortable" | "compact" | "dense";
-export type ReadingFlow = "prose" | "blocks" | "theater" | "mushaf" | "focus";
-
-export type ThemeName =
-  | "library"
-  | "observatory"
-  | "amethyst"
-  | "cosmos"
-  | "midnight"
-  | "sahara"
-  | "garden"
-  | "matrix";
-
-export type PaperTexture = "auto" | "none" | "parchment" | "silk" | "canvas" | "watercolor";
+/** @deprecated Kept for Dexie backward-compat */
+export type ReadingDensity = string;
+/** @deprecated Kept for Dexie backward-compat */
+export type ReadingFlow = string;
+/** @deprecated Kept for Dexie backward-compat */
+export type ThemeName = string;
+/** @deprecated Kept for Dexie backward-compat */
+export type PaperTexture = string;
 
 export interface UserPreferences {
   id: string; // "default" for local-only, or userId
-  theme: ThemeMode;
-  themeName: ThemeName;
+  theme?: ThemeMode;
+  themeName?: ThemeName;
   arabicFont: ArabicFont;
   arabicFontSize: ArabicFontSize;
   translationFontSize: TranslationFontSize;
@@ -95,9 +89,9 @@ export interface UserPreferences {
   conceptColorSlot: number;     // 0 = muted/default, 1-6 = translation color slots
   zenMode: boolean;
   trackProgress: boolean;
-  readingDensity: ReadingDensity;
-  readingFlow: ReadingFlow;
-  paperTexture: PaperTexture;
+  readingDensity?: ReadingDensity;
+  readingFlow?: ReadingFlow;
+  paperTexture?: PaperTexture;
   onboardingComplete: boolean;
   updatedAt: Date;
 }
@@ -105,7 +99,7 @@ export interface UserPreferences {
 /** Convert a loosely-typed storage record to a strictly-typed UserPreferences. */
 export function toUserPreferences(raw: {
   id: string;
-  theme: string;
+  theme?: string | null;
   themeName?: string | null;
   arabicFont: string;
   arabicFontSize: string;
@@ -136,8 +130,8 @@ export function toUserPreferences(raw: {
 }): UserPreferences {
   return {
     id: raw.id,
-    theme: raw.theme as ThemeMode,
-    themeName: (raw.themeName ?? "library") as ThemeName,
+    theme: (raw.theme as ThemeMode) ?? undefined,
+    themeName: raw.themeName ?? undefined,
     arabicFont: raw.arabicFont as ArabicFont,
     arabicFontSize: raw.arabicFontSize as ArabicFontSize,
     translationFontSize: raw.translationFontSize as TranslationFontSize,
@@ -166,9 +160,9 @@ export function toUserPreferences(raw: {
     conceptColorSlot: raw.conceptColorSlot ?? 0,
     zenMode: raw.zenMode ?? false,
     trackProgress: raw.trackProgress ?? true,
-    readingDensity: (raw.readingDensity as ReadingDensity) ?? "compact",
-    readingFlow: (raw.readingFlow as ReadingFlow) ?? "blocks",
-    paperTexture: (raw.paperTexture as PaperTexture) ?? "auto",
+    readingDensity: raw.readingDensity ?? "compact",
+    readingFlow: raw.readingFlow ?? "blocks",
+    paperTexture: raw.paperTexture ?? "auto",
     onboardingComplete: raw.onboardingComplete ?? false,
     updatedAt: raw.updatedAt,
   };

@@ -63,10 +63,10 @@ export function MobileStudySheet() {
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-black/20" />
-        <Drawer.Content aria-describedby={undefined} className="fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col rounded-t-2xl border-t border-border bg-card">
+        <Drawer.Content aria-describedby={undefined} className="fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col border-t border-border bg-background shadow-lg">
           {/* Drag handle */}
           <div className="flex justify-center py-2">
-            <div className="h-1.5 w-12 rounded-full bg-muted-foreground/30" />
+            <div className="h-1 w-12 bg-border" />
           </div>
 
           {/* Visually hidden title for accessibility */}

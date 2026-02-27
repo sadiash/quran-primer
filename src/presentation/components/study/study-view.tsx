@@ -18,7 +18,7 @@ export function StudyView({ verse, surah }: StudyViewProps) {
         </h1>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-6">
+      <div className="border border-border bg-background p-6">
         <p
           lang="ar"
           dir="rtl"
@@ -28,7 +28,7 @@ export function StudyView({ verse, surah }: StudyViewProps) {
         </p>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-6">
+      <div className="border border-border bg-background p-6">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
           Verse Key
         </p>

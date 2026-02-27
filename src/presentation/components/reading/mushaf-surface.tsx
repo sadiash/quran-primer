@@ -223,7 +223,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
         <button
           onClick={goPrev}
           disabled={currentSpread === 0}
-          className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
+          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-[#fafafa] transition-colors disabled:opacity-30"
           aria-label="Previous page"
         >
           <CaretLeftIcon weight="bold" className="h-4 w-4" />
@@ -234,7 +234,7 @@ export function MushafSurface({ surah, verses, translations }: MushafSurfaceProp
         <button
           onClick={goNext}
           disabled={currentSpread >= totalSpreads - 1}
-          className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-fast disabled:opacity-30"
+          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-[#fafafa] transition-colors disabled:opacity-30"
           aria-label="Next page"
         >
           <CaretRightIcon weight="bold" className="h-4 w-4" />

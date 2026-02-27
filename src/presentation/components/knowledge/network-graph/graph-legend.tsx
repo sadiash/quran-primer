@@ -16,7 +16,7 @@ export function GraphLegend({ stats, activeTypes }: GraphLegendProps) {
   if (types.length === 0) return null;
 
   return (
-    <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm border border-border rounded-lg px-3 py-2 text-xs">
+    <div className="absolute bottom-3 left-3 bg-background border border-border px-3 py-2 text-xs">
       <div className="grid gap-1">
         {types.map((type) => (
           <div key={type} className="flex items-center gap-2">

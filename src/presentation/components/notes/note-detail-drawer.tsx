@@ -68,7 +68,7 @@ export function NoteDetailDrawer({
       {/* Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-full w-[480px] max-w-full flex-col border-l border-border bg-card shadow-soft-xl transition-transform duration-200 ease-out",
+          "fixed right-0 top-0 z-50 flex h-full w-[480px] max-w-full flex-col border-l border-border bg-background shadow-md transition-transform duration-200 ease-out",
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -79,7 +79,7 @@ export function NoteDetailDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
                 aria-label="Close"
               >
                 <XIcon weight="bold" className="h-4 w-4" />
@@ -90,10 +90,10 @@ export function NoteDetailDrawer({
                     type="button"
                     onClick={() => onTogglePin(note.id)}
                     className={cn(
-                      "rounded-md p-1.5 transition-fast",
+                      "p-1.5 transition-colors",
                       note.pinned
-                        ? "text-primary hover:bg-primary/10"
-                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
+                        ? "text-foreground hover:bg-[#fefce8]"
+                        : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
                     )}
                     aria-label={note.pinned ? "Unpin note" : "Pin note"}
                     title={note.pinned ? "Unpin note" : "Pin note"}
@@ -108,7 +108,7 @@ export function NoteDetailDrawer({
                 <button
                   type="button"
                   onClick={onEdit}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+                  className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
                   aria-label="Edit note"
                 >
                   <PencilSimpleIcon weight="bold" className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function NoteDetailDrawer({
                 <button
                   type="button"
                   onClick={() => onDelete(note.id)}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-fast"
+                  className="p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
                   aria-label="Delete note"
                 >
                   <TrashIcon weight="bold" className="h-4 w-4" />
@@ -131,8 +131,8 @@ export function NoteDetailDrawer({
               </h2>
               {note.pinned && (
                 <div className="mt-1 flex items-center gap-1">
-                  <PushPinIcon weight="fill" className="h-2.5 w-2.5 text-primary/60" />
-                  <span className="text-[9px] font-semibold uppercase tracking-wider text-primary/50">
+                  <PushPinIcon weight="fill" className="h-2.5 w-2.5 text-muted-foreground/60" />
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
                     Pinned
                   </span>
                 </div>
@@ -147,7 +147,8 @@ export function NoteDetailDrawer({
                   return (
                     <span
                       key={`vk-${vk}`}
-                      className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-medium text-foreground"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-foreground"
+                      style={{ backgroundColor: '#f0fdf9' }}
                     >
                       <BookOpenIcon weight="duotone" className="h-3 w-3 text-muted-foreground" />
                       {getSurahName(Number(s))} {s}:{v}
@@ -157,7 +158,8 @@ export function NoteDetailDrawer({
                 {note.surahIds.map((id) => (
                   <span
                     key={`s-${id}`}
-                    className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium"
+                    style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
                   >
                     <BookOpenIcon weight="duotone" className="h-3 w-3" />
                     {getSurahName(id)} (surah)
@@ -176,24 +178,23 @@ export function NoteDetailDrawer({
               {/* Linked Resources */}
               {note.linkedResources && note.linkedResources.length > 0 && (
                 <div className="space-y-2 pt-2 border-t border-border/50">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
                     Linked Resources
                   </p>
                   {note.linkedResources.map((resource, idx) => (
                     <div
                       key={`${resource.type}-${resource.label}-${idx}`}
-                      className={cn(
-                        "rounded-lg border p-3 space-y-1.5",
-                        resource.type === "hadith"
-                          ? "border-emerald-500/20 bg-emerald-500/5"
-                          : "border-amber-500/20 bg-amber-500/5",
-                      )}
+                      className="border p-3 space-y-1.5"
+                      style={{
+                        borderLeft: `3px solid ${resource.type === "hadith" ? '#78d5c4' : '#e8e337'}`,
+                        borderColor: resource.type === "hadith" ? '#78d5c4' : '#e8e337',
+                      }}
                     >
                       <div className="flex items-center gap-1.5">
                         {resource.type === "hadith" ? (
-                          <BookBookmarkIcon weight="duotone" className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                          <BookBookmarkIcon weight="duotone" className="h-3.5 w-3.5 shrink-0" style={{ color: '#3ba892' }} />
                         ) : (
-                          <BookOpenIcon weight="duotone" className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                          <BookOpenIcon weight="duotone" className="h-3.5 w-3.5 shrink-0" style={{ color: '#b5a600' }} />
                         )}
                         <span className="text-sm font-medium text-foreground">
                           {resource.label}
@@ -207,7 +208,7 @@ export function NoteDetailDrawer({
                           href={resource.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] text-foreground hover:text-foreground/80 transition-colors"
                         >
                           <ArrowSquareOutIcon weight="bold" className="h-3 w-3" />
                           View on sunnah.com
@@ -227,7 +228,8 @@ export function NoteDetailDrawer({
                     {note.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
+                        style={{ backgroundColor: '#f5f3ff', color: '#8b6fc0' }}
                       >
                         <TagIcon weight="bold" className="h-2.5 w-2.5" />
                         {tag}

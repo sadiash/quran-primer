@@ -122,7 +122,7 @@ export function NoteEditor({
   saveRef.current = handleSave;
 
   return (
-    <div className="flex flex-1 min-h-0 flex-col rounded-lg border border-border bg-card">
+    <div className="flex flex-1 min-h-0 flex-col border border-border bg-background">
       {/* Title input */}
       <div className="border-b border-border">
         <input
@@ -159,19 +159,18 @@ export function NoteEditor({
           {linkedResources.map((resource, idx) => (
             <div
               key={`${resource.type}-${resource.label}-${idx}`}
-              className={cn(
-                "rounded-lg border p-2.5 space-y-1",
-                resource.type === "hadith"
-                  ? "border-emerald-500/20 bg-emerald-500/5"
-                  : "border-amber-500/20 bg-amber-500/5",
-              )}
+              className="border p-2.5 space-y-1"
+              style={{
+                borderLeft: `3px solid ${resource.type === "hadith" ? '#78d5c4' : '#e8e337'}`,
+                borderColor: resource.type === "hadith" ? '#78d5c4' : '#e8e337',
+              }}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
                   {resource.type === "hadith" ? (
-                    <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0 text-emerald-500" />
+                    <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#3ba892' }} />
                   ) : (
-                    <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0 text-amber-500" />
+                    <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#b5a600' }} />
                   )}
                   <span className="text-xs font-medium text-foreground truncate">
                     {resource.label}
@@ -180,7 +179,7 @@ export function NoteEditor({
                 <button
                   type="button"
                   onClick={() => handleRemoveLinkedResource(idx)}
-                  className="shrink-0 rounded-md p-0.5 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-fast"
+                  className="shrink-0 p-0.5 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors"
                   aria-label="Remove linked resource"
                   title="Remove"
                 >
@@ -195,7 +194,7 @@ export function NoteEditor({
                   href={resource.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors"
+                  className="inline-flex items-center gap-1 text-[10px] text-foreground hover:text-foreground/80 transition-colors"
                 >
                   <ArrowSquareOutIcon weight="bold" className="h-2.5 w-2.5" />
                   View source
@@ -216,7 +215,7 @@ export function NoteEditor({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-fast"
+          className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
         >
           Cancel
         </button>
@@ -224,7 +223,7 @@ export function NoteEditor({
           type="button"
           onClick={handleSave}
           disabled={isEmpty}
-          className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-fast disabled:opacity-40 disabled:pointer-events-none"
+          className="bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:bg-foreground/90 transition-colors disabled:opacity-40 disabled:pointer-events-none"
         >
           Save
         </button>

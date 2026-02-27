@@ -35,7 +35,7 @@ export function AiSection() {
     return (
       <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
         <RobotIcon weight="duotone" className="h-6 w-6 text-muted-foreground/20" />
-        <p className="text-xs text-muted-foreground/60">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
           Select a verse to start a contextual conversation
         </p>
       </div>
@@ -67,17 +67,17 @@ export function AiSection() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border/30">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-border">
         <div className="flex items-center gap-1.5">
-          <RobotIcon weight="duotone" className="h-3.5 w-3.5 text-primary/60" />
-          <span className="text-[11px] text-muted-foreground">
-            Discussing <span className="font-mono text-foreground">{focusedVerseKey}</span>
+          <RobotIcon weight="duotone" className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            Discussing <span className="text-foreground">{focusedVerseKey}</span>
           </span>
         </div>
         {messages.length > 0 && (
           <button
             onClick={handleReset}
-            className="rounded-md p-1 text-muted-foreground/50 hover:text-muted-foreground hover:bg-surface-hover transition-fast"
+            className="p-1 text-muted-foreground/50 hover:text-foreground transition-colors"
             aria-label="Reset conversation"
           >
             <ArrowCounterClockwiseIcon weight="bold" className="h-3 w-3" />
@@ -89,11 +89,11 @@ export function AiSection() {
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
         {messages.length === 0 && (
           <div className="flex flex-col items-center gap-3 py-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-              <SparkleIcon weight="duotone" className="h-5 w-5 text-primary/60" />
+            <div className="flex h-10 w-10 items-center justify-center" style={{ backgroundColor: '#f5f3ff' }}>
+              <SparkleIcon weight="duotone" className="h-5 w-5" style={{ color: '#8b6fc0' }} />
             </div>
-            <p className="text-xs text-muted-foreground/60 text-center max-w-[200px]">
-              Ask about this verse — meaning, context, themes, or linguistic analysis
+            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 text-center max-w-[200px]">
+              Ask about this verse -- meaning, context, themes, or linguistic analysis
             </p>
             {/* Suggestion chips */}
             <div className="flex flex-wrap justify-center gap-1.5 mt-1">
@@ -101,7 +101,7 @@ export function AiSection() {
                 <button
                   key={chip.label}
                   onClick={() => sendMessage(chip.label)}
-                  className="inline-flex items-center gap-1 rounded-full border border-border/50 px-2.5 py-1 text-[11px] text-muted-foreground hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-fast"
+                  className="inline-flex items-center gap-1 border border-border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:bg-[#f5f3ff] hover:text-[#8b6fc0] transition-colors"
                 >
                   <chip.icon className="h-3 w-3" weight="bold" />
                   {chip.label}
@@ -120,17 +120,18 @@ export function AiSection() {
             )}
           >
             {msg.role === "assistant" && (
-              <div className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 mt-0.5">
-                <RobotIcon weight="duotone" className="h-3 w-3 text-primary/70" />
+              <div className="shrink-0 flex h-5 w-5 items-center justify-center mt-0.5" style={{ backgroundColor: '#f5f3ff' }}>
+                <RobotIcon weight="duotone" className="h-3 w-3" style={{ color: '#8b6fc0' }} />
               </div>
             )}
             <div
               className={cn(
-                "max-w-[85%] rounded-lg px-3 py-2 text-xs leading-relaxed",
+                "max-w-[85%] px-3 py-2 text-xs leading-relaxed",
                 msg.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface text-foreground/90",
+                  ? "text-foreground"
+                  : "border border-border bg-background text-foreground/90",
               )}
+              style={msg.role === "user" ? { backgroundColor: '#fefce8', borderLeft: '3px solid #e8e337' } : undefined}
             >
               {msg.content.split("\n").map((line, j) => (
                 <p key={j} className={j > 0 ? "mt-1.5" : ""}>
@@ -151,14 +152,14 @@ export function AiSection() {
 
         {isTyping && (
           <div className="flex gap-2">
-            <div className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 mt-0.5">
-              <RobotIcon weight="duotone" className="h-3 w-3 text-primary/70" />
+            <div className="shrink-0 flex h-5 w-5 items-center justify-center mt-0.5" style={{ backgroundColor: '#f5f3ff' }}>
+              <RobotIcon weight="duotone" className="h-3 w-3" style={{ color: '#8b6fc0' }} />
             </div>
-            <div className="bg-surface rounded-lg px-3 py-2">
+            <div className="border border-border bg-background px-3 py-2">
               <div className="flex gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-pulse" />
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:0.2s]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:0.4s]" />
+                <span className="h-1.5 w-1.5 bg-muted-foreground/40 animate-pulse" />
+                <span className="h-1.5 w-1.5 bg-muted-foreground/40 animate-pulse [animation-delay:0.2s]" />
+                <span className="h-1.5 w-1.5 bg-muted-foreground/40 animate-pulse [animation-delay:0.4s]" />
               </div>
             </div>
           </div>
@@ -166,7 +167,7 @@ export function AiSection() {
       </div>
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-border/30 px-3 py-2">
+      <div className="shrink-0 border-t border-border px-3 py-2">
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -185,11 +186,12 @@ export function AiSection() {
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || isTyping}
             className={cn(
-              "rounded-md p-1.5 transition-fast",
+              "p-1.5 transition-colors",
               input.trim() && !isTyping
-                ? "text-primary hover:bg-primary/10"
+                ? "text-foreground hover:bg-[#f5f3ff]"
                 : "text-muted-foreground/30",
             )}
+            style={input.trim() && !isTyping ? { backgroundColor: '#f5f3ff', color: '#8b6fc0' } : undefined}
             aria-label="Send message"
           >
             <PaperPlaneTiltIcon weight="bold" className="h-3.5 w-3.5" />
@@ -203,7 +205,7 @@ export function AiSection() {
               <button
                 key={chip.label}
                 onClick={() => sendMessage(chip.label)}
-                className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] text-muted-foreground/50 hover:text-muted-foreground hover:bg-surface-hover transition-fast"
+                className="inline-flex items-center gap-0.5 border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground/50 hover:border-foreground hover:text-foreground transition-colors"
               >
                 <chip.icon className="h-2.5 w-2.5" weight="bold" />
                 {chip.label}
