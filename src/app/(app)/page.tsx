@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { LogoIcon } from "@/presentation/components/layout/logo";
 
 /**
  * Root page — client redirect based on onboarding status.
@@ -22,8 +23,11 @@ export default function RootPage() {
   }, [isLoading, preferences.onboardingComplete, router]);
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    <div className="flex h-full flex-col items-center justify-center gap-4">
+      <div className="animate-pulse">
+        <LogoIcon className="h-12 w-12 text-primary" />
+      </div>
+      <p className="text-sm font-medium text-muted-foreground/60">Loading...</p>
     </div>
   );
 }
