@@ -371,6 +371,7 @@ export function ReadingSurface({
                 concepts={preferences.showConcepts ? (conceptsByVerse?.[verse.verseKey] ?? []) : []}
                 conceptMaxVisible={preferences.conceptMaxVisible}
                 conceptColorSlot={preferences.conceptColorSlot}
+                focusBgColor={getSurahColor(surah.id).bg}
               />
             ))}
           </div>

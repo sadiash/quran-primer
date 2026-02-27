@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: "/surah/1", matchPrefix: "/surah", icon: BookOpenTextIcon, label: "READ" },
   { href: "/browse", matchPrefix: "/browse", icon: BooksIcon, label: "BROWSE" },
-  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: BookmarkSimpleIcon, label: "SAVED" },
+  { href: "/bookmarks", matchPrefix: "/bookmarks", icon: BookmarkSimpleIcon, label: "BOOKMARKS" },
   { href: "/notes", matchPrefix: "/notes", icon: NoteIcon, label: "NOTES" },
   { href: "/settings", matchPrefix: "/settings", icon: GearSixIcon, label: "MORE" },
 ];

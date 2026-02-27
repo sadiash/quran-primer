@@ -47,6 +47,7 @@ interface VerseBlockProps {
   concepts?: ConceptTag[];
   conceptMaxVisible?: number;
   conceptColorSlot?: number;
+  focusBgColor?: string;
 }
 
 function VerseBlockInner({
@@ -72,6 +73,7 @@ function VerseBlockInner({
   concepts = [],
   conceptMaxVisible = 5,
   conceptColorSlot = 0,
+  focusBgColor,
 }: VerseBlockProps) {
   const gestureHandlers = useGestures({ onLongPress, onSwipeRight });
 
@@ -88,11 +90,12 @@ function VerseBlockInner({
       className={cn(
         "group relative py-3 px-4 border-l-2 transition-colors",
         isFocused
-          ? "border-l-transparent bg-[#fefce8] verse-focused-indicator"
+          ? "border-l-transparent verse-focused-indicator"
           : "border-l-transparent hover:bg-surface/50",
         isBookmarked && "verse-bookmarked",
         hasNotes && "verse-has-notes",
       )}
+      style={isFocused && focusBgColor ? { backgroundColor: focusBgColor } : undefined}
       onClick={onFocus}
       {...gestureHandlers}
     >
@@ -162,7 +165,8 @@ export const VerseBlock = memo(VerseBlockInner, (prev, next) => {
     prev.translationConfigs === next.translationConfigs &&
     prev.concepts === next.concepts &&
     prev.conceptMaxVisible === next.conceptMaxVisible &&
-    prev.conceptColorSlot === next.conceptColorSlot
+    prev.conceptColorSlot === next.conceptColorSlot &&
+    prev.focusBgColor === next.focusBgColor
   );
 });
 VerseBlock.displayName = "VerseBlock";

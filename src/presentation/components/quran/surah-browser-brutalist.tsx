@@ -362,13 +362,10 @@ function SurahCard({
       </p>
 
       {/* Top meta */}
-      <div className="flex items-center justify-between px-3 pt-3 relative z-[1]">
+      <div className="flex items-center px-3 pt-3 relative z-[1]">
         <span className={cn("font-mono text-[9px] uppercase tracking-[0.15em]", isBg ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground")}>
           <span style={{ color: isBg ? "rgba(10,10,10,0.5)" : surah.revelationType === "makkah" ? "#b5a600" : "#3ba892" }}>●</span>
           {" "}{surah.revelationType === "makkah" ? "MECCAN" : "MEDINAN"}
-        </span>
-        <span className={cn("font-mono text-[9px] uppercase tracking-[0.15em]", isBg ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground")}>
-          {surah.versesCount}v
         </span>
       </div>
 
@@ -389,8 +386,9 @@ function SurahCard({
 
       {/* Bottom bar */}
       <div className={cn("flex items-center justify-between border-t px-3 py-1.5 relative z-[1]", isBg ? "border-[rgba(10,10,10,0.1)]" : "border-border/20")}>
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em]">
-          {String(surah.id).padStart(3, "0")}
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em]">
+          <span className="font-bold">{String(surah.id).padStart(3, "0")}</span>
+          <span className={cn("ml-1.5", isBg ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground")}>{surah.versesCount}v</span>
         </span>
         {progress && isComplete && (
           <span

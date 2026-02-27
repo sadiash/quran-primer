@@ -850,15 +850,15 @@ function NotesContent({ verseKey }: NotesContentProps) {
         <NoteSearchInput value={searchQuery} onChange={setSearchQuery} />
       )}
 
-      {/* Quick create — blank + templates in one row */}
-      <div className="grid grid-cols-4 gap-1.5">
+      {/* Quick create — compact inline row */}
+      <div className="flex items-center gap-1.5">
         <button
           type="button"
           onClick={handleNewNote}
-          className="flex flex-col items-center gap-1 px-2 py-2.5 border border-border/50 transition-colors hover:border-foreground/30 hover:bg-[#fafafa]"
+          className="flex items-center gap-1 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b-2 border-border hover:border-foreground hover:text-foreground transition-colors"
         >
-          <PlusIcon weight="bold" className="h-4 w-4 text-muted-foreground" />
-          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Blank</span>
+          <PlusIcon weight="bold" className="h-3 w-3" />
+          Blank
         </button>
         {QUICK_PROMPTS.map((p) => {
           const color = getTagColor(p.tag);
@@ -867,11 +867,11 @@ function NotesContent({ verseKey }: NotesContentProps) {
               key={p.label}
               type="button"
               onClick={() => handlePromptClick(p)}
-              className="flex flex-col items-center gap-1 px-2 py-2.5 transition-opacity hover:opacity-80"
-              style={{ backgroundColor: color.bg, borderLeft: `2px solid ${color.accent}` }}
+              className="flex items-center gap-1 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors hover:opacity-70"
+              style={{ color: color.label, borderBottom: `2px solid ${color.accent}` }}
             >
-              <p.icon className="h-4 w-4" style={{ color: color.label }} />
-              <span className="font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: color.text }}>{p.label}</span>
+              <p.icon weight="bold" className="h-3 w-3" />
+              {p.label}
             </button>
           );
         })}

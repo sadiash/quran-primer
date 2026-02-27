@@ -378,6 +378,7 @@ export default function NotesPage() {
           const label = noteLocationLabel(note, getSurahName);
           const displayTitle = note.title || note.content.slice(0, 50) + (note.content.length > 50 ? "..." : "");
           const hasRealTitle = !!note.title;
+          const isDimmed = expandedId !== null || editorMode !== null;
           return (
             <PageNoteCard
               key={note.id}
@@ -385,6 +386,7 @@ export default function NotesPage() {
               displayTitle={displayTitle}
               hasRealTitle={hasRealTitle}
               locationLabel={label}
+              isDimmed={isDimmed}
               onExpand={() => { setExpandedId(note.id); setEditorMode(null); }}
               onEdit={(id) => { setExpandedId(null); setEditorMode(id); }}
               onTogglePin={togglePin}
@@ -519,6 +521,7 @@ function PageNoteCard({
   displayTitle,
   hasRealTitle,
   locationLabel,
+  isDimmed,
   onExpand,
   onEdit,
   onTogglePin,
@@ -528,6 +531,7 @@ function PageNoteCard({
   displayTitle: string;
   hasRealTitle: boolean;
   locationLabel: string;
+  isDimmed?: boolean;
   onExpand: () => void;
   onEdit: (id: string) => void;
   onTogglePin: (id: string) => void;
@@ -540,6 +544,7 @@ function PageNoteCard({
       className={cn(
         "relative border border-border bg-background p-4 transition-all hover:bg-[#fafafa] cursor-pointer",
         note.pinned && "border-border bg-[#fefce8]/30",
+        isDimmed && "opacity-40",
       )}
       style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
       onClick={onExpand}
@@ -596,12 +601,11 @@ function ExpandedNoteCard({
   onTogglePin: () => void;
 }) {
   const cardStyle = getNoteCardStyle(note);
-  const location = noteLocationLabel(note, getSurahName);
 
   return (
     <div
-      className="col-span-full border border-border bg-background"
-      style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
+      className="col-span-full border-2 bg-background"
+      style={{ borderColor: cardStyle.borderColor || 'hsl(var(--border))' }}
     >
       {/* Header — actions bar */}
       <div className="flex items-center justify-between border-b border-border/50 px-4 py-2">
@@ -614,7 +618,6 @@ function ExpandedNoteCard({
               {cardStyle.label}
             </span>
           )}
-          <span className="font-mono text-[10px] text-muted-foreground/50">{location}</span>
           {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 text-foreground/50" />}
         </div>
         <div className="flex items-center gap-1">
@@ -669,32 +672,50 @@ function ExpandedNoteCard({
           content={note.content}
           contentJson={note.contentJson}
         />
-        {/* Tags */}
-        {note.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 pt-2">
-            {note.tags.map((tag) => {
-              const color = getTagColor(tag);
+        {/* Verse/surah references as clickable links */}
+        {(note.verseKeys.length > 0 || note.surahIds.length > 0) && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <MapPinIcon weight="bold" className="h-3 w-3 text-muted-foreground/40" />
+            {note.verseKeys.map((vk) => {
+              const [s] = vk.split(":");
               return (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
-                  style={{ backgroundColor: color.bg, color: color.label }}
+                <Link
+                  key={vk}
+                  href={`/surah/${s}?verse=${vk}`}
+                  className="font-mono text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
                 >
-                  {tag}
-                </span>
+                  {getSurahName(Number(s))} {vk}
+                </Link>
               );
             })}
+            {note.surahIds.map((id) => (
+              <Link
+                key={`s-${id}`}
+                href={`/surah/${id}`}
+                className="font-mono text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              >
+                {getSurahName(id)}
+              </Link>
+            ))}
           </div>
         )}
-        {/* Verse/surah links */}
-        {(note.verseKeys.length > 0 || note.surahIds.length > 0) && (
-          <div className="font-mono text-[10px] text-muted-foreground/50 pt-1">
-            {note.verseKeys.length > 0 && <span>Verses: {note.verseKeys.join(", ")}</span>}
-            {note.verseKeys.length > 0 && note.surahIds.length > 0 && <span> &middot; </span>}
-            {note.surahIds.length > 0 && <span>Surahs: {note.surahIds.map((id) => getSurahName(id)).join(", ")}</span>}
+        {/* Linked resources (hadith, tafsir) */}
+        {note.linkedResources && note.linkedResources.length > 0 && (
+          <div className="space-y-1.5 pt-1">
+            {note.linkedResources.map((resource, idx) => (
+              <div
+                key={`${resource.type}-${idx}`}
+                className="border border-border/50 px-3 py-2 text-[11px]"
+              >
+                <span className="font-medium text-foreground">{resource.label}</span>
+                {resource.preview && (
+                  <p className="mt-0.5 text-muted-foreground/60 line-clamp-2">{resource.preview}</p>
+                )}
+              </div>
+            ))}
           </div>
         )}
-        <div className="font-mono text-[10px] text-muted-foreground/30">
+        <div className="font-mono text-[10px] text-muted-foreground/30 text-right">
           {note.updatedAt.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
         </div>
       </div>

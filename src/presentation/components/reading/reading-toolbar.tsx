@@ -139,10 +139,11 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
                 </div>
               )}
 
-              {/* Toggle Arabic */}
+              {/* Toggle Arabic — disabled when translation is already hidden */}
               <button
                 onClick={() => updatePreferences({ showArabic: !preferences.showArabic })}
-                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface transition-colors"
+                disabled={preferences.showArabic && !preferences.showTranslation}
+                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 {preferences.showArabic ? (
                   <EyeIcon weight="bold" className="h-3.5 w-3.5" />
@@ -152,10 +153,11 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
                 {preferences.showArabic ? "HIDE ARABIC" : "SHOW ARABIC"}
               </button>
 
-              {/* Toggle Translation */}
+              {/* Toggle Translation — disabled when Arabic is already hidden */}
               <button
                 onClick={() => updatePreferences({ showTranslation: !preferences.showTranslation })}
-                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface transition-colors"
+                disabled={preferences.showTranslation && !preferences.showArabic}
+                className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 {preferences.showTranslation ? (
                   <EyeIcon weight="bold" className="h-3.5 w-3.5" />

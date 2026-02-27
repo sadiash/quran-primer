@@ -10,6 +10,7 @@ import { usePanels } from "@/presentation/providers/panel-provider";
 import { useProgress } from "@/presentation/hooks/use-progress";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { getSurahName } from "@/lib/surah-names";
+import { getSurahColor } from "@/lib/surah-colors";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
 
@@ -49,24 +50,27 @@ export function TopNav() {
       {/* Separator */}
       <div className="hidden md:block w-px h-5 bg-border/40 ml-1" />
 
-      {/* Desktop nav links */}
-      <nav className="hidden md:flex items-center gap-1 ml-1">
-        <NavLink href="/browse" label="BROWSE" pathname={pathname} />
-        <NavLink href="/bookmarks" label="SAVED" pathname={pathname} />
-        <NavLink href="/notes" label="NOTES" pathname={pathname} />
+      {/* Desktop nav links — icon only */}
+      <nav className="hidden md:flex items-center gap-0.5 ml-1">
+        <NavIcon href="/browse" icon={BooksIcon} label="Browse" pathname={pathname} />
+        <NavIcon href="/bookmarks" icon={BookmarkSimpleIcon} label="Bookmarks" pathname={pathname} />
+        <NavIcon href="/notes" icon={NoteIcon} label="Notes" pathname={pathname} />
       </nav>
 
       {/* Continue Reading */}
-      {latest && preferences.trackProgress && !pathname.startsWith("/surah") && (
-        <Link
-          href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[#0a0a0a] hover:opacity-80 transition-opacity"
-          style={{ backgroundColor: "#e8e337" }}
-        >
-          <PlayCircleIcon weight="bold" className="h-3 w-3" />
-          Continue {getSurahName(latest.surahId)} : {latest.lastVerseKey.split(":")[1]}
-        </Link>
-      )}
+      {latest && preferences.trackProgress && !pathname.startsWith("/surah") && (() => {
+        const color = getSurahColor(latest.surahId);
+        return (
+          <Link
+            href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: color.accent, color: color.text }}
+          >
+            <PlayCircleIcon weight="bold" className="h-3 w-3" />
+            Continue {getSurahName(latest.surahId)} : {latest.lastVerseKey.split(":")[1]}
+          </Link>
+        );
+      })()}
 
       {/* Spacer */}
       <div className="flex-1" />
@@ -101,10 +105,11 @@ function PanelsDropdown({
     <div className="relative hidden md:block">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
+        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Panels"
+        title="Panels"
       >
-        <SidebarSimpleIcon weight="bold" className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">PANELS</span>
+        <SidebarSimpleIcon weight={open ? "fill" : "bold"} className="h-4 w-4" />
       </button>
       {open && (
         <>
@@ -136,12 +141,14 @@ function PanelsDropdown({
   );
 }
 
-function NavLink({
+function NavIcon({
   href,
+  icon: Icon,
   label,
   pathname,
 }: {
   href: string;
+  icon: React.ComponentType<{ className?: string; weight?: IconWeight }>;
   label: string;
   pathname: string;
 }) {
@@ -150,14 +157,15 @@ function NavLink({
     <Link
       href={href}
       className={cn(
-        "font-mono text-[10px] font-bold tracking-[0.15em] uppercase px-2.5 py-1 transition-all",
+        "p-1.5 transition-colors",
         isActive
-          ? "text-[#0a0a0a] shadow-[0_2px_0_rgba(0,0,0,0.08)]"
+          ? "text-foreground"
           : "text-muted-foreground hover:text-foreground",
       )}
-      style={isActive ? { backgroundColor: "#e8e337" } : undefined}
+      aria-label={label}
+      title={label}
     >
-      {label}
+      <Icon className="h-4 w-4" weight={isActive ? "fill" : "bold"} />
     </Link>
   );
 }

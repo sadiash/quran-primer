@@ -3,10 +3,11 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import DOMPurify from "dompurify";
-import { BookmarkSimpleIcon, CaretDownIcon, CircleNotchIcon, MagnifyingGlassIcon, TrashIcon } from "@phosphor-icons/react";
+import { BookmarkSimpleIcon, CircleNotchIcon, MagnifyingGlassIcon, TrashIcon } from "@phosphor-icons/react";
 import { useBookmarks } from "@/presentation/hooks/use-bookmarks";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { getSurahName } from "@/lib/surah-names";
+import { getSurahColor } from "@/lib/surah-colors";
 import type { Verse, Translation } from "@/core/types";
 import { cn } from "@/lib/utils";
 
@@ -133,25 +134,28 @@ export default function BookmarksPage() {
               >
                 All
               </button>
-              {surahIds.map((id) => (
-                <button
-                  key={id}
-                  onClick={() =>
-                    setSurahFilter(surahFilter === id ? null : id)
-                  }
-                  className="px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
-                  style={surahFilter === id ? {
-                    backgroundColor: '#f0fdf9',
-                    borderLeft: '3px solid #78d5c4',
-                    color: '#3ba892',
-                  } : {
-                    border: '1px solid hsl(var(--border))',
-                    color: 'hsl(var(--muted-foreground))',
-                  }}
-                >
-                  {id}. {getSurahName(id)}
-                </button>
-              ))}
+              {surahIds.map((id) => {
+                const color = getSurahColor(id);
+                return (
+                  <button
+                    key={id}
+                    onClick={() =>
+                      setSurahFilter(surahFilter === id ? null : id)
+                    }
+                    className="px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                    style={surahFilter === id ? {
+                      backgroundColor: color.bg,
+                      borderLeft: `3px solid ${color.accent}`,
+                      color: color.label,
+                    } : {
+                      border: '1px solid hsl(var(--border))',
+                      color: 'hsl(var(--muted-foreground))',
+                    }}
+                  >
+                    {id}. {getSurahName(id)}
+                  </button>
+                );
+              })}
             </div>
           )}
         </>
@@ -170,70 +174,70 @@ export default function BookmarksPage() {
             (t) => t.verseKey === bm.verseKey,
           );
           const isLoading = loadingSurah === bm.surahId && !cached;
+          const surahColor = getSurahColor(bm.surahId);
 
-          return (
-            <div
-              key={bm.id}
-              className={cn(
-                "group relative border bg-background transition-all",
-                isExpanded
-                  ? "border-border shadow-sm col-span-1 sm:col-span-2 lg:col-span-3"
-                  : "border-border hover:bg-[#fafafa]",
-              )}
-            >
-              {/* Card header — clickable to expand */}
-              <button
-                type="button"
-                onClick={() => toggleExpand(bm.id, bm.surahId)}
-                className="flex w-full items-start gap-3 p-4 text-left"
+          // Expanded card
+          if (isExpanded) {
+            return (
+              <div
+                key={bm.id}
+                className="col-span-full border-2 bg-background"
+                style={{ borderColor: surahColor.accent }}
               >
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center font-mono text-sm font-bold"
-                  style={{ backgroundColor: '#f0fdf9', color: '#3ba892' }}
-                >
-                  {verseNum}
+                {/* Header bar — matches ExpandedNoteCard */}
+                <div className="flex items-center justify-between border-b border-border/50 px-4 py-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider"
+                      style={{ color: surahColor.label }}
+                    >
+                      {getSurahName(Number(surahNum))} {bm.verseKey}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href={`/surah/${surahNum}?verse=${bm.verseKey}`}
+                      className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-[#fefce8] transition-colors border border-border"
+                    >
+                      Read in context
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeBookmark(bm.id);
+                        setExpandedId(null);
+                      }}
+                      className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+                      aria-label="Remove bookmark"
+                    >
+                      <TrashIcon weight="bold" className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(null)}
+                      className="ml-1 p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+                      aria-label="Collapse"
+                      title="Collapse"
+                    >
+                      <span className="font-mono text-[10px] font-bold">&times;</span>
+                    </button>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    {getSurahName(Number(surahNum))}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Verse {verseNum}
-                  </p>
-                  {bm.note && (
-                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                      {bm.note}
-                    </p>
-                  )}
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <CaretDownIcon
-                    className={cn(
-                      "h-4 w-4 text-muted-foreground/50 transition-transform",
-                      isExpanded && "rotate-180",
-                    )}
-                  />
-                </div>
-              </button>
 
-              {/* Expanded verse content */}
-              {isExpanded && (
-                <div className="border-t border-border px-4 pb-4 pt-3">
+                {/* Content */}
+                <div className="px-4 py-4 space-y-3">
                   {isLoading ? (
                     <div className="flex items-center justify-center py-6">
                       <CircleNotchIcon weight="bold" className="h-5 w-5 animate-spin text-muted-foreground" />
                     </div>
                   ) : verse ? (
                     <div className="space-y-3">
-                      {/* Arabic text */}
                       <p
                         className="text-right font-arabic-reading text-2xl leading-[2.2] text-foreground"
                         dir="rtl"
                       >
                         {verse.textUthmani}
                       </p>
-
-                      {/* Translation */}
                       {translation && (
                         <div className="border-t border-border/50 pt-3">
                           <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
@@ -253,61 +257,47 @@ export default function BookmarksPage() {
                       Could not load verse content.
                     </p>
                   )}
-
-                  {/* Actions row */}
-                  <div className="mt-3 flex items-center justify-between">
-                    <p className="text-[10px] text-muted-foreground/60">
-                      {bm.createdAt.toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/surah/${surahNum}?verse=${bm.verseKey}`}
-                        className="px-2.5 py-1 text-xs font-medium text-foreground hover:bg-[#fefce8] transition-colors border border-border"
-                      >
-                        Read in context
-                      </Link>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeBookmark(bm.id);
-                          setExpandedId(null);
-                        }}
-                        className="p-1.5 text-muted-foreground/50 hover:text-destructive transition-colors"
-                        aria-label="Remove bookmark"
-                      >
-                        <TrashIcon weight="bold" className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
+                  {bm.note && (
+                    <p className="text-xs text-muted-foreground">{bm.note}</p>
+                  )}
+                  <div className="font-mono text-[10px] text-muted-foreground/30">
+                    {bm.createdAt.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
                   </div>
                 </div>
-              )}
+              </div>
+            );
+          }
 
-              {/* Collapsed: show date and delete on hover */}
-              {!isExpanded && (
-                <div className="flex items-center justify-between px-4 pb-3">
-                  <p className="text-[10px] text-muted-foreground/60">
-                    {bm.createdAt.toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeBookmark(bm.id);
-                    }}
-                    className="shrink-0 p-1.5 text-muted-foreground/50 opacity-0 transition-colors hover:text-destructive group-hover:opacity-100"
-                    aria-label="Remove bookmark"
-                  >
-                    <TrashIcon weight="bold" className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+          // Collapsed card — matches PageNoteCard
+          return (
+            <div
+              key={bm.id}
+              className={cn(
+                "group relative border border-border bg-background p-4 transition-all hover:bg-[#fafafa] cursor-pointer",
+                expandedId !== null && "opacity-40",
               )}
+              style={{ borderLeft: `3px solid ${surahColor.accent}` }}
+              onClick={() => toggleExpand(bm.id, bm.surahId)}
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: surahColor.accent }}
+                  />
+                  <span className="text-sm font-semibold text-foreground">
+                    {getSurahName(Number(surahNum))} {bm.verseKey}
+                  </span>
+                </div>
+                {bm.note && (
+                  <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
+                    {bm.note}
+                  </p>
+                )}
+                <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
+                  <span>{bm.createdAt.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                </div>
+              </div>
             </div>
           );
         })}
