@@ -205,7 +205,7 @@ export default function SettingsPage() {
                       {idx === 0 && (
                         <span
                           className="shrink-0 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
-                          style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
+                          style={{ backgroundColor: 'var(--highlight)', color: 'var(--surah-yellow-label)' }}
                         >
                           Primary
                         </span>
@@ -259,7 +259,7 @@ export default function SettingsPage() {
                     <button
                       key={t.id}
                       onClick={() => activateTranslation(t.id)}
-                      className="flex w-full items-center gap-2 border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:bg-[#fefce8] transition-colors"
+                      className="flex w-full items-center gap-2 border border-dashed border-border px-3 py-2 text-left text-sm text-muted-foreground hover:bg-highlight transition-colors"
                     >
                       <PlusIcon weight="bold" className="h-3.5 w-3.5 shrink-0" />
                       <span>{t.name}</span>
@@ -404,13 +404,13 @@ function DataSection() {
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-[#fefce8] transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-highlight transition-colors disabled:opacity-50"
           >
             <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
             {exporting ? "Exporting..." : "Export Data"}
           </button>
           {exportResult && (
-            <p className="mt-2 text-xs font-mono font-bold uppercase tracking-wider" style={{ color: '#3ba892' }}>
+            <p className="mt-2 text-xs font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--surah-teal-label)' }}>
               Download started
             </p>
           )}
@@ -554,8 +554,8 @@ function CheckRow({ label, description, checked, onToggle }: {
       className={cn(
         "flex w-full items-center gap-3 border px-3 py-2.5 text-left transition-colors",
         checked
-          ? "border-border bg-[#fefce8]"
-          : "border-border hover:bg-[#fafafa]",
+          ? "border-border bg-highlight"
+          : "border-border hover:bg-surface",
       )}
     >
       <div

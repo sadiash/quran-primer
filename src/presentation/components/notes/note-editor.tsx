@@ -164,9 +164,9 @@ export function NoteEditor({
                 className="flex items-center gap-2 text-[11px]"
               >
                 {resource.type === "hadith" ? (
-                  <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#3ba892' }} />
+                  <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: 'var(--surah-teal-label)' }} />
                 ) : (
-                  <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#b5a600' }} />
+                  <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: 'var(--surah-yellow-label)' }} />
                 )}
                 <span className="font-medium text-foreground truncate flex-1">{resource.label}</span>
                 {resource.sourceUrl && (

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Amiri, Scheherazade_New, Space_Grotesk, Space_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import { QueryProvider, AudioProvider } from "@/presentation/providers";
 import { ToastProvider } from "@/presentation/components/ui";
 import "./globals.css";
@@ -60,11 +61,13 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <QueryProvider>
-          <AudioProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </AudioProvider>
-        </QueryProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <QueryProvider>
+            <AudioProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </AudioProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

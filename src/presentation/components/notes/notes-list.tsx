@@ -39,7 +39,7 @@ export function NotesList() {
   if (sortedNotes.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
-        <div className="p-3" style={{ backgroundColor: '#fefce8' }}>
+        <div className="p-3" style={{ backgroundColor: 'var(--highlight)' }}>
           <LightbulbIcon weight="duotone" className="h-8 w-8 text-muted-foreground/30" />
         </div>
         <p className="text-sm font-medium text-muted-foreground/70">
@@ -96,8 +96,8 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
     <div
       className={cn(
         "relative border border-border bg-background p-3",
-        "transition-colors hover:bg-[#fafafa]",
-        note.pinned && "bg-[#fefce8]/30",
+        "transition-colors hover:bg-surface",
+        note.pinned && "bg-highlight/30",
       )}
       style={tagColor ? { borderLeft: `3px solid ${tagColor.accent}` } : undefined}
     >
@@ -118,7 +118,7 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
           <button
             type="button"
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1 text-muted-foreground/60 hover:bg-[#fafafa] hover:text-foreground transition-colors"
+            className="p-1 text-muted-foreground/60 hover:bg-surface hover:text-foreground transition-colors"
             aria-label="Note actions"
           >
             <DotsThreeIcon weight="bold" className="h-4 w-4" />
@@ -127,7 +127,7 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-full z-50 mt-1 w-36 border border-border bg-background p-1 shadow-md">
-                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors">
+                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface hover:text-foreground transition-colors">
                   {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />Pin</>}
                 </button>
                 <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors">

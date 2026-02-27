@@ -230,19 +230,19 @@ export function HadithBrowser() {
                   selected={gradeFilter === "sahih"}
                   onClick={() => setGradeFilter("sahih")}
                   label="Sahih"
-                  dotColor="#3ba892"
+                  dotColor="var(--surah-teal-label)"
                 />
                 <RadioOption
                   selected={gradeFilter === "hasan"}
                   onClick={() => setGradeFilter("hasan")}
                   label="Hasan"
-                  dotColor="#b5a600"
+                  dotColor="var(--surah-yellow-label)"
                 />
                 <RadioOption
                   selected={gradeFilter === "daif"}
                   onClick={() => setGradeFilter("daif")}
                   label="Da'if"
-                  dotColor="#d4608a"
+                  dotColor="var(--surah-pink-label)"
                 />
               </div>
             </div>

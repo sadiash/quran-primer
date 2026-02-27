@@ -148,7 +148,7 @@ export function ReferenceInput({
             <span
               key={`vk-${vk}`}
               className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-foreground"
-              style={{ backgroundColor: '#f0fdf9' }}
+              style={{ backgroundColor: 'var(--surah-teal-bg)' }}
             >
               <BookOpenIcon weight="duotone" className="h-2.5 w-2.5 text-muted-foreground" />
               {getSurahName(Number(s))} {s}:{v}
@@ -169,7 +169,7 @@ export function ReferenceInput({
           <span
             key={`s-${id}`}
             className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium"
-            style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
+            style={{ backgroundColor: 'var(--highlight)', color: 'var(--surah-yellow-label)' }}
           >
             <BookOpenIcon weight="duotone" className="h-2.5 w-2.5" />
             {getSurahName(id)}
@@ -208,8 +208,8 @@ export function ReferenceInput({
               }}
               className={`flex w-full items-center gap-2 px-2 py-1.5 text-xs transition-colors ${
                 i === selectedIdx
-                  ? "bg-[#fefce8] text-foreground"
-                  : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
+                  ? "bg-highlight text-foreground"
+                  : "text-muted-foreground hover:bg-surface hover:text-foreground"
               }`}
             >
               <BookOpenIcon weight="duotone" className="h-3 w-3" />

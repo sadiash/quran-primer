@@ -272,7 +272,7 @@ function StepStudyTools({
 function StepDone() {
   return (
     <div className="text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center" style={{ backgroundColor: '#fefce8' }}>
+      <div className="mx-auto flex h-16 w-16 items-center justify-center" style={{ backgroundColor: 'var(--highlight)' }}>
         <LogoIcon className="h-8 w-8 text-foreground" />
       </div>
       <h2 className="mt-6 text-xl font-bold uppercase tracking-tight text-foreground">You&apos;re all set!</h2>
@@ -300,8 +300,8 @@ function ToggleOption({ label, description, active, onClick }: {
       className={cn(
         "flex w-full items-center gap-3 border p-3 text-left transition-colors",
         active
-          ? "border-border bg-[#fefce8]"
-          : "border-border hover:bg-[#fafafa]",
+          ? "border-border bg-highlight"
+          : "border-border hover:bg-surface",
       )}
     >
       <div
@@ -333,8 +333,8 @@ function CheckOption({ label, description, checked, onToggle }: {
       className={cn(
         "flex w-full items-center gap-3 border p-3 text-left transition-colors",
         checked
-          ? "border-border bg-[#fefce8]"
-          : "border-border hover:bg-[#fafafa]",
+          ? "border-border bg-highlight"
+          : "border-border hover:bg-surface",
       )}
     >
       <div

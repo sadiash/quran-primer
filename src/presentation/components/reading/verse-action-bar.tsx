@@ -127,7 +127,7 @@ function ActionButton({
       className={cn(
         "p-1.5 transition-colors",
         active
-          ? "text-foreground bg-[#fefce8]"
+          ? "text-foreground bg-highlight"
           : "text-muted-foreground hover:text-foreground hover:bg-surface",
       )}
       aria-label={label}

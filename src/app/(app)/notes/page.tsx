@@ -193,7 +193,7 @@ export default function NotesPage() {
           {notes.length > 0 && (
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-              activeTab === "notes" ? "bg-[#fefce8] text-foreground" : "bg-muted text-muted-foreground",
+              activeTab === "notes" ? "bg-highlight text-foreground" : "bg-muted text-muted-foreground",
             )}>
               {notes.length}
             </span>
@@ -238,7 +238,7 @@ export default function NotesPage() {
               <button
                 type="button"
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2.5 text-sm text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
+                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2.5 text-sm text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
                 aria-label="Sort notes"
               >
                 <ArrowsDownUpIcon weight="bold" className="h-4 w-4" />
@@ -261,8 +261,8 @@ export default function NotesPage() {
                         className={cn(
                           "flex w-full items-center px-3 py-2 text-xs transition-colors",
                           sortOption === opt.value
-                            ? "bg-[#fefce8] text-foreground font-medium"
-                            : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
+                            ? "bg-highlight text-foreground font-medium"
+                            : "text-muted-foreground hover:bg-surface hover:text-foreground",
                         )}
                       >
                         {opt.label}
@@ -282,8 +282,8 @@ export default function NotesPage() {
                 className={cn(
                   "flex items-center gap-1 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors",
                   tagFilter === null
-                    ? "bg-[#fefce8] text-foreground"
-                    : "border border-border text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
+                    ? "bg-highlight text-foreground"
+                    : "border border-border text-muted-foreground hover:bg-surface hover:text-foreground",
                 )}
               >
                 All
@@ -398,7 +398,7 @@ export default function NotesPage() {
 
       {activeTab === "notes" && notes.length === 0 && !editorMode && (
         <div className="mt-20 flex flex-col items-center text-center">
-          <div className="p-4" style={{ backgroundColor: '#fefce8' }}>
+          <div className="p-4" style={{ backgroundColor: 'var(--highlight)' }}>
             <LightbulbIcon weight="duotone" className="h-8 w-8 text-muted-foreground/30" />
           </div>
           <h2 className="mt-5 text-lg font-semibold text-foreground">
@@ -418,7 +418,7 @@ export default function NotesPage() {
             <button
               type="button"
               onClick={() => setEditorMode("new")}
-              className="border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-[#fafafa] transition-colors"
+              className="border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-surface transition-colors"
             >
               Create note
             </button>
@@ -542,8 +542,8 @@ function PageNoteCard({
   return (
     <div
       className={cn(
-        "relative border border-border bg-background p-4 transition-all hover:bg-[#fafafa] cursor-pointer",
-        note.pinned && "border-border bg-[#fefce8]/30",
+        "relative border border-border bg-background p-4 transition-all hover:bg-surface cursor-pointer",
+        note.pinned && "border-border bg-highlight/30",
         isDimmed && "opacity-40",
       )}
       style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}

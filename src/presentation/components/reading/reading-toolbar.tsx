@@ -184,7 +184,7 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
                           className={cn(
                             "font-mono text-[9px] font-bold uppercase tracking-wider px-2 py-1 border transition-colors",
                             isVisible
-                              ? "border-border text-foreground bg-[#fefce8]"
+                              ? "border-border text-foreground bg-highlight"
                               : "border-border text-muted-foreground hover:text-foreground",
                           )}
                         >

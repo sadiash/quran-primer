@@ -68,7 +68,7 @@ export function VerseActions({
             e.stopPropagation();
             onPlay();
           }}
-          className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
+          className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
@@ -86,7 +86,7 @@ export function VerseActions({
             "p-1.5 transition-colors",
             isBookmarked
               ? "text-foreground"
-              : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
+              : "text-muted-foreground hover:bg-surface hover:text-foreground",
           )}
           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
         >
@@ -104,7 +104,7 @@ export function VerseActions({
             setOpen(!open);
             setShowLinkMenu(false);
           }}
-          className="p-1.5 text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
+          className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
           aria-label="More actions"
         >
           <DotsThreeIcon weight="bold" className="h-3.5 w-3.5" />
@@ -211,7 +211,7 @@ function MenuItem({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
+      className="flex w-full items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
     >
       <Icon className="h-3.5 w-3.5" weight="duotone" />
       {label}

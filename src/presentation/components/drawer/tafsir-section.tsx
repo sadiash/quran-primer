@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
 
 const TAFSIR_RESOURCES = [
-  { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", border: "#78d5c4", bg: "#f0fdf9", label: "#3ba892" },
-  { id: 169, name: "Ibn Kathir (Abridged)", authorName: "Ibn Kathir", border: "#e8e337", bg: "#fefce8", label: "#b5a600" },
-  { id: 817, name: "Tazkirul Quran", authorName: "Maulana Wahiduddin Khan", border: "#c4b5e0", bg: "#f5f3ff", label: "#8b6fc0" },
+  { id: 74, name: "Al-Jalalayn", authorName: "Jalal ad-Din al-Mahalli & as-Suyuti", border: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", label: "var(--surah-teal-label)" },
+  { id: 169, name: "Ibn Kathir (Abridged)", authorName: "Ibn Kathir", border: "var(--surah-yellow-accent)", bg: "var(--surah-yellow-bg)", label: "var(--surah-yellow-label)" },
+  { id: 817, name: "Tazkirul Quran", authorName: "Maulana Wahiduddin Khan", border: "var(--surah-lavender-accent)", bg: "var(--surah-lavender-bg)", label: "var(--surah-lavender-label)" },
 ] as const;
 
 function sanitize(html: string): string {

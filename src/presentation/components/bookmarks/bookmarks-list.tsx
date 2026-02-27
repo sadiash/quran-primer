@@ -30,7 +30,7 @@ export function BookmarksList() {
             key={bm.id}
             className={cn(
               "group flex items-center gap-3 border border-border bg-background p-3",
-              "transition-colors hover:bg-[#fafafa]",
+              "transition-colors hover:bg-surface",
             )}
             style={{ borderLeft: `3px solid ${surahColor.accent}` }}
           >

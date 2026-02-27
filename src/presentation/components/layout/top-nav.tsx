@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, NoteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon } from "@phosphor-icons/react";
+import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, MoonIcon, NoteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon, SunIcon } from "@phosphor-icons/react";
+import { useTheme } from "next-themes";
 import { LogoIcon } from "./logo";
 import type { IconWeight } from "@phosphor-icons/react";
 import { usePanels } from "@/presentation/providers/panel-provider";
@@ -64,7 +65,7 @@ export function TopNav() {
           <Link
             href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
             className="hidden md:flex items-center gap-1.5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider hover:opacity-80 transition-opacity"
-            style={{ backgroundColor: color.accent, color: color.text }}
+            style={{ backgroundColor: color.accent, color: '#0a0a0a' }}
           >
             <PlayCircleIcon weight="bold" className="h-3 w-3" />
             Continue {getSurahName(latest.surahId)} : {latest.lastVerseKey.split(":")[1]}
@@ -79,6 +80,9 @@ export function TopNav() {
       {showPanels && (
         <PanelsDropdown openPanels={openPanels} onToggle={togglePanel} />
       )}
+
+      {/* Dark mode toggle */}
+      <ThemeToggle />
 
       {/* Settings */}
       <Link
@@ -125,7 +129,7 @@ function PanelsDropdown({
                   className={cn(
                     "flex w-full items-center gap-2.5 px-2.5 py-2 font-mono text-[10px] font-bold tracking-wider transition-colors",
                     isOpen
-                      ? "bg-[#fefce8] text-foreground"
+                      ? "bg-primary/15 text-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-surface",
                   )}
                 >
@@ -138,6 +142,35 @@ function PanelsDropdown({
         </>
       )}
     </div>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  // Render placeholder with same dimensions to avoid layout shift
+  if (!mounted) {
+    return <div className="p-1.5 h-7 w-7" />;
+  }
+
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Light mode" : "Dark mode"}
+    >
+      {isDark ? (
+        <SunIcon weight="bold" className="h-4 w-4" />
+      ) : (
+        <MoonIcon weight="bold" className="h-4 w-4" />
+      )}
+    </button>
   );
 }
 

@@ -5,8 +5,8 @@ import { RobotIcon } from "@phosphor-icons/react";
 export function AiSection() {
   return (
     <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
-      <div className="p-3" style={{ backgroundColor: '#f5f3ff' }}>
-        <RobotIcon weight="duotone" className="h-6 w-6" style={{ color: '#8b6fc0' }} />
+      <div className="p-3" style={{ backgroundColor: 'var(--surah-lavender-bg)' }}>
+        <RobotIcon weight="duotone" className="h-6 w-6" style={{ color: 'var(--surah-lavender-label)' }} />
       </div>
       <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
         Under Development

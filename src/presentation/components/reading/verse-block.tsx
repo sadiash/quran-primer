@@ -320,7 +320,7 @@ function ConceptPills({
       {visible.map((c) => (
         <Tooltip key={c.id}>
           <TooltipTrigger asChild>
-            <span className="inline-flex items-center border border-border bg-[#f0fdf9] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider cursor-default text-[#0d7d6c]">
+            <span className="inline-flex items-center border border-border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider cursor-default" style={{ backgroundColor: 'var(--surah-teal-bg)', color: 'var(--surah-teal-label)' }}>
               {c.name}
             </span>
           </TooltipTrigger>

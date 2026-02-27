@@ -124,9 +124,9 @@ export default function BookmarksPage() {
                 onClick={() => setSurahFilter(null)}
                 className="px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
                 style={surahFilter === null ? {
-                  backgroundColor: '#fefce8',
+                  backgroundColor: 'var(--highlight)',
                   borderLeft: '3px solid #e8e337',
-                  color: '#b5a600',
+                  color: 'var(--surah-yellow-label)',
                 } : {
                   border: '1px solid hsl(var(--border))',
                   color: 'hsl(var(--muted-foreground))',
@@ -197,7 +197,7 @@ export default function BookmarksPage() {
                   <div className="flex items-center gap-1">
                     <Link
                       href={`/surah/${surahNum}?verse=${bm.verseKey}`}
-                      className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-[#fefce8] transition-colors border border-border"
+                      className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-highlight transition-colors border border-border"
                     >
                       Read in context
                     </Link>
@@ -273,7 +273,7 @@ export default function BookmarksPage() {
             <div
               key={bm.id}
               className={cn(
-                "group relative border border-border bg-background p-4 transition-all hover:bg-[#fafafa] cursor-pointer",
+                "group relative border border-border bg-background p-4 transition-all hover:bg-surface cursor-pointer",
                 expandedId !== null && "opacity-40",
               )}
               style={{ borderLeft: `3px solid ${surahColor.accent}` }}

@@ -33,8 +33,8 @@ function ToolbarButton({
       className={cn(
         "flex h-6 w-6 shrink-0 items-center justify-center transition-colors",
         active
-          ? "bg-[#fefce8] text-foreground"
-          : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
+          ? "bg-highlight text-foreground"
+          : "text-muted-foreground hover:bg-surface hover:text-foreground",
         disabled && "pointer-events-none opacity-40",
       )}
     >

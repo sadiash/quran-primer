@@ -55,11 +55,11 @@ export function SourcesSection() {
           {refs.map((ref) => (
             <button
               key={ref.verse}
-              className="group flex w-full items-start gap-2 border border-transparent p-2 text-left transition-colors hover:bg-[#fefce8]"
+              className="group flex w-full items-start gap-2 border border-transparent p-2 text-left transition-colors hover:bg-highlight"
             >
               <span
                 className="shrink-0 font-mono text-[10px] font-bold mt-0.5 px-1.5 py-0.5"
-                style={{ backgroundColor: '#f0fdf9', color: '#3ba892' }}
+                style={{ backgroundColor: 'var(--surah-teal-bg)', color: 'var(--surah-teal-label)' }}
               >
                 {ref.verse}
               </span>
@@ -69,7 +69,7 @@ export function SourcesSection() {
                 </p>
                 <span
                   className="inline-flex items-center mt-0.5 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
-                  style={{ backgroundColor: '#f5f3ff', color: '#8b6fc0' }}
+                  style={{ backgroundColor: 'var(--surah-lavender-bg)', color: 'var(--surah-lavender-label)' }}
                 >
                   {ref.theme}
                 </span>

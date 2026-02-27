@@ -11,12 +11,12 @@ export const COLLECTIONS = [
 
 /** Display-friendly collection names + colors (inline styles to avoid Tailwind purge) */
 export const COLLECTION_META: Record<string, { name: string; accentColor: string; bg: string; labelColor: string }> = {
-  bukhari: { name: "Sahih al-Bukhari", accentColor: "#78d5c4", bg: "#f0fdf9", labelColor: "#3ba892" },
-  muslim: { name: "Sahih Muslim", accentColor: "#78d5c4", bg: "#f0fdf9", labelColor: "#3ba892" },
-  abudawud: { name: "Sunan Abu Dawud", accentColor: "#e8e337", bg: "#fefce8", labelColor: "#b5a600" },
-  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "#c4b5e0", bg: "#f5f3ff", labelColor: "#8b6fc0" },
-  nasai: { name: "Sunan an-Nasa'i", accentColor: "#f5a0c0", bg: "#fdf2f8", labelColor: "#d4608a" },
-  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "#e8e337", bg: "#fefce8", labelColor: "#b5a600" },
+  bukhari: { name: "Sahih al-Bukhari", accentColor: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", labelColor: "var(--surah-teal-label)" },
+  muslim: { name: "Sahih Muslim", accentColor: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", labelColor: "var(--surah-teal-label)" },
+  abudawud: { name: "Sunan Abu Dawud", accentColor: "var(--surah-yellow-accent)", bg: "var(--surah-yellow-bg)", labelColor: "var(--surah-yellow-label)" },
+  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "var(--surah-lavender-accent)", bg: "var(--surah-lavender-bg)", labelColor: "var(--surah-lavender-label)" },
+  nasai: { name: "Sunan an-Nasa'i", accentColor: "var(--surah-pink-accent)", bg: "var(--surah-pink-bg)", labelColor: "var(--surah-pink-label)" },
+  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "var(--surah-yellow-accent)", bg: "var(--surah-yellow-bg)", labelColor: "var(--surah-yellow-label)" },
 };
 
 /* ─── Grade helpers ─── */
@@ -47,10 +47,10 @@ export function categorizeGrade(label: string): GradeCategory {
 }
 
 export const GRADE_STYLES: Record<GradeCategory, string> = {
-  sahih: "text-[#3ba892] bg-[#f0fdf9]",
-  hasan: "text-[#b5a600] bg-[#fefce8]",
-  daif: "text-[#d4608a] bg-[#fdf2f8]",
-  fabricated: "text-[#c4425a] bg-[#fdf2f8]",
+  sahih: "text-[var(--surah-teal-label)] bg-[var(--surah-teal-bg)]",
+  hasan: "text-[var(--surah-yellow-label)] bg-[var(--surah-yellow-bg)]",
+  daif: "text-[var(--surah-pink-label)] bg-[var(--surah-pink-bg)]",
+  fabricated: "text-[var(--surah-pink-label)] bg-[var(--surah-pink-bg)]",
   unknown: "text-muted-foreground bg-muted",
 };
 

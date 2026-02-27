@@ -149,14 +149,14 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
                 selected={filter === "meccan"}
                 onClick={() => setFilter("meccan")}
                 label="● Meccan"
-                dotColor="#b5a600"
+                dotColor="var(--surah-yellow-label)"
                 suffix={`(${meccanCount})`}
               />
               <RadioOption
                 selected={filter === "medinan"}
                 onClick={() => setFilter("medinan")}
                 label="● Medinan"
-                dotColor="#3ba892"
+                dotColor="var(--surah-teal-label)"
                 suffix={`(${medinanCount})`}
               />
             </div>
@@ -362,10 +362,14 @@ function SurahCard({
       </p>
 
       {/* Top meta */}
-      <div className="flex items-center px-3 pt-3 relative z-[1]">
+      <div className="flex items-center gap-1.5 px-3 pt-3 relative z-[1]">
+        {surah.revelationType === "makkah" ? (
+          <KaabaIcon className="h-3 w-3" style={{ color: isBg ? "rgba(10,10,10,0.5)" : "var(--surah-yellow-label)" }} />
+        ) : (
+          <MasjidIcon className="h-3 w-3" style={{ color: isBg ? "rgba(10,10,10,0.5)" : "var(--surah-teal-label)" }} />
+        )}
         <span className={cn("font-mono text-[9px] uppercase tracking-[0.15em]", isBg ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground")}>
-          <span style={{ color: isBg ? "rgba(10,10,10,0.5)" : surah.revelationType === "makkah" ? "#b5a600" : "#3ba892" }}>●</span>
-          {" "}{surah.revelationType === "makkah" ? "MECCAN" : "MEDINAN"}
+          {surah.revelationType === "makkah" ? "MECCAN" : "MEDINAN"}
         </span>
       </div>
 
@@ -393,7 +397,7 @@ function SurahCard({
         {progress && isComplete && (
           <span
             className="font-mono text-[10px] uppercase tracking-[0.15em]"
-            style={{ color: isBg ? "#0a0a0a" : "#3ba892" }}
+            style={{ color: isBg ? "#0a0a0a" : "var(--surah-teal-label)" }}
           >
             DONE
           </span>
@@ -422,6 +426,42 @@ function SurahCard({
         style={{ backgroundColor: isBg ? "#0a0a0a" : color.accent }}
       />
     </Link>
+  );
+}
+
+/* ─── Kaaba icon (Meccan surahs) ─── */
+function KaabaIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      {/* Cube body */}
+      <rect x="4" y="6" width="16" height="14" rx="0" />
+      {/* Kiswa band */}
+      <line x1="4" y1="11" x2="20" y2="11" />
+      {/* Door */}
+      <rect x="10" y="14" width="4" height="6" rx="0" />
+      {/* Top cloth edge */}
+      <path d="M4 6 L12 3 L20 6" />
+    </svg>
+  );
+}
+
+/* ─── Masjid al-Nabawi icon (Medinan surahs) ─── */
+function MasjidIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      {/* Central dome */}
+      <path d="M7 12 Q12 4 17 12" />
+      {/* Base */}
+      <rect x="5" y="12" width="14" height="8" rx="0" />
+      {/* Left minaret */}
+      <line x1="3" y1="8" x2="3" y2="20" />
+      <circle cx="3" cy="7" r="1" fill="currentColor" stroke="none" />
+      {/* Right minaret */}
+      <line x1="21" y1="8" x2="21" y2="20" />
+      <circle cx="21" cy="7" r="1" fill="currentColor" stroke="none" />
+      {/* Door */}
+      <path d="M10 20 L10 16 Q12 14 14 16 L14 20" />
+    </svg>
   );
 }
 

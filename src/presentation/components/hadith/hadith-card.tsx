@@ -93,7 +93,7 @@ export function HadithCard({
     <div
       className={cn(
         "group transition-all border border-border",
-        expanded ? "bg-background" : "hover:bg-[#fafafa]",
+        expanded ? "bg-background" : "hover:bg-surface",
       )}
       style={{ borderLeft: `3px solid ${meta?.accentColor ?? "#666"}` }}
     >
@@ -106,7 +106,7 @@ export function HadithCard({
         <div className="shrink-0 flex flex-col items-center gap-1 pt-0.5">
           <span
             className="font-mono text-[11px] font-bold tabular-nums px-2 py-0.5"
-            style={{ backgroundColor: meta?.bg ?? '#f5f5f5', color: meta?.labelColor ?? '#666' }}
+            style={{ backgroundColor: meta?.bg ?? 'var(--highlight)', color: meta?.labelColor ?? 'var(--surah-yellow-label)' }}
           >
             #{hadith.hadithNumber}
           </span>
@@ -141,7 +141,7 @@ export function HadithCard({
                 <span
                   key={topic}
                   className="inline-flex items-center px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider leading-none"
-                  style={{ backgroundColor: "#f5f3ff", color: "#8b6fc0" }}
+                  style={{ backgroundColor: "var(--surah-lavender-bg)", color: "var(--surah-lavender-label)" }}
                 >
                   {topic}
                 </span>
@@ -179,7 +179,7 @@ export function HadithCard({
                 <span
                   key={topic}
                   className="inline-flex items-center px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider leading-none"
-                  style={{ backgroundColor: "#f5f3ff", color: "#8b6fc0" }}
+                  style={{ backgroundColor: "var(--surah-lavender-bg)", color: "var(--surah-lavender-label)" }}
                 >
                   {topic}
                 </span>
@@ -190,7 +190,7 @@ export function HadithCard({
           {/* Metadata footer */}
           <div
             className="border border-border px-4 py-3 space-y-2"
-            style={{ backgroundColor: meta?.bg ?? '#fafafa' }}
+            style={{ backgroundColor: meta?.bg ?? 'var(--highlight)' }}
           >
             {/* Reference line */}
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -236,7 +236,7 @@ export function HadithCard({
                 className={cn(
                   "p-1.5 transition-colors",
                   saved
-                    ? "text-foreground bg-[#fefce8]"
+                    ? "text-foreground bg-highlight"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface",
                 )}
                 aria-label={saved ? "Saved" : "Save to notes"}
@@ -313,7 +313,7 @@ function CopyButton({ text }: { text: string }) {
       className={cn(
         "p-1.5 transition-colors",
         copied
-          ? "text-foreground bg-[#fefce8]"
+          ? "text-foreground bg-highlight"
           : "text-muted-foreground hover:text-foreground hover:bg-surface",
       )}
       aria-label={copied ? "Copied" : "Copy"}

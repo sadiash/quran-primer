@@ -67,7 +67,7 @@ export function LinkToNoteMenu({ verseKey, onLinked }: LinkToNoteMenuProps) {
               type="button"
               disabled={alreadyLinked}
               onClick={() => handleLink(note.id)}
-              className="flex w-full items-start gap-2 px-2 py-1.5 text-left text-xs transition-colors hover:bg-[#fafafa] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex w-full items-start gap-2 px-2 py-1.5 text-left text-xs transition-colors hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <LinkSimpleIcon weight="bold" className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">

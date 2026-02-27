@@ -1,8 +1,8 @@
 export const SURAH_PALETTE = [
-  { id: "yellow",   bg: "#fefce8", accent: "#e8e337", label: "#b5a600", text: "#854d0e" },
-  { id: "pink",     bg: "#fdf2f8", accent: "#f5a0c0", label: "#d4608a", text: "#9d174d" },
-  { id: "teal",     bg: "#f0fdf9", accent: "#78d5c4", label: "#3ba892", text: "#115e59" },
-  { id: "lavender", bg: "#f5f3ff", accent: "#c4b5e0", label: "#8b6fc0", text: "#5b21b6" },
+  { id: "yellow",   bg: "var(--surah-yellow-bg)",   accent: "var(--surah-yellow-accent)",   label: "var(--surah-yellow-label)",   text: "var(--surah-yellow-text)" },
+  { id: "pink",     bg: "var(--surah-pink-bg)",     accent: "var(--surah-pink-accent)",     label: "var(--surah-pink-label)",     text: "var(--surah-pink-text)" },
+  { id: "teal",     bg: "var(--surah-teal-bg)",     accent: "var(--surah-teal-accent)",     label: "var(--surah-teal-label)",     text: "var(--surah-teal-text)" },
+  { id: "lavender", bg: "var(--surah-lavender-bg)", accent: "var(--surah-lavender-accent)", label: "var(--surah-lavender-label)", text: "var(--surah-lavender-text)" },
 ] as const;
 
 export type SurahColor = (typeof SURAH_PALETTE)[number];

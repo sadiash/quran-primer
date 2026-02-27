@@ -40,6 +40,9 @@
   --color-surface-hover: hsl(var(--surface-hover));
   --color-surface-active: hsl(var(--surface-active));
 
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+
   --color-sidebar: hsl(var(--sidebar-background));
   --color-sidebar-foreground: hsl(var(--sidebar-foreground));
   --color-sidebar-primary: hsl(var(--sidebar-primary));
@@ -93,7 +96,7 @@
   }
 }
 
-/* ─── Brutalist Light Mode — The Only Mode ─── */
+/* ─── Brutalist Light Mode ─── */
 :root {
   --background: 0 0% 100%;
   --foreground: 0 0% 4%;
@@ -128,6 +131,9 @@
   --surface-hover: 0 0% 93%;
   --surface-active: 0 0% 90%;
 
+  --highlight: #fefce8;
+  --highlight-soft: rgba(232, 227, 55, 0.15);
+
   --sidebar-background: 0 0% 96%;
   --sidebar-foreground: 0 0% 4%;
   --sidebar-primary: 58 82% 56%;
@@ -148,31 +154,48 @@
   --br-accent-teal: #78d5c4;
   --br-accent-lavender: #c4b5e0;
 
-  /* Translation color system — editorial strips
-     bg = light tint, border = accent, label = accent, text = foreground */
-  --translation-1-bg: #fefce8;
-  --translation-1-border: #e8e337;
-  --translation-1-label: #b5a600;
+  /* Surah palette — bg tints, accent, label, text-on-accent */
+  --surah-yellow-bg: #fefce8;
+  --surah-yellow-accent: #e8e337;
+  --surah-yellow-label: #b5a600;
+  --surah-yellow-text: #854d0e;
+  --surah-pink-bg: #fdf2f8;
+  --surah-pink-accent: #f5a0c0;
+  --surah-pink-label: #d4608a;
+  --surah-pink-text: #9d174d;
+  --surah-teal-bg: #f0fdf9;
+  --surah-teal-accent: #78d5c4;
+  --surah-teal-label: #3ba892;
+  --surah-teal-text: #115e59;
+  --surah-lavender-bg: #f5f3ff;
+  --surah-lavender-accent: #c4b5e0;
+  --surah-lavender-label: #8b6fc0;
+  --surah-lavender-text: #5b21b6;
+
+  /* Translation color system — editorial strips */
+  --translation-1-bg: var(--surah-yellow-bg);
+  --translation-1-border: var(--surah-yellow-accent);
+  --translation-1-label: var(--surah-yellow-label);
   --translation-1-text: var(--foreground);
-  --translation-2-bg: #fdf2f8;
-  --translation-2-border: #f5a0c0;
-  --translation-2-label: #d4608a;
+  --translation-2-bg: var(--surah-pink-bg);
+  --translation-2-border: var(--surah-pink-accent);
+  --translation-2-label: var(--surah-pink-label);
   --translation-2-text: var(--foreground);
-  --translation-3-bg: #f0fdf9;
-  --translation-3-border: #78d5c4;
-  --translation-3-label: #3ba892;
+  --translation-3-bg: var(--surah-teal-bg);
+  --translation-3-border: var(--surah-teal-accent);
+  --translation-3-label: var(--surah-teal-label);
   --translation-3-text: var(--foreground);
-  --translation-4-bg: #f5f3ff;
-  --translation-4-border: #c4b5e0;
-  --translation-4-label: #8b6fc0;
+  --translation-4-bg: var(--surah-lavender-bg);
+  --translation-4-border: var(--surah-lavender-accent);
+  --translation-4-label: var(--surah-lavender-label);
   --translation-4-text: var(--foreground);
-  --translation-5-bg: #fff7ed;
-  --translation-5-border: #f5a0c0;
-  --translation-5-label: #d4608a;
+  --translation-5-bg: var(--surah-pink-bg);
+  --translation-5-border: var(--surah-pink-accent);
+  --translation-5-label: var(--surah-pink-label);
   --translation-5-text: var(--foreground);
-  --translation-6-bg: #f0fdf9;
-  --translation-6-border: #78d5c4;
-  --translation-6-label: #3ba892;
+  --translation-6-bg: var(--surah-teal-bg);
+  --translation-6-border: var(--surah-teal-accent);
+  --translation-6-label: var(--surah-teal-label);
   --translation-6-text: var(--foreground);
 
   /* Legacy HSL compat */
@@ -182,6 +205,116 @@
   --translation-4: 263 48% 60%;
   --translation-5: 340 75% 62%;
   --translation-6: 168 52% 53%;
+}
+
+/* ─── Brutalist Dark Mode ─── */
+.dark {
+  --background: 0 0% 6%;
+  --foreground: 0 0% 93%;
+
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 93%;
+
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 93%;
+
+  --primary: 58 82% 56%;
+  --primary-foreground: 0 0% 4%;
+
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 93%;
+
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 55%;
+
+  --accent: 168 48% 50%;
+  --accent-foreground: 0 0% 93%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 18%;
+  --input: 0 0% 22%;
+  --ring: 0 0% 93%;
+
+  --surface: 0 0% 10%;
+  --surface-hover: 0 0% 14%;
+  --surface-active: 0 0% 18%;
+
+  --highlight: rgba(232, 227, 55, 0.12);
+  --highlight-soft: rgba(232, 227, 55, 0.06);
+
+  --sidebar-background: 0 0% 8%;
+  --sidebar-foreground: 0 0% 93%;
+  --sidebar-primary: 58 82% 56%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 0 0% 14%;
+  --sidebar-accent-foreground: 0 0% 93%;
+  --sidebar-border: 0 0% 18%;
+  --sidebar-ring: 0 0% 93%;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0 2px 0 rgba(0, 0, 0, 0.3);
+
+  /* Brutalist accent palette */
+  --br-accent-yellow: #e8e337;
+  --br-accent-pink: #f5a0c0;
+  --br-accent-teal: #78d5c4;
+  --br-accent-lavender: #c4b5e0;
+
+  /* Surah palette — dark tinted backgrounds, brighter labels */
+  --surah-yellow-bg: rgba(232, 227, 55, 0.10);
+  --surah-yellow-accent: #e8e337;
+  --surah-yellow-label: #e8e337;
+  --surah-yellow-text: #fefce8;
+  --surah-pink-bg: rgba(245, 160, 192, 0.10);
+  --surah-pink-accent: #f5a0c0;
+  --surah-pink-label: #f5a0c0;
+  --surah-pink-text: #fdf2f8;
+  --surah-teal-bg: rgba(120, 213, 196, 0.10);
+  --surah-teal-accent: #78d5c4;
+  --surah-teal-label: #78d5c4;
+  --surah-teal-text: #f0fdf9;
+  --surah-lavender-bg: rgba(196, 181, 224, 0.10);
+  --surah-lavender-accent: #c4b5e0;
+  --surah-lavender-label: #c4b5e0;
+  --surah-lavender-text: #f5f3ff;
+
+  /* Translation color system — references surah vars */
+  --translation-1-bg: var(--surah-yellow-bg);
+  --translation-1-border: var(--surah-yellow-accent);
+  --translation-1-label: var(--surah-yellow-label);
+  --translation-1-text: var(--foreground);
+  --translation-2-bg: var(--surah-pink-bg);
+  --translation-2-border: var(--surah-pink-accent);
+  --translation-2-label: var(--surah-pink-label);
+  --translation-2-text: var(--foreground);
+  --translation-3-bg: var(--surah-teal-bg);
+  --translation-3-border: var(--surah-teal-accent);
+  --translation-3-label: var(--surah-teal-label);
+  --translation-3-text: var(--foreground);
+  --translation-4-bg: var(--surah-lavender-bg);
+  --translation-4-border: var(--surah-lavender-accent);
+  --translation-4-label: var(--surah-lavender-label);
+  --translation-4-text: var(--foreground);
+  --translation-5-bg: var(--surah-pink-bg);
+  --translation-5-border: var(--surah-pink-accent);
+  --translation-5-label: var(--surah-pink-label);
+  --translation-5-text: var(--foreground);
+  --translation-6-bg: var(--surah-teal-bg);
+  --translation-6-border: var(--surah-teal-accent);
+  --translation-6-label: var(--surah-teal-label);
+  --translation-6-text: var(--foreground);
+
+  /* Legacy HSL compat */
+  --translation-1: 55 82% 56%;
+  --translation-2: 340 75% 70%;
+  --translation-3: 168 52% 60%;
+  --translation-4: 263 48% 68%;
+  --translation-5: 340 75% 70%;
+  --translation-6: 168 52% 60%;
 }
 
 /* ─── Base Styles ─── */
@@ -225,7 +358,7 @@ body {
 /* ─── Selection — Yellow highlight ─── */
 ::selection {
   background-color: var(--br-accent-yellow);
-  color: hsl(var(--foreground));
+  color: #0a0a0a;
 }
 
 /* ─── Focus Ring — Hard, black ─── */

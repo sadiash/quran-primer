@@ -189,9 +189,9 @@ export function HadithSection() {
             onClick={() => { setCollection(undefined); setVisibleCount(10); }}
             className="px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
             style={!collection ? {
-              backgroundColor: '#fefce8',
+              backgroundColor: 'var(--highlight)',
               borderLeft: '3px solid #e8e337',
-              color: '#b5a600',
+              color: 'var(--surah-yellow-label)',
             } : {
               border: '1px solid hsl(var(--border))',
               color: 'hsl(var(--muted-foreground))',
@@ -229,10 +229,10 @@ export function HadithSection() {
               const count = gradeCounts[g.id];
               const isActive = gradeFilter === g.id;
               const gradeColors: Record<string, { bg: string; border: string; label: string }> = {
-                all: { bg: '#fefce8', border: '#e8e337', label: '#b5a600' },
-                sahih: { bg: '#f0fdf9', border: '#78d5c4', label: '#3ba892' },
-                hasan: { bg: '#fefce8', border: '#e8e337', label: '#b5a600' },
-                daif: { bg: '#fdf2f8', border: '#f5a0c0', label: '#d4608a' },
+                all: { bg: 'var(--surah-yellow-bg)', border: 'var(--surah-yellow-accent)', label: 'var(--surah-yellow-label)' },
+                sahih: { bg: 'var(--surah-teal-bg)', border: 'var(--surah-teal-accent)', label: 'var(--surah-teal-label)' },
+                hasan: { bg: 'var(--surah-yellow-bg)', border: 'var(--surah-yellow-accent)', label: 'var(--surah-yellow-label)' },
+                daif: { bg: 'var(--surah-pink-bg)', border: 'var(--surah-pink-accent)', label: 'var(--surah-pink-label)' },
               };
               const colors = gradeColors[g.id] ?? gradeColors.all!;
               return (
@@ -335,7 +335,7 @@ export function HadithSection() {
           </p>
           <span
             className="inline-flex items-center px-2 py-0.5 font-mono text-[10px] font-bold leading-none"
-            style={{ backgroundColor: "#f0fdf9", color: "#3ba892" }}
+            style={{ backgroundColor: "var(--surah-teal-bg)", color: "var(--surah-teal-label)" }}
           >
             {focusedVerseKey}
           </span>
@@ -397,7 +397,7 @@ export function HadithSection() {
         {hasMore && (
           <button
             onClick={() => setVisibleCount((c) => c + 10)}
-            className="w-full border border-border py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-[#fefce8] transition-colors"
+            className="w-full border border-border py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-highlight transition-colors"
           >
             Show more ({filteredResults.length - visibleResults.length} remaining)
           </button>
@@ -430,7 +430,7 @@ export function HadithSection() {
                     <span
                       key={c}
                       className="inline-flex items-center px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider leading-none"
-                      style={{ backgroundColor: "#f5f3ff", color: "#8b6fc0" }}
+                      style={{ backgroundColor: "var(--surah-lavender-bg)", color: "var(--surah-lavender-label)" }}
                     >
                       {c}
                     </span>
