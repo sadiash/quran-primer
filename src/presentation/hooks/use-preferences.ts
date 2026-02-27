@@ -35,7 +35,9 @@ const DEFAULT_PREFERENCES: UserPreferences = {
 };
 
 export function usePreferences() {
-  const raw = useLiveQuery(() => db.preferences.get("default"), []);
+  // Return null (not undefined) when no record exists, so we can
+  // distinguish "still loading" (undefined) from "no record" (null).
+  const raw = useLiveQuery(() => db.preferences.get("default") ?? null, []);
   const isLoading = raw === undefined;
   const preferences: UserPreferences = raw
     ? toUserPreferences(raw)
