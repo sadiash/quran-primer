@@ -36,7 +36,7 @@ import type { Viewport } from "next";
 export const metadata: Metadata = {
   title: "The Primer",
   description:
-    "VS Code for the Quran — a personal knowledge system disguised as a reading app.",
+    "Immersive reading, layered commentary, and personal knowledge building for the Quran.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

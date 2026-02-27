@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowRightIcon, GridFourIcon, ListBulletsIcon, MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react";
-import type { Surah } from "@/core/types";
+import { ArrowRightIcon, CheckCircleIcon, GridFourIcon, ListBulletsIcon, MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react";
+import type { Surah, ReadingProgress } from "@/core/types";
+import { useProgress } from "@/presentation/hooks/use-progress";
+import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { cn } from "@/lib/utils";
 
 interface SurahBrowserProps {
@@ -17,6 +19,14 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("grid");
   const [filter, setFilter] = useState<Filter>("all");
+  const { allProgress } = useProgress();
+  const { preferences } = usePreferences();
+
+  const progressMap = useMemo(() => {
+    const map = new Map<number, ReadingProgress>();
+    for (const p of allProgress) map.set(p.surahId, p);
+    return map;
+  }, [allProgress]);
 
   const verseMatch = useMemo(() => {
     const m = search.match(/^(\d{1,3}):(\d{1,3})$/);
@@ -150,9 +160,7 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
                 "transition-all hover:shadow-soft-sm hover:border-primary/30",
               )}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
-                {surah.id}
-              </div>
+              <SurahProgressBadge surah={surah} progress={preferences.trackProgress ? progressMap.get(surah.id) : undefined} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <p className="truncate text-sm font-semibold text-foreground">
@@ -207,6 +215,20 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
               <span className="shrink-0 text-xs text-muted-foreground">
                 {surah.versesCount}v
               </span>
+              {preferences.trackProgress && (() => {
+                const p = progressMap.get(surah.id);
+                if (!p) return null;
+                const isComplete = p.completedVerses >= p.totalVerses;
+                if (isComplete) {
+                  return <CheckCircleIcon weight="fill" className="h-3.5 w-3.5 shrink-0" style={{ color: "hsl(var(--primary))" }} />;
+                }
+                const pct = Math.round((p.completedVerses / p.totalVerses) * 100);
+                return (
+                  <span className="shrink-0 text-[10px] font-medium" style={{ color: "hsl(var(--primary))" }}>
+                    {pct}%
+                  </span>
+                );
+              })()}
             </Link>
           ))}
         </div>
@@ -217,6 +239,74 @@ export function SurahBrowser({ surahs }: SurahBrowserProps) {
           No surahs match &ldquo;{search}&rdquo;
         </p>
       )}
+    </div>
+  );
+}
+
+/* ─── SVG ring progress badge for grid view ─── */
+
+function SurahProgressBadge({ surah, progress }: { surah: Surah; progress?: ReadingProgress }) {
+  const size = 40;
+  const strokeWidth = 3;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  if (!progress) {
+    // Unread — plain badge
+    return (
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+        {surah.id}
+      </div>
+    );
+  }
+
+  const isComplete = progress.completedVerses >= progress.totalVerses;
+  const fraction = Math.min(progress.completedVerses / progress.totalVerses, 1);
+
+  if (isComplete) {
+    // Complete — filled primary circle
+    return (
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+        style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
+      >
+        {surah.id}
+      </div>
+    );
+  }
+
+  // Partial — arc stroke ring
+  const dashOffset = circumference * (1 - fraction);
+
+  return (
+    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+      <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+        {/* Background track */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          style={{ stroke: "hsl(var(--primary) / 0.15)" }}
+        />
+        {/* Progress arc */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          style={{
+            stroke: "hsl(var(--primary))",
+            strokeDasharray: circumference,
+            strokeDashoffset: dashOffset,
+            transition: "stroke-dashoffset 0.3s ease",
+          }}
+        />
+      </svg>
+      <span className="relative text-sm font-bold text-primary">{surah.id}</span>
     </div>
   );
 }

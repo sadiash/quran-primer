@@ -140,6 +140,7 @@ export function ReadingSurface({
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const saveProgress = useCallback(
     (verseKey: string, verseNumber: number) => {
+      if (!preferences.trackProgress) return;
       clearTimeout(saveProgressTimer.current);
       saveProgressTimer.current = setTimeout(() => {
         updateProgress({
@@ -152,7 +153,7 @@ export function ReadingSurface({
         });
       }, 2000);
     },
-    [updateProgress, surah.id, surah.versesCount],
+    [updateProgress, surah.id, surah.versesCount, preferences.trackProgress],
   );
 
   // Collapse surah header when scrolled

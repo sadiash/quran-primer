@@ -12,10 +12,9 @@ import type {
   TranslationColorSlot,
   TranslationConfig,
   TranslationLayout,
-  PaperTexture,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
-import { CaretDownIcon, CaretUpIcon, CheckIcon, DownloadSimpleIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, CaretUpIcon, DownloadSimpleIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
 import { db } from "@/infrastructure/db/client/schema";
 
 const TRANSLATIONS = [
@@ -122,30 +121,16 @@ export default function SettingsPage() {
       />
 
       <div className="mt-8 space-y-10">
-        {/* ── Appearance ── */}
-        <Section title="Appearance">
-          <div>
-            <p className="text-sm font-medium text-foreground mb-3">
-              Paper texture
-            </p>
-            <p className="text-xs text-muted-foreground mb-3">
-              Choose a background texture feel. &ldquo;Auto&rdquo; uses the theme default.
-            </p>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              {PAPER_TEXTURES.map((pt) => (
-                <PaperTextureCard
-                  key={pt.value}
-                  texture={pt}
-                  isActive={(preferences.paperTexture ?? "auto") === pt.value}
-                  onSelect={() => updatePreferences({ paperTexture: pt.value })}
-                />
-              ))}
-            </div>
-          </div>
-        </Section>
-
         {/* ── Reading ── */}
         <Section title="Reading">
+          {/* Progress tracking */}
+          <SettingRow label="Track reading progress" subtitle="Mark surahs as you read them">
+            <ToggleSwitch
+              checked={preferences.trackProgress}
+              onChange={(v) => updatePreferences({ trackProgress: v })}
+            />
+          </SettingRow>
+
           {/* Arabic toggle */}
           <SettingRow label="Show Arabic text">
             <ToggleSwitch
@@ -531,16 +516,21 @@ function Section({
 
 function SettingRow({
   label,
+  subtitle,
   children,
   disabled,
 }: {
   label: string;
+  subtitle?: string;
   children: React.ReactNode;
   disabled?: boolean;
 }) {
   return (
     <div className={cn("flex items-center justify-between gap-4", disabled && "opacity-40 pointer-events-none")}>
-      <span className="text-sm text-foreground">{label}</span>
+      <div>
+        <span className="text-sm text-foreground">{label}</span>
+        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+      </div>
       {children}
     </div>
   );
@@ -832,94 +822,3 @@ function TranslationConfigRow({
   );
 }
 
-/* ─── Paper texture data & card ─── */
-
-interface PaperTextureOption {
-  value: PaperTexture;
-  label: string;
-  description: string;
-  preview: React.CSSProperties;
-}
-
-const PAPER_TEXTURES: PaperTextureOption[] = [
-  {
-    value: "auto",
-    label: "Auto",
-    description: "Theme default",
-    preview: {
-      background: "linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--primary) / 0.03))",
-    },
-  },
-  {
-    value: "none",
-    label: "Clean",
-    description: "No texture",
-    preview: {
-      background: "hsl(var(--background))",
-      border: "1px dashed hsl(var(--border))",
-    },
-  },
-  {
-    value: "parchment",
-    label: "Parchment",
-    description: "Aged warm paper",
-    preview: {
-      background: "radial-gradient(ellipse at 30% 30%, hsl(35 55% 70% / 0.35), hsl(30 45% 65% / 0.15), hsl(40 40% 85% / 0.1))",
-    },
-  },
-  {
-    value: "silk",
-    label: "Silk",
-    description: "Smooth sheen",
-    preview: {
-      background: "linear-gradient(135deg, hsl(210 30% 92% / 0.3), hsl(280 20% 90% / 0.2), hsl(210 20% 95% / 0.15))",
-    },
-  },
-  {
-    value: "canvas",
-    label: "Canvas",
-    description: "Rough texture",
-    preview: {
-      background: "radial-gradient(ellipse at 50% 50%, hsl(45 25% 78% / 0.25), hsl(30 20% 72% / 0.15))",
-    },
-  },
-  {
-    value: "watercolor",
-    label: "Watercolor",
-    description: "Painted washes",
-    preview: {
-      background: "radial-gradient(ellipse at 20% 30%, hsl(200 60% 75% / 0.25), transparent 50%), radial-gradient(ellipse at 80% 60%, hsl(340 50% 75% / 0.15), transparent 40%), radial-gradient(ellipse at 50% 80%, hsl(45 65% 70% / 0.2), transparent 50%)",
-    },
-  },
-];
-
-function PaperTextureCard({
-  texture,
-  isActive,
-  onSelect,
-}: {
-  texture: PaperTextureOption;
-  isActive: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <button
-      onClick={onSelect}
-      className={cn(
-        "group relative flex flex-col items-center gap-1.5 rounded-lg p-2 text-center transition-fast",
-        "hover:bg-surface-hover",
-        isActive && "ring-2 ring-primary/40 bg-surface-active",
-      )}
-    >
-      <div
-        className="h-10 w-full rounded-md border border-border/50"
-        style={texture.preview}
-      />
-      <div className="flex items-center gap-1">
-        <span className="text-[11px] font-medium text-foreground">{texture.label}</span>
-        {isActive && <CheckIcon weight="fill" className="h-3 w-3 text-primary" />}
-      </div>
-      <span className="text-[9px] text-muted-foreground leading-tight">{texture.description}</span>
-    </button>
-  );
-}

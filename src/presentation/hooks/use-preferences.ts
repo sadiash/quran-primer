@@ -27,6 +27,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   conceptMaxVisible: 5,
   conceptColorSlot: 0,
   zenMode: false,
+  trackProgress: true,
   readingDensity: "compact",
   readingFlow: "blocks",
   paperTexture: "auto",

@@ -45,6 +45,7 @@ interface TopNavProps {
 export function TopNav({ hidden = false }: TopNavProps) {
   const pathname = usePathname();
   const { openPanels, togglePanel } = usePanels();
+  const { preferences } = usePreferences();
   const { getLatestProgress } = useProgress();
   const latest = getLatestProgress();
   const showPanels = isReadingRoute(pathname);
@@ -71,8 +72,8 @@ export function TopNav({ hidden = false }: TopNavProps) {
         <NavLink href="/notes" icon={NoteIcon} label="Notes" pathname={pathname} />
       </nav>
 
-      {/* Continue Reading — hidden when already on a surah page */}
-      {latest && !pathname.startsWith("/surah") && (
+      {/* Continue Reading — hidden when already on a surah page or tracking off */}
+      {latest && preferences.trackProgress && !pathname.startsWith("/surah") && (
         <Link
           href={`/surah/${latest.surahId}?verse=${latest.lastVerseKey}`}
           className="hidden md:flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium text-primary bg-primary/8 hover:bg-primary/12 transition-all"

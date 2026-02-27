@@ -94,6 +94,7 @@ export interface UserPreferences {
   conceptMaxVisible: number;    // 3 | 5 | 10 | 0 (0 = show all)
   conceptColorSlot: number;     // 0 = muted/default, 1-6 = translation color slots
   zenMode: boolean;
+  trackProgress: boolean;
   readingDensity: ReadingDensity;
   readingFlow: ReadingFlow;
   paperTexture: PaperTexture;
@@ -126,6 +127,7 @@ export function toUserPreferences(raw: {
   conceptMaxVisible?: number | null;
   conceptColorSlot?: number | null;
   zenMode?: boolean | null;
+  trackProgress?: boolean | null;
   readingDensity?: string | null;
   readingFlow?: string | null;
   paperTexture?: string | null;
@@ -163,6 +165,7 @@ export function toUserPreferences(raw: {
     conceptMaxVisible: raw.conceptMaxVisible ?? 5,
     conceptColorSlot: raw.conceptColorSlot ?? 0,
     zenMode: raw.zenMode ?? false,
+    trackProgress: raw.trackProgress ?? true,
     readingDensity: (raw.readingDensity as ReadingDensity) ?? "compact",
     readingFlow: (raw.readingFlow as ReadingFlow) ?? "blocks",
     paperTexture: (raw.paperTexture as PaperTexture) ?? "auto",
