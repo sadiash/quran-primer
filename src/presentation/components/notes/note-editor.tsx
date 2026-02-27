@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, XIcon } from "@phosphor-icons/react";
 import { createNoteEditorExtensions } from "./editor-extensions";
@@ -8,7 +8,6 @@ import { EditorToolbar } from "./editor-toolbar";
 import { TagInput } from "./tag-input";
 import { ReferenceInput } from "./reference-input";
 import type { LinkedResource } from "@/core/types/study";
-import { cn } from "@/lib/utils";
 
 interface NoteEditorProps {
   initialContent?: string; // TipTap JSON string or plain text fallback
@@ -51,11 +50,18 @@ export function NoteEditor({
   const [verseKeys, setVerseKeys] = useState(initialVerseKeys);
   const [surahIds, setSurahIds] = useState(initialSurahIds);
   const [linkedResources, setLinkedResources] = useState<LinkedResource[] | undefined>(initialLinkedResources);
+  const titleRef = useRef<HTMLInputElement>(null);
 
   // Stable ref so the keyboard shortcut always calls the latest save
   const saveRef = useRef<() => void>(() => {});
 
   const [isEmpty, setIsEmpty] = useState(true);
+
+  // Auto-focus the title on mount
+  useEffect(() => {
+    const timer = setTimeout(() => titleRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const parsedInitialContent = (() => {
     if (!initialContent) return undefined;
@@ -80,7 +86,7 @@ export function NoteEditor({
       },
       editorProps: {
         attributes: {
-          class: "tiptap outline-none px-3 py-2 min-h-[180px] text-sm text-foreground",
+          class: "tiptap outline-none px-3 py-2 min-h-[100px] text-sm text-foreground",
         },
         handleKeyDown: (_view, event) => {
           if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
@@ -124,98 +130,78 @@ export function NoteEditor({
   return (
     <div className="flex flex-1 min-h-0 flex-col border border-border bg-background">
       {/* Title input */}
-      <div className="border-b border-border">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Give your note a title..."
-          className="w-full bg-transparent px-3 py-2.5 text-sm font-semibold text-foreground placeholder:text-muted-foreground/40 outline-none"
-        />
-      </div>
+      <input
+        ref={titleRef}
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Title..."
+        className="w-full border-b border-border/50 bg-transparent px-3 py-2 text-sm font-semibold text-foreground placeholder:text-muted-foreground/30 outline-none"
+      />
 
       {/* Editor toolbar + content */}
       <EditorToolbar editor={editor} />
       <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
 
-      {/* References — below editor content */}
-      {showReferences && (
-        <div className="border-t border-border">
+      {/* Bottom metadata — compact, all in one area */}
+      <div className="border-t border-border/50">
+        {/* References */}
+        {showReferences && (
           <ReferenceInput
             verseKeys={verseKeys}
             surahIds={surahIds}
             onChangeVerseKeys={setVerseKeys}
             onChangeSurahIds={setSurahIds}
           />
-        </div>
-      )}
+        )}
 
-      {/* Linked Resources (read-only, removable) */}
-      {linkedResources && linkedResources.length > 0 && (
-        <div className="border-t border-border px-3 py-2.5 space-y-2">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
-            Linked Resources
-          </p>
-          {linkedResources.map((resource, idx) => (
-            <div
-              key={`${resource.type}-${resource.label}-${idx}`}
-              className="border p-2.5 space-y-1"
-              style={{
-                borderLeft: `3px solid ${resource.type === "hadith" ? '#78d5c4' : '#e8e337'}`,
-                borderColor: resource.type === "hadith" ? '#78d5c4' : '#e8e337',
-              }}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  {resource.type === "hadith" ? (
-                    <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#3ba892' }} />
-                  ) : (
-                    <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#b5a600' }} />
-                  )}
-                  <span className="text-xs font-medium text-foreground truncate">
-                    {resource.label}
-                  </span>
-                </div>
+        {/* Linked Resources (compact) */}
+        {linkedResources && linkedResources.length > 0 && (
+          <div className="border-t border-border/30 px-3 py-2 space-y-1.5">
+            {linkedResources.map((resource, idx) => (
+              <div
+                key={`${resource.type}-${resource.label}-${idx}`}
+                className="flex items-center gap-2 text-[11px]"
+              >
+                {resource.type === "hadith" ? (
+                  <BookBookmarkIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#3ba892' }} />
+                ) : (
+                  <BookOpenIcon weight="duotone" className="h-3 w-3 shrink-0" style={{ color: '#b5a600' }} />
+                )}
+                <span className="font-medium text-foreground truncate flex-1">{resource.label}</span>
+                {resource.sourceUrl && (
+                  <a
+                    href={resource.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 text-muted-foreground/50 hover:text-foreground transition-colors"
+                  >
+                    <ArrowSquareOutIcon weight="bold" className="h-3 w-3" />
+                  </a>
+                )}
                 <button
                   type="button"
                   onClick={() => handleRemoveLinkedResource(idx)}
-                  className="shrink-0 p-0.5 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  aria-label="Remove linked resource"
-                  title="Remove"
+                  className="shrink-0 p-0.5 text-muted-foreground/30 hover:text-foreground transition-colors"
+                  aria-label="Remove"
                 >
-                  <XIcon weight="bold" className="h-3 w-3" />
+                  <XIcon weight="bold" className="h-2.5 w-2.5" />
                 </button>
               </div>
-              <p className="text-[11px] text-muted-foreground/70 line-clamp-2 leading-relaxed">
-                {resource.preview}
-              </p>
-              {resource.sourceUrl && (
-                <a
-                  href={resource.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-foreground hover:text-foreground/80 transition-colors"
-                >
-                  <ArrowSquareOutIcon weight="bold" className="h-2.5 w-2.5" />
-                  View source
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {/* Tags */}
-      <div className="border-t border-border">
+        {/* Tags */}
         <TagInput tags={tags} onChange={setTags} suggestedTags={suggestedTags} />
       </div>
 
-      {/* Action buttons */}
-      <div className="flex items-center justify-end gap-2 border-t border-border px-3 py-2">
+      {/* Save row — compact */}
+      <div className="flex items-center justify-end gap-2 border-t border-border px-3 py-1.5">
         <button
           type="button"
           onClick={onCancel}
-          className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
+          className="px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
         >
           Cancel
         </button>
@@ -223,7 +209,7 @@ export function NoteEditor({
           type="button"
           onClick={handleSave}
           disabled={isEmpty}
-          className="bg-foreground px-3 py-1.5 text-xs font-medium text-background hover:bg-foreground/90 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+          className="bg-foreground px-3 py-1 text-[11px] font-medium text-background hover:bg-foreground/90 transition-colors disabled:opacity-40 disabled:pointer-events-none"
         >
           Save
         </button>

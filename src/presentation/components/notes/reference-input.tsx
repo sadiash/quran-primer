@@ -33,8 +33,6 @@ export function ReferenceInput({
   const [selectedIdx, setSelectedIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const hasRefs = verseKeys.length > 0 || surahIds.length > 0;
-
   const addVerseKey = useCallback(
     (raw: string) => {
       const vk = raw.trim();
@@ -139,107 +137,92 @@ export function ReferenceInput({
   );
 
   return (
-    <div className="space-y-1">
-      {/* Section header */}
-      <div className="flex items-center gap-1.5 px-3 pt-2">
-        <MapPinIcon weight="bold" className="h-3 w-3 text-muted-foreground/60" />
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
-          Linked Passages
-        </span>
-      </div>
-
-      <div className="relative">
-        <div className="flex flex-wrap items-center gap-1.5 px-3 py-2">
-          {/* Verse key chips */}
-          {verseKeys.map((vk) => {
-            const [s, v] = vk.split(":");
-            return (
-              <span
-                key={`vk-${vk}`}
-                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-foreground"
-                style={{ backgroundColor: '#f0fdf9' }}
-              >
-                <BookOpenIcon weight="duotone" className="h-2.5 w-2.5 text-muted-foreground" />
-                {getSurahName(Number(s))} {s}:{v}
-                <button
-                  type="button"
-                  onClick={() => removeVerseKey(vk)}
-                  className="p-0.5 hover:bg-[#f0fdf9] transition-colors"
-                  aria-label={`Remove ${vk}`}
-                >
-                  <XIcon weight="bold" className="h-2.5 w-2.5" />
-                </button>
-              </span>
-            );
-          })}
-
-          {/* Surah ID chips */}
-          {surahIds.map((id) => (
+    <div className="relative px-3 py-2">
+      {/* Chips + input — single compact row */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <MapPinIcon weight="bold" className="h-3 w-3 text-muted-foreground/40" />
+        {/* Verse key chips */}
+        {verseKeys.map((vk) => {
+          const [s, v] = vk.split(":");
+          return (
             <span
-              key={`s-${id}`}
-              className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium"
-              style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
+              key={`vk-${vk}`}
+              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-foreground"
+              style={{ backgroundColor: '#f0fdf9' }}
             >
-              <BookOpenIcon weight="duotone" className="h-2.5 w-2.5" />
-              {getSurahName(id)} (surah)
+              <BookOpenIcon weight="duotone" className="h-2.5 w-2.5 text-muted-foreground" />
+              {getSurahName(Number(s))} {s}:{v}
               <button
                 type="button"
-                onClick={() => removeSurahId(id)}
-                className="p-0.5 hover:bg-[#fefce8] transition-colors"
-                aria-label={`Remove surah ${id}`}
+                onClick={() => removeVerseKey(vk)}
+                className="p-0.5 hover:opacity-60 transition-opacity"
+                aria-label={`Remove ${vk}`}
               >
                 <XIcon weight="bold" className="h-2.5 w-2.5" />
               </button>
             </span>
-          ))}
+          );
+        })}
 
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => handleInputChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type verse like 2:255 or surah name..."
-            className="min-w-[120px] flex-1 bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none"
-          />
-        </div>
+        {/* Surah ID chips */}
+        {surahIds.map((id) => (
+          <span
+            key={`s-${id}`}
+            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium"
+            style={{ backgroundColor: '#fefce8', color: '#b5a600' }}
+          >
+            <BookOpenIcon weight="duotone" className="h-2.5 w-2.5" />
+            {getSurahName(id)}
+            <button
+              type="button"
+              onClick={() => removeSurahId(id)}
+              className="p-0.5 hover:opacity-60 transition-opacity"
+              aria-label={`Remove surah ${id}`}
+            >
+              <XIcon weight="bold" className="h-2.5 w-2.5" />
+            </button>
+          </span>
+        ))}
 
-        {/* Helper text when empty */}
-        {!hasRefs && !input && (
-          <p className="px-3 pb-2 text-[10px] text-muted-foreground/40">
-            Link this note to specific verses or entire surahs
-          </p>
-        )}
-
-        {/* Surah suggestions dropdown */}
-        {suggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-full z-50 mt-1 border border-border bg-background p-1 shadow-md">
-            {suggestions.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  addSurahId(s.id);
-                }}
-                className={`flex w-full items-center gap-2 px-2 py-1.5 text-xs transition-colors ${
-                  i === selectedIdx
-                    ? "bg-[#fefce8] text-foreground"
-                    : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
-                }`}
-              >
-                <BookOpenIcon weight="duotone" className="h-3 w-3" />
-                <span>
-                  {s.name}{" "}
-                  <span className="text-muted-foreground/60">
-                    (Surah {s.id})
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
+        <input
+          ref={inputRef}
+          type="text"
+          value={input}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="2:255 or surah name..."
+          className="min-w-[100px] flex-1 bg-transparent text-[11px] text-foreground placeholder:text-muted-foreground/30 outline-none"
+        />
       </div>
+
+      {/* Surah suggestions dropdown */}
+      {suggestions.length > 0 && (
+        <div className="absolute left-0 right-0 top-full z-50 mt-1 border border-border bg-background p-1 shadow-md">
+          {suggestions.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                addSurahId(s.id);
+              }}
+              className={`flex w-full items-center gap-2 px-2 py-1.5 text-xs transition-colors ${
+                i === selectedIdx
+                  ? "bg-[#fefce8] text-foreground"
+                  : "text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
+              }`}
+            >
+              <BookOpenIcon weight="duotone" className="h-3 w-3" />
+              <span>
+                {s.name}{" "}
+                <span className="text-muted-foreground/60">
+                  (Surah {s.id})
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

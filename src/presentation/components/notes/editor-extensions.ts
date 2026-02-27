@@ -12,6 +12,7 @@ export function createNoteEditorExtensions(
       link: { openOnClick: false },
       codeBlock: false,
       code: false,
+      horizontalRule: false,
     }),
     Placeholder.configure({ placeholder }),
   ];
@@ -25,6 +26,7 @@ export function createNoteRenderExtensions(): Extensions {
       link: { openOnClick: false },
       codeBlock: false,
       code: false,
+      horizontalRule: false,
     }),
   ];
 }

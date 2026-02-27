@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowsDownUpIcon, BookOpenIcon, CircleNotchIcon, DotsThreeIcon, DownloadSimpleIcon, FileJsIcon, FileTextIcon, GraphIcon, LightbulbIcon, MagnifyingGlassIcon, MapPinIcon, NoteIcon, PencilSimpleIcon, PlusIcon, PushPinIcon, PushPinSlashIcon, TagIcon, TrashIcon, UploadSimpleIcon } from "@phosphor-icons/react";
+import { ArrowsDownUpIcon, CircleNotchIcon, GraphIcon, LightbulbIcon, MagnifyingGlassIcon, MapPinIcon, NoteIcon, PencilSimpleIcon, PlusIcon, PushPinIcon, PushPinSlashIcon, TagIcon, TrashIcon } from "@phosphor-icons/react";
 import { useNotes, type NoteSortOption } from "@/presentation/hooks/use-notes";
 import { useKnowledgeGraph } from "@/presentation/hooks/use-knowledge-graph";
 import { NetworkGraph } from "@/presentation/components/knowledge";
 import { useToast } from "@/presentation/components/ui/toast";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { NoteContentRenderer } from "@/presentation/components/notes/note-content-renderer";
-import { NoteDetailDrawer } from "@/presentation/components/notes/note-detail-drawer";
 import { NoteEditor } from "@/presentation/components/notes/note-editor";
 import { noteLocationLabel } from "@/core/types/study";
 import { getSurahName } from "@/lib/surah-names";
 import { cn } from "@/lib/utils";
+import { getTagColor } from "@/lib/surah-colors";
 import type { Note, LinkedResource, GraphNode } from "@/core/types";
 
 const SORT_STORAGE_KEY = "notes:sort";
@@ -43,79 +43,19 @@ const SORT_OPTIONS: { value: NoteSortOption; label: string }[] = [
   { value: "alphabetical", label: "Alphabetical" },
 ];
 
-function downloadFile(content: string, filename: string, type: string) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function notesToMarkdown(notes: Note[]): string {
-  const lines: string[] = [];
-  lines.push("# Quran Notes Export");
-  lines.push("");
-  lines.push(`Exported on ${new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`);
-  lines.push("");
-  lines.push(`Total notes: ${notes.length}`);
-  lines.push("");
-  lines.push("---");
-  lines.push("");
-
-  for (const note of notes) {
-    const location = noteLocationLabel(note, getSurahName);
-    const heading = note.title || location;
-    lines.push(`## ${heading}`);
-    if (note.title) {
-      lines.push(`*${location}*`);
-    }
-    lines.push("");
-    if (note.pinned) {
-      lines.push("**[Pinned]**");
-      lines.push("");
-    }
-    lines.push(note.content);
-    lines.push("");
-    if (note.tags.length > 0) {
-      lines.push(`Tags: ${note.tags.map((t) => `\`${t}\``).join(", ")}`);
-      lines.push("");
-    }
-    if (note.verseKeys.length > 0) {
-      lines.push(`Verses: ${note.verseKeys.join(", ")}`);
-    }
-    if (note.surahIds.length > 0) {
-      lines.push(`Surahs: ${note.surahIds.map((id) => getSurahName(id)).join(", ")}`);
-    }
-    lines.push("");
-    lines.push(
-      `Created: ${note.createdAt.toLocaleDateString()} | Updated: ${note.updatedAt.toLocaleDateString()}`,
-    );
-    lines.push("");
-    lines.push("---");
-    lines.push("");
-  }
-
-  return lines.join("\n");
-}
-
 export default function NotesPage() {
-  const { notes, saveNote, removeNote, togglePin, restoreNote, getAllNotes, importNotes, sortNotes, suggestedTags } =
+  const { notes, saveNote, removeNote, togglePin, restoreNote, sortNotes, suggestedTags } =
     useNotes();
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<"notes" | "mindmap">("notes");
   const [search, setSearch] = useState("");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [sortOption, setSortOption] = useState<NoteSortOption>(loadSort);
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [showExportMenu, setShowExportMenu] = useState(false);
+  // expanded = read-only expanded card, editorMode = inline editor
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   // "new" = creating, note id = editing existing, null = closed
   const [editorMode, setEditorMode] = useState<"new" | string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editingNote =
     editorMode && editorMode !== "new"
@@ -194,30 +134,6 @@ export default function NotesPage() {
     setEditorMode(null);
   }, []);
 
-  const handleEditFromDrawer = useCallback(() => {
-    if (selectedNote) {
-      setEditorMode(selectedNote.id);
-      setSelectedNote(null);
-    }
-  }, [selectedNote]);
-
-  const handleDeleteFromDrawer = useCallback(
-    async (id: string) => {
-      const noteToDelete = notes.find((n) => n.id === id);
-      if (!noteToDelete) return;
-      const backup = { ...noteToDelete };
-      await removeNote(id);
-      setSelectedNote(null);
-      addToast("Note deleted", "default", {
-        label: "Undo",
-        onClick: () => {
-          restoreNote(backup);
-        },
-      });
-    },
-    [notes, removeNote, restoreNote, addToast],
-  );
-
   const handleDeleteCard = useCallback(
     async (id: string) => {
       const noteToDelete = notes.find((n) => n.id === id);
@@ -240,76 +156,6 @@ export default function NotesPage() {
     setShowSortMenu(false);
   }, []);
 
-  const handleExportJSON = useCallback(async () => {
-    const all = await getAllNotes();
-    const dateStr = new Date().toISOString().slice(0, 10);
-    downloadFile(
-      JSON.stringify(all, null, 2),
-      `quran-notes-${dateStr}.json`,
-      "application/json",
-    );
-    setShowExportMenu(false);
-    addToast(`Exported ${all.length} notes as JSON`, "success");
-  }, [getAllNotes, addToast]);
-
-  const handleExportMarkdown = useCallback(async () => {
-    const all = await getAllNotes();
-    const dateStr = new Date().toISOString().slice(0, 10);
-    downloadFile(
-      notesToMarkdown(all),
-      `quran-notes-${dateStr}.md`,
-      "text/markdown",
-    );
-    setShowExportMenu(false);
-    addToast(`Exported ${all.length} notes as Markdown`, "success");
-  }, [getAllNotes, addToast]);
-
-  const handleImport = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      try {
-        const text = await file.text();
-        const parsed = JSON.parse(text);
-
-        if (!Array.isArray(parsed)) {
-          addToast("Invalid file: expected an array of notes", "error");
-          return;
-        }
-
-        // Basic validation
-        const valid = parsed.filter(
-          (n: Record<string, unknown>) =>
-            typeof n.id === "string" &&
-            typeof n.content === "string" &&
-            Array.isArray(n.verseKeys) &&
-            Array.isArray(n.surahIds) &&
-            Array.isArray(n.tags),
-        );
-
-        if (valid.length === 0) {
-          addToast("No valid notes found in the file", "error");
-          return;
-        }
-
-        const result = await importNotes(valid as Note[]);
-        addToast(
-          `Imported ${result.imported} note${result.imported !== 1 ? "s" : ""}${result.skipped > 0 ? ` (${result.skipped} skipped as duplicate${result.skipped !== 1 ? "s" : ""})` : ""}`,
-          "success",
-        );
-      } catch {
-        addToast("Failed to parse file. Please use a valid JSON export.", "error");
-      }
-
-      // Reset file input so same file can be re-selected
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    },
-    [importNotes, addToast],
-  );
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex items-center justify-between">
@@ -318,79 +164,16 @@ export default function NotesPage() {
           subtitle={`${notes.length} note${notes.length !== 1 ? "s" : ""}`}
           icon={NoteIcon}
         />
-        <div className="flex items-center gap-2">
-          {/* Import button */}
-          {activeTab === "notes" && !editorMode && (
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleImport}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
-              >
-                <UploadSimpleIcon weight="bold" className="h-4 w-4" />
-                Import
-              </button>
-            </>
-          )}
-
-          {/* Export dropdown */}
-          {activeTab === "notes" && !editorMode && notes.length > 0 && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowExportMenu(!showExportMenu)}
-                className="flex items-center gap-1.5 border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
-              >
-                <DownloadSimpleIcon weight="bold" className="h-4 w-4" />
-                Export
-              </button>
-              {showExportMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setShowExportMenu(false)}
-                  />
-                  <div className="absolute right-0 top-full z-50 mt-1 w-48 border border-border bg-background p-1 shadow-md">
-                    <button
-                      type="button"
-                      onClick={handleExportJSON}
-                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
-                    >
-                      <FileJsIcon weight="bold" className="h-3.5 w-3.5" />
-                      As JSON (backup)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleExportMarkdown}
-                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors"
-                    >
-                      <FileTextIcon weight="bold" className="h-3.5 w-3.5" />
-                      As Markdown
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {activeTab === "notes" && !editorMode && (
-            <button
-              type="button"
-              onClick={() => setEditorMode("new")}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] hover:opacity-80 transition-colors" style={{ backgroundColor: '#e8e337' }}
-            >
-              <PlusIcon weight="bold" className="h-4 w-4" />
-              New Note
-            </button>
-          )}
-        </div>
+        {activeTab === "notes" && !editorMode && (
+          <button
+            type="button"
+            onClick={() => setEditorMode("new")}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] hover:opacity-80 transition-colors" style={{ backgroundColor: '#e8e337' }}
+          >
+            <PlusIcon weight="bold" className="h-4 w-4" />
+            New Note
+          </button>
+        )}
       </div>
 
       {/* Tabs */}
@@ -433,36 +216,7 @@ export default function NotesPage() {
 
       {/* Mind Map Tab */}
       {activeTab === "mindmap" && (
-        <NotesMindMap notes={notes} onSelectNote={setSelectedNote} />
-      )}
-
-      {/* Notes Tab */}
-      {activeTab === "notes" && editorMode && (
-        <div className="mt-6 border border-border bg-background p-4">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-foreground">
-              {editorMode === "new" ? "New Note" : "Edit Note"}
-            </h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {editorMode === "new"
-                ? "Add references to link this note to specific verses or surahs, or leave empty for a standalone note."
-                : "Edit content and references below."}
-            </p>
-          </div>
-          <NoteEditor
-            key={editorMode}
-            initialContent={editingNote?.contentJson ?? editingNote?.content}
-            initialTitle={editingNote?.title ?? ""}
-            initialTags={editingNote?.tags ?? []}
-            initialVerseKeys={editingNote?.verseKeys ?? []}
-            initialSurahIds={editingNote?.surahIds ?? []}
-            initialLinkedResources={editingNote?.linkedResources}
-            showReferences
-            suggestedTags={suggestedTags}
-            onSave={handleSaveNote}
-            onCancel={handleCancelEditor}
-          />
-        </div>
+        <NotesMindMap notes={notes} onSelectNote={(note) => { setActiveTab("notes"); setExpandedId(note.id); }} />
       )}
 
       {activeTab === "notes" && notes.length > 0 && !editorMode && (
@@ -540,37 +294,87 @@ export default function NotesPage() {
                   {notes.length}
                 </span>
               </button>
-              {tagData.map(({ tag, count }) => (
-                <button
-                  key={tag}
-                  onClick={() =>
-                    setTagFilter(tagFilter === tag ? null : tag)
-                  }
-                  className={cn(
-                    "flex items-center gap-1 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors",
-                    tagFilter === tag
-                      ? "bg-[#fefce8] text-foreground"
-                      : "border border-border text-muted-foreground hover:bg-[#fafafa] hover:text-foreground",
-                  )}
-                >
-                  <TagIcon weight="bold" className="h-3 w-3" />
-                  {tag}
-                  <span className={cn(
-                    "ml-0.5 text-[10px]",
-                    tagFilter === tag ? "text-foreground/70" : "text-muted-foreground/50",
-                  )}>
-                    {count}
-                  </span>
-                </button>
-              ))}
+              {tagData.map(({ tag, count }) => {
+                const color = getTagColor(tag);
+                const isActive = tagFilter === tag;
+                return (
+                  <button
+                    key={tag}
+                    onClick={() =>
+                      setTagFilter(isActive ? null : tag)
+                    }
+                    className="flex items-center gap-1 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors"
+                    style={isActive
+                      ? { backgroundColor: color.bg, color: color.text, borderLeft: `3px solid ${color.accent}` }
+                      : { borderLeft: `3px solid ${color.accent}`, color: color.label }
+                    }
+                  >
+                    <TagIcon weight="bold" className="h-3 w-3" />
+                    {tag}
+                    <span className="ml-0.5 text-[10px] opacity-60">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </>
       )}
 
-      {/* Note cards */}
+      {/* Note cards + inline editor */}
       {activeTab === "notes" && <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {/* New note editor — full width at top */}
+        {editorMode === "new" && (
+          <div className="col-span-full">
+            <NoteEditor
+              key="new"
+              initialTitle=""
+              initialTags={[]}
+              initialVerseKeys={[]}
+              initialSurahIds={[]}
+              showReferences
+              suggestedTags={suggestedTags}
+              onSave={handleSaveNote}
+              onCancel={handleCancelEditor}
+            />
+          </div>
+        )}
         {filtered.map((note) => {
+          // Inline editor for this note
+          if (editorMode === note.id) {
+            return (
+              <div key={note.id} className="col-span-full">
+                <NoteEditor
+                  key={`edit-${note.id}`}
+                  initialContent={note.contentJson ?? note.content}
+                  initialTitle={note.title ?? ""}
+                  initialTags={note.tags}
+                  initialVerseKeys={note.verseKeys}
+                  initialSurahIds={note.surahIds}
+                  initialLinkedResources={note.linkedResources}
+                  showReferences
+                  suggestedTags={suggestedTags}
+                  onSave={handleSaveNote}
+                  onCancel={handleCancelEditor}
+                />
+              </div>
+            );
+          }
+          // Expanded read-only view
+          if (expandedId === note.id) {
+            return (
+              <ExpandedNoteCard
+                key={note.id}
+                note={note}
+                onCollapse={() => setExpandedId(null)}
+                onEdit={() => { setExpandedId(null); setEditorMode(note.id); }}
+                onDelete={() => handleDeleteCard(note.id)}
+                onTogglePin={() => togglePin(note.id)}
+              />
+            );
+          }
+          // Collapsed card
           const label = noteLocationLabel(note, getSurahName);
           const displayTitle = note.title || note.content.slice(0, 50) + (note.content.length > 50 ? "..." : "");
           const hasRealTitle = !!note.title;
@@ -581,8 +385,8 @@ export default function NotesPage() {
               displayTitle={displayTitle}
               hasRealTitle={hasRealTitle}
               locationLabel={label}
-              onSelect={setSelectedNote}
-              onEdit={setEditorMode}
+              onExpand={() => { setExpandedId(note.id); setEditorMode(null); }}
+              onEdit={(id) => { setExpandedId(null); setEditorMode(id); }}
               onTogglePin={togglePin}
               onDelete={handleDeleteCard}
             />
@@ -617,23 +421,6 @@ export default function NotesPage() {
               Create note
             </button>
           </div>
-          {/* Import hint when empty */}
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="text-xs text-muted-foreground/60 underline underline-offset-2 hover:text-muted-foreground transition-colors"
-            >
-              Or import notes from a backup
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-          </div>
         </div>
       )}
 
@@ -643,14 +430,6 @@ export default function NotesPage() {
         </p>
       )}
 
-      {/* Detail drawer */}
-      <NoteDetailDrawer
-        note={selectedNote}
-        open={selectedNote !== null}
-        onClose={() => setSelectedNote(null)}
-        onEdit={handleEditFromDrawer}
-        onDelete={handleDeleteFromDrawer}
-      />
     </div>
   );
 }
@@ -725,18 +504,12 @@ function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSele
   );
 }
 
-/** Color-code note cards by source/type — matches panel colors */
+/** Color-code note cards by first tag — matches filter chip colors */
 function getNoteCardStyle(note: Note) {
-  const resources = note.linkedResources;
-  const hasHadith = resources?.some((r) => r.type === "hadith");
-  const hasTafsir = resources?.some((r) => r.type === "tafsir");
-  if (hasHadith && hasTafsir) return { borderColor: "#a78bfa", dotColor: "#a78bfa", label: "Hadith + Tafsir" };
-  if (hasHadith) return { borderColor: "#34d399", dotColor: "#34d399", label: "Hadith" };
-  if (hasTafsir) return { borderColor: "#fbbf24", dotColor: "#fbbf24", label: "Tafsir" };
-  if (note.tags.includes("reflection")) return { borderColor: "#60a5fa", dotColor: "#60a5fa", label: "Reflection" };
-  if (note.tags.includes("question")) return { borderColor: "#c084fc", dotColor: "#c084fc", label: "Question" };
-  if (note.tags.includes("connection")) return { borderColor: "#2dd4bf", dotColor: "#2dd4bf", label: "Connection" };
-  return { borderColor: "", dotColor: "", label: "" };
+  const tag = note.tags[0];
+  if (!tag) return { borderColor: "", dotColor: "", label: "" };
+  const color = getTagColor(tag);
+  return { borderColor: color.accent, dotColor: color.accent, label: tag };
 }
 
 // ─── Page note card with title, overflow menu, compact metadata ───
@@ -746,7 +519,7 @@ function PageNoteCard({
   displayTitle,
   hasRealTitle,
   locationLabel,
-  onSelect,
+  onExpand,
   onEdit,
   onTogglePin,
   onDelete,
@@ -755,12 +528,11 @@ function PageNoteCard({
   displayTitle: string;
   hasRealTitle: boolean;
   locationLabel: string;
-  onSelect: (note: Note) => void;
+  onExpand: () => void;
   onEdit: (id: string) => void;
   onTogglePin: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
-  const [showMenu, setShowMenu] = useState(false);
   const cardStyle = getNoteCardStyle(note);
 
   return (
@@ -770,67 +542,160 @@ function PageNoteCard({
         note.pinned && "border-border bg-[#fefce8]/30",
       )}
       style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
-      onClick={() => onSelect(note)}
+      onClick={onExpand}
     >
-      <div className="flex items-start gap-3">
-        <div className="min-w-0 flex-1">
-          {/* Title row with pin + color dot */}
-          <div className="flex items-center gap-1.5">
-            {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-foreground/60" />}
-            {cardStyle.dotColor && <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cardStyle.dotColor }} title={cardStyle.label} />}
-            <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
-              {displayTitle}
-            </span>
-          </div>
-          {/* Content preview when there is a real title */}
-          {hasRealTitle && (
-            <NoteContentRenderer
-              content={note.content}
-              contentJson={note.contentJson}
-              className="mt-1.5 line-clamp-2"
-            />
-          )}
-          {/* Compact metadata row */}
-          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
-            <MapPinIcon weight="bold" className="h-2.5 w-2.5" />
-            <span>{locationLabel}</span>
-            {note.tags.length > 0 && (
-              <>
-                <span className="text-muted-foreground/30">&middot;</span>
-                <TagIcon weight="bold" className="h-2.5 w-2.5" />
-                <span>{note.tags.length === 1 ? note.tags[0] : `${note.tags[0]} +${note.tags.length - 1}`}</span>
-              </>
-            )}
-            <span className="text-muted-foreground/30">&middot;</span>
-            <span>{note.updatedAt.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
-          </div>
+      <div className="min-w-0">
+        {/* Title row with pin + color dot */}
+        <div className="flex items-center gap-1.5">
+          {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 shrink-0 text-foreground/60" />}
+          {cardStyle.dotColor && <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cardStyle.dotColor }} title={cardStyle.label} />}
+          <span className={cn("text-sm leading-snug", hasRealTitle ? "font-semibold text-foreground" : "font-medium text-muted-foreground")}>
+            {displayTitle}
+          </span>
         </div>
-        {/* Always-visible overflow menu */}
-        <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
-            aria-label="Note actions"
-          >
-            <DotsThreeIcon weight="bold" className="h-4 w-4" />
-          </button>
-          {showMenu && (
+        {/* Content preview when there is a real title */}
+        {hasRealTitle && (
+          <NoteContentRenderer
+            content={note.content}
+            contentJson={note.contentJson}
+            className="mt-1.5 line-clamp-2"
+          />
+        )}
+        {/* Compact metadata row */}
+        <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
+          <MapPinIcon weight="bold" className="h-2.5 w-2.5" />
+          <span>{locationLabel}</span>
+          {note.tags.length > 0 && (
             <>
-              <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-full z-50 mt-1 w-36 border border-border bg-background p-1 shadow-md">
-                <button type="button" onClick={() => { setShowMenu(false); onEdit(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors">
-                  <PencilSimpleIcon weight="bold" className="h-3 w-3" />Edit
-                </button>
-                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-[#fafafa] hover:text-foreground transition-colors">
-                  {note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />Pin</>}
-                </button>
-                <button type="button" onClick={() => { setShowMenu(false); onDelete(note.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors">
-                  <TrashIcon weight="bold" className="h-3 w-3" />Delete
-                </button>
-              </div>
+              <span className="text-muted-foreground/30">&middot;</span>
+              <TagIcon weight="bold" className="h-2.5 w-2.5" />
+              <span>{note.tags.length === 1 ? note.tags[0] : `${note.tags[0]} +${note.tags.length - 1}`}</span>
             </>
           )}
+          <span className="text-muted-foreground/30">&middot;</span>
+          <span>{note.updatedAt.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Expanded read-only note card ───
+
+function ExpandedNoteCard({
+  note,
+  onCollapse,
+  onEdit,
+  onDelete,
+  onTogglePin,
+}: {
+  note: Note;
+  onCollapse: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  onTogglePin: () => void;
+}) {
+  const cardStyle = getNoteCardStyle(note);
+  const location = noteLocationLabel(note, getSurahName);
+
+  return (
+    <div
+      className="col-span-full border border-border bg-background"
+      style={cardStyle.borderColor ? { borderLeft: `3px solid ${cardStyle.borderColor}` } : undefined}
+    >
+      {/* Header — actions bar */}
+      <div className="flex items-center justify-between border-b border-border/50 px-4 py-2">
+        <div className="flex items-center gap-2">
+          {cardStyle.label && (
+            <span
+              className="font-mono text-[10px] font-bold uppercase tracking-wider"
+              style={{ color: cardStyle.dotColor }}
+            >
+              {cardStyle.label}
+            </span>
+          )}
+          <span className="font-mono text-[10px] text-muted-foreground/50">{location}</span>
+          {note.pinned && <PushPinIcon weight="fill" className="h-3 w-3 text-foreground/50" />}
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onTogglePin}
+            className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+            aria-label={note.pinned ? "Unpin" : "Pin"}
+            title={note.pinned ? "Unpin" : "Pin"}
+          >
+            {note.pinned
+              ? <PushPinSlashIcon weight="bold" className="h-3.5 w-3.5" />
+              : <PushPinIcon weight="bold" className="h-3.5 w-3.5" />
+            }
+          </button>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+            aria-label="Edit"
+            title="Edit"
+          >
+            <PencilSimpleIcon weight="bold" className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+            aria-label="Delete"
+            title="Delete"
+          >
+            <TrashIcon weight="bold" className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={onCollapse}
+            className="ml-1 p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+            aria-label="Collapse"
+            title="Collapse"
+          >
+            <span className="font-mono text-[10px] font-bold">&times;</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="px-4 py-4 space-y-3">
+        {note.title && (
+          <h3 className="text-base font-semibold text-foreground">{note.title}</h3>
+        )}
+        <NoteContentRenderer
+          content={note.content}
+          contentJson={note.contentJson}
+        />
+        {/* Tags */}
+        {note.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-2">
+            {note.tags.map((tag) => {
+              const color = getTagColor(tag);
+              return (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
+                  style={{ backgroundColor: color.bg, color: color.label }}
+                >
+                  {tag}
+                </span>
+              );
+            })}
+          </div>
+        )}
+        {/* Verse/surah links */}
+        {(note.verseKeys.length > 0 || note.surahIds.length > 0) && (
+          <div className="font-mono text-[10px] text-muted-foreground/50 pt-1">
+            {note.verseKeys.length > 0 && <span>Verses: {note.verseKeys.join(", ")}</span>}
+            {note.verseKeys.length > 0 && note.surahIds.length > 0 && <span> &middot; </span>}
+            {note.surahIds.length > 0 && <span>Surahs: {note.surahIds.map((id) => getSurahName(id)).join(", ")}</span>}
+          </div>
+        )}
+        <div className="font-mono text-[10px] text-muted-foreground/30">
+          {note.updatedAt.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
         </div>
       </div>
     </div>

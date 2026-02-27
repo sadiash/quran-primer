@@ -9,6 +9,7 @@ import { useToast } from "@/presentation/components/ui/toast";
 import { NoteEditor } from "@/presentation/components/notes/note-editor";
 import { NoteContentRenderer } from "@/presentation/components/notes/note-content-renderer";
 import { getSurahName } from "@/lib/surah-names";
+import { getTagColor } from "@/lib/surah-colors";
 import { cn } from "@/lib/utils";
 import type { Note, LinkedResource } from "@/core/types";
 import { PanelBreadcrumb } from "@/presentation/components/panels/panel-breadcrumb";
@@ -359,27 +360,18 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
 
   // ─── Editor mode ───
   if (mode === "editor") {
-    const editorTitle = editingNote ? (editingNote.title || "Untitled") : "New Note";
     const handleEditorBack = editingNote ? () => setMode("view") : handleCancel;
     return (
-      <div className="flex h-full flex-col gap-2 p-3">
-        <PanelBreadcrumb items={[
-          { label: headerLabel, onClick: handleCancel },
-          { label: editorTitle },
-        ]} />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleEditorBack}
-            className="border-2 border-transparent p-1 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
-            aria-label="Back"
-          >
-            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
-          </button>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
-            {editingNote ? "Edit Note" : "New Note"}
-          </span>
-        </div>
+      <div className="flex h-full flex-col gap-1 p-3">
+        <button
+          type="button"
+          onClick={handleEditorBack}
+          className="flex items-center gap-1.5 self-start p-1 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Back"
+        >
+          <ArrowLeftIcon weight="bold" className="h-3.5 w-3.5" />
+          <span className="font-mono text-[10px] uppercase tracking-wider">Back</span>
+        </button>
         <NoteEditor
           key={editingNote?.id ?? "new"}
           initialContent={editingNote?.contentJson ?? editingNote?.content}
@@ -431,28 +423,14 @@ function SurahNotesView({ surahId }: { surahId: number | null }) {
 
       {/* Empty state */}
       {notes.length === 0 && (
-        <div className="flex flex-col items-center gap-3 px-2 py-8 text-center">
-          <div className="border-2 border-foreground p-3">
-            <NoteIcon weight="duotone" className="h-6 w-6 text-foreground/30" />
-          </div>
-          <div className="space-y-1">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
-              {surahName ? `No notes for ${surahName}` : "No notes yet"}
-            </p>
-            <p className="font-mono text-[10px] text-muted-foreground/50 max-w-[200px]">
-              {surahName
-                ? "Start capturing your reflections for this surah"
-                : "Click on any verse while reading to add your first note"}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleNewNote}
-            className="mt-1 flex items-center gap-1.5 border-2 border-foreground bg-foreground px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-background hover:bg-background hover:text-foreground transition-colors"
-          >
-            <PlusIcon weight="bold" className="h-3.5 w-3.5" />
-            Write a note
-          </button>
+        <div className="flex flex-col items-center gap-2 px-2 py-12 text-center">
+          <NoteIcon weight="duotone" className="h-6 w-6 text-muted-foreground/20" />
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">
+            {surahName ? `No notes for ${surahName}` : "No notes yet"}
+          </p>
+          <p className="font-mono text-[10px] text-muted-foreground/30 max-w-[200px]">
+            Use the + New button above to start writing
+          </p>
         </div>
       )}
 
@@ -813,29 +791,18 @@ function NotesContent({ verseKey }: NotesContentProps) {
 
   // ─── Editor mode ───
   if (mode === "editor") {
-    const editorTitle = editingNote
-      ? (editingNote.title || "Untitled")
-      : "New Note";
     const handleEditorBack = editingNote ? () => setMode("view") : handleCancel;
     return (
-      <div className="flex h-full flex-col gap-2 p-3">
-        <PanelBreadcrumb items={[
-          { label: "Notes", onClick: handleCancel },
-          { label: editorTitle },
-        ]} />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleEditorBack}
-            className="border-2 border-transparent p-1 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
-            aria-label="Back"
-          >
-            <ArrowLeftIcon weight="bold" className="h-4 w-4" />
-          </button>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
-            {editingNote ? "Edit Note" : "New Note"}
-          </span>
-        </div>
+      <div className="flex h-full flex-col gap-1 p-3">
+        <button
+          type="button"
+          onClick={handleEditorBack}
+          className="flex items-center gap-1.5 self-start p-1 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Back"
+        >
+          <ArrowLeftIcon weight="bold" className="h-3.5 w-3.5" />
+          <span className="font-mono text-[10px] uppercase tracking-wider">Back</span>
+        </button>
         <NoteEditor
           key={editingNote?.id ?? templateContent ?? "new"}
           initialContent={
@@ -883,34 +850,31 @@ function NotesContent({ verseKey }: NotesContentProps) {
         <NoteSearchInput value={searchQuery} onChange={setSearchQuery} />
       )}
 
-      {/* Create note — single clear button */}
-      <button
-        type="button"
-        onClick={handleNewNote}
-        className="flex items-center gap-2.5 border-2 border-foreground/20 bg-background px-3.5 py-3 text-left transition-colors hover:border-foreground hover:bg-foreground/5"
-      >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-foreground">
-          <PlusIcon weight="bold" className="h-4 w-4 text-foreground" />
-        </div>
-        <div>
-          <p className="text-xs font-semibold text-foreground">Write a note</p>
-          <p className="font-mono text-[10px] text-muted-foreground/60">Add title, tags, and link to passages</p>
-        </div>
-      </button>
-
-      {/* Template prompts — clear action cards */}
-      <div className="grid grid-cols-3 gap-2">
-        {QUICK_PROMPTS.map((p) => (
-          <button
-            key={p.label}
-            type="button"
-            onClick={() => handlePromptClick(p)}
-            className="flex flex-col items-center gap-1.5 border-2 border-foreground/20 bg-background px-2 py-3 transition-colors hover:border-foreground hover:bg-foreground/5"
-          >
-            <p.icon className="h-4 w-4 text-muted-foreground" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{p.label}</span>
-          </button>
-        ))}
+      {/* Quick create — blank + templates in one row */}
+      <div className="grid grid-cols-4 gap-1.5">
+        <button
+          type="button"
+          onClick={handleNewNote}
+          className="flex flex-col items-center gap-1 px-2 py-2.5 border border-border/50 transition-colors hover:border-foreground/30 hover:bg-[#fafafa]"
+        >
+          <PlusIcon weight="bold" className="h-4 w-4 text-muted-foreground" />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Blank</span>
+        </button>
+        {QUICK_PROMPTS.map((p) => {
+          const color = getTagColor(p.tag);
+          return (
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => handlePromptClick(p)}
+              className="flex flex-col items-center gap-1 px-2 py-2.5 transition-opacity hover:opacity-80"
+              style={{ backgroundColor: color.bg, borderLeft: `2px solid ${color.accent}` }}
+            >
+              <p.icon className="h-4 w-4" style={{ color: color.label }} />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: color.text }}>{p.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Notes for this verse */}
@@ -984,21 +948,12 @@ interface NoteCardProps {
   onToggleVerseLink?: (note: Note) => void;
 }
 
-/** Color-code note cards by source/type */
+/** Color-code note cards by first tag — uses shared getTagColor for consistency */
 function getNoteSourceStyle(note: Note) {
-  const resources = note.linkedResources;
-  const hasHadith = resources?.some((r) => r.type === "hadith");
-  const hasTafsir = resources?.some((r) => r.type === "tafsir");
-  if (hasHadith && hasTafsir) return { borderColor: "#a78bfa", dotColor: "#a78bfa", bg: "bg-violet-500/5", label: "Hadith + Tafsir" };
-  if (hasHadith) return { borderColor: "#34d399", dotColor: "#34d399", bg: "bg-emerald-500/5", label: "Hadith" };
-  if (hasTafsir) return { borderColor: "#fbbf24", dotColor: "#fbbf24", bg: "bg-amber-500/5", label: "Tafsir" };
-
-  const tags = note.tags;
-  if (tags.includes("reflection")) return { borderColor: "#60a5fa", dotColor: "#60a5fa", bg: "bg-blue-500/5", label: "Reflection" };
-  if (tags.includes("question")) return { borderColor: "#c084fc", dotColor: "#c084fc", bg: "bg-purple-500/5", label: "Question" };
-  if (tags.includes("connection")) return { borderColor: "#2dd4bf", dotColor: "#2dd4bf", bg: "bg-teal-500/5", label: "Connection" };
-
-  return { borderColor: "#64748b", dotColor: "", bg: "bg-background", label: "" };
+  const tag = note.tags[0];
+  if (!tag) return { borderColor: "#64748b", dotColor: "", bgColor: "", label: "" };
+  const color = getTagColor(tag);
+  return { borderColor: color.accent, dotColor: color.accent, bgColor: color.bg, label: tag };
 }
 
 function NoteCard({ note, surahId, surahName, onView, onDelete, onTogglePin, onToggleSurahLink, verseKey, onToggleVerseLink }: NoteCardProps) {
@@ -1032,10 +987,9 @@ function NoteCard({ note, surahId, surahName, onView, onDelete, onTogglePin, onT
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onView(note.id); } }}
       className={cn(
         "relative cursor-pointer border-2 border-foreground/20 p-3 transition-colors hover:border-foreground",
-        sourceStyle.bg,
         note.pinned && "border-foreground",
       )}
-      style={{ borderLeft: `3px solid ${sourceStyle.borderColor}` }}
+      style={{ borderLeft: `3px solid ${sourceStyle.borderColor}`, backgroundColor: sourceStyle.bgColor || undefined }}
     >
       {/* Header: type badge + pin + menu */}
       <div className="flex items-center justify-between gap-2">
@@ -1059,7 +1013,7 @@ function NoteCard({ note, surahId, surahName, onView, onDelete, onTogglePin, onT
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-full z-50 mt-1 w-36 border-2 border-foreground bg-background p-1">
-                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 font-mono text-[10px] text-muted-foreground hover:bg-foreground hover:text-background transition-colors">{note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />PushPinIcon</>}</button>
+                <button type="button" onClick={() => { setShowMenu(false); onTogglePin(note.id); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 font-mono text-[10px] text-muted-foreground hover:bg-foreground hover:text-background transition-colors">{note.pinned ? <><PushPinSlashIcon weight="bold" className="h-3 w-3" />Unpin</> : <><PushPinIcon weight="fill" className="h-3 w-3" />Pin</>}</button>
                 {verseKey && onToggleVerseLink ? (
                   <button type="button" onClick={() => { setShowMenu(false); onToggleVerseLink(note); }} className="flex w-full items-center gap-2 px-2.5 py-1.5 font-mono text-[10px] text-muted-foreground hover:bg-foreground hover:text-background transition-colors"><LinkSimpleIcon weight="bold" className="h-3 w-3" />{note.verseKeys.includes(verseKey) ? `Unlink ${verseKey}` : `LinkIcon to ${verseKey}`}</button>
                 ) : (

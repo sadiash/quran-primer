@@ -6,7 +6,7 @@ import { useNotes } from "@/presentation/hooks/use-notes";
 import { useToast } from "@/presentation/components/ui/toast";
 import { noteLocationLabel } from "@/core/types/study";
 import { getSurahName } from "@/lib/surah-names";
-import { getSurahColor } from "@/lib/surah-colors";
+import { getTagColor } from "@/lib/surah-colors";
 import { cn } from "@/lib/utils";
 import { useState, useCallback, useMemo } from "react";
 import type { Note } from "@/core/types";
@@ -89,9 +89,8 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
   const hasRealTitle = !!note.title;
   const location = noteLocationLabel(note, getSurahName);
 
-  const firstVk = note.verseKeys[0];
-  const noteSurahId = firstVk ? Number(firstVk.split(":")[0]) : note.surahIds[0];
-  const noteColor = noteSurahId ? getSurahColor(noteSurahId) : null;
+  const firstTag = note.tags[0];
+  const tagColor = firstTag ? getTagColor(firstTag) : null;
 
   return (
     <div
@@ -100,7 +99,7 @@ function NotesListCard({ note, href, onTogglePin, onDelete }: NotesListCardProps
         "transition-colors hover:bg-[#fafafa]",
         note.pinned && "bg-[#fefce8]/30",
       )}
-      style={noteColor ? { borderLeft: `3px solid ${noteColor.accent}` } : undefined}
+      style={tagColor ? { borderLeft: `3px solid ${tagColor.accent}` } : undefined}
     >
       {/* Title row with pin + overflow */}
       <div className="flex items-start gap-2">

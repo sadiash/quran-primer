@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 
 interface ReadingProgressBarProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
+  color?: string;
 }
 
 /**
  * Thin accent-colored progress bar at the very top of the viewport.
  * Tracks scroll position of the reading surface container.
  */
-export function ReadingProgressBar({ containerRef }: ReadingProgressBarProps) {
+export function ReadingProgressBar({ containerRef, color }: ReadingProgressBarProps) {
   const [progress, setProgress] = useState(0);
 
   const updateProgress = useCallback(() => {
@@ -40,7 +41,7 @@ export function ReadingProgressBar({ containerRef }: ReadingProgressBarProps) {
   return (
     <div
       className="reading-progress-bar"
-      style={{ width: `${progress}%` }}
+      style={{ width: `${progress}%`, ...(color ? { background: color } : {}) }}
       role="progressbar"
       aria-valuenow={Math.round(progress)}
       aria-valuemin={0}

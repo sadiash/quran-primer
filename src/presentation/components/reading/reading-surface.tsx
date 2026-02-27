@@ -16,6 +16,7 @@ import { SurahHeader } from "./surah-header";
 import { VerseBlock } from "./verse-block";
 import { ReadingToolbar } from "./reading-toolbar";
 import { ReadingProgressBar } from "./reading-progress-bar";
+import { getSurahColor } from "@/lib/surah-colors";
 import { cn } from "@/lib/utils";
 
 interface ReadingSurfaceProps {
@@ -278,8 +279,8 @@ export function ReadingSurface({
 
   return (
     <div className="relative h-full flex flex-col">
-      {/* Reading progress bar */}
-      <ReadingProgressBar containerRef={containerRef} />
+      {/* Reading progress bar — surah accent color */}
+      <ReadingProgressBar containerRef={containerRef} color={getSurahColor(surah.id).accent} />
 
       {/* Sticky surah header */}
       {preferences.showSurahHeaders && (
@@ -297,9 +298,9 @@ export function ReadingSurface({
         className="flex-1 min-h-0 overflow-y-auto scroll-smooth"
       >
         <div className="mx-auto max-w-3xl px-6 py-8 sm:px-8 lg:px-12">
-          {/* Bismillah — colored editorial strip */}
+          {/* Bismillah — colored editorial strip using surah's accent */}
           {preferences.showBismillah && surah.id !== 1 && surah.id !== 9 && (
-            <div className="mb-8 -mx-6 sm:-mx-8 lg:-mx-12 px-6 sm:px-8 lg:px-12 py-6 text-center" style={{ backgroundColor: "var(--br-accent-yellow)", color: "#0a0a0a" }}>
+            <div className="mb-8 -mx-6 sm:-mx-8 lg:-mx-12 px-6 sm:px-8 lg:px-12 py-6 text-center" style={{ backgroundColor: getSurahColor(surah.id).bg }}>
               <p
                 lang="ar"
                 dir="rtl"
