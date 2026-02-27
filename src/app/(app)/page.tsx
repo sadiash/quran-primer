@@ -30,16 +30,12 @@ export default function RootPage() {
         <p className="mt-1.5 text-sm text-muted-foreground/70">A personal knowledge system for the Quran</p>
       </div>
 
-      {isLoading ? (
-        <div className="h-10 w-32 animate-pulse rounded-full bg-primary/10" />
-      ) : (
-        <Link
-          href={target}
-          className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
-        >
-          {preferences.onboardingComplete ? "Continue Reading" : "Get Started"}
-        </Link>
-      )}
+      <Link
+        href={target}
+        className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
+      >
+        {!isLoading && preferences.onboardingComplete ? "Continue Reading" : "Get Started"}
+      </Link>
     </div>
   );
 }
