@@ -10,6 +10,10 @@ export function createMockQuranService(): {
     getSurah: vi.fn().mockResolvedValue(createMockSurahWithVerses()),
     getVerse: vi.fn().mockResolvedValue(createMockVerse()),
     searchQuran: vi.fn().mockResolvedValue([createMockVerse()]),
+    getVerseWithTranslation: vi.fn().mockResolvedValue({
+      verse: createMockVerse(),
+      translation: null,
+    }),
     getSurahWithTranslation: vi.fn().mockResolvedValue({
       surah: createMockSurahWithVerses(),
       translations: [],

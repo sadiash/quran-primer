@@ -5,8 +5,10 @@ import Link from "next/link";
 import type { Surah, ReadingProgress } from "@/core/types";
 import { useProgress } from "@/presentation/hooks/use-progress";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { useConceptSearch } from "@/presentation/hooks/use-concept-search";
 import { getSurahColor } from "@/lib/surah-colors";
 import { BracketLabel, RadioOption } from "@/presentation/components/ui/bracket-helpers";
+import { ConceptSearchResults } from "@/presentation/components/quran/concept-search-results";
 import { cn } from "@/lib/utils";
 
 interface SurahBrowserBrutalistProps {
@@ -38,6 +40,7 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
   const [sort, setSort] = useState<SortMode>("number");
   const { allProgress } = useProgress();
   const { preferences } = usePreferences();
+  const { matches: conceptMatches, totalVerses: conceptVerses, isSearching: isConceptSearch } = useConceptSearch(search);
 
   const progressMap = useMemo(() => {
     const map = new Map<number, ReadingProgress>();
@@ -148,15 +151,15 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
               <RadioOption
                 selected={filter === "meccan"}
                 onClick={() => setFilter("meccan")}
-                label="● Meccan"
-                dotColor="var(--surah-yellow-label)"
+                label="Meccan"
+                icon={<KaabaIcon className="h-3.5 w-3.5" style={{ color: "var(--surah-yellow-label)" }} />}
                 suffix={`(${meccanCount})`}
               />
               <RadioOption
                 selected={filter === "medinan"}
                 onClick={() => setFilter("medinan")}
-                label="● Medinan"
-                dotColor="var(--surah-teal-label)"
+                label="Medinan"
+                icon={<MasjidIcon className="h-3.5 w-3.5" style={{ color: "var(--surah-teal-label)" }} />}
                 suffix={`(${medinanCount})`}
               />
             </div>
@@ -234,6 +237,21 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
             </div>
           )}
 
+          {/* Concept hint — when surahs match AND concepts match */}
+          {!verseMatch && filtered.length > 0 && isConceptSearch && conceptMatches.length > 0 && (
+            <button
+              onClick={() => {
+                // Force show concept results by clearing the surah filter indirectly
+                // We scroll down to the concept results section
+                const el = document.getElementById("concept-results");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="w-full mb-3 py-2 px-3 border border-border/20 text-left font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+            >
+              {conceptMatches.length} concept{conceptMatches.length !== 1 ? "s" : ""} found for &ldquo;{search}&rdquo; →
+            </button>
+          )}
+
           {/* Card grid — fixed 3 columns */}
           <SurahGrid
             surahs={filtered}
@@ -241,13 +259,24 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
             trackProgress={preferences.trackProgress}
           />
 
-          {filtered.length === 0 && !verseMatch && search && (
+          {/* Concept search results — below grid when both match, or standalone when no surahs match */}
+          {!verseMatch && isConceptSearch && conceptMatches.length > 0 && (
+            <div id="concept-results" className={filtered.length > 0 ? "mt-8 pt-6 border-t border-border/20" : ""}>
+              <ConceptSearchResults
+                matches={conceptMatches}
+                totalVerses={conceptVerses}
+                query={search}
+              />
+            </div>
+          )}
+
+          {filtered.length === 0 && !verseMatch && search && conceptMatches.length === 0 && (
             <div className="py-20 text-center">
               <p className="font-display text-5xl font-bold mb-2 text-foreground">
                 0
               </p>
               <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                No surahs match &ldquo;{search}&rdquo;
+                No surahs or concepts match &ldquo;{search}&rdquo;
               </span>
             </div>
           )}
@@ -342,24 +371,31 @@ function SurahCard({
       )}
 
       {/* Arabic watermark — right side, vertically centered above footer */}
-      <p
-        className={cn(
-          "absolute right-3 select-none pointer-events-none transition-opacity duration-300 z-[4] arabic-display",
-          featured
-            ? "text-[6rem] sm:text-[8rem] opacity-[0.15] group-hover:opacity-[0.25] top-[10%] bottom-8"
-            : "text-[3.5rem] sm:text-[4.5rem] opacity-[0.12] group-hover:opacity-[0.22] top-[5%] bottom-8",
-        )}
+      <span
         dir="rtl"
         aria-hidden="true"
         style={{
-          color: isBg ? "#0a0a0a" : undefined,
+          position: "absolute",
+          right: "0.75rem",
+          top: featured ? "10%" : "5%",
+          bottom: "2rem",
+          zIndex: 4,
           display: "flex",
           alignItems: "center",
+          pointerEvents: "none",
+          userSelect: "none",
+          fontFamily: "'Amiri', serif",
+          fontSize: featured ? "128px" : "72px",
           lineHeight: 1,
+          letterSpacing: "0.01em",
+          color: isBg ? "#0a0a0a" : "inherit",
+          opacity: featured ? 0.15 : 0.12,
+          transition: "opacity 300ms",
+          overflow: "hidden",
         }}
       >
         {surah.nameArabic}
-      </p>
+      </span>
 
       {/* Top meta */}
       <div className="flex items-center gap-1.5 px-3 pt-3 relative z-[1]">

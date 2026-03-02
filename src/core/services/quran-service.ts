@@ -45,6 +45,23 @@ export class QuranService {
     return this.deps.quran.search(query);
   }
 
+  /** Get a single verse with its translation */
+  async getVerseWithTranslation(
+    verseKey: string,
+    translationId: number = 1001,
+  ): Promise<{
+    verse: Verse;
+    translation: Translation | null;
+  } | null> {
+    const verse = await this.deps.quran.getVerse(verseKey);
+    if (!verse) return null;
+    const translation = await this.deps.translations.getVerseTranslation(
+      verseKey,
+      translationId,
+    );
+    return { verse, translation };
+  }
+
   // --- Translations ---
 
   getAvailableTranslations(): Promise<TranslationResource[]> {

@@ -54,6 +54,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${amiri.variable} ${scheherazadeNew.variable} ${spaceGrotesk.variable} ${spaceMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <a
           href="#main-content"

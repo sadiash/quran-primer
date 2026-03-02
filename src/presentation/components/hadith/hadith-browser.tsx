@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { CircleNotchIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
+import { useTopicSearch } from "@/presentation/hooks/use-topic-search";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith, HadithBook } from "@/core/types";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ import {
   type GradeFilter,
 } from "./constants";
 import { HadithCard } from "./hadith-card";
+import { TopicSearchResults } from "./topic-search-results";
 
 /** The two Sahih collections are "featured" — shown larger */
 const FEATURED_COLLECTIONS = new Set(["bukhari", "muslim"]);
@@ -44,6 +46,10 @@ export function HadithBrowser() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortMode>("number");
   const [gradeFilter, setGradeFilter] = useState<GradeFilter>("all");
+
+  // Topic search — only active at collections level
+  const topicQuery = !selectedCollection ? search : "";
+  const { matches: topicMatches, isSearching: isTopicSearch } = useTopicSearch(topicQuery);
 
   // Load books for selected collection
   const booksUrl = selectedCollection
@@ -327,6 +333,20 @@ export function HadithBrowser() {
                   Showing {filteredCollections.length} of {enabledCollections.length}
                 </span>
               </div>
+
+              {/* Topic hint — when collections match AND topics match */}
+              {filteredCollections.length > 0 && isTopicSearch && topicMatches.length > 0 && (
+                <button
+                  onClick={() => {
+                    const el = document.getElementById("topic-results");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="w-full mb-3 py-2 px-3 border border-border/20 text-left font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+                >
+                  {topicMatches.length} topic{topicMatches.length !== 1 ? "s" : ""} found for &ldquo;{search}&rdquo; →
+                </button>
+              )}
+
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {filteredCollections.map((c) => {
                   const meta = COLLECTION_META[c.id];
@@ -411,6 +431,23 @@ export function HadithBrowser() {
                   );
                 })}
               </div>
+
+              {/* Topic search results — below collections or standalone */}
+              {isTopicSearch && topicMatches.length > 0 && (
+                <div id="topic-results" className={filteredCollections.length > 0 ? "mt-8 pt-6 border-t border-border/20" : ""}>
+                  <TopicSearchResults matches={topicMatches} query={search} />
+                </div>
+              )}
+
+              {/* Empty state — no collections and no topics match */}
+              {filteredCollections.length === 0 && search && (!isTopicSearch || topicMatches.length === 0) && (
+                <div className="py-20 text-center">
+                  <p className="font-display text-5xl font-bold mb-2 text-foreground">0</p>
+                  <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+                    No collections or topics match &ldquo;{search}&rdquo;
+                  </span>
+                </div>
+              )}
             </>
           )}
 

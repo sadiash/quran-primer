@@ -30,6 +30,7 @@ export function PanelShell({ id, title, icon: Icon, children, className }: Panel
           onClick={() => closePanel(id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={`Close ${title} panel`}
+          data-tip="Close"
         >
           <XIcon weight="bold" className="h-3.5 w-3.5" />
         </button>

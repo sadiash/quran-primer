@@ -88,6 +88,8 @@ export function AudioDock() {
             onClick={audio.previous}
             className="p-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label="Previous verse"
+            data-tip="Previous"
+            data-tip-pos="top"
           >
             <SkipBackIcon weight="bold" className="h-3 w-3" />
           </button>
@@ -96,6 +98,8 @@ export function AudioDock() {
             onClick={handlePlayPause}
             className="p-2 border border-border text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label={audio.isPlaying ? "Pause" : "Play"}
+            data-tip={audio.isPlaying ? "Pause" : "Play"}
+            data-tip-pos="top"
           >
             {audio.isPlaying ? (
               <PauseIcon weight="fill" className="h-3.5 w-3.5" />
@@ -108,6 +112,8 @@ export function AudioDock() {
             onClick={audio.next}
             className="p-1.5 text-foreground hover:bg-foreground hover:text-background transition-colors"
             aria-label="Next verse"
+            data-tip="Next"
+            data-tip-pos="top"
           >
             <SkipForwardIcon weight="bold" className="h-3 w-3" />
           </button>
@@ -118,6 +124,8 @@ export function AudioDock() {
           onClick={audio.stop}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Stop audio"
+          data-tip="Stop"
+          data-tip-pos="top"
         >
           <XIcon weight="bold" className="h-3 w-3" />
         </button>

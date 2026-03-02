@@ -36,6 +36,8 @@ interface GraphControlsProps {
   onTagFilter: (tag: string | null) => void;
   // Active node types (types that actually have nodes)
   activeNodeTypes: Set<NodeType>;
+  /** Hide enrich toggles and node type filters */
+  minimal?: boolean;
 }
 
 export function GraphControls({
@@ -56,6 +58,7 @@ export function GraphControls({
   activeTag,
   onTagFilter,
   activeNodeTypes,
+  minimal = false,
 }: GraphControlsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2 px-3 py-2 bg-background border-b border-border text-xs">
@@ -93,59 +96,63 @@ export function GraphControls({
         Particles
       </button>
 
-      <div className="w-px h-4 bg-border" />
+      {!minimal && (
+        <>
+          <div className="w-px h-4 bg-border" />
 
-      {/* Node type filters */}
-      {ALL_NODE_TYPES.filter((t) => activeNodeTypes.has(t)).map((type) => (
-        <button
-          key={type}
-          onClick={() => onToggleType(type)}
-          className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
-            visibleTypes.has(type) ? "bg-muted/60" : "opacity-40 hover:opacity-70"
-          }`}
-        >
-          <span
-            className="inline-block size-2.5 rounded-full"
-            style={{ backgroundColor: NODE_COLORS[type] }}
-          />
-          {NODE_TYPE_LABELS[type]}
-        </button>
-      ))}
+          {/* Node type filters */}
+          {ALL_NODE_TYPES.filter((t) => activeNodeTypes.has(t)).map((type) => (
+            <button
+              key={type}
+              onClick={() => onToggleType(type)}
+              className={`flex items-center gap-1.5 px-2 py-1 rounded transition-colors ${
+                visibleTypes.has(type) ? "bg-muted/60" : "opacity-40 hover:opacity-70"
+              }`}
+            >
+              <span
+                className="inline-block size-2.5 rounded-full"
+                style={{ backgroundColor: NODE_COLORS[type] }}
+              />
+              {NODE_TYPE_LABELS[type]}
+            </button>
+          ))}
 
-      <div className="w-px h-4 bg-border" />
+          <div className="w-px h-4 bg-border" />
 
-      {/* Ontology enrichment toggles */}
-      <span className="text-muted-foreground font-medium">Enrich:</span>
-      <button
-        onClick={onToggleQuranicConcepts}
-        className={`px-2 py-1 rounded transition-colors ${
-          includeQuranicConcepts
-            ? "bg-pink-500/15 text-pink-500"
-            : "hover:bg-muted text-muted-foreground"
-        }`}
-      >
-        Concepts
-      </button>
-      <button
-        onClick={onToggleOntologyHadiths}
-        className={`px-2 py-1 rounded transition-colors ${
-          includeOntologyHadiths
-            ? "bg-amber-500/15 text-amber-500"
-            : "hover:bg-muted text-muted-foreground"
-        }`}
-      >
-        Hadiths
-      </button>
-      <button
-        onClick={onToggleHadithTopics}
-        className={`px-2 py-1 rounded transition-colors ${
-          includeHadithTopics
-            ? "bg-orange-500/15 text-orange-500"
-            : "hover:bg-muted text-muted-foreground"
-        }`}
-      >
-        Topics
-      </button>
+          {/* Ontology enrichment toggles */}
+          <span className="text-muted-foreground font-medium">Enrich:</span>
+          <button
+            onClick={onToggleQuranicConcepts}
+            className={`px-2 py-1 rounded transition-colors ${
+              includeQuranicConcepts
+                ? "bg-pink-500/15 text-pink-500"
+                : "hover:bg-muted text-muted-foreground"
+            }`}
+          >
+            Concepts
+          </button>
+          <button
+            onClick={onToggleOntologyHadiths}
+            className={`px-2 py-1 rounded transition-colors ${
+              includeOntologyHadiths
+                ? "bg-amber-500/15 text-amber-500"
+                : "hover:bg-muted text-muted-foreground"
+            }`}
+          >
+            Hadiths
+          </button>
+          <button
+            onClick={onToggleHadithTopics}
+            className={`px-2 py-1 rounded transition-colors ${
+              includeHadithTopics
+                ? "bg-orange-500/15 text-orange-500"
+                : "hover:bg-muted text-muted-foreground"
+            }`}
+          >
+            Topics
+          </button>
+        </>
+      )}
 
       {/* Tag filters */}
       {allTags.length > 0 && (

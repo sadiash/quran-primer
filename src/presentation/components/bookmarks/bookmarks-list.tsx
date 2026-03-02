@@ -54,6 +54,7 @@ export function BookmarksList() {
               onClick={() => removeBookmark(bm.id)}
               className="shrink-0 p-1.5 text-muted-foreground opacity-0 transition-colors group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
               aria-label="Remove bookmark"
+              data-tip="Remove"
             >
               <TrashIcon weight="bold" className="h-3.5 w-3.5" />
             </button>

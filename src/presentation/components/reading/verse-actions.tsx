@@ -70,6 +70,7 @@ export function VerseActions({
           }}
           className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
           aria-label={isPlaying ? "Pause" : "Play"}
+          data-tip={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
             <PauseIcon weight="fill" className="h-3.5 w-3.5" />
@@ -89,6 +90,7 @@ export function VerseActions({
               : "text-muted-foreground hover:bg-surface hover:text-foreground",
           )}
           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+          data-tip={isBookmarked ? "Remove Bookmark" : "Bookmark"}
         >
           {isBookmarked ? (
             <BookmarkSimpleIcon weight="fill" className="h-3.5 w-3.5" />
@@ -106,6 +108,7 @@ export function VerseActions({
           }}
           className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
           aria-label="More actions"
+          data-tip="More"
         >
           <DotsThreeIcon weight="bold" className="h-3.5 w-3.5" />
         </button>

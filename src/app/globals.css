@@ -587,6 +587,89 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* ─── Brutalist Tooltip ─── */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  padding: 3px 7px;
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease, transform 150ms ease;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 100;
+}
+
+[data-tip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(4px);
+}
+
+/* Tooltip above (for bottom-positioned elements) */
+[data-tip-pos="top"]::after {
+  top: auto;
+  bottom: 100%;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+[data-tip-pos="top"]:hover::after {
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Tooltip left-aligned (for right-edge elements) */
+[data-tip-pos="left"]::after {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(8px);
+}
+
+[data-tip-pos="left"]:hover::after {
+  transform: translateX(0) translateY(4px);
+}
+
+/* ─── Nav Tooltip — Yellow card with hard black offset shadow ─── */
+.floating-nav [data-tip]::after {
+  background: var(--br-accent-yellow);
+  color: #0a0a0a;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  box-shadow: 3px 3px 0 #0a0a0a;
+  border: 1px solid #0a0a0a;
+}
+
+.floating-nav [data-tip-pos="left"]::after {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(8px);
+}
+
+.floating-nav [data-tip-pos="left"]:hover::after {
+  transform: translateX(0) translateY(4px);
+}
+
+/* Hide tooltip on mobile — touch devices don't need hover tips */
+@media (max-width: 768px) {
+  [data-tip]::after {
+    display: none;
+  }
+}
+
 /* ─── Floating Nav Bar ─── */
 .floating-nav {
   position: fixed;

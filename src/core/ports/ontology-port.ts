@@ -30,4 +30,7 @@ export interface OntologyPort {
 
   /** Get the full hadithId→topics map (for graph enrichment) */
   getAllHadithTopics(): Promise<Record<string, string[]>>;
+
+  /** Get hadith IDs that belong to a given topic name */
+  getHadithIdsByTopic(topicName: string): Promise<string[]>;
 }

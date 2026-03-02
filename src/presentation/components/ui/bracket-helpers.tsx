@@ -14,12 +14,14 @@ export function RadioOption({
   label,
   suffix,
   dotColor,
+  icon,
 }: {
   selected: boolean;
   onClick: () => void;
   label: string;
   suffix?: string;
   dotColor?: string;
+  icon?: React.ReactNode;
 }) {
   return (
     <button
@@ -31,8 +33,10 @@ export function RadioOption({
           <span className="block h-[6px] w-[6px] bg-foreground rounded-full" />
         )}
       </span>
-      <span className={cn("font-display text-[13px]", selected ? "text-foreground" : "text-muted-foreground")}>
-        {dotColor ? (
+      <span className={cn("font-display text-[13px] flex items-center gap-1.5", selected ? "text-foreground" : "text-muted-foreground")}>
+        {icon ? (
+          <>{icon}{" "}{label}</>
+        ) : dotColor ? (
           <><span style={{ color: dotColor }}>●</span>{" "}{label.replace("● ", "")}</>
         ) : (
           label

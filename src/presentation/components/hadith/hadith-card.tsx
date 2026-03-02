@@ -102,13 +102,19 @@ export function HadithCard({
         onClick={onToggle}
         className="flex w-full items-start gap-3 p-4 text-left"
       >
-        {/* Hadith number — prominent left column */}
+        {/* Hadith number + collection — prominent left column */}
         <div className="shrink-0 flex flex-col items-center gap-1 pt-0.5">
           <span
             className="font-mono text-[11px] font-bold tabular-nums px-2 py-0.5"
             style={{ backgroundColor: meta?.bg ?? 'var(--highlight)', color: meta?.labelColor ?? 'var(--surah-yellow-label)' }}
           >
             #{hadith.hadithNumber}
+          </span>
+          <span
+            className="font-mono text-[8px] font-bold uppercase tracking-wider leading-none text-center"
+            style={{ color: meta?.labelColor ?? 'var(--muted-foreground)' }}
+          >
+            {collectionName}
           </span>
           {hasGrade && parsed ? (
             <GradePill label={parsed.label} category={category} />
@@ -222,6 +228,8 @@ export function HadithCard({
                   className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface transition-colors"
                   onClick={(e) => e.stopPropagation()}
                   aria-label="View source"
+                  data-tip="Source"
+                  data-tip-pos="top"
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -240,6 +248,8 @@ export function HadithCard({
                     : "text-muted-foreground hover:text-foreground hover:bg-surface",
                 )}
                 aria-label={saved ? "Saved" : "Save to notes"}
+                data-tip={saved ? "Saved" : "Save"}
+                data-tip-pos="top"
               >
                 {saved ? (
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -260,6 +270,8 @@ export function HadithCard({
                   }}
                   className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface transition-colors"
                   aria-label="Link to note"
+                  data-tip="Link"
+                  data-tip-pos="top"
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -317,6 +329,8 @@ function CopyButton({ text }: { text: string }) {
           : "text-muted-foreground hover:text-foreground hover:bg-surface",
       )}
       aria-label={copied ? "Copied" : "Copy"}
+      data-tip={copied ? "Copied" : "Copy"}
+      data-tip-pos="top"
     >
       {copied ? (
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">

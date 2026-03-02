@@ -38,6 +38,8 @@ export class OntologyLocalAdapter implements OntologyPort {
 
   private hadithTopicsCache: Record<string, string[]> | null = null;
   private topicsCache: Record<string, { subTopics: string[]; hadithCount: number }> | null = null;
+  /** Reverse index: topic name → hadith IDs */
+  private topicToHadithIds: Map<string, string[]> | null = null;
 
   // ── Lazy loaders ─────────────────────────────────────────────────
 
@@ -220,5 +222,28 @@ export class OntologyLocalAdapter implements OntologyPort {
 
   async getAllHadithTopics(): Promise<Record<string, string[]>> {
     return this.loadHadithTopics();
+  }
+
+  private async loadTopicToHadithIds(): Promise<Map<string, string[]>> {
+    if (this.topicToHadithIds) return this.topicToHadithIds;
+
+    const data = await this.loadHadithTopics();
+    this.topicToHadithIds = new Map();
+
+    for (const [hadithId, topics] of Object.entries(data)) {
+      for (const topic of topics) {
+        if (!this.topicToHadithIds.has(topic)) {
+          this.topicToHadithIds.set(topic, []);
+        }
+        this.topicToHadithIds.get(topic)!.push(hadithId);
+      }
+    }
+
+    return this.topicToHadithIds;
+  }
+
+  async getHadithIdsByTopic(topicName: string): Promise<string[]> {
+    const index = await this.loadTopicToHadithIds();
+    return index.get(topicName) ?? [];
   }
 }

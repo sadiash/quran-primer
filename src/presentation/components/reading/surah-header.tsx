@@ -129,6 +129,7 @@ function NavChevron({
           : "text-muted-foreground hover:text-foreground hover:border-foreground",
       )}
       aria-label={direction === "prev" ? "Previous surah" : "Next surah"}
+      data-tip={direction === "prev" ? "Previous" : "Next"}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
     >

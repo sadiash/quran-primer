@@ -245,7 +245,8 @@ function TafsirContent({
                   : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Save tafsir to notes"
-              title="Save to Notes"
+              data-tip={saved ? "Saved" : "Save"}
+              data-tip-pos="top"
             >
               {saved ? <CheckIcon weight="fill" className="h-3.5 w-3.5" /> : <NoteIcon weight="bold" className="h-3.5 w-3.5" />}
             </button>
@@ -255,6 +256,8 @@ function TafsirContent({
               onClick={handleCopy}
               className="p-1.5 text-muted-foreground transition-colors hover:text-foreground"
               aria-label="Copy tafsir text"
+              data-tip={copied ? "Copied" : "Copy"}
+              data-tip-pos="top"
             >
               {copied ? <CheckIcon weight="fill" className="h-3.5 w-3.5 text-emerald-500" /> : <CopyIcon weight="bold" className="h-3.5 w-3.5" />}
             </button>

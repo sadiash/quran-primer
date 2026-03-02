@@ -89,6 +89,8 @@ export function TopNav() {
         href="/settings"
         className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Settings"
+        data-tip="Settings"
+        data-tip-pos="left"
       >
         <GearSixIcon weight="bold" className="h-4 w-4" />
       </Link>
@@ -111,7 +113,8 @@ function PanelsDropdown({
         onClick={() => setOpen(!open)}
         className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Panels"
-        title="Panels"
+        data-tip="Panels"
+        data-tip-pos="left"
       >
         <SidebarSimpleIcon weight={open ? "fill" : "bold"} className="h-4 w-4" />
       </button>
@@ -163,7 +166,8 @@ function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Light mode" : "Dark mode"}
+      data-tip={isDark ? "Light Mode" : "Dark Mode"}
+      data-tip-pos="left"
     >
       {isDark ? (
         <SunIcon weight="bold" className="h-4 w-4" />
@@ -196,7 +200,7 @@ function NavIcon({
           : "text-muted-foreground hover:text-foreground",
       )}
       aria-label={label}
-      title={label}
+      data-tip={label}
     >
       <Icon className="h-4 w-4" weight={isActive ? "fill" : "bold"} />
     </Link>

@@ -24,6 +24,8 @@ interface NetworkGraphProps {
   allTags: string[];
   onNodeClick?: (node: GraphNode) => void;
   className?: string;
+  /** Hide enrich toggles, node type filters, and simplify legend to just nodes/edges */
+  minimal?: boolean;
   // Ontology state (lifted to parent)
   includeOntologyHadiths: boolean;
   onToggleOntologyHadiths: () => void;
@@ -40,6 +42,7 @@ export function NetworkGraph({
   allTags,
   onNodeClick,
   className = "",
+  minimal = false,
   includeOntologyHadiths,
   onToggleOntologyHadiths,
   includeQuranicConcepts,
@@ -246,6 +249,7 @@ export function NetworkGraph({
           activeTag={activeTag}
           onTagFilter={handleTagFilter}
           activeNodeTypes={activeNodeTypes}
+          minimal={minimal}
         />
         <div className="ml-auto pr-3">
           <GraphSearch nodes={simulationNodes} onSearchResults={setSearchMatchIds} />
@@ -389,7 +393,7 @@ export function NetworkGraph({
         )}
 
         {/* Legend */}
-        <GraphLegend stats={stats} activeTypes={activeNodeTypes} />
+        <GraphLegend stats={stats} activeTypes={activeNodeTypes} minimal={minimal} />
       </div>
     </div>
   );

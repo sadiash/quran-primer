@@ -65,6 +65,8 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
             : "bg-background text-muted-foreground hover:text-foreground hover:border-foreground",
         )}
         aria-label="Reading settings"
+        data-tip="Settings"
+        data-tip-pos="top"
       >
         <SlidersHorizontalIcon weight="bold" className="h-4 w-4" />
       </button>

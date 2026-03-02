@@ -131,6 +131,8 @@ function ActionButton({
           : "text-muted-foreground hover:text-foreground hover:bg-surface",
       )}
       aria-label={label}
+      data-tip={label}
+      data-tip-pos="top"
     >
       {children}
     </button>

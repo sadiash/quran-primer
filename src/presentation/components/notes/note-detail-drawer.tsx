@@ -81,6 +81,7 @@ export function NoteDetailDrawer({
                 onClick={onClose}
                 className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
                 aria-label="Close"
+                data-tip="Close"
               >
                 <XIcon weight="bold" className="h-4 w-4" />
               </button>
@@ -96,7 +97,7 @@ export function NoteDetailDrawer({
                         : "text-muted-foreground hover:bg-surface hover:text-foreground",
                     )}
                     aria-label={note.pinned ? "Unpin note" : "Pin note"}
-                    title={note.pinned ? "Unpin note" : "Pin note"}
+                    data-tip={note.pinned ? "Unpin" : "Pin"}
                   >
                     {note.pinned ? (
                       <PushPinSlashIcon weight="bold" className="h-4 w-4" />
@@ -110,6 +111,7 @@ export function NoteDetailDrawer({
                   onClick={onEdit}
                   className="p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
                   aria-label="Edit note"
+                  data-tip="Edit"
                 >
                   <PencilSimpleIcon weight="bold" className="h-4 w-4" />
                 </button>
@@ -118,6 +120,7 @@ export function NoteDetailDrawer({
                   onClick={() => onDelete(note.id)}
                   className="p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
                   aria-label="Delete note"
+                  data-tip="Delete"
                 >
                   <TrashIcon weight="bold" className="h-4 w-4" />
                 </button>
