@@ -337,6 +337,9 @@ export function NetworkGraph({
                     )}
 
                     <circle
+                      ref={(el) => {
+                        if (el) (el as unknown as { __data__: SimulationNode }).__data__ = node;
+                      }}
                       className="node-circle"
                       cx={node.x}
                       cy={node.y}

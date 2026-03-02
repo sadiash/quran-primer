@@ -11,29 +11,30 @@ import { NotesSection } from "./notes-section";
 import { SectionHeader } from "./section-header";
 import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, NoteIcon, RobotIcon } from "@phosphor-icons/react";
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+function useIsMobileOrTablet() {
+  const [match, setMatch] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    const mq = window.matchMedia("(max-width: 1023px)");
+    setMatch(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setMatch(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-  return isMobile;
+  return match;
 }
 
 /**
- * Mobile study sheet — bottom drawer using vaul.
+ * Mobile/tablet study sheet — bottom drawer using vaul.
  * All sections stacked vertically and scrollable.
- * Only renders on mobile (<md breakpoint).
+ * Renders on mobile and tablet (<lg breakpoint).
+ * On desktop (lg+), PanelLayout handles docked panels instead.
  */
 export function MobileStudySheet() {
-  const isMobile = useIsMobile();
+  const isMobileOrTablet = useIsMobileOrTablet();
   const { openPanels, closeAllPanels } = usePanels();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const isOpen = isMobile && openPanels.size > 0;
+  const isOpen = isMobileOrTablet && openPanels.size > 0;
 
   // Determine which section to scroll to (most recently opened)
   const firstOpen = useMemo(() => {
@@ -50,7 +51,7 @@ export function MobileStudySheet() {
   }, [isOpen, firstOpen]);
 
   // Don't render vaul at all on desktop — it hijacks pointer-events on <html>
-  if (!isMobile) return null;
+  if (!isMobileOrTablet) return null;
 
   return (
     <Drawer.Root

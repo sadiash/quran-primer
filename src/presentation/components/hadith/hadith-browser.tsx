@@ -7,7 +7,9 @@ import { useTopicSearch } from "@/presentation/hooks/use-topic-search";
 import { useFetch } from "@/presentation/hooks/use-fetch";
 import type { Hadith, HadithBook } from "@/core/types";
 import { cn } from "@/lib/utils";
+import { getSurahColor } from "@/lib/surah-colors";
 import { BracketLabel, RadioOption } from "@/presentation/components/ui/bracket-helpers";
+import { BrowseTabs, type BrowseTab } from "@/app/(app)/browse/browse-tabs";
 import {
   COLLECTIONS,
   COLLECTION_META,
@@ -33,7 +35,25 @@ const COLLECTION_ARABIC: Record<string, string> = {
 
 type SortMode = "number" | "name" | "count";
 
-export function HadithBrowser() {
+/** Clean up raw book names from the dataset */
+function cleanBookName(raw: string): string {
+  // Strip "Chapter:" or "Chapter" prefix
+  let name = raw.replace(/^Chapter:\s*/i, "").replace(/^Chapter$/i, "").trim();
+  if (!name) return "Untitled";
+  // Strip leading "The " for cleaner display (e.g. "The superiority of..." → "Superiority of...")
+  // Only for short-ish names where it reads better
+  // Truncate Quran verse citations — cut at first (V. reference or long parenthetical
+  name = name.replace(/\s*\(V\.\d+:\d+.*$/, "");
+  // Truncate very long names at a natural break
+  if (name.length > 120) {
+    const cut = name.lastIndexOf(" ", 120);
+    name = name.slice(0, cut > 80 ? cut : 120) + "...";
+  }
+  // Capitalize first letter
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+export function HadithBrowser({ activeTab, onTabChange }: { activeTab?: BrowseTab; onTabChange?: (tab: BrowseTab) => void }) {
   const { preferences } = usePreferences();
   const enabledCollections = useMemo(
     () => COLLECTIONS.filter((c) => preferences.activeHadithCollections.includes(c.id)),
@@ -148,27 +168,27 @@ export function HadithBrowser() {
     selectedBook !== null ? "hadiths" : selectedCollection ? "books" : "collections";
 
   return (
-    <div className="relative z-10">
+    <div className="relative">
       {/* Top header */}
       <header className="border-b border-border px-6 py-5 sm:px-10">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-1 block">
-              The Primer / Hadith
-            </span>
-            <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight leading-none text-foreground">
-              {!selectedCollection
-                ? `${enabledCollections.length} Collections`
-                : collectionLabel}
-            </h1>
+        {activeTab && onTabChange && (
+          <div className="mb-4">
+            <BrowseTabs active={activeTab} onChange={onTabChange} />
           </div>
+        )}
+        <div className="flex items-end justify-between gap-4">
+          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight leading-none text-foreground">
+            {!selectedCollection
+              ? `${totalHadiths} Hadiths`
+              : collectionLabel}
+          </h1>
           <div className="hidden sm:block text-right">
             <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground leading-relaxed block">
               {!selectedCollection ? (
                 <>
                   Browse the prophetic traditions.
                   <br />
-                  {totalHadiths} Hadiths across {enabledCollections.length} collections.
+                  {enabledCollections.length} collections enabled.
                 </>
               ) : !selectedBook ? (
                 <>
@@ -178,7 +198,7 @@ export function HadithBrowser() {
                 </>
               ) : (
                 <>
-                  Book {selectedBookData?.bookNumber}: {selectedBookData?.bookName}
+                  Book {selectedBookData?.bookNumber}: {selectedBookData ? cleanBookName(selectedBookData.bookName) : ""}
                   <br />
                   {bookHadiths?.length ?? "..."} Hadiths
                 </>
@@ -242,7 +262,7 @@ export function HadithBrowser() {
                   selected={gradeFilter === "hasan"}
                   onClick={() => setGradeFilter("hasan")}
                   label="Hasan"
-                  dotColor="var(--surah-yellow-label)"
+                  dotColor="var(--surah-lavender-label)"
                 />
                 <RadioOption
                   selected={gradeFilter === "daif"}
@@ -348,21 +368,22 @@ export function HadithBrowser() {
               )}
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {filteredCollections.map((c) => {
-                  const meta = COLLECTION_META[c.id];
+                {filteredCollections.map((c, idx) => {
                   const isFeatured = FEATURED_COLLECTIONS.has(c.id);
                   const arabic = COLLECTION_ARABIC[c.id];
+                  const color = getSurahColor(idx + 1);
                   return (
                     <button
                       key={c.id}
                       onClick={() => { setSelectedCollection(c.id); setSearch(""); }}
                       className={cn(
-                        "group relative flex flex-col border overflow-hidden transition-all duration-150 text-left",
-                        isFeatured
-                          ? "sm:col-span-2 min-h-[180px] border-transparent"
-                          : "min-h-[140px] border-border/20 bg-background text-foreground",
+                        "group relative flex flex-col border border-transparent overflow-hidden transition-all duration-150 text-left",
+                        isFeatured ? "sm:col-span-2 min-h-[180px]" : "min-h-[140px]",
                       )}
-                      style={isFeatured ? { backgroundColor: meta?.accentColor ?? "#78d5c4", color: "#0a0a0a" } : undefined}
+                      style={{
+                        backgroundColor: isFeatured ? color.accent : color.bg,
+                        color: isFeatured ? "#0a0a0a" : undefined,
+                      }}
                     >
                       {/* Arabic watermark */}
                       {arabic && (
@@ -381,12 +402,16 @@ export function HadithBrowser() {
                       {/* Top meta */}
                       <div className="flex items-center justify-between px-3 pt-3 relative z-[1]">
                         <span
-                          className={cn(
-                            "font-mono text-[9px] uppercase tracking-[0.15em]",
-                            isFeatured ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground",
-                          )}
+                          className="font-mono text-[9px] uppercase tracking-[0.15em]"
+                          style={{ color: isFeatured ? "rgba(10,10,10,0.5)" : color.label }}
                         >
                           {isFeatured ? "SAHIH" : "SUNAN"}
+                        </span>
+                        <span
+                          className="font-mono text-[9px] uppercase tracking-[0.15em]"
+                          style={{ color: isFeatured ? "rgba(10,10,10,0.5)" : color.label }}
+                        >
+                          {c.hadithCount.toLocaleString()} hadiths
                         </span>
                       </div>
 
@@ -401,21 +426,17 @@ export function HadithBrowser() {
                           {c.label}
                         </p>
                         <span
-                          className={cn(
-                            "font-mono text-[10px] uppercase tracking-[0.15em] mt-0.5",
-                            isFeatured ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground",
-                          )}
+                          className="font-mono text-[10px] uppercase tracking-[0.15em] mt-0.5"
+                          style={{ color: isFeatured ? "rgba(10,10,10,0.5)" : color.label }}
                         >
-                          {meta?.name ?? c.label}
+                          {COLLECTION_META[c.id]?.name ?? c.label}
                         </span>
                       </div>
 
                       {/* Bottom bar */}
                       <div
-                        className={cn(
-                          "flex items-center justify-between border-t px-3 py-1.5 relative z-[1]",
-                          isFeatured ? "border-[rgba(10,10,10,0.1)]" : "border-border/20",
-                        )}
+                        className="flex items-center justify-between border-t px-3 py-1.5 relative z-[1]"
+                        style={{ borderColor: isFeatured ? "rgba(10,10,10,0.1)" : `color-mix(in srgb, ${color.accent} 30%, transparent)` }}
                       >
                         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em]">
                           {c.id.toUpperCase()}
@@ -425,7 +446,7 @@ export function HadithBrowser() {
                       {/* Hover accent bar */}
                       <div
                         className="absolute bottom-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-                        style={{ backgroundColor: isFeatured ? "#0a0a0a" : meta?.accentColor ?? "#666" }}
+                        style={{ backgroundColor: isFeatured ? "#0a0a0a" : color.accent }}
                       />
                     </button>
                   );
@@ -480,31 +501,27 @@ export function HadithBrowser() {
 
                   {filteredBooks.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {filteredBooks.map((book) => {
+                      {filteredBooks.map((book, idx) => {
                         const isFeaturedBook = book.hadithCount >= 50;
+                        const bookColor = getSurahColor(idx + 1);
                         return (
                           <button
                             key={book.bookNumber}
                             onClick={() => { setSelectedBook(book.bookNumber); setSearch(""); }}
                             className={cn(
-                              "group relative flex flex-col border overflow-hidden transition-all duration-150 text-left",
-                              isFeaturedBook
-                                ? "sm:col-span-2 min-h-[140px] border-transparent"
-                                : "min-h-[100px] border-border/20 bg-background text-foreground",
+                              "group relative flex flex-col border border-transparent overflow-hidden transition-all duration-150 text-left",
+                              isFeaturedBook ? "sm:col-span-2 min-h-[140px]" : "min-h-[100px]",
                             )}
-                            style={
-                              isFeaturedBook
-                                ? { backgroundColor: collectionMeta?.accentColor ?? "#78d5c4", color: "#0a0a0a" }
-                                : undefined
-                            }
+                            style={{
+                              backgroundColor: isFeaturedBook ? bookColor.accent : bookColor.bg,
+                              color: isFeaturedBook ? "#0a0a0a" : undefined,
+                            }}
                           >
                             {/* Top meta */}
                             <div className="flex items-center justify-between px-3 pt-3 relative z-[1]">
                               <span
-                                className={cn(
-                                  "font-mono text-[9px] uppercase tracking-[0.15em]",
-                                  isFeaturedBook ? "text-[rgba(10,10,10,0.5)]" : "text-muted-foreground",
-                                )}
+                                className="font-mono text-[9px] uppercase tracking-[0.15em]"
+                                style={{ color: isFeaturedBook ? "rgba(10,10,10,0.5)" : bookColor.label }}
                               >
                                 {book.hadithCount} hadith{book.hadithCount !== 1 ? "s" : ""}
                               </span>
@@ -518,16 +535,14 @@ export function HadithBrowser() {
                                   isFeaturedBook ? "text-[1.5rem]" : "text-[1rem]",
                                 )}
                               >
-                                {book.bookName}
+                                {cleanBookName(book.bookName)}
                               </p>
                             </div>
 
                             {/* Bottom bar */}
                             <div
-                              className={cn(
-                                "flex items-center justify-between border-t px-3 py-1.5 relative z-[1]",
-                                isFeaturedBook ? "border-[rgba(10,10,10,0.1)]" : "border-border/20",
-                              )}
+                              className="flex items-center justify-between border-t px-3 py-1.5 relative z-[1]"
+                              style={{ borderColor: isFeaturedBook ? "rgba(10,10,10,0.1)" : `color-mix(in srgb, ${bookColor.accent} 30%, transparent)` }}
                             >
                               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em]">
                                 {String(book.bookNumber).padStart(3, "0")}
@@ -537,7 +552,7 @@ export function HadithBrowser() {
                             {/* Hover accent bar */}
                             <div
                               className="absolute bottom-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-                              style={{ backgroundColor: isFeaturedBook ? "#0a0a0a" : collectionMeta?.accentColor ?? "#666" }}
+                              style={{ backgroundColor: isFeaturedBook ? "#0a0a0a" : bookColor.accent }}
                             />
                           </button>
                         );

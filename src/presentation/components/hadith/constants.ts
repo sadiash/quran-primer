@@ -1,22 +1,22 @@
 import DOMPurify from "dompurify";
 
 export const COLLECTIONS = [
-  { id: "bukhari", label: "Bukhari" },
-  { id: "muslim", label: "Muslim" },
-  { id: "abudawud", label: "Abu Dawud" },
-  { id: "tirmidhi", label: "Tirmidhi" },
-  { id: "nasai", label: "Nasa'i" },
-  { id: "ibnmajah", label: "Ibn Majah" },
+  { id: "bukhari", label: "Bukhari", hadithCount: 7277 },
+  { id: "muslim", label: "Muslim", hadithCount: 7368 },
+  { id: "abudawud", label: "Abu Dawud", hadithCount: 5276 },
+  { id: "tirmidhi", label: "Tirmidhi", hadithCount: 4053 },
+  { id: "nasai", label: "Nasa'i", hadithCount: 5685 },
+  { id: "ibnmajah", label: "Ibn Majah", hadithCount: 4079 },
 ] as const;
 
 /** Display-friendly collection names + colors (inline styles to avoid Tailwind purge) */
 export const COLLECTION_META: Record<string, { name: string; accentColor: string; bg: string; labelColor: string }> = {
   bukhari: { name: "Sahih al-Bukhari", accentColor: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", labelColor: "var(--surah-teal-label)" },
   muslim: { name: "Sahih Muslim", accentColor: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", labelColor: "var(--surah-teal-label)" },
-  abudawud: { name: "Sunan Abu Dawud", accentColor: "var(--surah-yellow-accent)", bg: "var(--surah-yellow-bg)", labelColor: "var(--surah-yellow-label)" },
-  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "var(--surah-lavender-accent)", bg: "var(--surah-lavender-bg)", labelColor: "var(--surah-lavender-label)" },
-  nasai: { name: "Sunan an-Nasa'i", accentColor: "var(--surah-pink-accent)", bg: "var(--surah-pink-bg)", labelColor: "var(--surah-pink-label)" },
-  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "var(--surah-yellow-accent)", bg: "var(--surah-yellow-bg)", labelColor: "var(--surah-yellow-label)" },
+  abudawud: { name: "Sunan Abu Dawud", accentColor: "var(--surah-lavender-accent)", bg: "var(--surah-lavender-bg)", labelColor: "var(--surah-lavender-label)" },
+  tirmidhi: { name: "Jami at-Tirmidhi", accentColor: "var(--surah-pink-accent)", bg: "var(--surah-pink-bg)", labelColor: "var(--surah-pink-label)" },
+  nasai: { name: "Sunan an-Nasa'i", accentColor: "var(--surah-teal-accent)", bg: "var(--surah-teal-bg)", labelColor: "var(--surah-teal-label)" },
+  ibnmajah: { name: "Sunan Ibn Majah", accentColor: "var(--surah-lavender-accent)", bg: "var(--surah-lavender-bg)", labelColor: "var(--surah-lavender-label)" },
 };
 
 /* ─── Grade helpers ─── */
@@ -48,7 +48,7 @@ export function categorizeGrade(label: string): GradeCategory {
 
 export const GRADE_STYLES: Record<GradeCategory, string> = {
   sahih: "text-[var(--surah-teal-label)] bg-[var(--surah-teal-bg)]",
-  hasan: "text-[var(--surah-yellow-label)] bg-[var(--surah-yellow-bg)]",
+  hasan: "text-[var(--surah-lavender-label)] bg-[var(--surah-lavender-bg)]",
   daif: "text-[var(--surah-pink-label)] bg-[var(--surah-pink-bg)]",
   fabricated: "text-[var(--surah-pink-label)] bg-[var(--surah-pink-bg)]",
   unknown: "text-muted-foreground bg-muted",

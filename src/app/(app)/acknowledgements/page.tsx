@@ -63,6 +63,16 @@ export default function AcknowledgementsPage() {
           />
         </Section>
 
+        {/* Revelation Order */}
+        <Section title="Revelation Order">
+          <CreditCard
+            name="Tanzil.net"
+            description="Egyptian Standard chronological revelation order (1924 Cairo Edition). Maps each surah to its position in the order of revelation, distinguishing Meccan (1–86) and Medinan (87–114) periods."
+            url="https://tanzil.net/docs/revelation_order"
+            license="Tanzil.net"
+          />
+        </Section>
+
         {/* Knowledge Graph */}
         <Section title="Knowledge Graph & Ontology">
           <CreditCard

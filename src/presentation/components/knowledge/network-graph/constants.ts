@@ -103,7 +103,8 @@ export const FORCE_CONFIG = {
   collisionPadding: 4,
   layerStrength: 0.12,
   centerXStrength: 0.05,
-  alphaDecay: 0.015,
+  alphaDecay: 0.05,
+  velocityDecay: 0.6,
   defaultLinkDistance: 80,
 } as const;
 

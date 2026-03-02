@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { usePanels } from "@/presentation/providers/panel-provider";
 import {
   ResizablePanelGroup,
@@ -13,21 +13,34 @@ interface PanelLayoutProps {
   children: ReactNode;
 }
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isDesktop;
+}
+
 /**
- * Top-level multi-panel docking layout (desktop only).
+ * Top-level multi-panel docking layout (desktop only, lg+).
  * Horizontal: [left dock] | [main content area] | [right dock]
  * The main content area is a vertical split: [reading surface] | [bottom dock]
  *
- * On mobile (<md), panels aren't toggled from TopNav so this renders
- * children directly. MobileStudySheet handles study tools on mobile.
+ * On mobile/tablet (<lg), panels render as a bottom sheet via
+ * MobileStudySheet instead.
  *
  * NOTE: react-resizable-panels v4 treats bare numbers as pixels.
  * All size props must use percentage strings like "28%".
  */
 export function PanelLayout({ children }: PanelLayoutProps) {
   const { hasLeftDock, hasRightDock, hasBottomDock } = usePanels();
+  const isDesktop = useIsDesktop();
 
-  const anyDockOpen = hasLeftDock || hasRightDock || hasBottomDock;
+  const anyDockOpen = isDesktop && (hasLeftDock || hasRightDock || hasBottomDock);
 
   // Compute main content default size based on which docks are open
   const mainDefault = useMemo(() => {

@@ -43,9 +43,20 @@ export function GraphTooltip({ node, x, y, connectionCount }: GraphTooltipProps)
         <p className="text-muted-foreground line-clamp-2 mb-1">{preview}</p>
       )}
 
-      {/* Connection count */}
-      <div className="text-muted-foreground">
-        {connectionCount} connection{connectionCount !== 1 ? "s" : ""}
+      {/* Stats */}
+      <div className="text-muted-foreground space-y-0.5">
+        {(node.metadata?.verseCount as number) > 0 && (
+          <div>{node.metadata!.verseCount as number} verse{(node.metadata!.verseCount as number) !== 1 ? "s" : ""}</div>
+        )}
+        {(node.metadata?.hadithCount as number) > 0 && (
+          <div>{node.metadata!.hadithCount as number} hadith{(node.metadata!.hadithCount as number) !== 1 ? "s" : ""}</div>
+        )}
+        {connectionCount > 0 && (
+          <div>{connectionCount} connection{connectionCount !== 1 ? "s" : ""}</div>
+        )}
+        {connectionCount === 0 && !(node.metadata?.verseCount as number) && !(node.metadata?.hadithCount as number) && (
+          <div>0 connections</div>
+        )}
       </div>
 
       {/* Hint */}

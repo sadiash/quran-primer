@@ -59,7 +59,7 @@ export function NotesList() {
         const surahId = firstVk
           ? Number(firstVk.split(":")[0])
           : note.surahIds[0];
-        const href = surahId ? `/surah/${surahId}` : "/notes";
+        const href = surahId ? `/surah/${surahId}?from=notes` : "/notes";
         return (
           <NotesListCard
             key={note.id}

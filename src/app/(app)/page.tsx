@@ -9,7 +9,7 @@ import { usePreferences } from "@/presentation/hooks/use-preferences";
  */
 export default function RootPage() {
   const { preferences, isLoading } = usePreferences();
-  const target = !isLoading && preferences.onboardingComplete ? "/surah/1" : "/onboarding";
+  const target = !isLoading && preferences.onboardingComplete ? "/browse" : "/onboarding";
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-8 px-6">

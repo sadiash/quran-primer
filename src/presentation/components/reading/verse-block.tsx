@@ -48,6 +48,8 @@ interface VerseBlockProps {
   conceptMaxVisible?: number;
   conceptColorSlot?: number;
   focusBgColor?: string;
+  isRead?: boolean;
+  readAccentColor?: string;
 }
 
 function VerseBlockInner({
@@ -74,6 +76,8 @@ function VerseBlockInner({
   conceptMaxVisible = 5,
   conceptColorSlot = 0,
   focusBgColor,
+  isRead = false,
+  readAccentColor,
 }: VerseBlockProps) {
   const gestureHandlers = useGestures({ onLongPress, onSwipeRight });
 
@@ -91,11 +95,16 @@ function VerseBlockInner({
         "group relative py-3 px-4 border-l-2 transition-colors",
         isFocused
           ? "border-l-transparent verse-focused-indicator"
-          : "border-l-transparent hover:bg-surface/50",
+          : isRead
+            ? "hover:bg-surface/50"
+            : "border-l-transparent hover:bg-surface/50",
         isBookmarked && "verse-bookmarked",
         hasNotes && "verse-has-notes",
       )}
-      style={isFocused && focusBgColor ? { backgroundColor: focusBgColor } : undefined}
+      style={{
+        ...(isFocused && focusBgColor ? { backgroundColor: focusBgColor } : {}),
+        ...(isRead && !isFocused && readAccentColor ? { borderLeftColor: readAccentColor } : {}),
+      }}
       onClick={onFocus}
       {...gestureHandlers}
     >

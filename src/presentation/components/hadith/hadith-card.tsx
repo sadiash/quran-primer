@@ -106,7 +106,7 @@ export function HadithCard({
         <div className="shrink-0 flex flex-col items-center gap-1 pt-0.5">
           <span
             className="font-mono text-[11px] font-bold tabular-nums px-2 py-0.5"
-            style={{ backgroundColor: meta?.bg ?? 'var(--highlight)', color: meta?.labelColor ?? 'var(--surah-yellow-label)' }}
+            style={{ backgroundColor: meta?.bg ?? 'var(--highlight)', color: meta?.labelColor ?? 'var(--surah-teal-label)' }}
           >
             #{hadith.hadithNumber}
           </span>

@@ -10,7 +10,9 @@ interface UseOntologyGraphResult {
   isLoading: boolean;
 }
 
-export function useOntologyGraph(): UseOntologyGraphResult {
+export type OntologyFilter = "all" | "quran" | "hadith";
+
+export function useOntologyGraph(filter: OntologyFilter = "all"): UseOntologyGraphResult {
   const [concepts, setConcepts] = useState<QuranicConcept[] | null>(null);
   const [topics, setTopics] = useState<HadithTopic[] | null>(null);
 
@@ -171,27 +173,38 @@ export function useOntologyGraph(): UseOntologyGraphResult {
       }
     }
 
+    // Apply source filter
+    const filteredNodes = filter === "all"
+      ? graphNodes
+      : graphNodes.filter((n) =>
+          filter === "quran" ? n.id.startsWith("concept:") : n.id.startsWith("topic:"),
+        );
+    const filteredNodeIds = new Set(filteredNodes.map((n) => n.id));
+    const filteredEdges = graphEdges.filter(
+      (e) => filteredNodeIds.has(e.sourceNodeId) && filteredNodeIds.has(e.targetNodeId),
+    );
+
     // Compute stats
     const nodeCounts: Record<string, number> = {};
-    for (const n of graphNodes) {
+    for (const n of filteredNodes) {
       nodeCounts[n.nodeType] = (nodeCounts[n.nodeType] ?? 0) + 1;
     }
     const edgeCounts: Record<string, number> = {};
-    for (const e of graphEdges) {
+    for (const e of filteredEdges) {
       edgeCounts[e.edgeType] = (edgeCounts[e.edgeType] ?? 0) + 1;
     }
 
     return {
-      nodes: graphNodes,
-      edges: graphEdges,
+      nodes: filteredNodes,
+      edges: filteredEdges,
       stats: {
         nodeCounts,
         edgeCounts,
-        totalNodes: graphNodes.length,
-        totalEdges: graphEdges.length,
+        totalNodes: filteredNodes.length,
+        totalEdges: filteredEdges.length,
       } as GraphStats,
     };
-  }, [concepts, topics]);
+  }, [concepts, topics, filter]);
 
   return {
     nodes,

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CaretLeftIcon, CaretRightIcon, PlayIcon } from "@phosphor-icons/react";
 import type { Surah } from "@/core/types";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
@@ -14,6 +15,9 @@ interface SurahHeaderProps {
 
 export function SurahHeader({ surah, compact = false }: SurahHeaderProps) {
   const audio = useAudioPlayer();
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+  const fromSuffix = from ? `?from=${from}` : "";
   const hasPrev = surah.id > 1;
   const hasNext = surah.id < 114;
   const accent = getSurahColor(surah.id);
@@ -27,7 +31,7 @@ export function SurahHeader({ surah, compact = false }: SurahHeaderProps) {
           compact ? "max-h-14 opacity-100 py-2" : "max-h-0 opacity-0",
         )}
       >
-        <NavChevron href={hasPrev ? `/surah/${surah.id - 1}` : "#"} disabled={!hasPrev} direction="prev" small />
+        <NavChevron href={hasPrev ? `/surah/${surah.id - 1}${fromSuffix}` : "#"} disabled={!hasPrev} direction="prev" small />
         <span
           className="font-mono text-[10px] font-bold tabular-nums px-2 py-0.5"
           style={{ backgroundColor: accent.accent, color: "#0a0a0a" }}
@@ -40,7 +44,7 @@ export function SurahHeader({ surah, compact = false }: SurahHeaderProps) {
         <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
           {surah.nameSimple}
         </span>
-        <NavChevron href={hasNext ? `/surah/${surah.id + 1}` : "#"} disabled={!hasNext} direction="next" small />
+        <NavChevron href={hasNext ? `/surah/${surah.id + 1}${fromSuffix}` : "#"} disabled={!hasNext} direction="next" small />
       </div>
 
       {/* Expanded header (at-top state) */}
@@ -61,13 +65,13 @@ export function SurahHeader({ surah, compact = false }: SurahHeaderProps) {
 
           {/* Arabic name — THE hero element */}
           <div className="flex items-center justify-center gap-4 sm:gap-6">
-            <NavChevron href={hasPrev ? `/surah/${surah.id - 1}` : "#"} disabled={!hasPrev} direction="prev" />
+            <NavChevron href={hasPrev ? `/surah/${surah.id - 1}${fromSuffix}` : "#"} disabled={!hasPrev} direction="prev" />
 
             <h1 lang="ar" dir="rtl" className="arabic-display surah-title-arabic">
               {surah.nameArabic}
             </h1>
 
-            <NavChevron href={hasNext ? `/surah/${surah.id + 1}` : "#"} disabled={!hasNext} direction="next" />
+            <NavChevron href={hasNext ? `/surah/${surah.id + 1}${fromSuffix}` : "#"} disabled={!hasNext} direction="next" />
           </div>
 
           {/* English name — large, bold */}
@@ -92,7 +96,7 @@ export function SurahHeader({ surah, compact = false }: SurahHeaderProps) {
             </span>
             <span className="opacity-30">|</span>
             <button
-              onClick={() => audio.play(`${surah.id}:1`, surah.id)}
+              onClick={() => audio.play(`${surah.id}:1`, surah.id, { continuous: true })}
               className="inline-flex items-center gap-1 hover:opacity-70 transition-opacity"
               aria-label="Play surah"
             >

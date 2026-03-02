@@ -7,12 +7,16 @@ import { useProgress } from "@/presentation/hooks/use-progress";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { useConceptSearch } from "@/presentation/hooks/use-concept-search";
 import { getSurahColor } from "@/lib/surah-colors";
+import { getRevelationOrder } from "@/lib/revelation-order";
 import { BracketLabel, RadioOption } from "@/presentation/components/ui/bracket-helpers";
 import { ConceptSearchResults } from "@/presentation/components/quran/concept-search-results";
+import { BrowseTabs, type BrowseTab } from "@/app/(app)/browse/browse-tabs";
 import { cn } from "@/lib/utils";
 
 interface SurahBrowserBrutalistProps {
   surahs: Surah[];
+  activeTab: BrowseTab;
+  onTabChange: (tab: BrowseTab) => void;
 }
 
 type Filter = "all" | "meccan" | "medinan";
@@ -34,7 +38,7 @@ const IMPORTANT_SURAHS = new Set([
   112, // Al-Ikhlas — "worth a third of the Quran"
 ]);
 
-export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
+export function SurahBrowserBrutalist({ surahs, activeTab, onTabChange }: SurahBrowserBrutalistProps) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<SortMode>("number");
@@ -79,10 +83,7 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
 
     switch (sort) {
       case "revelation":
-        result.sort((a, b) => {
-          if (a.revelationType === b.revelationType) return a.id - b.id;
-          return a.revelationType === "makkah" ? -1 : 1;
-        });
+        result.sort((a, b) => getRevelationOrder(a.id) - getRevelationOrder(b.id));
         break;
       case "verses":
         result.sort((a, b) => b.versesCount - a.versesCount);
@@ -101,25 +102,19 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
   const medinanCount = surahs.length - meccanCount;
 
   return (
-    <div className="relative z-10">
-      {/* Top header */}
+    <div className="relative">
+      {/* Header */}
       <header className="border-b border-border px-6 py-5 sm:px-10">
+        <div className="mb-4">
+          <BrowseTabs active={activeTab} onChange={onTabChange} />
+        </div>
         <div className="flex items-end justify-between gap-4">
-          <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground mb-1 block">
-              The Primer / Browse
-            </span>
-            <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight leading-none text-foreground">
-              114 Surahs
-            </h1>
-          </div>
-          <div className="hidden sm:block text-right">
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground leading-relaxed block">
-              Browse the complete Quran.
-              <br />
-              {meccanCount} Meccan — {medinanCount} Medinan.
-            </span>
-          </div>
+          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight leading-none text-foreground">
+            114 Surahs
+          </h1>
+          <span className="hidden sm:block font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground leading-relaxed text-right">
+            {meccanCount} Meccan — {medinanCount} Medinan
+          </span>
         </div>
       </header>
 
@@ -205,7 +200,7 @@ export function SurahBrowserBrutalist({ surahs }: SurahBrowserBrutalistProps) {
           {/* Verse jump */}
           {verseMatch && (
             <Link
-              href={`/surah/${verseMatch.surah.id}?verse=${verseMatch.key}`}
+              href={`/surah/${verseMatch.surah.id}?verse=${verseMatch.key}&from=browse`}
               className="flex items-center justify-between border-2 border-foreground p-5 mb-5 no-underline transition-opacity hover:opacity-80"
               style={{ backgroundColor: "var(--br-accent-yellow)", color: "#0a0a0a" }}
             >
@@ -341,11 +336,12 @@ function SurahCard({
     ? Math.round((progress.completedVerses / progress.totalVerses) * 100)
     : 0;
 
-  const isBg = featured;
+  // Color is earned through reading — completed surahs get the full accent bg
+  const isBg = !!isComplete;
 
   return (
     <Link
-      href={`/surah/${surah.id}`}
+      href={`/surah/${surah.id}?from=browse`}
       className={cn(
         "group relative flex flex-col border overflow-hidden no-underline",
         "transition-all duration-200 ease-out",
@@ -362,7 +358,15 @@ function SurahCard({
         "--surah-hover-accent": color.accent,
       } as React.CSSProperties}
     >
-      {/* Hover color fill — only on non-featured cards */}
+      {/* Progress color fill — tints card as you read, stronger with more progress */}
+      {pct > 0 && !isBg && (
+        <div
+          className="absolute inset-0 z-0 transition-opacity duration-300"
+          style={{ backgroundColor: color.bg, opacity: 0.15 + (pct / 100) * 0.55 }}
+        />
+      )}
+
+      {/* Hover color fill — only on non-completed cards */}
       {!isBg && (
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-0"

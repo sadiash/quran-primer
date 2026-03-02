@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 import { PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon, XIcon } from "@phosphor-icons/react";
 import { useAudioPlayer } from "@/presentation/providers/audio-provider";
 import { getSurahName } from "@/lib/surah-names";
+import { getSurahColor } from "@/lib/surah-colors";
 
 function formatTime(seconds: number): string {
   if (!seconds || !isFinite(seconds)) return "0:00";
@@ -33,6 +34,7 @@ export function AudioDock() {
   }, [audio.currentVerseKey, audio.currentSurahId]);
 
   const reciterName = RECITER_NAMES[audio.reciterId] ?? `Reciter ${audio.reciterId}`;
+  const surahColor = audio.currentSurahId ? getSurahColor(audio.currentSurahId) : null;
 
   const progress = audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0;
 
@@ -54,22 +56,31 @@ export function AudioDock() {
   if (!audio.isActive) return null;
 
   return (
-    <div className="audio-dock-floating">
+    <div
+      className="audio-dock-floating"
+      style={{
+        borderTopColor: surahColor?.accent,
+        borderTopWidth: "2px",
+      }}
+    >
       {/* Progress bar */}
       <div
         className="mx-4 mt-2 h-0.5 cursor-pointer bg-muted"
         onClick={handleSeek}
       >
         <div
-          className="h-full bg-foreground transition-all"
-          style={{ width: `${progress}%` }}
+          className="h-full transition-all"
+          style={{ width: `${progress}%`, backgroundColor: surahColor?.accent ?? "var(--foreground)" }}
         />
       </div>
 
       <div className="flex h-10 items-center gap-2 px-4 md:gap-3">
         {/* Verse label + reciter */}
         <div className="min-w-0 flex-1">
-          <p className="truncate font-mono text-[11px] font-bold text-foreground leading-tight uppercase tracking-wider">
+          <p
+            className="truncate font-mono text-[11px] font-bold leading-tight uppercase tracking-wider"
+            style={{ color: surahColor?.label ?? "var(--foreground)" }}
+          >
             {verseLabel}
           </p>
           <p className="truncate font-mono text-[9px] text-muted-foreground leading-tight">

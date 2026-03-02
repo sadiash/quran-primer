@@ -95,7 +95,7 @@ export function useGraphInteractions({
 
     const dragB = d3Drag<SVGCircleElement, SimulationNode, SubjectPosition>()
       .on("start", (event, d) => {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
+        if (!event.active) simulation.alphaTarget(0.1).restart();
         d.fx = d.x;
         d.fy = d.y;
       })

@@ -191,7 +191,7 @@ function VerseRow({
 
               {/* Read in context link */}
               <Link
-                href={`/surah/${surahNum}?verse=${verseKey}`}
+                href={`/surah/${surahNum}?verse=${verseKey}&from=concepts`}
                 className="inline-block font-mono text-[10px] uppercase tracking-[0.15em] transition-colors hover:text-foreground"
                 style={{ color: surahColor.label }}
               >

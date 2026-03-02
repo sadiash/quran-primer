@@ -22,7 +22,7 @@ interface AudioState {
 }
 
 interface AudioControls {
-  play: (verseKey: string, surahId: number) => void;
+  play: (verseKey: string, surahId: number, options?: { continuous?: boolean }) => void;
   pause: () => void;
   resume: () => void;
   stop: () => void;
@@ -66,6 +66,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [reciterId, setReciterIdState] = useState(DEFAULT_RECITER_ID);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const continuousRef = useRef(false);
 
   const getAudio = useCallback(() => {
     if (!audioRef.current) {
@@ -89,8 +90,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   );
 
   const play = useCallback(
-    async (verseKey: string, surahId: number) => {
+    async (verseKey: string, surahId: number, options?: { continuous?: boolean }) => {
       const audio = getAudio();
+      continuousRef.current = options?.continuous ?? false;
 
       if (surahId !== currentSurahId || audioMapRef.current.size === 0) {
         await loadAudioMap(surahId, reciterId);
@@ -176,7 +178,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const audio = getAudio();
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onDurationChange = () => setDuration(audio.duration || 0);
-    const onEnded = () => next();
+    const onEnded = () => {
+      if (continuousRef.current) next();
+      else pause();
+    };
 
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("durationchange", onDurationChange);
@@ -187,7 +192,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener("durationchange", onDurationChange);
       audio.removeEventListener("ended", onEnded);
     };
-  }, [getAudio, next]);
+  }, [getAudio, next, pause]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {

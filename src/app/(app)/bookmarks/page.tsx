@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback } from "react";
+import { useSessionState } from "@/presentation/hooks/use-session-state";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import { BookmarkSimpleIcon, CircleNotchIcon, MagnifyingGlassIcon, TrashIcon } from "@phosphor-icons/react";
@@ -29,9 +30,9 @@ function sanitizeHtml(html: string): string {
 
 export default function BookmarksPage() {
   const { bookmarks, removeBookmark } = useBookmarks();
-  const [search, setSearch] = useState("");
-  const [surahFilter, setSurahFilter] = useState<number | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [search, setSearch] = useSessionState("bookmarks:search", "");
+  const [surahFilter, setSurahFilter] = useSessionState<number | null>("bookmarks:filter", null);
+  const [expandedId, setExpandedId] = useSessionState<string | null>("bookmarks:expanded", null);
   const [loadingSurah, setLoadingSurah] = useState<number | null>(null);
 
   // Cache fetched surah data to avoid re-fetching
@@ -196,7 +197,7 @@ export default function BookmarksPage() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Link
-                      href={`/surah/${surahNum}?verse=${bm.verseKey}`}
+                      href={`/surah/${surahNum}?verse=${bm.verseKey}&from=bookmarks`}
                       className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-highlight transition-colors border border-border"
                     >
                       Read in context

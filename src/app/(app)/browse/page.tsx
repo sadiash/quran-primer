@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getQuranService } from "@/lib/services";
 import { BrowsePageClient } from "./browse-client";
 
@@ -9,5 +10,9 @@ export const metadata = {
 export default async function BrowsePage() {
   const surahs = await getQuranService().getAllSurahs();
 
-  return <BrowsePageClient surahs={surahs} />;
+  return (
+    <Suspense>
+      <BrowsePageClient surahs={surahs} />
+    </Suspense>
+  );
 }

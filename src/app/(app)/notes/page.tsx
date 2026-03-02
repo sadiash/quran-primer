@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { useSessionState } from "@/presentation/hooks/use-session-state";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowsDownUpIcon, CircleNotchIcon, GraphIcon, LightbulbIcon, MagnifyingGlassIcon, MapPinIcon, NoteIcon, PencilSimpleIcon, PlusIcon, PushPinIcon, PushPinSlashIcon, TagIcon, TrashIcon } from "@phosphor-icons/react";
 import { useNotes, type NoteSortOption } from "@/presentation/hooks/use-notes";
-import { useKnowledgeGraph } from "@/presentation/hooks/use-knowledge-graph";
-import { NetworkGraph } from "@/presentation/components/knowledge";
 import { useToast } from "@/presentation/components/ui/toast";
 import { PageHeader } from "@/presentation/components/layout/page-header";
 import { NoteContentRenderer } from "@/presentation/components/notes/note-content-renderer";
@@ -47,15 +46,15 @@ export default function NotesPage() {
   const { notes, saveNote, removeNote, togglePin, restoreNote, sortNotes, suggestedTags } =
     useNotes();
   const { addToast } = useToast();
-  const [activeTab, setActiveTab] = useState<"notes" | "mindmap">("notes");
-  const [search, setSearch] = useState("");
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useSessionState<"notes" | "mindmap">("notes:tab", "notes");
+  const [search, setSearch] = useSessionState("notes:search", "");
+  const [tagFilter, setTagFilter] = useSessionState<string | null>("notes:tagFilter", null);
   const [sortOption, setSortOption] = useState<NoteSortOption>(loadSort);
   const [showSortMenu, setShowSortMenu] = useState(false);
   // expanded = read-only expanded card, editorMode = inline editor
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useSessionState<string | null>("notes:expanded", null);
   // "new" = creating, note id = editing existing, null = closed
-  const [editorMode, setEditorMode] = useState<"new" | string | null>(null);
+  const [editorMode, setEditorMode] = useSessionState<"new" | string | null>("notes:editor", null);
 
   const editingNote =
     editorMode && editorMode !== "new"
@@ -216,7 +215,7 @@ export default function NotesPage() {
 
       {/* Mind Map Tab */}
       {activeTab === "mindmap" && (
-        <NotesMindMap notes={notes} onSelectNote={(note) => { setActiveTab("notes"); setExpandedId(note.id); }} />
+        <NotesMindMap />
       )}
 
       {activeTab === "notes" && notes.length > 0 && !editorMode && (
@@ -438,70 +437,18 @@ export default function NotesPage() {
 
 // ─── Mind Map Tab Content ───
 
-function NotesMindMap({ notes: allNotes, onSelectNote }: { notes: Note[]; onSelectNote: (note: Note) => void }) {
-  const router = useRouter();
-
-  // Ontology toggles
-  const [includeOntologyHadiths, setIncludeOntologyHadiths] = useState(false);
-  const [includeQuranicConcepts, setIncludeQuranicConcepts] = useState(false);
-  const [includeHadithTopics, setIncludeHadithTopics] = useState(false);
-
-  const { nodes, edges, allTags, stats, isLoading } = useKnowledgeGraph({
-    includeOntologyHadiths,
-    includeQuranicConcepts,
-    includeHadithTopics,
-  });
-
-  const handleNodeClick = useCallback(
-    (node: GraphNode) => {
-      if (node.nodeType === "note") {
-        const note = allNotes.find((n) => n.id === node.id.replace("note:", ""));
-        if (note) onSelectNote(note);
-      } else if (node.nodeType === "verse" && node.verseKey) {
-        const [surahId] = node.verseKey.split(":");
-        router.push(`/surah/${surahId}?verse=${node.verseKey}`);
-      }
-    },
-    [allNotes, onSelectNote, router],
-  );
-
-  const isEmpty = !isLoading && nodes.length === 0;
-
+function NotesMindMap() {
   return (
-    <div className="mt-4 flex flex-col" style={{ height: "calc(100vh - 12rem)" }}>
-      <div className="relative min-h-0 flex-1 border border-border overflow-hidden">
-        {isLoading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
-            <CircleNotchIcon weight="bold" className="h-6 w-6 animate-spin text-foreground" />
-          </div>
-        )}
-        {isEmpty ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-            <GraphIcon weight="duotone" className="h-12 w-12 text-muted-foreground/30" />
-            <div>
-              <p className="text-sm font-medium text-foreground">No connections yet</p>
-              <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-                Your knowledge graph builds automatically from your notes. Add notes with tags to see it grow.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <NetworkGraph
-            nodes={nodes}
-            edges={edges}
-            stats={stats}
-            allTags={allTags}
-            onNodeClick={handleNodeClick}
-            className="h-full"
-            includeOntologyHadiths={includeOntologyHadiths}
-            onToggleOntologyHadiths={() => setIncludeOntologyHadiths((v) => !v)}
-            includeQuranicConcepts={includeQuranicConcepts}
-            onToggleQuranicConcepts={() => setIncludeQuranicConcepts((v) => !v)}
-            includeHadithTopics={includeHadithTopics}
-            onToggleHadithTopics={() => setIncludeHadithTopics((v) => !v)}
-          />
-        )}
+    <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
+      <div className="p-3" style={{ backgroundColor: 'var(--surah-lavender-bg)' }}>
+        <GraphIcon weight="duotone" className="h-6 w-6" style={{ color: 'var(--surah-lavender-label)' }} />
       </div>
+      <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
+        Under Development
+      </p>
+      <p className="font-mono text-[10px] text-muted-foreground/50 max-w-[220px]">
+        A visual mind map connecting your notes, bookmarks, and reading insights — coming soon.
+      </p>
     </div>
   );
 }
@@ -663,6 +610,43 @@ function ExpandedNoteCard({
         </div>
       </div>
 
+      {/* References — verse links, surah links, linked resources */}
+      {(note.verseKeys.length > 0 || note.surahIds.length > 0 || (note.linkedResources && note.linkedResources.length > 0)) && (
+        <div className="border-b border-border/50 px-4 py-2.5 flex flex-wrap items-center gap-2">
+          {note.verseKeys.map((vk) => {
+            const [s] = vk.split(":");
+            return (
+              <Link
+                key={vk}
+                href={`/surah/${s}?verse=${vk}&from=notes`}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-highlight transition-colors border border-border"
+              >
+                <MapPinIcon weight="bold" className="h-3 w-3" />
+                {getSurahName(Number(s))} {vk}
+              </Link>
+            );
+          })}
+          {note.surahIds.map((id) => (
+            <Link
+              key={`s-${id}`}
+              href={`/surah/${id}?from=notes`}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-highlight transition-colors border border-border"
+            >
+              <MapPinIcon weight="bold" className="h-3 w-3" />
+              {getSurahName(id)}
+            </Link>
+          ))}
+          {note.linkedResources && note.linkedResources.map((resource, idx) => (
+            <span
+              key={`${resource.type}-${idx}`}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border border-border/50"
+            >
+              {resource.label}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Content */}
       <div className="px-4 py-4 space-y-3">
         {note.title && (
@@ -672,49 +656,6 @@ function ExpandedNoteCard({
           content={note.content}
           contentJson={note.contentJson}
         />
-        {/* Verse/surah references as clickable links */}
-        {(note.verseKeys.length > 0 || note.surahIds.length > 0) && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <MapPinIcon weight="bold" className="h-3 w-3 text-muted-foreground/40" />
-            {note.verseKeys.map((vk) => {
-              const [s] = vk.split(":");
-              return (
-                <Link
-                  key={vk}
-                  href={`/surah/${s}?verse=${vk}`}
-                  className="font-mono text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-                >
-                  {getSurahName(Number(s))} {vk}
-                </Link>
-              );
-            })}
-            {note.surahIds.map((id) => (
-              <Link
-                key={`s-${id}`}
-                href={`/surah/${id}`}
-                className="font-mono text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-              >
-                {getSurahName(id)}
-              </Link>
-            ))}
-          </div>
-        )}
-        {/* Linked resources (hadith, tafsir) */}
-        {note.linkedResources && note.linkedResources.length > 0 && (
-          <div className="space-y-1.5 pt-1">
-            {note.linkedResources.map((resource, idx) => (
-              <div
-                key={`${resource.type}-${idx}`}
-                className="border border-border/50 px-3 py-2 text-[11px]"
-              >
-                <span className="font-medium text-foreground">{resource.label}</span>
-                {resource.preview && (
-                  <p className="mt-0.5 text-muted-foreground/60 line-clamp-2">{resource.preview}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
         <div className="font-mono text-[10px] text-muted-foreground/30 text-right">
           {note.updatedAt.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
         </div>

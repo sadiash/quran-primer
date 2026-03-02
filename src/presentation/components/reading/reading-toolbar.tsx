@@ -54,7 +54,7 @@ export function ReadingToolbar({ visibleTranslationIds, onToggleTranslation }: R
   const showTranslationPills = resolvedConfigs.length > 1 && visibleTranslationIds && onToggleTranslation;
 
   return (
-    <div className="absolute bottom-6 right-6 z-10">
+    <div className="fixed bottom-20 right-6 z-10 md:bottom-6 lg:absolute">
       {/* Toggle button */}
       <button
         onClick={() => setOpen(!open)}

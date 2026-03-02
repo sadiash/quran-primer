@@ -143,6 +143,7 @@ export function useForceSimulation({
         forceX<SimulationNode>(width / 2).strength(FORCE_CONFIG.centerXStrength),
       )
       .alphaDecay(FORCE_CONFIG.alphaDecay)
+      .velocityDecay(FORCE_CONFIG.velocityDecay)
       .on("tick", () => {
         setSimulationNodes([...sim.nodes()]);
         setSimulationEdges([...simEdges]);

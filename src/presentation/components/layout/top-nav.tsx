@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { ArrowSquareOutIcon, BookBookmarkIcon, BookOpenIcon, BookmarkSimpleIcon, BooksIcon, GearSixIcon, MoonIcon, NoteIcon, PlayCircleIcon, RobotIcon, SidebarSimpleIcon, SunIcon } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 import { LogoIcon } from "./logo";
@@ -12,6 +12,7 @@ import { useProgress } from "@/presentation/hooks/use-progress";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { getSurahName } from "@/lib/surah-names";
 import { getSurahColor } from "@/lib/surah-colors";
+import { FROM_MAP } from "@/presentation/components/reading/navigation-trail";
 import type { PanelId } from "@/core/types/panel";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +31,15 @@ function isReadingRoute(pathname: string): boolean {
 
 export function TopNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { openPanels, togglePanel } = usePanels();
   const { preferences } = usePreferences();
   const { getLatestProgress } = useProgress();
   const latest = getLatestProgress();
   const showPanels = isReadingRoute(pathname);
+  const fromParam = searchParams.get("from");
+  const fromEntry = fromParam ? FROM_MAP[fromParam] : null;
 
   return (
     <header className="floating-nav flex h-12 items-center gap-3 px-4 sm:px-6">
@@ -57,6 +62,29 @@ export function TopNav() {
         <NavIcon href="/bookmarks" icon={BookmarkSimpleIcon} label="Bookmarks" pathname={pathname} />
         <NavIcon href="/notes" icon={NoteIcon} label="Notes" pathname={pathname} />
       </nav>
+
+      {/* Go back pill — on reading routes when navigated from another page */}
+      {showPanels && fromEntry && (
+        <button
+          onClick={() => {
+            // Use native history.back() to restore previous page state from bfcache
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              router.push(fromEntry.href);
+            }
+          }}
+          className="nav-pill flex items-center gap-1.5 px-3 py-1 border-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] transition-opacity hover:opacity-70"
+          style={{
+            borderColor: "var(--surah-pink-accent)",
+            backgroundColor: "var(--surah-pink-bg)",
+            color: "var(--surah-pink-label)",
+          }}
+        >
+          <span aria-hidden="true">&larr;</span>
+          {fromEntry.label}
+        </button>
+      )}
 
       {/* Continue Reading */}
       {latest && preferences.trackProgress && !pathname.startsWith("/surah") && (() => {

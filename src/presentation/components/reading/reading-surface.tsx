@@ -39,7 +39,7 @@ export function ReadingSurface({
   const { isBookmarked, toggleBookmark } = useBookmarks(surah.id);
   const { notes } = useNotes({ forSurahReading: surah.id });
   const audio = useAudioPlayer();
-  const { observerRef, getCurrentVerseKey } = useVerseVisibility();
+  const { observerRef, getCurrentVerseKey, maxVerseRead, initMaxVerse } = useVerseVisibility();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Track scroll position for collapsing surah header
@@ -131,6 +131,7 @@ export function ReadingSurface({
   const maxVerseRef = useRef(progress?.completedVerses ?? 0);
   if (progress && progress.completedVerses > maxVerseRef.current) {
     maxVerseRef.current = progress.completedVerses;
+    initMaxVerse(progress.completedVerses);
   }
   const saveProgress = useCallback(
     (verseKey: string, verseNumber: number) => {
@@ -194,11 +195,12 @@ export function ReadingSurface({
     return () => clearInterval(interval);
   }, [getCurrentVerseKey, saveProgress]);
 
-  // Scroll to verse from ?verse= query param on mount
+  // Scroll to verse from ?verse= query param — once on mount only
   const scrolledToParam = useRef(false);
+  const initialVerseParam = useRef(searchParams.get("verse"));
   useEffect(() => {
     if (scrolledToParam.current) return;
-    const verseParam = searchParams.get("verse");
+    const verseParam = initialVerseParam.current;
     if (!verseParam) return;
 
     const timer = setTimeout(() => {
@@ -212,7 +214,8 @@ export function ReadingSurface({
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchParams, focusVerseManually]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const arabicSizeClass = {
     sm: "text-xl",
@@ -372,12 +375,14 @@ export function ReadingSurface({
                 conceptMaxVisible={preferences.conceptMaxVisible}
                 conceptColorSlot={preferences.conceptColorSlot}
                 focusBgColor={getSurahColor(surah.id).bg}
+                isRead={preferences.trackProgress && verse.verseNumber <= maxVerseRead}
+                readAccentColor={getSurahColor(surah.id).accent}
               />
             ))}
           </div>
 
-          {/* End spacer */}
-          <div className="h-32 md:h-24" />
+          {/* End spacer — tall enough for last verse to enter observer zone */}
+          <div className="h-[50vh]" />
         </div>
       </div>
 

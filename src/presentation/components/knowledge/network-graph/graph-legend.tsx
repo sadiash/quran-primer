@@ -12,11 +12,7 @@ interface GraphLegendProps {
 
 export function GraphLegend({ stats, activeTypes, minimal = false }: GraphLegendProps) {
   if (minimal) {
-    return (
-      <div className="absolute bottom-3 left-3 bg-background border border-border px-3 py-2 text-xs text-muted-foreground">
-        {stats.totalNodes} nodes &middot; {stats.totalEdges} edges
-      </div>
-    );
+    return null;
   }
 
   const types = (Object.keys(stats.nodeCounts) as NodeType[]).filter((t) =>

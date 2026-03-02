@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CaretLeftIcon, CaretRightIcon, CheckIcon } from "@phosphor-icons/react";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { usePreferences } from "@/presentation/hooks/use-preferences";
 import { LogoIcon } from "@/presentation/components/layout/logo";
 import { cn } from "@/lib/utils";
@@ -16,22 +16,7 @@ const TRANSLATIONS = [
   { id: 1006, name: "Tafhim-ul-Quran", author: "Abul Ala Maududi" },
 ];
 
-const TAFSIRS = [
-  { id: 74, name: "Al-Jalalayn", author: "Al-Mahalli & as-Suyuti" },
-  { id: 169, name: "Ibn Kathir", author: "Ibn Kathir (Abridged)" },
-  { id: 817, name: "Tazkirul Quran", author: "Maulana Wahiduddin Khan" },
-];
-
-const HADITH_COLLECTIONS = [
-  { id: "bukhari", name: "Sahih al-Bukhari" },
-  { id: "muslim", name: "Sahih Muslim" },
-  { id: "abudawud", name: "Sunan Abu Dawud" },
-  { id: "tirmidhi", name: "Jami' at-Tirmidhi" },
-  { id: "nasai", name: "Sunan an-Nasa'i" },
-  { id: "ibnmajah", name: "Sunan Ibn Majah" },
-];
-
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 2;
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -41,23 +26,9 @@ export default function OnboardingPage() {
   const [showArabic, setShowArabic] = useState(true);
   const [showTranslation, setShowTranslation] = useState(true);
   const [selectedTranslations, setSelectedTranslations] = useState<number[]>([1001]);
-  const [selectedTafsirs, setSelectedTafsirs] = useState<number[]>([74]);
-  const [selectedHadith, setSelectedHadith] = useState<string[]>(["bukhari", "muslim"]);
 
   const toggleTranslation = (id: number) => {
     setSelectedTranslations((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
-
-  const toggleTafsir = (id: number) => {
-    setSelectedTafsirs((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
-
-  const toggleHadith = (id: string) => {
-    setSelectedHadith((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
@@ -67,11 +38,9 @@ export default function OnboardingPage() {
       showArabic,
       showTranslation,
       activeTranslationIds: selectedTranslations.length > 0 ? selectedTranslations : [1001],
-      activeTafsirIds: selectedTafsirs.length > 0 ? selectedTafsirs : [74],
-      activeHadithCollections: selectedHadith.length > 0 ? selectedHadith : ["bukhari"],
       onboardingComplete: true,
     });
-    router.push("/surah/1");
+    router.replace("/browse");
   };
 
   return (
@@ -100,15 +69,6 @@ export default function OnboardingPage() {
             onToggleTranslation={toggleTranslation}
           />
         )}
-        {step === 2 && (
-          <StepStudyTools
-            selectedTafsirs={selectedTafsirs}
-            onToggleTafsir={toggleTafsir}
-            selectedHadith={selectedHadith}
-            onToggleHadith={toggleHadith}
-          />
-        )}
-        {step === 3 && <StepDone />}
       </div>
 
       {/* Navigation */}
@@ -142,7 +102,7 @@ export default function OnboardingPage() {
             className="flex items-center gap-1 px-5 py-2 text-sm font-bold uppercase tracking-wider text-[#0a0a0a] transition-colors hover:opacity-80"
             style={{ backgroundColor: '#e8e337' }}
           >
-            Begin Reading
+            Start Exploring
             <CaretRightIcon weight="bold" className="h-4 w-4" />
           </button>
         )}
@@ -156,16 +116,16 @@ export default function OnboardingPage() {
 function StepWelcome() {
   return (
     <div className="text-center">
-      <LogoIcon className="mx-auto h-12 w-12 text-foreground" />
-      <h1 className="mt-6 text-3xl font-bold uppercase tracking-tight text-foreground">Bismillah</h1>
-      <p className="mt-3 text-base text-muted-foreground">
-        Welcome to The Primer.
+      <LogoIcon className="mx-auto h-14 w-14 text-foreground" />
+      <h1 className="mt-6 text-4xl font-bold uppercase tracking-tight text-foreground">Bismillah</h1>
+      <p className="mt-4 text-lg text-muted-foreground">
+        Read, study, and reflect on the Quran &mdash; with translations, tafsir, and hadith all in one place.
       </p>
-      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
-        Let&apos;s set up your reading experience in a few quick steps.
+      <p className="mt-6 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">
+        First, let&apos;s pick your reading preferences.
       </p>
-      <p className="mt-6 font-mono text-[10px] text-muted-foreground/40">
-        You can always change these settings later.
+      <p className="mt-2 font-mono text-[10px] text-muted-foreground/40">
+        You can change everything later in settings.
       </p>
     </div>
   );
@@ -222,66 +182,6 @@ function StepReading({
           ))}
         </div>
       </div>
-    </div>
-  );
-}
-
-function StepStudyTools({
-  selectedTafsirs,
-  onToggleTafsir,
-  selectedHadith,
-  onToggleHadith,
-}: {
-  selectedTafsirs: number[];
-  onToggleTafsir: (id: number) => void;
-  selectedHadith: string[];
-  onToggleHadith: (id: string) => void;
-}) {
-  return (
-    <div>
-      <h2 className="text-xl font-bold uppercase tracking-tight text-foreground">Study Tools</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Choose which tafsirs and hadith collections to use.
-      </p>
-
-      <div className="mt-6">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground mb-2">
-          Tafsir (Commentary)
-        </p>
-        <div className="space-y-1.5">
-          {TAFSIRS.map((t) => (
-            <CheckOption key={t.id} label={t.name} description={t.author} checked={selectedTafsirs.includes(t.id)} onToggle={() => onToggleTafsir(t.id)} />
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground mb-2">
-          Hadith Collections
-        </p>
-        <div className="space-y-1.5">
-          {HADITH_COLLECTIONS.map((h) => (
-            <CheckOption key={h.id} label={h.name} checked={selectedHadith.includes(h.id)} onToggle={() => onToggleHadith(h.id)} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StepDone() {
-  return (
-    <div className="text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center" style={{ backgroundColor: 'var(--highlight)' }}>
-        <LogoIcon className="h-8 w-8 text-foreground" />
-      </div>
-      <h2 className="mt-6 text-xl font-bold uppercase tracking-tight text-foreground">You&apos;re all set!</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Your reading experience is configured. Click &quot;Begin Reading&quot; to start with Surah Al-Fatihah.
-      </p>
-      <p className="mt-4 font-mono text-[10px] text-muted-foreground/50">
-        You can change any of these settings later.
-      </p>
     </div>
   );
 }
