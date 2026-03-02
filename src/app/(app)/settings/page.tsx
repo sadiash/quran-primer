@@ -12,7 +12,8 @@ import type {
   TranslationColorSlot,
 } from "@/core/types";
 import { getResolvedTranslationConfigs } from "@/core/types";
-import { CaretDownIcon, CaretUpIcon, DownloadSimpleIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, CaretUpIcon, DownloadSimpleIcon, HandshakeIcon, PlusIcon, TrashIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 import { db } from "@/infrastructure/db/client/schema";
 
 const TRANSLATIONS = [
@@ -310,6 +311,22 @@ export default function SettingsPage() {
 
         {/* ── Data ── */}
         <DataSection />
+
+        {/* ── Acknowledgements link ── */}
+        <section className="border-t border-border pt-6">
+          <Link
+            href="/acknowledgements"
+            className="flex w-full items-center gap-3 border border-border px-4 py-3 text-left hover:bg-surface transition-colors"
+          >
+            <HandshakeIcon weight="duotone" className="h-5 w-5 text-muted-foreground shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-foreground">Acknowledgements</p>
+              <p className="text-xs text-muted-foreground">
+                Datasets, APIs, fonts, and open-source libraries used in The Primer.
+              </p>
+            </div>
+          </Link>
+        </section>
       </div>
     </div>
   );
